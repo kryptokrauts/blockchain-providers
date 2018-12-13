@@ -8,13 +8,19 @@
     <parent>
         <groupId>network.arkane</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>io.fundrequest.arkane</groupId>
+            <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane</groupId>
+            <artifactId>provider-api</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
         </dependency>
     </dependencies>
 </project>
