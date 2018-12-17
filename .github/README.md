@@ -1,8 +1,8 @@
 # Arkane Blockchain Providers
 
-**Arkane Blockchain Providers** are a set of APIs and libraries which support interaction with various blockchains. 
+**Arkane Blockchain Providers** are a set of APIs and libraries which support interaction with various blockchains.
 
-## Building the libraries
+## Building the libraries   
 
 **Prerequisite**: Java 8 + Maven
 
@@ -23,4 +23,4 @@ blockchain submodules.
 
 ### Provider XXX 
 
-For every new blockchain added, a new provider is added.
+For every supported blockchain, a new provider is added.
