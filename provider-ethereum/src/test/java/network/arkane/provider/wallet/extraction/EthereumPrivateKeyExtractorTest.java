@@ -21,20 +21,20 @@ class EthereumPrivateKeyExtractorTest {
 
     @Test
     public void extract() {
-        final SecretKey extract = extractor.extract(new EthereumPrivateKeyExtractionRequest(SecretType.ETHEREUM, "90765a22db47a27042be069adb38635da9fc55768a958119d6063286a1d7ed28"));
+        final SecretKey extract = extractor.extract(new EthereumPrivateKeyExtractionRequest("90765a22db47a27042be069adb38635da9fc55768a958119d6063286a1d7ed28"));
         assertThat(extract.type()).isEqualTo(SecretType.ETHEREUM);
         assertThat(((EthereumSecretKey) extract).getKeyPair().getPrivateKey().toString(16)).isEqualTo("90765a22db47a27042be069adb38635da9fc55768a958119d6063286a1d7ed28");
     }
 
     @Test
     public void extractWrongPrivateKey() {
-        assertThatThrownBy(() -> extractor.extract(new EthereumPrivateKeyExtractionRequest(SecretType.ETHEREUM, "90765a22db47a27042be069adb-55768a958119d6063286a1d7ed28")))
+        assertThatThrownBy(() -> extractor.extract(new EthereumPrivateKeyExtractionRequest("90765a22db47a27042be069adb-55768a958119d6063286a1d7ed28")))
                 .hasMessageContaining("Unable to decode ethereum private key");
     }
 
     @Test
     public void extractAndSanitize() {
-        final SecretKey extract = extractor.extract(new EthereumPrivateKeyExtractionRequest(SecretType.ETHEREUM, "0x90765a22db47a27042be069adb38635da9fc55768a958119d6063286a1d7ed28"));
+        final SecretKey extract = extractor.extract(new EthereumPrivateKeyExtractionRequest("0x90765a22db47a27042be069adb38635da9fc55768a958119d6063286a1d7ed28"));
         assertThat(extract.type()).isEqualTo(SecretType.ETHEREUM);
         assertThat(((EthereumSecretKey) extract).getKeyPair().getPrivateKey().toString(16)).isEqualTo("90765a22db47a27042be069adb38635da9fc55768a958119d6063286a1d7ed28");
     }
