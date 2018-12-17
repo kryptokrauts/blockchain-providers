@@ -13,6 +13,7 @@
 
     <modules>
         <module>provider-api</module>
+        <module>provider-autoconfiguration</module>
         <module>provider-vechain</module>
         <module>provider-ethereum</module>
     </modules>
@@ -80,6 +81,11 @@
             <dependency>
                 <groupId>network.arkane</groupId>
                 <artifactId>provider-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-autoconfiguration</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

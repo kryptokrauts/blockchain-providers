@@ -11,7 +11,7 @@ import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
 
 @Component
-public class EthereumWalletGenerator implements AbstractWalletGenerator {
+public class EthereumWalletGenerator implements WalletGenerator {
 
     @Override
     public GeneratedWallet generateWallet(final String password, final SecretKey secret) {

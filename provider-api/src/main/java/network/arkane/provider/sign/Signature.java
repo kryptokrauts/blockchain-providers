@@ -1,4 +1,4 @@
-package network.arkane.provider.signature;
+package network.arkane.provider.sign;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.NoArgsConstructor;

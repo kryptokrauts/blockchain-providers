@@ -3,17 +3,17 @@ package network.arkane.provider.wallet.extraction;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.secret.generation.EthereumSecretKey;
 import network.arkane.provider.wallet.domain.SecretKey;
-import network.arkane.provider.wallet.extraction.request.PrivateKeyExtractionRequest;
+import network.arkane.provider.wallet.extraction.request.EthereumPrivateKeyExtractionRequest;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 import org.web3j.crypto.ECKeyPair;
 
 @Component
 @Slf4j
-public class EthereumPrivateKeyExtractor implements AbstractSecretExtractor<PrivateKeyExtractionRequest> {
+public class EthereumPrivateKeyExtractor implements SecretExtractor<EthereumPrivateKeyExtractionRequest> {
 
     @Override
-    public SecretKey extract(final PrivateKeyExtractionRequest importWalletRequest) {
+    public SecretKey extract(final EthereumPrivateKeyExtractionRequest importWalletRequest) {
         try {
             String sanitizedKey = sanitize(importWalletRequest.getPrivateKey());
             return EthereumSecretKey.builder()
@@ -33,7 +33,7 @@ public class EthereumPrivateKeyExtractor implements AbstractSecretExtractor<Priv
     }
 
     @Override
-    public Class<PrivateKeyExtractionRequest> getImportRequestType() {
-        return PrivateKeyExtractionRequest.class;
+    public Class<EthereumPrivateKeyExtractionRequest> getImportRequestType() {
+        return EthereumPrivateKeyExtractionRequest.class;
     }
 }

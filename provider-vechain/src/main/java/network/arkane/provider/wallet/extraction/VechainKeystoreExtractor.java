@@ -3,17 +3,17 @@ package network.arkane.provider.wallet.extraction;
 import network.arkane.provider.JSONUtil;
 import network.arkane.provider.secret.generation.VechainSecretKey;
 import network.arkane.provider.wallet.domain.SecretKey;
-import network.arkane.provider.wallet.extraction.request.KeystoreExtractionRequest;
+import network.arkane.provider.wallet.extraction.request.VechainKeystoreExtractionRequest;
 import org.springframework.stereotype.Component;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
 
 @Component
-public class VechainKeystoreExtractor implements AbstractSecretExtractor<KeystoreExtractionRequest> {
+public class VechainKeystoreExtractor implements SecretExtractor<VechainKeystoreExtractionRequest> {
 
     @Override
-    public SecretKey extract(final KeystoreExtractionRequest importWalletRequest) {
+    public SecretKey extract(final VechainKeystoreExtractionRequest importWalletRequest) {
         try {
             final WalletFile walletFile = JSONUtil.fromJson(importWalletRequest.getKeystore(), WalletFile.class);
             final ECKeyPair keypair = Wallet.decrypt(importWalletRequest.getPassword(), walletFile);
@@ -31,7 +31,7 @@ public class VechainKeystoreExtractor implements AbstractSecretExtractor<Keystor
     }
 
     @Override
-    public Class<KeystoreExtractionRequest> getImportRequestType() {
-        return KeystoreExtractionRequest.class;
+    public Class<VechainKeystoreExtractionRequest> getImportRequestType() {
+        return VechainKeystoreExtractionRequest.class;
     }
 }

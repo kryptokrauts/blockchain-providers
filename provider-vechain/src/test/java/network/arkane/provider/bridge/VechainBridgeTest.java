@@ -2,9 +2,9 @@ package network.arkane.provider.bridge;
 
 import network.arkane.provider.core.model.blockchain.TransferResult;
 import network.arkane.provider.gateway.VechainGateway;
-import network.arkane.provider.signature.Signature;
-import network.arkane.provider.signature.SubmittedAndSignedTransactionSignature;
-import network.arkane.provider.signature.TransactionSignature;
+import network.arkane.provider.sign.Signature;
+import network.arkane.provider.sign.SubmittedAndSignedTransactionSignature;
+import network.arkane.provider.sign.TransactionSignature;
 import network.arkane.provider.token.TokenInfo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

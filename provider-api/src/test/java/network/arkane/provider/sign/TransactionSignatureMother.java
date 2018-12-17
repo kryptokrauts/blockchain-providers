@@ -1,4 +1,4 @@
-package network.arkane.provider.signature;
+package network.arkane.provider.sign;
 
 public class TransactionSignatureMother {
     public static TransactionSignature aSignTransactionResponse() {

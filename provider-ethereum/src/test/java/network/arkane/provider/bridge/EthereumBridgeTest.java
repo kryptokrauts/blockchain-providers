@@ -2,15 +2,14 @@ package network.arkane.provider.bridge;
 
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gateway.Web3JGateway;
-import network.arkane.provider.signature.Signature;
-import network.arkane.provider.signature.SubmittedAndSignedTransactionSignature;
-import network.arkane.provider.signature.TransactionSignature;
-import network.arkane.provider.signature.TransactionSignatureMother;
+import network.arkane.provider.sign.Signature;
+import network.arkane.provider.sign.SubmittedAndSignedTransactionSignature;
+import network.arkane.provider.sign.TransactionSignature;
+import network.arkane.provider.sign.TransactionSignatureMother;
 import network.arkane.provider.token.TokenInfo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.ApplicationEventPublisher;
 import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 
@@ -28,13 +27,11 @@ class EthereumBridgeTest {
     private EthereumBridge ethereumBridge;
 
     private Web3JGateway web3JGateway;
-    private ApplicationEventPublisher applicationEventPublisher;
 
     @BeforeEach
     public void setUp() {
         web3JGateway = mock(Web3JGateway.class);
-        applicationEventPublisher = mock(ApplicationEventPublisher.class);
-        ethereumBridge = new EthereumBridge(web3JGateway, applicationEventPublisher);
+        ethereumBridge = new EthereumBridge(web3JGateway);
     }
 
     @Test
