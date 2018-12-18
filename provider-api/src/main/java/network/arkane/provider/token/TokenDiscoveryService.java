@@ -1,7 +1,6 @@
 package network.arkane.provider.token;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.balance.BalanceGateway;
 import network.arkane.provider.chain.SecretType;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -18,12 +17,13 @@ import java.util.stream.Collectors;
 public class TokenDiscoveryService {
 
     private final GithubTokenDiscoveryService githubTokenDiscoveryService;
-    private final Map<SecretType, BalanceGateway> balanceGateways;
+    private final Map<SecretType, ? extends NativeTokenDiscoveryService> tokenDiscoveryServices;
 
     public TokenDiscoveryService(final GithubTokenDiscoveryService githubTokenDiscoveryService,
-                                 final List<? extends BalanceGateway> balanceGateways) {
+                                 final List<? extends NativeTokenDiscoveryService> tokenDiscoveryServices) {
+
         this.githubTokenDiscoveryService = githubTokenDiscoveryService;
-        this.balanceGateways = balanceGateways.stream().collect(Collectors.toMap(BalanceGateway::type, Function.identity()));
+        this.tokenDiscoveryServices = tokenDiscoveryServices.stream().collect(Collectors.toMap(x -> x.type(), Function.identity()));
     }
 
     public List<TokenInfo> getTokens(final SecretType chain) {
@@ -39,10 +39,9 @@ public class TokenDiscoveryService {
 
     private Optional<TokenInfo> fetchFromChain(SecretType chain, String tokenAddress) {
         try {
-            return balanceGateways.get(chain).getTokenInfo(tokenAddress);
+            return tokenDiscoveryServices.get(chain).getTokenInfo(tokenAddress);
         } catch (Exception e) {
             return Optional.empty();
         }
-
     }
 }

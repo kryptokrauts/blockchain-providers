@@ -37,7 +37,4 @@ public interface BalanceGateway {
      * @return
      */
     SecretType type();
-
-    Optional<TokenInfo> getTokenInfo(String tokenAddress);
-
 }

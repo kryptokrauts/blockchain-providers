@@ -38,25 +38,6 @@ public class EthereumBalanceGateway implements BalanceGateway {
     }
 
     @Override
-    public Optional<TokenInfo> getTokenInfo(final String tokenAddress) {
-        final String name = web3JGateway.getName(tokenAddress);
-        final String symbol = web3JGateway.getSymbol(tokenAddress);
-        final BigInteger decimals = web3JGateway.getDecimals(tokenAddress);
-
-        if (name != null && decimals != null && symbol != null) {
-            return Optional.of(TokenInfo.builder()
-                                        .address(tokenAddress)
-                                        .name(name)
-                                        .decimals(decimals.intValue())
-                                        .symbol(symbol)
-                                        .type("ERC20")
-                                        .build());
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    @Override
     public Balance getBalance(final String account) {
         try {
             final BigInteger balance = web3JGateway.getBalance(account).getBalance();
