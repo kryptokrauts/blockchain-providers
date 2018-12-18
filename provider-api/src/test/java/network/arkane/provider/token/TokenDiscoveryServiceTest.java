@@ -1,6 +1,5 @@
 package network.arkane.provider.token;
 
-import network.arkane.provider.balance.BalanceGateway;
 import network.arkane.provider.chain.SecretType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,17 +16,17 @@ import static org.mockito.Mockito.when;
 class TokenDiscoveryServiceTest {
     private GithubTokenDiscoveryService githubTokenDiscoveryService;
     private TokenDiscoveryService tokenDiscoveryService;
-    private BalanceGateway ethereumBridge;
-    private BalanceGateway vechainBridge;
+    private NativeTokenDiscoveryService nativeEthereumTokenService;
+    private NativeTokenDiscoveryService nativeVechainTokenDiscoveryService;
 
     @BeforeEach
     void setUp() {
         githubTokenDiscoveryService = mock(GithubTokenDiscoveryService.class);
-        ethereumBridge = mock(BalanceGateway.class);
-        vechainBridge = mock(BalanceGateway.class);
-        when(ethereumBridge.type()).thenReturn(SecretType.ETHEREUM);
-        when(vechainBridge.type()).thenReturn(SecretType.VECHAIN);
-        tokenDiscoveryService = new TokenDiscoveryService(githubTokenDiscoveryService, Arrays.asList(ethereumBridge, vechainBridge));
+        nativeEthereumTokenService = mock(NativeTokenDiscoveryService.class);
+        nativeVechainTokenDiscoveryService = mock(NativeTokenDiscoveryService.class);
+        when(nativeEthereumTokenService.type()).thenReturn(SecretType.ETHEREUM);
+        when(nativeVechainTokenDiscoveryService.type()).thenReturn(SecretType.VECHAIN);
+        tokenDiscoveryService = new TokenDiscoveryService(githubTokenDiscoveryService, Arrays.asList(nativeEthereumTokenService, nativeVechainTokenDiscoveryService));
     }
 
     @Test
@@ -44,7 +43,7 @@ class TokenDiscoveryServiceTest {
     void getTokenInfoEmptyForChain() {
         final String tokenAddress = "0x0";
         when(githubTokenDiscoveryService.getTokens()).thenReturn(new HashMap<>());
-        when(ethereumBridge.getTokenInfo(tokenAddress)).thenReturn(Optional.empty());
+        when(nativeEthereumTokenService.getTokenInfo(tokenAddress)).thenReturn(Optional.empty());
 
         assertThat(tokenDiscoveryService.getTokenInfo(SecretType.ETHEREUM, tokenAddress)).isEmpty();
     }
@@ -56,7 +55,7 @@ class TokenDiscoveryServiceTest {
         Map<SecretType, Map<String, TokenInfo>> tokens = new HashMap<>();
         tokens.put(SecretType.ETHEREUM, new HashMap<>());
         when(githubTokenDiscoveryService.getTokens()).thenReturn(tokens);
-        when(ethereumBridge.getTokenInfo(tokenAddress)).thenReturn(Optional.empty());
+        when(nativeEthereumTokenService.getTokenInfo(tokenAddress)).thenReturn(Optional.empty());
 
         assertThat(tokenDiscoveryService.getTokenInfo(SecretType.ETHEREUM, tokenAddress)).isEmpty();
     }
@@ -69,7 +68,7 @@ class TokenDiscoveryServiceTest {
         final TokenInfo expected = new TokenInfo();
 
         when(githubTokenDiscoveryService.getTokens()).thenReturn(tokens);
-        when(ethereumBridge.getTokenInfo(tokenAddress)).thenReturn(Optional.of(expected));
+        when(nativeEthereumTokenService.getTokenInfo(tokenAddress)).thenReturn(Optional.of(expected));
 
         final Optional<TokenInfo> result = tokenDiscoveryService.getTokenInfo(SecretType.ETHEREUM, tokenAddress);
 
@@ -84,7 +83,7 @@ class TokenDiscoveryServiceTest {
         final TokenInfo expected = new TokenInfo();
 
         when(githubTokenDiscoveryService.getTokens()).thenReturn(tokens);
-        when(vechainBridge.getTokenInfo(tokenAddress)).thenReturn(Optional.of(expected));
+        when(nativeVechainTokenDiscoveryService.getTokenInfo(tokenAddress)).thenReturn(Optional.of(expected));
 
         final Optional<TokenInfo> result = tokenDiscoveryService.getTokenInfo(SecretType.VECHAIN, tokenAddress);
 

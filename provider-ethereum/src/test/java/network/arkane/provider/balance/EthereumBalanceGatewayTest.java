@@ -41,51 +41,6 @@ class EthereumBalanceGatewayTest {
     }
 
     @Test
-    void getTokenInfo_noName() {
-        final String tokenAddress = "0x0";
-        final String tokenSymbol = "STN";
-        final int tokenDecimals = 15;
-
-        when(web3JGateway.getDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
-        when(web3JGateway.getName(tokenAddress)).thenReturn(null);
-        when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
-
-        final Optional<TokenInfo> result = balanceGateway.getTokenInfo(tokenAddress);
-
-        Assertions.assertThat(result).isEmpty();
-    }
-
-    @Test
-    void getTokenInfo_noDecimals() {
-        final String tokenAddress = "0x0";
-        final String tokenName = "SomeToken";
-        final String tokenSymbol = "STN";
-
-        when(web3JGateway.getDecimals(tokenAddress)).thenReturn(null);
-        when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
-        when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
-
-        final Optional<TokenInfo> result = balanceGateway.getTokenInfo(tokenAddress);
-
-        Assertions.assertThat(result).isEmpty();
-    }
-
-    @Test
-    void getTokenInfo_noSymbol() {
-        final String tokenAddress = "0x0";
-        final String tokenName = "SomeToken";
-        final int tokenDecimals = 15;
-
-        when(web3JGateway.getDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
-        when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
-        when(web3JGateway.getSymbol(tokenAddress)).thenReturn(null);
-
-        final Optional<TokenInfo> result = balanceGateway.getTokenInfo(tokenAddress);
-
-        Assertions.assertThat(result).isEmpty();
-    }
-
-    @Test
     void checkBalance() {
         Balance balance = balanceGateway.getBalance("address");
         assertThat(balance.getBalance()).isEqualTo(1);
@@ -108,26 +63,7 @@ class EthereumBalanceGatewayTest {
         assertThat(result).isEqualTo(fndBalance);
     }
 
-    @Test
-    void getTokenInfo() {
-        final String tokenAddress = "0x0";
-        final String tokenName = "SomeToken";
-        final String tokenSymbol = "STN";
-        final int tokenDecimals = 15;
 
-        when(web3JGateway.getDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
-        when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
-        when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
-
-        final Optional<TokenInfo> result = balanceGateway.getTokenInfo(tokenAddress);
-
-        Assertions.assertThat(result).isNotEmpty();
-        Assertions.assertThat(result.get().getAddress()).isEqualTo(tokenAddress);
-        Assertions.assertThat(result.get().getName()).isEqualTo(tokenName);
-        Assertions.assertThat(result.get().getSymbol()).isEqualTo(tokenSymbol);
-        Assertions.assertThat(result.get().getDecimals()).isEqualTo(tokenDecimals);
-        Assertions.assertThat(result.get().getType()).isEqualTo("ERC20");
-    }
 
     @Test
     void getTokenBalances() {
