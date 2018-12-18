@@ -16,6 +16,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,6 +35,25 @@ public class EthereumBalanceGateway implements BalanceGateway {
     @Override
     public SecretType type() {
         return SecretType.ETHEREUM;
+    }
+
+    @Override
+    public Optional<TokenInfo> getTokenInfo(final String tokenAddress) {
+        final String name = web3JGateway.getName(tokenAddress);
+        final String symbol = web3JGateway.getSymbol(tokenAddress);
+        final BigInteger decimals = web3JGateway.getDecimals(tokenAddress);
+
+        if (name != null && decimals != null && symbol != null) {
+            return Optional.of(TokenInfo.builder()
+                                        .address(tokenAddress)
+                                        .name(name)
+                                        .decimals(decimals.intValue())
+                                        .symbol(symbol)
+                                        .type("ERC20")
+                                        .build());
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

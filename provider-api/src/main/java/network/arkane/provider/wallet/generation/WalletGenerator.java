@@ -1,12 +1,23 @@
 package network.arkane.provider.wallet.generation;
 
 
-import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.wallet.domain.SecretKey;
 
-public interface WalletGenerator {
+public interface WalletGenerator<T extends SecretKey> {
 
-    GeneratedWallet generateWallet(final String password, final SecretKey secret);
+    /**
+     * Generate a wallet, given a password and a secret
+     *
+     * @param password
+     * @param secret
+     * @return
+     */
+    GeneratedWallet generateWallet(final String password, final T secret);
 
-    SecretType type();
+    /**
+     * The SecretKey this WalletGenerator supports
+     *
+     * @return
+     */
+    Class<T> type();
 }

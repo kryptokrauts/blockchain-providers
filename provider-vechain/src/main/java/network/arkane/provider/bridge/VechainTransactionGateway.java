@@ -49,23 +49,4 @@ public class VechainTransactionGateway implements TransactionGateway {
                     .build();
         }
     }
-
-    @Override
-    public Optional<TokenInfo> getTokenInfo(final String tokenAddress) {
-        final String name = vechainGateway.getTokenName(tokenAddress);
-        final String symbol = vechainGateway.getTokenSymbol(tokenAddress);
-        final BigInteger decimals = vechainGateway.getTokenDecimals(tokenAddress);
-
-        if (name != null && decimals != null && symbol != null) {
-            return Optional.of(TokenInfo.builder()
-                                        .address(tokenAddress)
-                                        .name(name)
-                                        .decimals(decimals.intValue())
-                                        .symbol(symbol)
-                                        .type("VIP180")
-                                        .build());
-        } else {
-            return Optional.empty();
-        }
-    }
 }

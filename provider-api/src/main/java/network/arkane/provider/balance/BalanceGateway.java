@@ -3,8 +3,10 @@ package network.arkane.provider.balance;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.token.TokenInfo;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BalanceGateway {
 
@@ -35,4 +37,7 @@ public interface BalanceGateway {
      * @return
      */
     SecretType type();
+
+    Optional<TokenInfo> getTokenInfo(String tokenAddress);
+
 }

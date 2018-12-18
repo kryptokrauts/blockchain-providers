@@ -1,7 +1,7 @@
 package network.arkane.provider.token;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.bridge.TransactionGateway;
+import network.arkane.provider.balance.BalanceGateway;
 import network.arkane.provider.chain.SecretType;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -10,18 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class TokenDiscoveryService {
 
     private final GithubTokenDiscoveryService githubTokenDiscoveryService;
-    private final Map<SecretType, TransactionGateway> bridges;
+    private final Map<SecretType, BalanceGateway> balanceGateways;
 
     public TokenDiscoveryService(final GithubTokenDiscoveryService githubTokenDiscoveryService,
-                                 final Map<SecretType, TransactionGateway> bridges) {
+                                 final List<? extends BalanceGateway> balanceGateways) {
         this.githubTokenDiscoveryService = githubTokenDiscoveryService;
-        this.bridges = bridges;
+        this.balanceGateways = balanceGateways.stream().collect(Collectors.toMap(BalanceGateway::type, Function.identity()));
     }
 
     public List<TokenInfo> getTokens(final SecretType chain) {
@@ -37,7 +39,7 @@ public class TokenDiscoveryService {
 
     private Optional<TokenInfo> fetchFromChain(SecretType chain, String tokenAddress) {
         try {
-            return bridges.get(chain).getTokenInfo(tokenAddress);
+            return balanceGateways.get(chain).getTokenInfo(tokenAddress);
         } catch (Exception e) {
             return Optional.empty();
         }

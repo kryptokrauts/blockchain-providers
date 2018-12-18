@@ -70,23 +70,4 @@ public class EthereumTransactionGateway implements TransactionGateway {
                     .build();
         }
     }
-
-    @Override
-    public Optional<TokenInfo> getTokenInfo(final String tokenAddress) {
-        final String name = web3j.getName(tokenAddress);
-        final String symbol = web3j.getSymbol(tokenAddress);
-        final BigInteger decimals = web3j.getDecimals(tokenAddress);
-
-        if (name != null && decimals != null && symbol != null) {
-            return Optional.of(TokenInfo.builder()
-                                        .address(tokenAddress)
-                                        .name(name)
-                                        .decimals(decimals.intValue())
-                                        .symbol(symbol)
-                                        .type("ERC20")
-                                        .build());
-        } else {
-            return Optional.empty();
-        }
-    }
 }

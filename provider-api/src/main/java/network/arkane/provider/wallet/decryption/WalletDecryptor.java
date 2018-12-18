@@ -6,7 +6,7 @@ import network.arkane.provider.wallet.generation.GeneratedWallet;
 public interface WalletDecryptor<T extends GeneratedWallet, KEY extends SecretKey> {
 
     /**
-     * Decrypt a wallet, based on a generated walet and password
+     * Decrypt a wallet, based on a generated wallet and password
      * @param generatedWallet
      * @param password
      * @return
