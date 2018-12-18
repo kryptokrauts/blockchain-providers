@@ -23,7 +23,7 @@ public class TokenDiscoveryService {
                                  final List<? extends NativeTokenDiscoveryService> tokenDiscoveryServices) {
 
         this.githubTokenDiscoveryService = githubTokenDiscoveryService;
-        this.tokenDiscoveryServices = tokenDiscoveryServices.stream().collect(Collectors.toMap(x -> x.type(), Function.identity()));
+        this.tokenDiscoveryServices = tokenDiscoveryServices.stream().collect(Collectors.toMap(NativeTokenDiscoveryService::type, Function.identity()));
     }
 
     public List<TokenInfo> getTokens(final SecretType chain) {
