@@ -1,10 +1,11 @@
 package network.arkane.provider.token;
 
-import network.arkane.provider.bridge.TransactionGateway;
+import network.arkane.provider.balance.BalanceGateway;
 import network.arkane.provider.chain.SecretType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -16,22 +17,21 @@ import static org.mockito.Mockito.when;
 class TokenDiscoveryServiceTest {
     private GithubTokenDiscoveryService githubTokenDiscoveryService;
     private TokenDiscoveryService tokenDiscoveryService;
-    private TransactionGateway ethereumBridge;
-    private TransactionGateway vechainBridge;
+    private BalanceGateway ethereumBridge;
+    private BalanceGateway vechainBridge;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         githubTokenDiscoveryService = mock(GithubTokenDiscoveryService.class);
-        ethereumBridge = mock(TransactionGateway.class);
-        vechainBridge = mock(TransactionGateway.class);
-        final Map<SecretType, TransactionGateway> bridges = new HashMap<>();
-        bridges.put(SecretType.ETHEREUM, ethereumBridge);
-        bridges.put(SecretType.VECHAIN, vechainBridge);
-        tokenDiscoveryService = new TokenDiscoveryService(githubTokenDiscoveryService, bridges);
+        ethereumBridge = mock(BalanceGateway.class);
+        vechainBridge = mock(BalanceGateway.class);
+        when(ethereumBridge.type()).thenReturn(SecretType.ETHEREUM);
+        when(vechainBridge.type()).thenReturn(SecretType.VECHAIN);
+        tokenDiscoveryService = new TokenDiscoveryService(githubTokenDiscoveryService, Arrays.asList(ethereumBridge, vechainBridge));
     }
 
     @Test
-    public void getTokens() {
+    void getTokens() {
         Map<SecretType, Map<String, TokenInfo>> tokens = new HashMap<>();
         tokens.put(SecretType.ETHEREUM, new HashMap<>());
         tokens.get(SecretType.ETHEREUM).put("0x0", new TokenInfo());
@@ -41,7 +41,7 @@ class TokenDiscoveryServiceTest {
     }
 
     @Test
-    public void getTokenInfoEmptyForChain() {
+    void getTokenInfoEmptyForChain() {
         final String tokenAddress = "0x0";
         when(githubTokenDiscoveryService.getTokens()).thenReturn(new HashMap<>());
         when(ethereumBridge.getTokenInfo(tokenAddress)).thenReturn(Optional.empty());
@@ -51,7 +51,7 @@ class TokenDiscoveryServiceTest {
 
 
     @Test
-    public void getTokenInfoEmptyForToken() {
+    void getTokenInfoEmptyForToken() {
         final String tokenAddress = "0x0";
         Map<SecretType, Map<String, TokenInfo>> tokens = new HashMap<>();
         tokens.put(SecretType.ETHEREUM, new HashMap<>());
@@ -92,13 +92,11 @@ class TokenDiscoveryServiceTest {
     }
 
     @Test
-    public void getTokenInfoForToken() {
+    void getTokenInfoForToken() {
         Map<SecretType, Map<String, TokenInfo>> tokens = new HashMap<>();
         tokens.put(SecretType.ETHEREUM, new HashMap<>());
         tokens.get(SecretType.ETHEREUM).put("0x0", new TokenInfo());
         when(githubTokenDiscoveryService.getTokens()).thenReturn(tokens);
-
         assertThat(tokenDiscoveryService.getTokenInfo(SecretType.ETHEREUM, "0x0")).isNotNull();
     }
-
 }

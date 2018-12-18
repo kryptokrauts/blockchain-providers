@@ -13,6 +13,7 @@ import network.arkane.provider.gateway.VechainGateway;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import network.arkane.provider.token.TokenInfoMother;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 public class VechainBalanceGatewayTest {
 
-    private VechainBalanceGateway vechainBalanceChecker;
+    private VechainBalanceGateway balanceGateway;
     private VechainGateway vechainGateway;
     private TokenDiscoveryService tokenDiscoveryService;
 
@@ -41,7 +42,7 @@ public class VechainBalanceGatewayTest {
     void setUp() {
         vechainGateway = mock(VechainGateway.class);
         tokenDiscoveryService = mock(TokenDiscoveryService.class);
-        vechainBalanceChecker = new VechainBalanceGateway(vechainGateway, tokenDiscoveryService);
+        balanceGateway = new VechainBalanceGateway(vechainGateway, tokenDiscoveryService);
     }
 
     @Test
@@ -52,7 +53,7 @@ public class VechainBalanceGatewayTest {
 
         when(vechainGateway.getAccount("anyAccount")).thenReturn(account);
 
-        final Balance result = vechainBalanceChecker.getBalance("anyAccount");
+        final Balance result = balanceGateway.getBalance("anyAccount");
 
         assertThat(result.getBalance()).isEqualTo(1);
         assertThat(result.getGasBalance()).isEqualTo(2);
@@ -70,9 +71,75 @@ public class VechainBalanceGatewayTest {
 
         when(tokenDiscoveryService.getTokenInfo(VECHAIN, tokenInfo.getAddress())).thenReturn(Optional.of(tokenInfo));
 
-        final TokenBalance result = vechainBalanceChecker.getTokenBalance(walletAddress, tokenInfo.getAddress());
+        final TokenBalance result = balanceGateway.getTokenBalance(walletAddress, tokenInfo.getAddress());
 
         assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void getTokenInfo() {
+        final String tokenAddress = "0x0";
+        final String tokenName = "Some Token";
+        final String tokenSymbol = "STN";
+        final int tokenDecimals = 13;
+
+        when(vechainGateway.getTokenName(tokenAddress)).thenReturn(tokenName);
+        when(vechainGateway.getTokenSymbol(tokenAddress)).thenReturn(tokenSymbol);
+        when(vechainGateway.getTokenDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
+
+        final Optional<TokenInfo> result = balanceGateway.getTokenInfo(tokenAddress);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.get().getAddress()).isEqualTo(tokenAddress);
+        Assertions.assertThat(result.get().getName()).isEqualTo(tokenName);
+        Assertions.assertThat(result.get().getSymbol()).isEqualTo(tokenSymbol);
+        Assertions.assertThat(result.get().getDecimals()).isEqualTo(tokenDecimals);
+        Assertions.assertThat(result.get().getType()).isEqualTo("VIP180");
+    }
+
+    @Test
+    void getTokenInfo_noName() {
+        final String tokenAddress = "0x0";
+        final String tokenSymbol = "STN";
+        final int tokenDecimals = 15;
+
+        when(vechainGateway.getTokenName(tokenAddress)).thenReturn(null);
+        when(vechainGateway.getTokenSymbol(tokenAddress)).thenReturn(tokenSymbol);
+        when(vechainGateway.getTokenDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
+
+        final Optional<TokenInfo> result = balanceGateway.getTokenInfo(tokenAddress);
+
+        Assertions.assertThat(result).isEmpty();
+    }
+
+    @Test
+    void getTokenInfo_noDecimals() {
+        final String tokenAddress = "0x0";
+        final String tokenName = "SomeToken";
+        final String tokenSymbol = "STN";
+
+        when(vechainGateway.getTokenName(tokenAddress)).thenReturn(tokenName);
+        when(vechainGateway.getTokenSymbol(tokenAddress)).thenReturn(tokenSymbol);
+        when(vechainGateway.getTokenDecimals(tokenAddress)).thenReturn(null);
+
+        final Optional<TokenInfo> result = balanceGateway.getTokenInfo(tokenAddress);
+
+        Assertions.assertThat(result).isEmpty();
+    }
+
+    @Test
+    void getTokenInfo_noSymbol() {
+        final String tokenAddress = "0x0";
+        final String tokenName = "SomeToken";
+        final int tokenDecimals = 15;
+
+        when(vechainGateway.getTokenName(tokenAddress)).thenReturn(tokenName);
+        when(vechainGateway.getTokenSymbol(tokenAddress)).thenReturn(null);
+        when(vechainGateway.getTokenDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
+
+        final Optional<TokenInfo> result = balanceGateway.getTokenInfo(tokenAddress);
+
+        Assertions.assertThat(result).isEmpty();
     }
 
     @Test
@@ -90,7 +157,7 @@ public class VechainBalanceGatewayTest {
         when(vechainGateway.getTokenBalances(walletAddress, tokens.stream().map(TokenInfo::getAddress).collect(Collectors.toList())))
                 .thenReturn(Arrays.asList(new BigInteger(vthoResult.getRawBalance()), new BigInteger(shaResult.getRawBalance())));
 
-        final List<TokenBalance> result = vechainBalanceChecker.getTokenBalances(walletAddress);
+        final List<TokenBalance> result = balanceGateway.getTokenBalances(walletAddress);
 
         AssertionsForInterfaceTypes.assertThat(result).contains(vthoResult, shaResult);
     }
