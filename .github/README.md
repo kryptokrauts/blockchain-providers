@@ -1,6 +1,7 @@
-# Arkane Blockchain Providers
+# Arkane Blockchain Providers <img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
+> Arkane Blockchain Providers are a set of APIs and libraries which support interaction with various blockchains.
 
-**Arkane Blockchain Providers** are a set of APIs and libraries which support interaction with various blockchains.
+
 
 ## Building the libraries   
 
