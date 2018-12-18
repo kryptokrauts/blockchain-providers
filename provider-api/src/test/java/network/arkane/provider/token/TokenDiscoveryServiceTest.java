@@ -1,6 +1,6 @@
 package network.arkane.provider.token;
 
-import network.arkane.provider.bridge.BlockchainBridge;
+import network.arkane.provider.bridge.TransactionGateway;
 import network.arkane.provider.chain.SecretType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,15 +16,15 @@ import static org.mockito.Mockito.when;
 class TokenDiscoveryServiceTest {
     private GithubTokenDiscoveryService githubTokenDiscoveryService;
     private TokenDiscoveryService tokenDiscoveryService;
-    private BlockchainBridge ethereumBridge;
-    private BlockchainBridge vechainBridge;
+    private TransactionGateway ethereumBridge;
+    private TransactionGateway vechainBridge;
 
     @BeforeEach
     public void setUp() throws Exception {
         githubTokenDiscoveryService = mock(GithubTokenDiscoveryService.class);
-        ethereumBridge = mock(BlockchainBridge.class);
-        vechainBridge = mock(BlockchainBridge.class);
-        final Map<SecretType, BlockchainBridge> bridges = new HashMap<>();
+        ethereumBridge = mock(TransactionGateway.class);
+        vechainBridge = mock(TransactionGateway.class);
+        final Map<SecretType, TransactionGateway> bridges = new HashMap<>();
         bridges.put(SecretType.ETHEREUM, ethereumBridge);
         bridges.put(SecretType.VECHAIN, vechainBridge);
         tokenDiscoveryService = new TokenDiscoveryService(githubTokenDiscoveryService, bridges);

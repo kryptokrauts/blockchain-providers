@@ -3,6 +3,8 @@ package network.arkane.provider.sign;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.JSONUtil;
 import network.arkane.provider.secret.generation.EthereumSecretKey;
+import network.arkane.provider.sign.domain.HexSignature;
+import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.wallet.decryption.EthereumWalletDecryptor;
 import network.arkane.provider.wallet.generation.GeneratedEthereumWallet;
 import org.springframework.stereotype.Component;

@@ -20,19 +20,19 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class EthereumBalanceChecker implements BalanceChecker {
+public class EthereumBalanceGateway implements BalanceGateway {
 
     private Web3JGateway web3JGateway;
     private final TokenDiscoveryService tokenDiscoveryService;
 
-    public EthereumBalanceChecker(final Web3JGateway web3JGateway,
+    public EthereumBalanceGateway(final Web3JGateway web3JGateway,
                                   final TokenDiscoveryService tokenDiscoveryService) {
         this.web3JGateway = web3JGateway;
         this.tokenDiscoveryService = tokenDiscoveryService;
     }
 
     @Override
-    public SecretType getChain() {
+    public SecretType type() {
         return SecretType.ETHEREUM;
     }
 

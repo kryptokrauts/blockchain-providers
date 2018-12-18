@@ -4,6 +4,8 @@ import network.arkane.provider.BytesUtils;
 import network.arkane.provider.JSONUtil;
 import network.arkane.provider.Prefix;
 import network.arkane.provider.secret.generation.EthereumSecretKey;
+import network.arkane.provider.sign.domain.Signature;
+import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.wallet.decryption.EthereumWalletDecryptor;
 import network.arkane.provider.wallet.generation.GeneratedEthereumWallet;
 import org.apache.commons.lang3.StringUtils;

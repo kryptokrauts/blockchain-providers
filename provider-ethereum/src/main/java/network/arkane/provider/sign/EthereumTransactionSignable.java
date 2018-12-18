@@ -3,6 +3,7 @@ package network.arkane.provider.sign;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import network.arkane.provider.sign.domain.Signable;
 
 import java.math.BigInteger;
 

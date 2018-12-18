@@ -1,4 +1,4 @@
-package network.arkane.provider.sign;
+package network.arkane.provider.sign.domain;
 
 import lombok.Builder;
 import lombok.Data;

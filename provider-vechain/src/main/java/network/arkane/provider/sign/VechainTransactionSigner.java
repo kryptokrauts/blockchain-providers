@@ -10,6 +10,8 @@ import network.arkane.provider.core.model.clients.Revision;
 import network.arkane.provider.core.model.clients.ToClause;
 import network.arkane.provider.core.model.clients.ToData;
 import network.arkane.provider.secret.generation.VechainSecretKey;
+import network.arkane.provider.sign.domain.Signature;
+import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.utils.CryptoUtils;
 import network.arkane.provider.utils.RawTransactionFactory;
 import network.arkane.provider.utils.crypto.ECDSASign;

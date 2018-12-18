@@ -5,11 +5,10 @@ import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.core.model.blockchain.TransferResult;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gateway.VechainGateway;
-import network.arkane.provider.sign.Signature;
-import network.arkane.provider.sign.SubmittedAndSignedTransactionSignature;
-import network.arkane.provider.sign.TransactionSignature;
+import network.arkane.provider.sign.domain.Signature;
+import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
+import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.token.TokenInfo;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -19,14 +18,12 @@ import static network.arkane.provider.exceptions.ArkaneException.arkaneException
 
 @Service
 @Slf4j
-public class VechainBridge implements BlockchainBridge {
+public class VechainTransactionGateway implements TransactionGateway {
 
     private VechainGateway vechainGateway;
-    private ApplicationEventPublisher applicationEventPublisher;
 
-    public VechainBridge(VechainGateway vechainGateway, ApplicationEventPublisher applicationEventPublisher) {
+    public VechainTransactionGateway(VechainGateway vechainGateway) {
         this.vechainGateway = vechainGateway;
-        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override

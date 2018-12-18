@@ -31,9 +31,9 @@ import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class VechainBalanceCheckerTest {
+public class VechainBalanceGatewayTest {
 
-    private VechainBalanceChecker vechainBalanceChecker;
+    private VechainBalanceGateway vechainBalanceChecker;
     private VechainGateway vechainGateway;
     private TokenDiscoveryService tokenDiscoveryService;
 
@@ -41,7 +41,7 @@ public class VechainBalanceCheckerTest {
     void setUp() {
         vechainGateway = mock(VechainGateway.class);
         tokenDiscoveryService = mock(TokenDiscoveryService.class);
-        vechainBalanceChecker = new VechainBalanceChecker(vechainGateway, tokenDiscoveryService);
+        vechainBalanceChecker = new VechainBalanceGateway(vechainGateway, tokenDiscoveryService);
     }
 
     @Test

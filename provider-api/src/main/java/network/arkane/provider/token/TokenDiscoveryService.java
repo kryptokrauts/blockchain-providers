@@ -1,7 +1,7 @@
 package network.arkane.provider.token;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.bridge.BlockchainBridge;
+import network.arkane.provider.bridge.TransactionGateway;
 import network.arkane.provider.chain.SecretType;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -16,10 +16,10 @@ import java.util.Optional;
 public class TokenDiscoveryService {
 
     private final GithubTokenDiscoveryService githubTokenDiscoveryService;
-    private final Map<SecretType, BlockchainBridge> bridges;
+    private final Map<SecretType, TransactionGateway> bridges;
 
     public TokenDiscoveryService(final GithubTokenDiscoveryService githubTokenDiscoveryService,
-                                 final Map<SecretType, BlockchainBridge> bridges) {
+                                 final Map<SecretType, TransactionGateway> bridges) {
         this.githubTokenDiscoveryService = githubTokenDiscoveryService;
         this.bridges = bridges;
     }

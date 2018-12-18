@@ -22,8 +22,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class EthereumBalanceCheckerTest {
-    private EthereumBalanceChecker ethereumBalanceChecker;
+class EthereumBalanceGatewayTest {
+    private EthereumBalanceGateway ethereumBalanceChecker;
     private Web3JGateway web3JGateway;
     private TokenDiscoveryService tokenDiscoveryService;
 
@@ -36,7 +36,7 @@ class EthereumBalanceCheckerTest {
         when(web3JGateway.getTokenBalance(any(String.class), any(String.class))).thenReturn(BigInteger.valueOf(1000000000000000000L));
         tokenDiscoveryService = mock(TokenDiscoveryService.class);
 
-        ethereumBalanceChecker = new EthereumBalanceChecker(web3JGateway, tokenDiscoveryService);
+        ethereumBalanceChecker = new EthereumBalanceGateway(web3JGateway, tokenDiscoveryService);
     }
 
     @Test

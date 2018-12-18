@@ -2,14 +2,13 @@ package network.arkane.provider.bridge;
 
 import network.arkane.provider.core.model.blockchain.TransferResult;
 import network.arkane.provider.gateway.VechainGateway;
-import network.arkane.provider.sign.Signature;
-import network.arkane.provider.sign.SubmittedAndSignedTransactionSignature;
-import network.arkane.provider.sign.TransactionSignature;
+import network.arkane.provider.sign.domain.Signature;
+import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
+import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.token.TokenInfo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigInteger;
 import java.util.Optional;
@@ -19,18 +18,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class VechainBridgeTest {
+class VechainTransactionGatewayTest {
 
-    private VechainBridge vechainBridge;
+    private VechainTransactionGateway vechainTransactionGateway;
     private VechainGateway vechainGateway;
-    private ApplicationEventPublisher applicationEventPublisher;
 
     @BeforeEach
     void setUp() {
         vechainGateway = mock(VechainGateway.class);
-        applicationEventPublisher = mock(ApplicationEventPublisher.class);
 
-        vechainBridge = new VechainBridge(vechainGateway, applicationEventPublisher);
+        vechainTransactionGateway = new VechainTransactionGateway(vechainGateway);
     }
 
     @Test
@@ -40,7 +37,7 @@ class VechainBridgeTest {
         transferResult.setId("transferId");
         when(vechainGateway.sendRawTransaction(transactionSignature.getSignedTransaction())).thenReturn(transferResult);
 
-        Signature result = vechainBridge.submit(transactionSignature);
+        Signature result = vechainTransactionGateway.submit(transactionSignature);
 
         assertThat(result).isExactlyInstanceOf(SubmittedAndSignedTransactionSignature.class);
         assertThat(((SubmittedAndSignedTransactionSignature) result).getTransactionHash()).isEqualTo("transferId");
@@ -53,7 +50,7 @@ class VechainBridgeTest {
         transferResult.setId("transferId");
         when(vechainGateway.sendRawTransaction(transactionSignature.getSignedTransaction())).thenThrow(new RuntimeException("error signing"));
 
-        assertThatThrownBy(() -> vechainBridge.submit(transactionSignature)).hasMessage(
+        assertThatThrownBy(() -> vechainTransactionGateway.submit(transactionSignature)).hasMessage(
                 "problem trying to submit transaction to vechain: error signing");
     }
 
@@ -68,7 +65,7 @@ class VechainBridgeTest {
         when(vechainGateway.getTokenSymbol(tokenAddress)).thenReturn(tokenSymbol);
         when(vechainGateway.getTokenDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
 
-        final Optional<TokenInfo> result = vechainBridge.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = vechainTransactionGateway.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isNotEmpty();
         Assertions.assertThat(result.get().getAddress()).isEqualTo(tokenAddress);
@@ -88,7 +85,7 @@ class VechainBridgeTest {
         when(vechainGateway.getTokenSymbol(tokenAddress)).thenReturn(tokenSymbol);
         when(vechainGateway.getTokenDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
 
-        final Optional<TokenInfo> result = vechainBridge.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = vechainTransactionGateway.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isEmpty();
     }
@@ -103,7 +100,7 @@ class VechainBridgeTest {
         when(vechainGateway.getTokenSymbol(tokenAddress)).thenReturn(tokenSymbol);
         when(vechainGateway.getTokenDecimals(tokenAddress)).thenReturn(null);
 
-        final Optional<TokenInfo> result = vechainBridge.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = vechainTransactionGateway.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isEmpty();
     }
@@ -118,7 +115,7 @@ class VechainBridgeTest {
         when(vechainGateway.getTokenSymbol(tokenAddress)).thenReturn(null);
         when(vechainGateway.getTokenDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
 
-        final Optional<TokenInfo> result = vechainBridge.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = vechainTransactionGateway.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isEmpty();
     }

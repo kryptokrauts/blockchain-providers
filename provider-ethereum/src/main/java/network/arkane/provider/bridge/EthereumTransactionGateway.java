@@ -4,10 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gateway.Web3JGateway;
-import network.arkane.provider.sign.Signature;
-import network.arkane.provider.sign.TransactionSignature;
+import network.arkane.provider.sign.domain.Signature;
+import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.token.TokenInfo;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 
@@ -15,15 +14,15 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
-import static network.arkane.provider.sign.SubmittedAndSignedTransactionSignature.signAndSubmitTransactionBuilder;
+import static network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature.signAndSubmitTransactionBuilder;
 
 @Service
 @Slf4j
-public class EthereumBridge implements BlockchainBridge {
+public class EthereumTransactionGateway implements TransactionGateway {
 
     private Web3JGateway web3j;
 
-    public EthereumBridge(Web3JGateway web3j) {
+    public EthereumTransactionGateway(Web3JGateway web3j) {
         this.web3j = web3j;
     }
 

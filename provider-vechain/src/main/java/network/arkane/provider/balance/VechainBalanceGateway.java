@@ -20,19 +20,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class VechainBalanceChecker implements BalanceChecker {
+public class VechainBalanceGateway implements BalanceGateway {
 
     private VechainGateway vechainGateway;
     private final TokenDiscoveryService tokenDiscoveryService;
 
-    public VechainBalanceChecker(final VechainGateway vechainGateway,
+    public VechainBalanceGateway(final VechainGateway vechainGateway,
                                  final TokenDiscoveryService tokenDiscoveryService) {
         this.vechainGateway = vechainGateway;
         this.tokenDiscoveryService = tokenDiscoveryService;
     }
 
     @Override
-    public SecretType getChain() {
+    public SecretType type() {
         return SecretType.VECHAIN;
     }
 

@@ -2,9 +2,9 @@ package network.arkane.provider.bridge;
 
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gateway.Web3JGateway;
-import network.arkane.provider.sign.Signature;
-import network.arkane.provider.sign.SubmittedAndSignedTransactionSignature;
-import network.arkane.provider.sign.TransactionSignature;
+import network.arkane.provider.sign.domain.Signature;
+import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
+import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.sign.TransactionSignatureMother;
 import network.arkane.provider.token.TokenInfo;
 import org.assertj.core.api.Assertions;
@@ -23,15 +23,15 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class EthereumBridgeTest {
-    private EthereumBridge ethereumBridge;
+class EthereumTransactionGatewayTest {
+    private EthereumTransactionGateway ethereumTransactionGateway;
 
     private Web3JGateway web3JGateway;
 
     @BeforeEach
     public void setUp() {
         web3JGateway = mock(Web3JGateway.class);
-        ethereumBridge = new EthereumBridge(web3JGateway);
+        ethereumTransactionGateway = new EthereumTransactionGateway(web3JGateway);
     }
 
     @Test
@@ -46,7 +46,7 @@ class EthereumBridgeTest {
         when(web3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
                 .thenReturn(ethSendTransaction);
 
-        final Signature response = ethereumBridge.submit(signTransactionResponse);
+        final Signature response = ethereumTransactionGateway.submit(signTransactionResponse);
         assertThat(response).isInstanceOf(SubmittedAndSignedTransactionSignature.class);
         assertThat(((SubmittedAndSignedTransactionSignature) response).getTransactionHash()).isEqualTo(expectedHash);
     }
@@ -61,7 +61,7 @@ class EthereumBridgeTest {
         when(web3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
                 .thenReturn(ethSendTransaction);
 
-        ethereumBridge.submit(signTransactionResponse);
+        ethereumTransactionGateway.submit(signTransactionResponse);
     }
 
     @Test
@@ -70,7 +70,7 @@ class EthereumBridgeTest {
                 .thenThrow(IllegalArgumentException.class);
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
         assertThrows(ArkaneException.class,
-                     () -> ethereumBridge.submit(signTransactionResponse));
+                     () -> ethereumTransactionGateway.submit(signTransactionResponse));
     }
 
     @Test
@@ -82,7 +82,7 @@ class EthereumBridgeTest {
                 .thenReturn(sendTransaction);
 
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
-        assertThrows(ArkaneException.class, () -> ethereumBridge.submit(signTransactionResponse), "The account that initiated the transfer does not have enough energy");
+        assertThrows(ArkaneException.class, () -> ethereumTransactionGateway.submit(signTransactionResponse), "The account that initiated the transfer does not have enough energy");
     }
 
     @Test
@@ -96,7 +96,7 @@ class EthereumBridgeTest {
         when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
         when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
 
-        final Optional<TokenInfo> result = ethereumBridge.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = ethereumTransactionGateway.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isNotEmpty();
         Assertions.assertThat(result.get().getAddress()).isEqualTo(tokenAddress);
@@ -116,7 +116,7 @@ class EthereumBridgeTest {
         when(web3JGateway.getName(tokenAddress)).thenReturn(null);
         when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
 
-        final Optional<TokenInfo> result = ethereumBridge.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = ethereumTransactionGateway.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isEmpty();
     }
@@ -131,7 +131,7 @@ class EthereumBridgeTest {
         when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
         when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
 
-        final Optional<TokenInfo> result = ethereumBridge.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = ethereumTransactionGateway.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isEmpty();
     }
@@ -146,7 +146,7 @@ class EthereumBridgeTest {
         when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
         when(web3JGateway.getSymbol(tokenAddress)).thenReturn(null);
 
-        final Optional<TokenInfo> result = ethereumBridge.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = ethereumTransactionGateway.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isEmpty();
     }
