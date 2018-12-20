@@ -14,11 +14,12 @@
     <modules>
         <module>provider-api</module>
         <module>provider-autoconfiguration</module>
-        <module>provider-vechain</module>
+        <module>provider-aeternity</module>
+        <module>provider-bitcoin</module>
         <module>provider-ethereum</module>
         <module>provider-gochain</module>
-        <module>provider-bitcoin</module>
         <module>provider-litecoin</module>
+        <module>provider-vechain</module>
         <module>sochain</module>
         <module>blockcypher</module>
     </modules>
@@ -76,31 +77,6 @@
         <dependencies>
             <dependency>
                 <groupId>network.arkane</groupId>
-                <artifactId>provider-ethereum</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>network.arkane</groupId>
-                <artifactId>provider-gochain</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>network.arkane</groupId>
-                <artifactId>provider-vechain</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>network.arkane</groupId>
-                <artifactId>provider-bitcoin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>network.arkane</groupId>
-                <artifactId>provider-litecoin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>network.arkane</groupId>
                 <artifactId>provider-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -111,10 +87,33 @@
             </dependency>
             <dependency>
                 <groupId>network.arkane</groupId>
-                <artifactId>provider-api</artifactId>
+                <artifactId>provider-aeternity</artifactId>
                 <version>${project.version}</version>
-                <scope>test</scope>
-                <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-bitcoin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-ethereum</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-gochain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-litecoin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-vechain</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.rfksystems</groupId>
@@ -161,6 +160,14 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-api</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+                <type>test-jar</type>
+            </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
@@ -179,7 +186,6 @@
                 <version>${assertj-core.version}</version>
                 <scope>test</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
