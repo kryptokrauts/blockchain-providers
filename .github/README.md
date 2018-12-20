@@ -1,6 +1,7 @@
-# Arkane Blockchain Providers
+# Arkane Blockchain Providers <img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
+> Arkane Blockchain Providers are a set of APIs and libraries which support interaction with various blockchains.
 
-**Arkane Blockchain Providers** are a set of APIs and libraries which support interaction with various blockchains.
+
 
 ## Building the libraries   
 
@@ -17,7 +18,7 @@ Do you want support for a new chain or do you want to implement the chain?
 Talk to us in [Telegram](https://t.me/ArkaneNetworkiOfficial)! You can just fork this repository, add your own chain submit a PR! After review, we'll 
 add it to Arkane Network.
 
-For more details on how to add a new chain, [https://github.com/ArkaneNetwork/blockchain-providers/wiki/Adding-a-new-chain](visit our Wiki).
+For more details on how to add a new chain, [visit our Wiki](https://github.com/ArkaneNetwork/blockchain-providers/wiki/Adding-a-new-chain).
 
 ## Modules
 
