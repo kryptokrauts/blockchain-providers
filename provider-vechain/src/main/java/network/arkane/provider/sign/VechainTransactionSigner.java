@@ -1,6 +1,7 @@
 package network.arkane.provider.sign;
 
 import network.arkane.provider.BytesUtils;
+import network.arkane.provider.JSONUtil;
 import network.arkane.provider.Prefix;
 import network.arkane.provider.clients.BlockchainClient;
 import network.arkane.provider.core.model.clients.Address;
@@ -15,9 +16,11 @@ import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.utils.CryptoUtils;
 import network.arkane.provider.utils.RawTransactionFactory;
 import network.arkane.provider.utils.crypto.ECDSASign;
-import network.arkane.provider.wallet.extraction.VechainKeystoreExtractor;
+import network.arkane.provider.wallet.decryption.VechainWalletDecryptor;
+import network.arkane.provider.wallet.generation.GeneratedVechainWallet;
 import org.bouncycastle.util.encoders.Hex;
 import org.springframework.stereotype.Component;
+import org.web3j.crypto.WalletFile;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -27,10 +30,10 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @Component
 public class VechainTransactionSigner implements Signer<VechainTransactionSignable, VechainSecretKey> {
 
-    private VechainKeystoreExtractor vechainKeystoreExtractor;
+    private VechainWalletDecryptor vechainWalletDecryptor;
 
-    public VechainTransactionSigner(final VechainKeystoreExtractor vechainKeystoreExtractor) {
-        this.vechainKeystoreExtractor = vechainKeystoreExtractor;
+    public VechainTransactionSigner(final VechainWalletDecryptor vechainWalletDecryptor) {
+        this.vechainWalletDecryptor = vechainWalletDecryptor;
     }
 
     @Override
@@ -49,7 +52,9 @@ public class VechainTransactionSigner implements Signer<VechainTransactionSignab
 
     @Override
     public VechainSecretKey reconstructKey(String secret, String password) {
-        return null;
+        return vechainWalletDecryptor.generateKey(GeneratedVechainWallet.builder()
+                                                                        .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
+                                                                        .build(), password);
     }
 
     @Override
