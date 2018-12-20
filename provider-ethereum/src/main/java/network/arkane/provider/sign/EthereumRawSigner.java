@@ -15,12 +15,13 @@ import static network.arkane.provider.exceptions.ArkaneException.arkaneException
 
 @Slf4j
 @Component
-public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSecretKey> {
+public class EthereumRawSigner extends Signer<EthereumRawSignable, EthereumSecretKey> {
 
-    private EthereumWalletDecryptor ethereumKeystoreExtractor;
+    private EthereumWalletDecryptor ethereumWalletDecryptor;
 
-    public EthereumRawSigner(EthereumWalletDecryptor ethereumKeystoreExtractor) {
-        this.ethereumKeystoreExtractor = ethereumKeystoreExtractor;
+    public EthereumRawSigner(EthereumWalletDecryptor ethereumWalletDecryptor) {
+        super(EthereumRawSignable.class);
+        this.ethereumWalletDecryptor = ethereumWalletDecryptor;
     }
 
     @Override
@@ -45,13 +46,8 @@ public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSe
 
     @Override
     public EthereumSecretKey reconstructKey(String secret, String password) {
-        return ethereumKeystoreExtractor.generateKey(GeneratedEthereumWallet.builder()
-                                                                            .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
-                                                                            .build(), password);
-    }
-
-    @Override
-    public Class<EthereumRawSignable> getType() {
-        return EthereumRawSignable.class;
+        return ethereumWalletDecryptor.generateKey(GeneratedEthereumWallet.builder()
+                                                                          .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
+                                                                          .build(), password);
     }
 }

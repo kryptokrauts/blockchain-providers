@@ -16,13 +16,14 @@ import org.web3j.crypto.TransactionEncoder;
 import org.web3j.crypto.WalletFile;
 
 @Component
-public class EthereumTransactionSigner implements Signer<EthereumTransactionSignable, EthereumSecretKey> {
+public class EthereumTransactionSigner extends Signer<EthereumTransactionSignable, EthereumSecretKey> {
     private static final String DEFAULT_DATA = "0x";
 
-    private EthereumWalletDecryptor ethereumKeystoreExtractor;
+    private EthereumWalletDecryptor ethereumWalletDecryptor;
 
-    public EthereumTransactionSigner(EthereumWalletDecryptor ethereumKeystoreExtractor) {
-        this.ethereumKeystoreExtractor = ethereumKeystoreExtractor;
+    public EthereumTransactionSigner(EthereumWalletDecryptor ethereumWalletDecryptor) {
+        super(EthereumTransactionSignable.class);
+        this.ethereumWalletDecryptor = ethereumWalletDecryptor;
     }
 
     @Override
@@ -38,14 +39,9 @@ public class EthereumTransactionSigner implements Signer<EthereumTransactionSign
 
     @Override
     public EthereumSecretKey reconstructKey(String secret, String password) {
-        return ethereumKeystoreExtractor.generateKey(GeneratedEthereumWallet.builder()
-                                                                            .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
-                                                                            .build(), password);
-    }
-
-    @Override
-    public Class<EthereumTransactionSignable> getType() {
-        return EthereumTransactionSignable.class;
+        return ethereumWalletDecryptor.generateKey(GeneratedEthereumWallet.builder()
+                                                                          .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
+                                                                          .build(), password);
     }
 
     private org.web3j.crypto.RawTransaction constructTransaction(final EthereumTransactionSignable signTransactionRequest) {

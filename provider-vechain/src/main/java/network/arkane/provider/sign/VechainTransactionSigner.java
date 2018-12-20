@@ -28,11 +28,12 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
-public class VechainTransactionSigner implements Signer<VechainTransactionSignable, VechainSecretKey> {
+public class VechainTransactionSigner extends Signer<VechainTransactionSignable, VechainSecretKey> {
 
     private VechainWalletDecryptor vechainWalletDecryptor;
 
     public VechainTransactionSigner(final VechainWalletDecryptor vechainWalletDecryptor) {
+        super(VechainTransactionSignable.class);
         this.vechainWalletDecryptor = vechainWalletDecryptor;
     }
 
@@ -55,11 +56,6 @@ public class VechainTransactionSigner implements Signer<VechainTransactionSignab
         return vechainWalletDecryptor.generateKey(GeneratedVechainWallet.builder()
                                                                         .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
                                                                         .build(), password);
-    }
-
-    @Override
-    public Class<VechainTransactionSignable> getType() {
-        return VechainTransactionSignable.class;
     }
 
     private RawTransaction constructTransaction(final VechainTransactionSignable signable) {
