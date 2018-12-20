@@ -16,13 +16,12 @@ import org.web3j.crypto.TransactionEncoder;
 import org.web3j.crypto.WalletFile;
 
 @Component
-public class EthereumTransactionSigner extends Signer<EthereumTransactionSignable, EthereumSecretKey> {
+public class EthereumTransactionSigner implements Signer<EthereumTransactionSignable, EthereumSecretKey> {
     private static final String DEFAULT_DATA = "0x";
 
     private EthereumWalletDecryptor ethereumWalletDecryptor;
 
-    public EthereumTransactionSigner(EthereumWalletDecryptor ethereumWalletDecryptor) {
-        super(EthereumTransactionSignable.class);
+    public EthereumTransactionSigner(final EthereumWalletDecryptor ethereumWalletDecryptor) {
         this.ethereumWalletDecryptor = ethereumWalletDecryptor;
     }
 

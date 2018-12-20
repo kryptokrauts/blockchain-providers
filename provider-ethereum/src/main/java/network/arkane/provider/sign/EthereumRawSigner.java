@@ -15,12 +15,11 @@ import static network.arkane.provider.exceptions.ArkaneException.arkaneException
 
 @Slf4j
 @Component
-public class EthereumRawSigner extends Signer<EthereumRawSignable, EthereumSecretKey> {
+public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSecretKey> {
 
     private EthereumWalletDecryptor ethereumWalletDecryptor;
 
     public EthereumRawSigner(EthereumWalletDecryptor ethereumWalletDecryptor) {
-        super(EthereumRawSignable.class);
         this.ethereumWalletDecryptor = ethereumWalletDecryptor;
     }
 

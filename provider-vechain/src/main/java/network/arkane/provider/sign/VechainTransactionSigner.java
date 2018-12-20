@@ -28,12 +28,11 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
-public class VechainTransactionSigner extends Signer<VechainTransactionSignable, VechainSecretKey> {
+public class VechainTransactionSigner implements Signer<VechainTransactionSignable, VechainSecretKey> {
 
     private VechainWalletDecryptor vechainWalletDecryptor;
 
     public VechainTransactionSigner(final VechainWalletDecryptor vechainWalletDecryptor) {
-        super(VechainTransactionSignable.class);
         this.vechainWalletDecryptor = vechainWalletDecryptor;
     }
 
