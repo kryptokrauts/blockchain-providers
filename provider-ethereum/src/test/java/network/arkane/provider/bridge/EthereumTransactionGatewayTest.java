@@ -5,16 +5,11 @@ import network.arkane.provider.gateway.Web3JGateway;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignature;
-import network.arkane.provider.sign.TransactionSignatureMother;
-import network.arkane.provider.token.TokenInfo;
-import org.assertj.core.api.Assertions;
+import network.arkane.provider.sign.domain.TransactionSignatureMother;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
-
-import java.math.BigInteger;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
