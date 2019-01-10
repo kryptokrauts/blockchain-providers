@@ -34,16 +34,16 @@
         <web3j.version>3.5.0</web3j.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <commons-codec.version>1.11</commons-codec.version>
-        <jackson.version>2.9.7</jackson.version>
+        <jackson.version>2.9.8</jackson.version>
         <lombok.version>1.18.0</lombok.version>
         <junit-vintage-engine.version>4.12.0</junit-vintage-engine.version>
         <junit-jupiter.version>5.0.0</junit-jupiter.version>
         <junit-jupiter-api.version>5.3.2</junit-jupiter-api.version>
         <junit-platform.version>1.0.0</junit-platform.version>
-        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <spring-boot-starter.version>2.0.6.RELEASE</spring-boot-starter.version>
+        <spring-boot-starter.version>2.0.7.RELEASE</spring-boot-starter.version>
         <assertj-core.version>3.11.1</assertj-core.version>
         <mockito-all.version>1.10.19</mockito-all.version>
         <typetools.version>0.5.0</typetools.version>
