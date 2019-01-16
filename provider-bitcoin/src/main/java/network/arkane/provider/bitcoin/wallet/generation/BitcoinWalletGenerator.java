@@ -1,6 +1,7 @@
 package network.arkane.provider.bitcoin.wallet.generation;
 
 import com.google.protobuf.ByteString;
+import network.arkane.provider.bitcoin.BitcoinEnv;
 import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretKey;
 import network.arkane.provider.wallet.generation.WalletGenerator;
 import org.bitcoinj.core.ECKey;
@@ -15,8 +16,8 @@ public class BitcoinWalletGenerator implements WalletGenerator<BitcoinSecretKey>
 
     private NetworkParameters networkParams;
 
-    public BitcoinWalletGenerator(NetworkParameters networkParams) {
-        this.networkParams = networkParams;
+    public BitcoinWalletGenerator(BitcoinEnv bitcoinEnv) {
+        this.networkParams = bitcoinEnv.getNetworkParameters();
     }
 
     @Override
@@ -26,8 +27,8 @@ public class BitcoinWalletGenerator implements WalletGenerator<BitcoinSecretKey>
         }
 
         byte[] salt = KeyCrypterScrypt.randomSalt();
-        ECKey encryptedEcKey = encrypt(secret.getKey(), password, salt);
 
+        ECKey encryptedEcKey = encrypt(secret.getKey(), password, salt);
         return GeneratedBitcoinWallet.builder()
                                      .address(secret.getKey().toAddress(networkParams).toBase58())
                                      .secret(new BitcoinKeystore(encryptedEcKey.getPubKey(),
