@@ -70,7 +70,8 @@ class BitcoinTransactionFactoryTest {
                                    .extracting((transactionOutput) -> transactionOutput.getValue().value)
                                    .contains(satoshiToSend.longValue());
 
-        assertThat(tx.getInputs().stream().mapToLong((txInput) -> txInput.getValue().value).sum()).isEqualTo(unspentsSum);
+        assertThat(tx.getFee().getValue()).isEqualTo(expectedTxFee);
+        assertThat(tx.getInputSum().getValue()).isEqualTo(unspentsSum);
         assertThat(tx.getOutputs()).extracting((output) -> output.getValue().value)
                                    .containsExactlyInAnyOrder(satoshiToSend.longValue(), (unspentsSum - satoshiToSend.longValue() - expectedTxFee));
     }
@@ -96,12 +97,10 @@ class BitcoinTransactionFactoryTest {
 
         final Transaction tx = bitcoinTransactionFactory.createBitcoinTransaction(transactionSignable, bitcoinSecretKey);
 
+        assertThat(tx.getFee().getValue()).isEqualTo(expectedTxFee);
+        assertThat(tx.getInputSum().getValue()).isEqualTo(expectedIns);
         assertThat(tx.getOutputs()).hasSize(2)
-                                   .extracting((transactionOutput) -> transactionOutput.getValue().value)
-                                   .contains(satoshiToSend.longValue());
-
-        assertThat(tx.getInputs().stream().mapToLong((txInput) -> txInput.getValue().value).sum()).isEqualTo(expectedIns);
-        assertThat(tx.getOutputs()).extracting((output) -> output.getValue().value)
+                                   .extracting((output) -> output.getValue().value)
                                    .containsExactlyInAnyOrder(satoshiToSend.longValue(), ((expectedIns) - satoshiToSend.longValue() - expectedTxFee));
     }
 
