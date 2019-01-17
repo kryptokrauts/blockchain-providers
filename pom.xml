@@ -83,6 +83,11 @@
             </dependency>
             <dependency>
                 <groupId>network.arkane</groupId>
+                <artifactId>provider-bitcoin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
                 <artifactId>provider-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
