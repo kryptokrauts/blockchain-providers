@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableFeignClients(clients = {SoChainClient.class})
+@EnableFeignClients(basePackageClasses = {SoChainClient.class})
 public class BitcoinAutoConfiguration {
 
     private NetworkParameters networkParameters;
