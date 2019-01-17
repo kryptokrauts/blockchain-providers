@@ -1,6 +1,4 @@
-package network.arkane.provider.sign;
-
-import network.arkane.provider.sign.domain.TransactionSignature;
+package network.arkane.provider.sign.domain;
 
 public class TransactionSignatureMother {
     public static TransactionSignature aSignTransactionResponse() {
