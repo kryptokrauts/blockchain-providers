@@ -18,7 +18,6 @@ import network.arkane.provider.utils.RawTransactionFactory;
 import network.arkane.provider.utils.crypto.ECDSASign;
 import network.arkane.provider.wallet.decryption.VechainWalletDecryptor;
 import network.arkane.provider.wallet.generation.GeneratedVechainWallet;
-import org.bouncycastle.util.encoders.Hex;
 import org.springframework.stereotype.Component;
 import org.web3j.crypto.WalletFile;
 
@@ -58,9 +57,9 @@ public class VechainTransactionSigner implements Signer<VechainTransactionSignab
     }
 
     private RawTransaction constructTransaction(final VechainTransactionSignable signable) {
-        final Byte chainTag = isEmpty(signable.getChainTag()) ? getChainTag() : Byte.valueOf(signable.getChainTag());
-        byte[] blockRef = isEmpty(signable.getBlockRef()) ? getBlockRef() : Hex.decode(signable.getBlockRef());
-        byte[] nonce = isEmpty(signable.getNonce()) ? CryptoUtils.generateTxNonce() : Hex.decode(signable.getNonce());
+        final Byte chainTag = !isEmpty(signable.getChainTag()) ? getChainTag() : Byte.valueOf(signable.getChainTag());
+        byte[] blockRef = isEmpty(signable.getBlockRef()) ? getBlockRef() : BytesUtils.toByteArray(signable.getBlockRef());
+        byte[] nonce = isEmpty(signable.getNonce()) ? CryptoUtils.generateTxNonce() : BytesUtils.toByteArray(signable.getNonce());
         return RawTransactionFactory.getInstance()
                                     .createRawTransaction(
                                             chainTag,
