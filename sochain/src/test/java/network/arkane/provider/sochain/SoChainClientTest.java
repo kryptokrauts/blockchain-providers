@@ -9,10 +9,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.HttpMessageConvertersAutoConfiguration;
-import org.springframework.cloud.netflix.feign.FeignAutoConfiguration;
-import org.springframework.cloud.netflix.feign.ribbon.FeignRibbonClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
 import org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.openfeign.FeignAutoConfiguration;
+import org.springframework.cloud.openfeign.ribbon.FeignRibbonClientAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ class SoChainClientTest {
 
     @Configuration
     @Component
+    @EnableFeignClients(clients = {SoChainClient.class})
     @ImportAutoConfiguration( {RibbonAutoConfiguration.class, FeignRibbonClientAutoConfiguration.class, FeignAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class})
     public static class TestContext {
 
@@ -33,7 +35,7 @@ class SoChainClientTest {
 
     @BeforeAll
     public static void onSetup() {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SoChainConfig.class, TestContext.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(TestContext.class);
         context.setAllowBeanDefinitionOverriding(false);
         client = context.getBean(SoChainClient.class);
     }

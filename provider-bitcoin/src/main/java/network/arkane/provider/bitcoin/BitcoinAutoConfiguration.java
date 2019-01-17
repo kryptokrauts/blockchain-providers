@@ -1,15 +1,18 @@
 package network.arkane.provider.bitcoin;
 
+import network.arkane.provider.sochain.SoChainClient;
 import network.arkane.provider.sochain.domain.Network;
 import org.apache.commons.lang3.StringUtils;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.TestNet3Params;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableFeignClients(clients = {SoChainClient.class})
 public class BitcoinAutoConfiguration {
 
     private NetworkParameters networkParameters;
