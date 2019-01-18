@@ -51,15 +51,13 @@ class BitcoinWalletGeneratorTest {
 
         String secret = wallet.secretAsBase64();
         BitcoinKeystore ed = JSONUtil.fromJson(new String(Base64.decodeBase64(secret)), BitcoinKeystore.class);
-        Protos.ScryptParameters params = Protos.ScryptParameters.newBuilder().setSalt(ByteString.copyFrom(ed.getSalt())).build();
+        Protos.ScryptParameters params = Protos.ScryptParameters.newBuilder().setSalt(ByteString.copyFrom(Base64.decodeBase64(ed.getSalt()))).build();
         KeyCrypterScrypt crypter = new KeyCrypterScrypt(params);
-        EncryptedData encryptedData = new EncryptedData(ed.getInitialisationVector(), ed.getEncryptedBytes());
-        ECKey ecKey = ECKey.fromEncrypted(encryptedData, crypter, ed.getPubKey());
+        EncryptedData encryptedData = new EncryptedData(Base64.decodeBase64(ed.getInitialisationVector()), Base64.decodeBase64(ed.getEncryptedBytes()));
+        ECKey ecKey = ECKey.fromEncrypted(encryptedData, crypter, Base64.decodeBase64(ed.getPubKey()));
         ECKey unencrypted = ecKey.decrypt(crypter.deriveKey(password));
 
-
         assertThat(unencrypted.getPrivateKeyAsHex()).isEqualTo(secretKey.getKey().getPrivateKeyAsHex());
-
     }
 
 }

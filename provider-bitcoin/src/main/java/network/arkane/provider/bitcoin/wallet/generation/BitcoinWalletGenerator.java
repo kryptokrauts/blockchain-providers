@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import network.arkane.provider.bitcoin.BitcoinEnv;
 import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretKey;
 import network.arkane.provider.wallet.generation.WalletGenerator;
+import org.apache.commons.codec.binary.Base64;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.crypto.KeyCrypterScrypt;
@@ -31,9 +32,10 @@ public class BitcoinWalletGenerator implements WalletGenerator<BitcoinSecretKey>
         ECKey encryptedEcKey = encrypt(secret.getKey(), password, salt);
         return GeneratedBitcoinWallet.builder()
                                      .address(secret.getKey().toAddress(networkParams).toBase58())
-                                     .secret(new BitcoinKeystore(encryptedEcKey.getPubKey(),
-                                                                 encryptedEcKey.getEncryptedData().initialisationVector,
-                                                                 encryptedEcKey.getEncryptedData().encryptedBytes, salt))
+                                     .secret(new BitcoinKeystore(Base64.encodeBase64String(encryptedEcKey.getPubKey()),
+                                                                 Base64.encodeBase64String(encryptedEcKey.getEncryptedData().initialisationVector),
+                                                                 Base64.encodeBase64String(encryptedEcKey.getEncryptedData().encryptedBytes),
+                                                                 Base64.encodeBase64String(salt)))
                                      .build();
     }
 

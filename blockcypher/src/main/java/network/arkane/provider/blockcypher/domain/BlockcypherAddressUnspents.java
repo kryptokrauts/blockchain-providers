@@ -12,7 +12,6 @@ public class BlockcypherAddressUnspents extends BlockcypherAddress {
 
     private List<BlockcypherTransactionRef> transactionRefs;
 
-    @Builder
     public BlockcypherAddressUnspents(@JsonProperty("address") String address,
                                       @JsonProperty("total_received") BigInteger totalReceived,
                                       @JsonProperty("total_sent") BigInteger totalSent,
