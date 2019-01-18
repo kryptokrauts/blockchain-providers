@@ -18,6 +18,7 @@
         <module>provider-ethereum</module>
         <module>provider-bitcoin</module>
         <module>sochain</module>
+        <module>blockcypher</module>
     </modules>
 
     <distributionManagement>

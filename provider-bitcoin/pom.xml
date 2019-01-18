@@ -16,25 +16,26 @@
     <artifactId>provider-bitcoin</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>sochain</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>network.arkane</groupId>
+            <artifactId>blockcypher</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.bitcoinj</groupId>
             <artifactId>bitcoinj-core</artifactId>
             <version>${bitcoinj.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.github.briandilley.jsonrpc4j</groupId>
             <artifactId>jsonrpc4j</artifactId>
@@ -50,11 +51,5 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-
-
-
-
     </dependencies>
-
 </project>
