@@ -13,6 +13,8 @@ import java.util.List;
 @Component
 public class SoChainGateway {
 
+    private static final String USER_AGENT = "curl/7.54.0";
+
     private SoChainClient soChainClient;
 
     public SoChainGateway(SoChainClient soChainClient) {
@@ -20,23 +22,23 @@ public class SoChainGateway {
     }
 
     public BalanceResult getBalance(Network network, String address) {
-        return parseResult(soChainClient.getBalance(network.name(), address));
+        return parseResult(soChainClient.getBalance(USER_AGENT, network.name(), address));
     }
 
     public List<Transaction> getUnspentTransactions(Network network, String address) {
-        return parseResult(soChainClient.getUnspentTransactions(network.name(), address)).getTransactions();
+        return parseResult(soChainClient.getUnspentTransactions(USER_AGENT, network.name(), address)).getTransactions();
     }
 
     public List<Transaction> getReceivedTransactions(Network network, String address) {
-        return parseResult(soChainClient.getReceivedTransactions(network.name(), address)).getTransactions();
+        return parseResult(soChainClient.getReceivedTransactions(USER_AGENT, network.name(), address)).getTransactions();
     }
 
     public List<Transaction> getSpentTransactions(Network network, String address) {
-        return parseResult(soChainClient.getSpentTransactions(network.name(), address)).getTransactions();
+        return parseResult(soChainClient.getSpentTransactions(USER_AGENT, network.name(), address)).getTransactions();
     }
 
     public SendSignedTransactionResult sendSignedTransaction(Network network, String signedTransactionAsHex) {
-        return parseResult(soChainClient.sendSignedTransaction(network.name(), new SendSignedTransactionRequest(signedTransactionAsHex)));
+        return parseResult(soChainClient.sendSignedTransaction(USER_AGENT, network.name(), new SendSignedTransactionRequest(signedTransactionAsHex)));
     }
 
     private <T> T parseResult(SoChainResult<T> result) {

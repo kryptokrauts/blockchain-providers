@@ -1,15 +1,10 @@
 package network.arkane.provider.bitcoin.sign;
 
 import network.arkane.provider.bitcoin.BitcoinEnv;
-import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretKey;
 import network.arkane.provider.bitcoin.unspent.Unspent;
 import network.arkane.provider.bitcoin.unspent.UnspentService;
 import network.arkane.provider.sochain.domain.Network;
 import org.bitcoinj.core.Address;
-import org.bitcoinj.core.Base58;
-import org.bitcoinj.core.DumpedPrivateKey;
-import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.params.TestNet3Params;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +28,7 @@ class BitcoinTransactionFactoryTest {
     private UnspentService unspentService;
 
     private BitcoinTransactionFactory bitcoinTransactionFactory;
+    private BitcoinEnv bitcoinEnv;
 
     @BeforeEach
     void setUp() {
@@ -42,29 +38,26 @@ class BitcoinTransactionFactoryTest {
                                                "9fdecfa80622fbdafcbed4325ed13b3a04c34f4148faf488fb70e5f56185147c2019",
                                                "06d79678e68bddd0269ed211f8fd9010a6258220b2005c1e15e03f2e16f041a2"));
         unspentService = mock(UnspentService.class);
-        bitcoinTransactionFactory = new BitcoinTransactionFactory(new BitcoinEnv(Network.BTCTEST, TestNet3Params.get()), unspentService);
+        bitcoinEnv = new BitcoinEnv(Network.BTCTEST, TestNet3Params.get());
+        bitcoinTransactionFactory = new BitcoinTransactionFactory(bitcoinEnv, unspentService);
     }
 
     @Test
     void createBitcoinTransaction() {
         final BigInteger satoshiToSend = new BigInteger("1440000");
+        final int feePerByte = 3;
         final BitcoinTransactionSignable transactionSignable = BitcoinTransactionSignable.builder()
                                                                                          .satoshiValue(satoshiToSend)
                                                                                          .address("mhSwuar1U3Hf6phh2LMkFefkjCgFt8Xg5H")
-                                                                                         .feePerByte(3)
+                                                                                         .feePerByte(feePerByte)
                                                                                          .build();
-
-        final BitcoinSecretKey bitcoinSecretKey = BitcoinSecretKey.builder()
-                                                                  .key(DumpedPrivateKey.fromBase58(NetworkParameters.testNet(),
-                                                                                                   "92JYtSuKyhrG1fVgtBXUQgT8yNGs6XFFCjz1XLCwg8jFM95GHB6").getKey())
-                                                                  .build();
         final List<Unspent> unspents = buildUnspents(1439999, 13042186);
         final long unspentsSum = unspents.stream().mapToLong(Unspent::getAmount).sum();
-        final long expectedTxFee = 630L;
+        final long expectedTxFee = (2 * 148 + 2 * 34 + 10) * feePerByte;
 
         when(unspentService.getUnspentForAddress(any(Address.class))).thenReturn(unspents);
 
-        final Transaction tx = bitcoinTransactionFactory.createBitcoinTransaction(transactionSignable, bitcoinSecretKey);
+        final Transaction tx = bitcoinTransactionFactory.createBitcoinTransaction(transactionSignable, "mpi2SkK5vKipCNE9h1HtRgDg6UM44AuN9S");
 
         assertThat(tx.getOutputs()).hasSize(2)
                                    .extracting((transactionOutput) -> transactionOutput.getValue().value)
@@ -79,23 +72,19 @@ class BitcoinTransactionFactoryTest {
     @Test
     void createBitcoinTransaction_moreUnpentsThanNecessary() {
         final BigInteger satoshiToSend = new BigInteger("1440000");
+        final int feePerByte = 3;
         final BitcoinTransactionSignable transactionSignable = BitcoinTransactionSignable.builder()
                                                                                          .satoshiValue(satoshiToSend)
                                                                                          .address("mhSwuar1U3Hf6phh2LMkFefkjCgFt8Xg5H")
-                                                                                         .feePerByte(3)
+                                                                                         .feePerByte(feePerByte)
                                                                                          .build();
-
-        final BitcoinSecretKey bitcoinSecretKey = BitcoinSecretKey.builder()
-                                                                  .key(DumpedPrivateKey.fromBase58(NetworkParameters.testNet(),
-                                                                                                   "92JYtSuKyhrG1fVgtBXUQgT8yNGs6XFFCjz1XLCwg8jFM95GHB6").getKey())
-                                                                  .build();
         final List<Unspent> unspents = buildUnspents(1439999, 6521093, 3260546, 3260546);
         final int expectedIns = 1439999 + 6521093;
-        final long expectedTxFee = 630L;
+        final long expectedTxFee = (2 * 148 + 2 * 34 + 10) * feePerByte;
 
         when(unspentService.getUnspentForAddress(any(Address.class))).thenReturn(unspents);
 
-        final Transaction tx = bitcoinTransactionFactory.createBitcoinTransaction(transactionSignable, bitcoinSecretKey);
+        final Transaction tx = bitcoinTransactionFactory.createBitcoinTransaction(transactionSignable, "mpi2SkK5vKipCNE9h1HtRgDg6UM44AuN9S");
 
         assertThat(tx.getFee().getValue()).isEqualTo(expectedTxFee);
         assertThat(tx.getInputSum().getValue()).isEqualTo(expectedIns);
@@ -111,11 +100,7 @@ class BitcoinTransactionFactoryTest {
                                                                                                               .address("mhSwuar1U3Hf6phh2LMkFefkjCgFt8Xg5H")
                                                                                                               .feePerByte(3)
                                                                                                               .build(),
-                                                                                    BitcoinSecretKey.builder()
-                                                                                                    .key(ECKey.fromPrivate(
-                                                                                                            Base58.decode("92JYtSuKyhrG1fVgtBXUQgT8yNGs6XFFCjz1XLCwg8jFM95GHB6"))
-                                                                                                        )
-                                                                                                    .build()))
+                                                                                    "mpi2SkK5vKipCNE9h1HtRgDg6UM44AuN9S"))
                 .hasMessageContaining("The account you're trying to use as origin in the transaction doesn't has valid inputs to send");
     }
 
@@ -128,11 +113,7 @@ class BitcoinTransactionFactoryTest {
                                                                                                               .address("mhSwuar1U3Hf6phh2LMkFefkjCgFt8Xg5H")
                                                                                                               .feePerByte(3)
                                                                                                               .build(),
-                                                                                    BitcoinSecretKey.builder()
-                                                                                                    .key(ECKey.fromPrivate(
-                                                                                                            Base58.decode("92JYtSuKyhrG1fVgtBXUQgT8yNGs6XFFCjz1XLCwg8jFM95GHB6"))
-                                                                                                        )
-                                                                                                    .build()))
+                                                                                    "mpi2SkK5vKipCNE9h1HtRgDg6UM44AuN9S"))
                 .hasMessageContaining("Not enough funds to create the transaction");
     }
 

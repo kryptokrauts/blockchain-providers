@@ -2,34 +2,37 @@ package network.arkane.provider.bitcoin.wallet.generation;
 
 
 public class BitcoinKeystore {
-    private byte[] pubKey;
-    private byte[] initialisationVector;
-    private byte[] encryptedBytes;
-    private byte[] salt;
+    private String pubKey;
+    private String initialisationVector;
+    private String encryptedBytes;
+    private String salt;
 
     public BitcoinKeystore() {
     }
 
-    public BitcoinKeystore(byte[] pubKey, byte[] initialisationVector, byte[] encryptedBytes, byte[] salt) {
+    public BitcoinKeystore(String pubKey,
+                           String initialisationVector,
+                           String encryptedBytes,
+                           String salt) {
         this.pubKey = pubKey;
         this.initialisationVector = initialisationVector;
         this.encryptedBytes = encryptedBytes;
         this.salt = salt;
     }
 
-    public byte[] getPubKey() {
+    public String getPubKey() {
         return pubKey;
     }
 
-    public byte[] getInitialisationVector() {
+    public String getInitialisationVector() {
         return initialisationVector;
     }
 
-    public byte[] getEncryptedBytes() {
+    public String getEncryptedBytes() {
         return encryptedBytes;
     }
 
-    public byte[] getSalt() {
+    public String getSalt() {
         return salt;
     }
 }
