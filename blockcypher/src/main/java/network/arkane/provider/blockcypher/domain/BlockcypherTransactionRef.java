@@ -1,9 +1,12 @@
 package network.arkane.provider.blockcypher.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
+import lombok.Data;
 
 import java.math.BigInteger;
 
+@Data
 public class BlockcypherTransactionRef {
     final String transactionHash;
     final BigInteger value;
@@ -13,6 +16,7 @@ public class BlockcypherTransactionRef {
     final String transactionOutputN;
     final String transactionInputN;
 
+    @Builder
     public BlockcypherTransactionRef(@JsonProperty("tx_hash") String transactionHash,
                                      @JsonProperty("value") BigInteger value,
                                      @JsonProperty("ref_balance") BigInteger refBalance,
