@@ -1,5 +1,6 @@
 package network.arkane.provider.blockcypher;
 
+import network.arkane.provider.blockcypher.domain.BlockcypherAddress;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -14,4 +15,10 @@ public interface BlockcypherClient {
                        @PathVariable("network") final String network,
                        @PathVariable("coin") final String coin,
                        @PathVariable("address") final String address);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{coin}/{network}/addr/{address}/balance")
+    BlockcypherAddress getBalance(@RequestHeader("User-Agent") String userAgent,
+                                  @PathVariable("network") final String network,
+                                  @PathVariable("coin") final String coin,
+                                  @PathVariable("address") final String address);
 }
