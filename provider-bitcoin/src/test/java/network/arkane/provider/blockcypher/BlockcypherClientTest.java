@@ -25,7 +25,7 @@ class BlockcypherClientTest {
 
     private static final String USER_AGENT = "curl/7.54.0";
     private static BlockcypherClient client;
-    private static String TOKEN = "816540806ec340e8aedca3ec3d176258";
+    private static String TOKEN = "fill_in_token";
 
     @Configuration
     @Component
