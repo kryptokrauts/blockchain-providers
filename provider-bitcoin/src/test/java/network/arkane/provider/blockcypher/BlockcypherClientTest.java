@@ -6,6 +6,7 @@ import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionRespo
 import network.arkane.provider.blockcypher.domain.BlockcypherAddress;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddressUnspents;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
@@ -21,6 +22,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 class BlockcypherClientTest {
 
     private static final String USER_AGENT = "curl/7.54.0";
