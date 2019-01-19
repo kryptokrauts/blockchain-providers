@@ -1,5 +1,6 @@
 package network.arkane.provider.blockcypher.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BlockcypherAddressUnspents extends BlockcypherAddress {
 
     private List<BlockcypherTransactionRef> transactionRefs;

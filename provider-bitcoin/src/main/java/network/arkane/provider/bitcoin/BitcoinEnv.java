@@ -1,6 +1,6 @@
 package network.arkane.provider.bitcoin;
 
-import network.arkane.provider.sochain.domain.Network;
+import network.arkane.provider.blockcypher.Network;
 import org.bitcoinj.core.NetworkParameters;
 
 public class BitcoinEnv {

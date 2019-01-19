@@ -3,7 +3,7 @@ package network.arkane.provider.bitcoin.sign;
 import network.arkane.provider.bitcoin.BitcoinEnv;
 import network.arkane.provider.bitcoin.unspent.Unspent;
 import network.arkane.provider.bitcoin.unspent.UnspentService;
-import network.arkane.provider.sochain.domain.Network;
+import network.arkane.provider.blockcypher.Network;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.params.TestNet3Params;
@@ -38,7 +38,7 @@ class BitcoinTransactionFactoryTest {
                                                "9fdecfa80622fbdafcbed4325ed13b3a04c34f4148faf488fb70e5f56185147c2019",
                                                "06d79678e68bddd0269ed211f8fd9010a6258220b2005c1e15e03f2e16f041a2"));
         unspentService = mock(UnspentService.class);
-        bitcoinEnv = new BitcoinEnv(Network.BTCTEST, TestNet3Params.get());
+        bitcoinEnv = new BitcoinEnv(Network.BTC_TEST, TestNet3Params.get());
         bitcoinTransactionFactory = new BitcoinTransactionFactory(bitcoinEnv, unspentService);
     }
 

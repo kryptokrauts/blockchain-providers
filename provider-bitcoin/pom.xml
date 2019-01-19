@@ -23,11 +23,6 @@
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>
-            <artifactId>sochain</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>network.arkane</groupId>
             <artifactId>blockcypher</artifactId>
             <version>${project.version}</version>
         </dependency>
