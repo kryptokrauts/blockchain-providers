@@ -80,7 +80,7 @@ public class BitcoinTransactionSigner implements Signer<BitcoinTransactionSignab
     @Override
     public BitcoinSecretKey reconstructKey(final String secret, final String password) {
         BitcoinKeystore ed = JSONUtil.fromJson(secret, BitcoinKeystore.class);
-        Protos.ScryptParameters params = Protos.ScryptParameters.newBuilder().setSalt(ByteString.copyFrom("".getBytes())).build();
+        Protos.ScryptParameters params = Protos.ScryptParameters.newBuilder().setSalt(ByteString.copyFrom(Base64.decodeBase64(ed.getSalt()))).build();
         KeyCrypterScrypt crypter = new KeyCrypterScrypt(params);
         EncryptedData encryptedData = new EncryptedData(Base64.decodeBase64(ed.getInitialisationVector()), Base64.decodeBase64(ed.getEncryptedBytes()));
         return new BitcoinSecretKey(ECKey.fromEncrypted(encryptedData, crypter, Base64.decodeBase64(ed.getPubKey())));
