@@ -58,7 +58,7 @@ class BitcoinTransactionSignerTest {
         final BitcoinSecretKey reconstructedPrivateKey = bitcoinTransactionSigner.reconstructKey(new String(Base64.decodeBase64(JSONUtil.toJson(test.secretAsBase64()))), pwd);
         assertThat(reconstructedPrivateKey.getKey().getPrivateKeyAsHex()).isEqualTo(reconstructedPrivateKey.getKey().getPrivateKeyAsHex());
     }
- add
+
     @Test
     void signsCorrectly() {
         final BitcoinTransactionSignable transactionSignable = BitcoinTransactionSignable.builder()
