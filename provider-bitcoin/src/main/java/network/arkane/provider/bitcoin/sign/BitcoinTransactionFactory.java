@@ -35,11 +35,12 @@ public class BitcoinTransactionFactory {
     public Transaction createBitcoinTransaction(final BitcoinTransactionSignable signable, final String from) {
         try {
             final Address fromAddress = Address.fromBase58(networkParameters, from);
+            final Address toAddress = Address.fromBase58(networkParameters, signable.getAddress());
             final long amountToSend = signable.getSatoshiValue().longValue();
 
             final Transaction tx = new Transaction(networkParameters);
             tx.setPurpose(Transaction.Purpose.USER_PAYMENT);
-            tx.addOutput(Coin.valueOf(amountToSend), fromAddress);
+            tx.addOutput(Coin.valueOf(amountToSend), toAddress);
             addInputsAndOutputsToTransaction(fromAddress, tx, amountToSend, signable.getFeePerByte());
             tx.verify();
             return tx;
