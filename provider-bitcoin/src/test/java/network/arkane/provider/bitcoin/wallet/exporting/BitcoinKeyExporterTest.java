@@ -3,7 +3,6 @@ package network.arkane.provider.bitcoin.wallet.exporting;
 import network.arkane.provider.JSONUtil;
 import network.arkane.provider.bitcoin.bip38.BIP38EncryptionService;
 import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretKey;
-import network.arkane.provider.bitcoin.wallet.exporting.request.BitcoinKeyExportRequest;
 import org.bitcoinj.core.DumpedPrivateKey;
 import org.bitcoinj.params.TestNet3Params;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,10 +38,7 @@ class BitcoinKeyExporterTest {
         when(bip38EncryptionService.encrypt(any(BitcoinSecretKey.class), eq(password)))
                 .thenReturn(expected);
 
-        final String export = bitcoinKeyExporter.export(BitcoinKeyExportRequest.builder()
-                                                                               .password(password)
-                                                                               .secretKey(BitcoinSecretKey.builder().key(pk.getKey()).build())
-                                                                               .build());
+        final String export = bitcoinKeyExporter.export(BitcoinSecretKey.builder().key(pk.getKey()).build(), password);
 
         final ExportedBitcoinKey exportedBitcoinKey = JSONUtil.fromJson(export, ExportedBitcoinKey.class);
         assertThat(exportedBitcoinKey.getValue()).isEqualTo(expected);
@@ -55,11 +51,8 @@ class BitcoinKeyExporterTest {
         final String key = "92JYtSuKyhrG1fVgtBXUQgT8yNGs6XFFCjz1XLCwg8jFM95GHB6";
         DumpedPrivateKey pk = DumpedPrivateKey.fromBase58(TestNet3Params.get(), key);
 
-
         doThrow(IllegalArgumentException.class).when(bip38EncryptionService).encrypt(any(BitcoinSecretKey.class), eq(password));
-        assertThatThrownBy(() -> bitcoinKeyExporter.export(BitcoinKeyExportRequest.builder()
-                                                                                  .password(password)
-                                                                                  .secretKey(BitcoinSecretKey.builder().key(pk.getKey()).build())
-                                                                                  .build())).hasMessageContaining("An error occurred while trying to export the key");
+        assertThatThrownBy(() -> bitcoinKeyExporter.export(
+                BitcoinSecretKey.builder().key(pk.getKey()).build(), password)).hasMessageContaining("An error occurred while trying to export the key");
     }
 }

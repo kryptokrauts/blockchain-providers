@@ -3,14 +3,14 @@ package network.arkane.provider.bitcoin.wallet.exporting;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.JSONUtil;
 import network.arkane.provider.bitcoin.bip38.BIP38EncryptionService;
-import network.arkane.provider.bitcoin.wallet.exporting.request.BitcoinKeyExportRequest;
+import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretKey;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.wallet.exporting.KeyExporter;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class BitcoinKeyExporter implements KeyExporter<BitcoinKeyExportRequest> {
+public class BitcoinKeyExporter implements KeyExporter<BitcoinSecretKey> {
 
     private static final String BIP_38 = "BIP38";
 
@@ -21,11 +21,11 @@ public class BitcoinKeyExporter implements KeyExporter<BitcoinKeyExportRequest> 
     }
 
     @Override
-    public String export(BitcoinKeyExportRequest extractionRequest) {
+    public String export(BitcoinSecretKey extractionRequest, final String password) {
         try {
             return JSONUtil.toJson(ExportedBitcoinKey.builder()
                                                      .type(BIP_38)
-                                                     .value(bip38EncryptionService.encrypt(extractionRequest.getSecretKey(), extractionRequest.getPassword()))
+                                                     .value(bip38EncryptionService.encrypt(extractionRequest, password))
                                                      .build());
         } catch (final Exception ex) {
             log.error(ex.getMessage());

@@ -24,14 +24,17 @@ public interface Signer<T extends Signable, KEY extends SecretKey> {
      * @return
      */
     KEY reconstructKey(final String secret, final String password);
-
     /**
      * The type of signable this specific signer supports
      *
      * @return
      */
+
     default Class<T> getType() {
         return (Class<T>) TypeResolver.resolveRawArguments(Signer.class, getClass())[0];
     }
 
+    default Class<KEY> getKeyType() {
+        return (Class<KEY>) TypeResolver.resolveRawArguments(Signer.class, getClass())[1];
+    }
 }
