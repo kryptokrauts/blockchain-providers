@@ -1,7 +1,7 @@
 package network.arkane.provider.bitcoin;
 
-import network.arkane.provider.sochain.SoChainClient;
-import network.arkane.provider.sochain.domain.Network;
+import network.arkane.provider.blockcypher.BlockcypherClient;
+import network.arkane.provider.blockcypher.Network;
 import org.apache.commons.lang3.StringUtils;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableFeignClients(basePackageClasses = {SoChainClient.class})
+@EnableFeignClients(basePackageClasses = {BlockcypherClient.class})
 @ImportAutoConfiguration(FeignAutoConfiguration.class)
 public class BitcoinAutoConfiguration {
 
@@ -27,7 +27,7 @@ public class BitcoinAutoConfiguration {
         }
         if (bitcoinNetwork.equals("testnet")) {
             this.networkParameters = TestNet3Params.get();
-            this.network = Network.BTCTEST;
+            this.network = Network.BTC_TEST;
         } else {
             this.networkParameters = MainNetParams.get();
             this.network = Network.BTC;

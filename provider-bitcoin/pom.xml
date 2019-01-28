@@ -6,7 +6,7 @@
     <parent>
         <groupId>network.arkane</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -19,11 +19,6 @@
         <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>network.arkane</groupId>
-            <artifactId>sochain</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

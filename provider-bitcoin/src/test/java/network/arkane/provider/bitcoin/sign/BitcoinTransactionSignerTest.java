@@ -8,10 +8,10 @@ import network.arkane.provider.bitcoin.unspent.Unspent;
 import network.arkane.provider.bitcoin.unspent.UnspentService;
 import network.arkane.provider.bitcoin.wallet.generation.BitcoinWalletGenerator;
 import network.arkane.provider.bitcoin.wallet.generation.GeneratedBitcoinWallet;
+import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
-import network.arkane.provider.sochain.domain.Network;
 import org.apache.commons.codec.binary.Base64;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Base58;
@@ -42,7 +42,7 @@ class BitcoinTransactionSignerTest {
 
     @BeforeEach
     void setUp() {
-        final BitcoinEnv bitcoinEnv = new BitcoinEnv(Network.BTCTEST, TestNet3Params.get());
+        final BitcoinEnv bitcoinEnv = new BitcoinEnv(Network.BTC_TEST, TestNet3Params.get());
         unspentService = mock(UnspentService.class);
         transactionFactory = spy(new BitcoinTransactionFactory(bitcoinEnv, unspentService));
         bitcoinTransactionSigner = new BitcoinTransactionSigner(bitcoinEnv, transactionFactory);
@@ -81,6 +81,8 @@ class BitcoinTransactionSignerTest {
         final Signature signature = bitcoinTransactionSigner.createSignature(transactionSignable, bitcoinSecretKey);
 
         assertThat(signature).isInstanceOf(TransactionSignature.class);
+        assertThat(((TransactionSignature) signature).getSignedTransaction()).isEqualTo(
+                "010000000149966392d19575fab9be134f2296545e2ab8b2dbc90d43b83a74f4755f586e2b010000008a4730440220766d74f84b5381c9d3ca5195eefc3dabdb565ea66c7b295bd21c4b5f43f6317b022065257807a1d6465531ac5d330d109fb90058beed8ba37b24b338bc965eec9ab181410496e59446aed552e60fb29b6a9c6c71d7c1b38b8396e67d9940dbb867a70e314c591b20a0e59e36259439e1d0b6ae16975ca7097103d8d1ac987a02d121b5cd16ffffffff0201000000000000001976a91464d12bfa319ec47fe040bf6d2dbb3013d85f552588acfff81500000000001976a91464d12bfa319ec47fe040bf6d2dbb3013d85f552588ac00000000");
         assertThat(((TransactionSignature) signature).getSignedTransaction()).isEqualTo(
                 "010000000149966392d19575fab9be134f2296545e2ab8b2dbc90d43b83a74f4755f586e2b010000008a47304402207e7c8bced87ab8d93d73c57b67f2b342517cba3aca28be959a170c1a58f9081d02206f9b6d952db74f2937be7d33a49cc3e03495350b57d90cccb22f13fd3cecefc881410496e59446aed552e60fb29b6a9c6c71d7c1b38b8396e67d9940dbb867a70e314c591b20a0e59e36259439e1d0b6ae16975ca7097103d8d1ac987a02d121b5cd16ffffffff0201000000000000001976a914152e43ab06896fa3fd029aaeeaac866f7d56182f88acfff81500000000001976a91464d12bfa319ec47fe040bf6d2dbb3013d85f552588ac00000000");
     }
