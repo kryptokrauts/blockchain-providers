@@ -7,17 +7,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BlockCypherRawTransactionResponse {
 
-    @JsonProperty("hash")
-    private String transactionId;
+    @JsonProperty("tx")
+    private TX tx;
 
     public BlockCypherRawTransactionResponse() {
     }
 
-    public BlockCypherRawTransactionResponse(String transactionId) {
-        this.transactionId = transactionId;
+    public BlockCypherRawTransactionResponse(TX tx) {
+        this.tx = tx;
     }
 
     public String getTransactionId() {
-        return transactionId;
+        return tx.getHash();
     }
 }
