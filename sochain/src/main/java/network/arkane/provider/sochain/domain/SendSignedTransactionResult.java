@@ -6,7 +6,7 @@ public class SendSignedTransactionResult {
 
     private String network;
 
-    @JsonProperty("tx_hex")
+    @JsonProperty("txid")
     private String transactionId;
 
     public SendSignedTransactionResult() {

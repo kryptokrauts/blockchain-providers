@@ -46,9 +46,11 @@ class BitcoinTransactionFactoryTest {
     void createBitcoinTransaction() {
         final BigInteger satoshiToSend = new BigInteger("1440000");
         final int feePerByte = 3;
+        final String from = "mpi2SkK5vKipCNE9h1HtRgDg6UM44AuN9S";
+        final String to = "mhSwuar1U3Hf6phh2LMkFefkjCgFt8Xg5H";
         final BitcoinTransactionSignable transactionSignable = BitcoinTransactionSignable.builder()
                                                                                          .satoshiValue(satoshiToSend)
-                                                                                         .address("mhSwuar1U3Hf6phh2LMkFefkjCgFt8Xg5H")
+                                                                                         .address(to)
                                                                                          .feePerByte(feePerByte)
                                                                                          .build();
         final List<Unspent> unspents = buildUnspents(1439999, 13042186);
@@ -57,7 +59,7 @@ class BitcoinTransactionFactoryTest {
 
         when(unspentService.getUnspentForAddress(any(Address.class))).thenReturn(unspents);
 
-        final Transaction tx = bitcoinTransactionFactory.createBitcoinTransaction(transactionSignable, "mpi2SkK5vKipCNE9h1HtRgDg6UM44AuN9S");
+        final Transaction tx = bitcoinTransactionFactory.createBitcoinTransaction(transactionSignable, from);
 
         assertThat(tx.getOutputs()).hasSize(2)
                                    .extracting((transactionOutput) -> transactionOutput.getValue().value)
@@ -67,6 +69,8 @@ class BitcoinTransactionFactoryTest {
         assertThat(tx.getInputSum().getValue()).isEqualTo(unspentsSum);
         assertThat(tx.getOutputs()).extracting((output) -> output.getValue().value)
                                    .containsExactlyInAnyOrder(satoshiToSend.longValue(), (unspentsSum - satoshiToSend.longValue() - expectedTxFee));
+        assertThat(tx.getOutputs()).extracting((output) -> output.getAddressFromP2PKHScript(bitcoinEnv.getNetworkParameters()).toBase58())
+                                   .containsOnlyOnce(to).containsOnly(to, from);
     }
 
     @Test

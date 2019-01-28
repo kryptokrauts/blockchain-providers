@@ -23,6 +23,7 @@ import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
 import org.bitcoinj.wallet.Protos;
+import org.spongycastle.crypto.params.KeyParameter;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.IntStream;
@@ -79,10 +80,11 @@ public class BitcoinTransactionSigner implements Signer<BitcoinTransactionSignab
 
     @Override
     public BitcoinSecretKey reconstructKey(final String secret, final String password) {
-        BitcoinKeystore ed = JSONUtil.fromJson(new String(Base64.decodeBase64(secret)), BitcoinKeystore.class);
-        Protos.ScryptParameters params = Protos.ScryptParameters.newBuilder().setSalt(ByteString.copyFrom("".getBytes())).build();
+        BitcoinKeystore ed = JSONUtil.fromJson(secret, BitcoinKeystore.class);
+        Protos.ScryptParameters params = Protos.ScryptParameters.newBuilder().setSalt(ByteString.copyFrom(Base64.decodeBase64(ed.getSalt()))).build();
         KeyCrypterScrypt crypter = new KeyCrypterScrypt(params);
         EncryptedData encryptedData = new EncryptedData(Base64.decodeBase64(ed.getInitialisationVector()), Base64.decodeBase64(ed.getEncryptedBytes()));
-        return new BitcoinSecretKey(ECKey.fromEncrypted(encryptedData, crypter, Base64.decodeBase64(ed.getPubKey())));
+        ECKey key = ECKey.fromEncrypted(encryptedData, crypter, Base64.decodeBase64(ed.getPubKey()));
+        return new BitcoinSecretKey(key.decrypt(crypter.deriveKey(password)));
     }
 }

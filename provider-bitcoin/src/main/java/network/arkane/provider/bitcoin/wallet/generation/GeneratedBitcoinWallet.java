@@ -20,5 +20,4 @@ public class GeneratedBitcoinWallet implements GeneratedWallet {
     public String secretAsBase64() {
         return Base64.encodeBase64String(JSONUtil.toJson(secret).getBytes());
     }
-
 }
