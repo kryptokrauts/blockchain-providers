@@ -1,7 +1,7 @@
 package network.arkane.provider.bitcoin.bip38;
 
 import network.arkane.provider.bitcoin.BitcoinEnv;
-import network.arkane.provider.sochain.domain.Network;
+import network.arkane.provider.blockcypher.Network;
 import org.bitcoinj.core.DumpedPrivateKey;
 import org.bitcoinj.params.TestNet3Params;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,7 @@ class BIP38Test {
 
     @BeforeEach
     void setUp() {
-        this.bip38 = new BIP38(new BitcoinEnv(Network.BTCTEST, TestNet3Params.get()));
+        this.bip38 = new BIP38(new BitcoinEnv(Network.BTC_TEST, TestNet3Params.get()));
     }
 
     @Test

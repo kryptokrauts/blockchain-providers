@@ -2,7 +2,7 @@ package network.arkane.provider.bitcoin.bip38;
 
 import network.arkane.provider.bitcoin.BitcoinEnv;
 import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretKey;
-import network.arkane.provider.sochain.domain.Network;
+import network.arkane.provider.blockcypher.Network;
 import org.bitcoinj.core.DumpedPrivateKey;
 import org.bitcoinj.params.TestNet3Params;
 import org.junit.jupiter.api.BeforeEach;
