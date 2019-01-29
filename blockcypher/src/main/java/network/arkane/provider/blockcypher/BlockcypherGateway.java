@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -36,25 +37,38 @@ public class BlockcypherGateway {
 
     @SneakyThrows
     public BlockcypherAddress getBalance(Network network, String address) {
-        rateLimiter.tryAcquire(30, TimeUnit.SECONDS);
         return objectMapper.readValue(
-                blockcypherClient.getBalance(USER_AGENT, network.getCoin(), network.getChain(), token, address),
+                executeWithRateLimiter(() -> blockcypherClient.getBalance(USER_AGENT, network.getCoin(), network.getChain(), token, address)),
                 BlockcypherAddress.class);
     }
 
     @SneakyThrows
     public BlockcypherAddressUnspents getUnspentTransactions(Network network, String address) {
-        rateLimiter.tryAcquire(30, TimeUnit.SECONDS);
         return objectMapper.readValue(
-                blockcypherClient.getUnspents(USER_AGENT, network.getCoin(), network.getChain(), token, address),
+                executeWithRateLimiter(() -> blockcypherClient.getUnspents(USER_AGENT, network.getCoin(), network.getChain(), token, address)),
                 BlockcypherAddressUnspents.class);
     }
 
     @SneakyThrows
     public BlockCypherRawTransactionResponse sendSignedTransaction(Network network, String txAsHex) {
-        rateLimiter.tryAcquire(30, TimeUnit.SECONDS);
         return objectMapper.readValue(
-                blockcypherClient.sendSignedTransaction(USER_AGENT, network.getCoin(), network.getChain(), token, new BlockCypherRawTransactionRequest(txAsHex)),
+                executeWithRateLimiter(() -> blockcypherClient.sendSignedTransaction(USER_AGENT,
+                                                                                     network.getCoin(),
+                                                                                     network.getChain(),
+                                                                                     token,
+                                                                                     new BlockCypherRawTransactionRequest(txAsHex))),
                 BlockCypherRawTransactionResponse.class);
+    }
+
+    private <T> T executeWithRateLimiter(Callable<T> callable) {
+        if (rateLimiter.tryAcquire(30, TimeUnit.SECONDS)) {
+            try {
+                return callable.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new RuntimeException("Bitcoin endpoint too busy");
+        }
     }
 }
