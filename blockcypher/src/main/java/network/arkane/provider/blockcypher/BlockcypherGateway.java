@@ -9,6 +9,7 @@ import network.arkane.provider.blockcypher.domain.BlockcypherAddress;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddressUnspents;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Callable;
@@ -36,6 +37,7 @@ public class BlockcypherGateway {
     }
 
     @SneakyThrows
+    @Cacheable(value = "blockcypherBalance")
     public BlockcypherAddress getBalance(Network network, String address) {
         return objectMapper.readValue(
                 executeWithRateLimiter(() -> blockcypherClient.getBalance(USER_AGENT, network.getCoin(), network.getChain(), token, address)),
@@ -43,6 +45,7 @@ public class BlockcypherGateway {
     }
 
     @SneakyThrows
+    @Cacheable(value = "blockcypherUnspents")
     public BlockcypherAddressUnspents getUnspentTransactions(Network network, String address) {
         return objectMapper.readValue(
                 executeWithRateLimiter(() -> blockcypherClient.getUnspents(USER_AGENT, network.getCoin(), network.getChain(), token, address)),
