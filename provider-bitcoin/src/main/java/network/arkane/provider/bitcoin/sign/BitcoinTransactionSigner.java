@@ -23,7 +23,6 @@ import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
 import org.bitcoinj.wallet.Protos;
-import org.spongycastle.crypto.params.KeyParameter;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.IntStream;
