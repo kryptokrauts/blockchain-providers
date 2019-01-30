@@ -20,14 +20,10 @@ class BitcoinWifExtractorTest {
 
     @Test
     void extract() {
-        String privateKey = "5JZB9PPebxtzh5tUQKexRgJxeKwoAawhxsNBKNU7Vm43feCZHV8";
+        String privateKey = "92Pg46rUhgTT7romnV7iGW6W1gbGdeezqdbJCzShkCsYNzyyNcc";
         BitcoinSecretKey result = extractor.extract(new BitcoinWifExtractionRequest(privateKey));
 
         assertThat(result.getKey().getPrivateKeyAsWiF(TestNet3Params.get())).isEqualTo(privateKey);
     }
 
-    @Test
-    void blah() {
-
-    }
 }
