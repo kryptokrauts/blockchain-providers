@@ -2,6 +2,7 @@ package network.arkane.provider.wallet.exporting;
 
 import network.arkane.provider.JSONUtil;
 import network.arkane.provider.secret.generation.VechainSecretKey;
+import network.arkane.provider.wallet.decryption.VechainWalletDecryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.ECKeyPair;
@@ -11,14 +12,17 @@ import java.math.BigInteger;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 class VechainKeystoreExporterTest {
 
     private VechainKeystoreExporter vechainKeystoreExporter;
+    private VechainWalletDecryptor vechainWalletDecryptor;
 
     @BeforeEach
     void setUp() {
-        this.vechainKeystoreExporter = new VechainKeystoreExporter();
+        this.vechainWalletDecryptor = mock(VechainWalletDecryptor.class);
+        this.vechainKeystoreExporter = new VechainKeystoreExporter(vechainWalletDecryptor);
     }
 
     @Test

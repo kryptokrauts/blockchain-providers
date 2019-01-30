@@ -1,8 +1,14 @@
 package network.arkane.provider.bitcoin.wallet.exporting;
 
 import network.arkane.provider.JSONUtil;
+import network.arkane.provider.bitcoin.BitcoinEnv;
 import network.arkane.provider.bitcoin.bip38.BIP38EncryptionService;
+import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretGenerator;
 import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretKey;
+import network.arkane.provider.bitcoin.wallet.generation.BitcoinWalletGenerator;
+import network.arkane.provider.bitcoin.wallet.generation.GeneratedBitcoinWallet;
+import network.arkane.provider.blockcypher.Network;
+import org.apache.commons.codec.binary.Base64;
 import org.bitcoinj.core.DumpedPrivateKey;
 import org.bitcoinj.params.TestNet3Params;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,5 +60,16 @@ class BitcoinKeyExporterTest {
         doThrow(IllegalArgumentException.class).when(bip38EncryptionService).encrypt(any(BitcoinSecretKey.class), eq(password));
         assertThatThrownBy(() -> bitcoinKeyExporter.export(
                 BitcoinSecretKey.builder().key(pk.getKey()).build(), password)).hasMessageContaining("An error occurred while trying to export the key");
+    }
+
+    @Test
+    void reconstructsKey() {
+        final BitcoinWalletGenerator bitcoinWalletGenerator = new BitcoinWalletGenerator(new BitcoinEnv(Network.BTC, TestNet3Params.get()));
+        final String pwd = "test";
+        final BitcoinSecretKey originalSecretKey = new BitcoinSecretGenerator().generate();
+        final GeneratedBitcoinWallet test = bitcoinWalletGenerator.generateWallet(pwd, originalSecretKey);
+
+        final BitcoinSecretKey reconstructedPrivateKey = bitcoinKeyExporter.reconstructKey(new String(Base64.decodeBase64(JSONUtil.toJson(test.secretAsBase64()))), pwd);
+        assertThat(reconstructedPrivateKey.getKey().getPrivateKeyAsHex()).isEqualTo(reconstructedPrivateKey.getKey().getPrivateKeyAsHex());
     }
 }

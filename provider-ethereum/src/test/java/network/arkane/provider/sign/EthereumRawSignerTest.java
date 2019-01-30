@@ -10,12 +10,10 @@ import static org.mockito.Mockito.mock;
 class EthereumRawSignerTest {
 
     private EthereumRawSigner signer;
-    private EthereumWalletDecryptor decyptor;
 
     @BeforeEach
     void setUp() {
-        decyptor = mock(EthereumWalletDecryptor.class);
-        this.signer = new EthereumRawSigner(decyptor);
+        this.signer = new EthereumRawSigner();
     }
 
     @Test

@@ -29,12 +29,6 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @Component
 public class VechainTransactionSigner implements Signer<VechainTransactionSignable, VechainSecretKey> {
 
-    private VechainWalletDecryptor vechainWalletDecryptor;
-
-    public VechainTransactionSigner(final VechainWalletDecryptor vechainWalletDecryptor) {
-        this.vechainWalletDecryptor = vechainWalletDecryptor;
-    }
-
     @Override
     public Signature createSignature(VechainTransactionSignable signable, VechainSecretKey key) {
         final RawTransaction rawTransaction = constructTransaction(signable);
@@ -47,13 +41,6 @@ public class VechainTransactionSigner implements Signer<VechainTransactionSignab
                 .signTransactionBuilder()
                 .signedTransaction(fullSignBytes)
                 .build();
-    }
-
-    @Override
-    public VechainSecretKey reconstructKey(String secret, String password) {
-        return vechainWalletDecryptor.generateKey(GeneratedVechainWallet.builder()
-                                                                        .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
-                                                                        .build(), password);
     }
 
     private RawTransaction constructTransaction(final VechainTransactionSignable signable) {
