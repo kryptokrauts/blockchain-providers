@@ -17,14 +17,6 @@ public interface Signer<T extends Signable, KEY extends SecretKey> {
     Signature createSignature(T signable, KEY key);
 
     /**
-     * Reconstruct the key, based on the secret and the password
-     *
-     * @param secret
-     * @param password
-     * @return
-     */
-    KEY reconstructKey(final String secret, final String password);
-    /**
      * The type of signable this specific signer supports
      *
      * @return

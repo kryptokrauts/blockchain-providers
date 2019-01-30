@@ -2,6 +2,7 @@ package network.arkane.provider.wallet.exporting;
 
 import network.arkane.provider.JSONUtil;
 import network.arkane.provider.secret.generation.EthereumSecretKey;
+import network.arkane.provider.wallet.decryption.EthereumWalletDecryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.ECKeyPair;
@@ -11,14 +12,18 @@ import java.math.BigInteger;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 class EthereumKeystoreExporterTest {
 
     private EthereumKeystoreExporter ethereumKeystoreExporter;
+    private EthereumWalletDecryptor decyptor;
+
 
     @BeforeEach
     void setUp() {
-        this.ethereumKeystoreExporter = new EthereumKeystoreExporter();
+        decyptor = mock(EthereumWalletDecryptor.class);
+        this.ethereumKeystoreExporter = new EthereumKeystoreExporter(decyptor);
     }
 
     @Test

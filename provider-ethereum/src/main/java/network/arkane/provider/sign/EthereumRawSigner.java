@@ -1,27 +1,17 @@
 package network.arkane.provider.sign;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.JSONUtil;
 import network.arkane.provider.secret.generation.EthereumSecretKey;
 import network.arkane.provider.sign.domain.HexSignature;
 import network.arkane.provider.sign.domain.Signature;
-import network.arkane.provider.wallet.decryption.EthereumWalletDecryptor;
-import network.arkane.provider.wallet.generation.GeneratedEthereumWallet;
 import org.springframework.stereotype.Component;
 import org.web3j.crypto.Sign;
-import org.web3j.crypto.WalletFile;
 
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 
 @Slf4j
 @Component
 public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSecretKey> {
-
-    private EthereumWalletDecryptor ethereumWalletDecryptor;
-
-    public EthereumRawSigner(EthereumWalletDecryptor ethereumWalletDecryptor) {
-        this.ethereumWalletDecryptor = ethereumWalletDecryptor;
-    }
 
     @Override
     public Signature createSignature(EthereumRawSignable signable, EthereumSecretKey key) {
@@ -41,12 +31,5 @@ public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSe
                     .cause(ex)
                     .build();
         }
-    }
-
-    @Override
-    public EthereumSecretKey reconstructKey(String secret, String password) {
-        return ethereumWalletDecryptor.generateKey(GeneratedEthereumWallet.builder()
-                                                                          .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
-                                                                          .build(), password);
     }
 }

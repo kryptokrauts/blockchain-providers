@@ -1,11 +1,9 @@
 package network.arkane.provider.sign;
 
-import network.arkane.provider.wallet.decryption.VechainWalletDecryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 class VechainTransactionSignerTest {
 
@@ -13,8 +11,7 @@ class VechainTransactionSignerTest {
 
     @BeforeEach
     void setUp() {
-        final VechainWalletDecryptor decryptor = mock(VechainWalletDecryptor.class);
-        this.signer = new VechainTransactionSigner(decryptor);
+        this.signer = new VechainTransactionSigner();
     }
 
     @Test

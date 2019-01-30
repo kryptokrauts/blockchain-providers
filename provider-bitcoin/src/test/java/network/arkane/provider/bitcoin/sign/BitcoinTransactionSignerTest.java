@@ -1,18 +1,13 @@
 package network.arkane.provider.bitcoin.sign;
 
-import network.arkane.provider.JSONUtil;
 import network.arkane.provider.bitcoin.BitcoinEnv;
-import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretGenerator;
 import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretKey;
 import network.arkane.provider.bitcoin.unspent.Unspent;
 import network.arkane.provider.bitcoin.unspent.UnspentService;
-import network.arkane.provider.bitcoin.wallet.generation.BitcoinWalletGenerator;
-import network.arkane.provider.bitcoin.wallet.generation.GeneratedBitcoinWallet;
 import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
-import org.apache.commons.codec.binary.Base64;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.DumpedPrivateKey;
@@ -46,17 +41,6 @@ class BitcoinTransactionSignerTest {
         unspentService = mock(UnspentService.class);
         transactionFactory = spy(new BitcoinTransactionFactory(bitcoinEnv, unspentService));
         bitcoinTransactionSigner = new BitcoinTransactionSigner(bitcoinEnv, transactionFactory);
-    }
-
-    @Test
-    void reconstructsKey() {
-        final BitcoinWalletGenerator bitcoinWalletGenerator = new BitcoinWalletGenerator(new BitcoinEnv(Network.BTC, TestNet3Params.get()));
-        final String pwd = "test";
-        final BitcoinSecretKey originalSecretKey = new BitcoinSecretGenerator().generate();
-        final GeneratedBitcoinWallet test = bitcoinWalletGenerator.generateWallet(pwd, originalSecretKey);
-
-        final BitcoinSecretKey reconstructedPrivateKey = bitcoinTransactionSigner.reconstructKey(new String(Base64.decodeBase64(JSONUtil.toJson(test.secretAsBase64()))), pwd);
-        assertThat(reconstructedPrivateKey.getKey().getPrivateKeyAsHex()).isEqualTo(reconstructedPrivateKey.getKey().getPrivateKeyAsHex());
     }
 
     @Test
