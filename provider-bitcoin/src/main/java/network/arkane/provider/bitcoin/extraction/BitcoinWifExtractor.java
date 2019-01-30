@@ -8,17 +8,17 @@ import org.bitcoinj.core.NetworkParameters;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BitcoinPrivateKeyExtractor implements SecretExtractor<BitcoinPrivateKeyExtractionRequest> {
+public class BitcoinWifExtractor implements SecretExtractor<BitcoinWifExtractionRequest> {
 
     private NetworkParameters networkParameters;
 
-    public BitcoinPrivateKeyExtractor(BitcoinEnv bitcoinEnv) {
+    public BitcoinWifExtractor(BitcoinEnv bitcoinEnv) {
         this.networkParameters = bitcoinEnv.getNetworkParameters();
     }
 
     @Override
-    public BitcoinSecretKey extract(BitcoinPrivateKeyExtractionRequest extractionRequest) {
-        DumpedPrivateKey dumpedPrivateKey = DumpedPrivateKey.fromBase58(networkParameters, extractionRequest.getPrivateKey());
+    public BitcoinSecretKey extract(BitcoinWifExtractionRequest extractionRequest) {
+        DumpedPrivateKey dumpedPrivateKey = DumpedPrivateKey.fromBase58(networkParameters, extractionRequest.getWif());
 
         return BitcoinSecretKey.builder()
                                .key(dumpedPrivateKey.getKey())
@@ -26,7 +26,7 @@ public class BitcoinPrivateKeyExtractor implements SecretExtractor<BitcoinPrivat
     }
 
     @Override
-    public Class<BitcoinPrivateKeyExtractionRequest> getImportRequestType() {
-        return BitcoinPrivateKeyExtractionRequest.class;
+    public Class<BitcoinWifExtractionRequest> getImportRequestType() {
+        return BitcoinWifExtractionRequest.class;
     }
 }

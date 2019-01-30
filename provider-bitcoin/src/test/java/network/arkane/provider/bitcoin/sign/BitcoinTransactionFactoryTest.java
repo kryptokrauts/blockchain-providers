@@ -105,7 +105,7 @@ class BitcoinTransactionFactoryTest {
                                                                                                               .feePerByte(3)
                                                                                                               .build(),
                                                                                     "mpi2SkK5vKipCNE9h1HtRgDg6UM44AuN9S"))
-                .hasMessageContaining("The account you're trying to use as origin in the transaction doesn't has valid inputs to send");
+                .hasMessageContaining("The account you're trying to use as origin in the transaction doesn't have valid inputs to send");
     }
 
     @Test
