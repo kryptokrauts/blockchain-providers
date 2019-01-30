@@ -6,6 +6,7 @@ import network.arkane.provider.JSONUtil;
 import network.arkane.provider.bitcoin.bip38.BIP38EncryptionService;
 import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretKey;
 import network.arkane.provider.bitcoin.wallet.generation.BitcoinKeystore;
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.wallet.exporting.KeyExporter;
 import org.apache.commons.codec.binary.Base64;
@@ -50,5 +51,10 @@ public class BitcoinKeyExporter implements KeyExporter<BitcoinSecretKey> {
         EncryptedData encryptedData = new EncryptedData(Base64.decodeBase64(ed.getInitialisationVector()), Base64.decodeBase64(ed.getEncryptedBytes()));
         ECKey key = ECKey.fromEncrypted(encryptedData, crypter, Base64.decodeBase64(ed.getPubKey()));
         return new BitcoinSecretKey(key.decrypt(crypter.deriveKey(password)));
+    }
+
+    @Override
+    public SecretType type() {
+        return SecretType.BITCOIN;
     }
 }

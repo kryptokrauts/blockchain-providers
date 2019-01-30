@@ -1,6 +1,7 @@
 package network.arkane.provider.wallet.exporting;
 
 import net.jodah.typetools.TypeResolver;
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.wallet.domain.SecretKey;
 
 public interface KeyExporter<T extends SecretKey> {
@@ -18,4 +19,10 @@ public interface KeyExporter<T extends SecretKey> {
     default Class<T> getType() {
         return (Class<T>) TypeResolver.resolveRawArguments(KeyExporter.class, getClass())[0];
     }
+
+    /**
+     * The type this secret exporter supports
+     * @return
+     */
+    SecretType type();
 }

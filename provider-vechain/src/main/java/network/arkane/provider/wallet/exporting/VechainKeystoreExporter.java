@@ -1,6 +1,7 @@
 package network.arkane.provider.wallet.exporting;
 
 import network.arkane.provider.JSONUtil;
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.secret.generation.VechainSecretKey;
 import network.arkane.provider.wallet.decryption.VechainWalletDecryptor;
@@ -36,5 +37,10 @@ public class VechainKeystoreExporter implements KeyExporter<VechainSecretKey> {
         return vechainWalletDecryptor.generateKey(GeneratedVechainWallet.builder()
                                                                         .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
                                                                         .build(), password);
+    }
+
+    @Override
+    public SecretType type() {
+        return SecretType.VECHAIN;
     }
 }

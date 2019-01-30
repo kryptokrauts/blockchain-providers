@@ -1,6 +1,7 @@
 package network.arkane.provider.wallet.exporting;
 
 import network.arkane.provider.JSONUtil;
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.secret.generation.EthereumSecretKey;
 import network.arkane.provider.wallet.decryption.EthereumWalletDecryptor;
@@ -35,5 +36,10 @@ public class EthereumKeystoreExporter implements KeyExporter<EthereumSecretKey> 
         return ethereumWalletDecryptor.generateKey(GeneratedEthereumWallet.builder()
                                                                           .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
                                                                           .build(), password);
+    }
+
+    @Override
+    public SecretType type() {
+        return SecretType.ETHEREUM;
     }
 }
