@@ -61,7 +61,7 @@ public class BitcoinTransactionFactory {
         if (unspentForAddress.isEmpty()) {
             throw ArkaneException.arkaneException()
                                  .errorCode("bitcoin.transaction-inputs")
-                                 .message("The account you're trying to use as origin in the transaction doesn't has valid inputs to send")
+                                 .message("The account you're trying to use as origin in the transaction doesn't have valid inputs to send")
                                  .build();
         }
         return unspentForAddress;

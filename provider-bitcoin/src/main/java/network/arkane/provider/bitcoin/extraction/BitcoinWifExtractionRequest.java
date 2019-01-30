@@ -5,11 +5,11 @@ import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.wallet.extraction.request.ExtractionRequest;
 
 @Getter
-public class BitcoinPrivateKeyExtractionRequest extends ExtractionRequest {
-    private String privateKey;
+public class BitcoinWifExtractionRequest extends ExtractionRequest {
+    private String wif;
 
-    public BitcoinPrivateKeyExtractionRequest(final String privateKey) {
+    public BitcoinWifExtractionRequest(final String wif) {
         super(SecretType.BITCOIN);
-        this.privateKey = privateKey;
+        this.wif = wif;
     }
 }
