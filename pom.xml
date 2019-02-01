@@ -17,6 +17,7 @@
         <module>provider-vechain</module>
         <module>provider-ethereum</module>
         <module>provider-bitcoin</module>
+        <module>provider-litecoin</module>
         <module>sochain</module>
         <module>blockcypher</module>
     </modules>
