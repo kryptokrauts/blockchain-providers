@@ -121,6 +121,17 @@ class BitcoinTransactionFactoryTest {
                 .hasMessageContaining("Not enough funds to create the transaction");
     }
 
+    @Test
+    void wrongNetwork() {
+        assertThatThrownBy(() -> bitcoinTransactionFactory.createBitcoinTransaction(BitcoinTransactionSignable.builder()
+                                                                                                              .satoshiValue(BigInteger.valueOf(14482195))
+                                                                                                              .address("1Aw2XPY8hkZVHyHtSYCFnvUWnHtAudN7zb")
+                                                                                                              .feePerByte(3)
+                                                                                                              .build(),
+                                                                                    "mpi2SkK5vKipCNE9h1HtRgDg6UM44AuN9S"))
+                .hasMessageContaining("Version code of address did not match acceptable versions for network");
+    }
+
     private List<Unspent> buildUnspents(final int... amounts) {
         return Arrays.stream(amounts)
                      .mapToObj((amount) -> Unspent.builder()

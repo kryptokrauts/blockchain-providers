@@ -49,6 +49,12 @@ public class BitcoinTransactionFactory {
             throw ex;
         } catch (final Exception ex) {
             log.error(ex.getMessage());
+            if (ex.getMessage().toLowerCase().contains("version code of address did not match acceptable versions for network")) {
+                throw ArkaneException.arkaneException()
+                                     .errorCode("bitcoin.address-wrong-network")
+                                     .message(ex.getMessage())
+                                     .build();
+            }
             throw ArkaneException.arkaneException()
                                  .errorCode("bitcoin.creation-error")
                                  .message(String.format("An error occurred trying to create the Bitcoin transaction: %s", ex.getMessage()))
