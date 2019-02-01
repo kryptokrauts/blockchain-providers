@@ -12,12 +12,6 @@ public class AeternityTransactionSigner implements Signer<AeternityTransactionSi
     }
 
     @Override
-    public AeternitySecretKey reconstructKey(String secret, String password) {
-        // TODO
-        return null;
-    }
-
-    @Override
     public Class<AeternityTransactionSignable> getType() {
         return AeternityTransactionSignable.class;
     }
