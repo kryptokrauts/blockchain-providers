@@ -12,10 +12,22 @@
 
     <artifactId>provider-aeternity</artifactId>
 
+    <repositories>
+        <repository>
+            <id>oss-snapshot-local</id>
+            <url>https://oss.jfrog.org/webapp/#/artifacts/browse/tree/General/oss-snapshot-local/com/kryptokrauts/aepp-sdk-java</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kryptokrauts</groupId>
+            <artifactId>aepp-sdk-java</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>
