@@ -15,7 +15,11 @@
     <repositories>
         <repository>
             <id>oss-snapshot-local</id>
-            <url>https://oss.jfrog.org/webapp/#/artifacts/browse/tree/General/oss-snapshot-local/com/kryptokrauts/aepp-sdk-java</url>
+            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        </repository>
+        <repository>
+            <id>jcenter</id>
+            <url>http://jcenter.bintray.com </url>
         </repository>
     </repositories>
 
@@ -28,6 +32,8 @@
             <groupId>com.kryptokrauts</groupId>
             <artifactId>aepp-sdk-java</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>
