@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AeternityKeystoreExtractor implements SecretExtractor<AeternityKeystoreExtractionRequest> {
 
-    final KeyPairService keyPairService = new KeyPairServiceFactory().getService();
-    final WalletService walletService = new WalletServiceFactory().getService();
+    private final KeyPairService keyPairService = new KeyPairServiceFactory().getService();
+    private final WalletService walletService = new WalletServiceFactory().getService();
 
     @Override
     public SecretKey extract(final AeternityKeystoreExtractionRequest importWalletRequest) {

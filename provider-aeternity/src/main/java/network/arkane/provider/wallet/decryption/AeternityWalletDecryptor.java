@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AeternityWalletDecryptor implements WalletDecryptor<GeneratedAeternityWallet, AeternitySecretKey> {
 
-    final KeyPairService keyPairService = new KeyPairServiceFactory().getService();
-    final WalletService walletService = new WalletServiceFactory().getService();
+    private final KeyPairService keyPairService = new KeyPairServiceFactory().getService();
+    private final WalletService walletService = new WalletServiceFactory().getService();
 
     @Override
     public AeternitySecretKey generateKey(GeneratedAeternityWallet generatedWallet, String password) {

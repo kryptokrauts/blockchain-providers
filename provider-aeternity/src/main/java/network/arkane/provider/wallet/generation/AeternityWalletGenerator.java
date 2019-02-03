@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 @Component
 public class AeternityWalletGenerator implements WalletGenerator<AeternitySecretKey> {
 
-    final WalletService walletService = new WalletServiceFactory().getService();
+    private final WalletService walletService = new WalletServiceFactory().getService();
 
     @Override
     public GeneratedWallet generateWallet(final String password, final AeternitySecretKey secret) {

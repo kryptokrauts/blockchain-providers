@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class AeternityPrivateKeyExtractor implements SecretExtractor<AeternityPrivateKeyExtractionRequest> {
 
-    final KeyPairService keyPairService = new KeyPairServiceFactory().getService();
+    private final KeyPairService keyPairService = new KeyPairServiceFactory().getService();
 
     @Override
     public SecretKey extract(final AeternityPrivateKeyExtractionRequest importWalletRequest) {
