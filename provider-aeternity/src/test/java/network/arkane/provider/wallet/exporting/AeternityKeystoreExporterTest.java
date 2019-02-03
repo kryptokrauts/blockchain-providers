@@ -5,10 +5,10 @@ import com.kryptokrauts.aeternity.sdk.service.keypair.KeyPairService;
 import com.kryptokrauts.aeternity.sdk.service.keypair.KeyPairServiceFactory;
 import network.arkane.provider.secret.generation.AeternitySecretKey;
 import network.arkane.provider.wallet.decryption.AeternityWalletDecryptor;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class AeternityKeystoreExporterTest {
@@ -30,7 +30,7 @@ class AeternityKeystoreExporterTest {
     void exports() {
         final String export = aeternityKeystoreExporter.export(AeternitySecretKey.builder().keyPair(rawKeyPair).build(), "test");
         final RawKeyPair reconstructKeyPair = aeternityKeystoreExporter.reconstructKey(export, "test").getKeyPair();
-        Assertions.assertEquals(rawKeyPair, reconstructKeyPair);
+        assertThat(rawKeyPair).isEqualTo(reconstructKeyPair);
     }
 
     @Test
