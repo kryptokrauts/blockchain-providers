@@ -32,14 +32,19 @@
             <groupId>com.kryptokrauts</groupId>
             <artifactId>aepp-sdk-java</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
             <scope>test</scope>
             <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>161b20</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/bcprov-jdk15on-161b20.jar</systemPath>
         </dependency>
     </dependencies>
 
