@@ -20,7 +20,7 @@ class AeternityWalletGeneratorTest {
     }
 
     @Test
-    public void generateWallet() throws Exception {
+    public void generateWallet() {
         final GeneratedWallet generatedWallet = generator.generateWallet("password", new AeternitySecretKey(keyPairService.generateRawKeyPair()));
         assertThat(generatedWallet).isInstanceOf(GeneratedAeternityWallet.class);
         assertThat(generatedWallet.getAddress()).isNotEmpty();
