@@ -9,21 +9,20 @@ public class LitecoinParams extends AbstractBitcoinNetParams {
     50 --> the new M.. addresses
     Blockcypher doesn't support M address at the moment
      */
-    private final int prefix = 48;
+
+    public LitecoinParams() {
+        super();
+        p2shHeader = 5;
+        addressHeader = 48;
+        acceptableAddressCodes = new int[]{addressHeader, p2shHeader};
+        id = "org.litecoin.production";
+    }
+
 
     @Override
     public String getPaymentProtocolId() {
         return "main";
     }
 
-    @Override
-    public int getAddressHeader() {
-        return prefix;
-    }
-
-    @Override
-    public int getP2SHHeader() {
-        return prefix;
-    }
 
 }
