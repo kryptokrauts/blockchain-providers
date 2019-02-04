@@ -11,7 +11,8 @@ public class HexSignature extends Signature {
 
     private String r;
     private String s;
-    private int v;
+    private String v;
+    private String signature;
 
     @Builder
     public HexSignature(final byte[] r,
@@ -19,6 +20,10 @@ public class HexSignature extends Signature {
                         final int v) {
         this.r = Hex.toHexString(r);
         this.s = Hex.toHexString(s);
-        this.v = v;
+        this.v = Integer.toHexString(v);
+        this.signature = "0x" + this.r + this.s + this.v;
+        this.r = "0x" + this.r;
+        this.s = "0x" + this.s;
+        this.v = "0x" + this.v;
     }
 }
