@@ -8,6 +8,7 @@ import network.arkane.provider.blockcypher.BlockcypherGateway;
 import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddress;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.litecoin.address.LitecoinP2SHConverter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,14 +17,19 @@ import java.util.List;
 public class LitecoinBalanceGateway implements BalanceGateway {
 
     private final BlockcypherGateway blockcypherGateway;
+    private final LitecoinP2SHConverter litecoinP2SHConverter;
 
-    public LitecoinBalanceGateway(BlockcypherGateway blockcypherGateway) {
+    public LitecoinBalanceGateway(BlockcypherGateway blockcypherGateway, LitecoinP2SHConverter litecoinP2SHConverter) {
         this.blockcypherGateway = blockcypherGateway;
+        this.litecoinP2SHConverter = litecoinP2SHConverter;
     }
 
     @Override
     public Balance getBalance(String address) {
-        BlockcypherAddress balance = blockcypherGateway.getBalance(Network.LITECOIN, address);
+        BlockcypherAddress balance = blockcypherGateway.getBalance(
+                Network.LITECOIN,
+                litecoinP2SHConverter.convert(address)
+        );
 
         double balanceAsDouble = balance.getBalance() == null
                 ? 0

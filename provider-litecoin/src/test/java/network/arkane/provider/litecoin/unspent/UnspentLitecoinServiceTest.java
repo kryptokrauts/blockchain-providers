@@ -4,6 +4,7 @@ import network.arkane.provider.blockcypher.BlockcypherGateway;
 import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddressUnspents;
 import network.arkane.provider.blockcypher.domain.BlockcypherTransactionRef;
+import network.arkane.provider.litecoin.address.LitecoinP2SHConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,13 +19,20 @@ import static org.mockito.Mockito.when;
 
 class UnspentLitecoinServiceTest {
 
-    private UnspentLitecoinService unspentLitecoinService;
-    private BlockcypherGateway blockcypherGateway;
+    UnspentLitecoinService unspentLitecoinService;
+    BlockcypherGateway blockcypherGateway;
+    LitecoinP2SHConverter litecoinP2SHConverter;
+
+    String address = "VuXFIzGlKwF6A1m5vUI44S9MXBmE7sCDwE";
+    String convertedAddress = "3PbLsCPghuXCSomZba4r3eEYbywQgjT9NV";
 
     @BeforeEach
     void setUp() {
         blockcypherGateway = mock(BlockcypherGateway.class);
-        unspentLitecoinService = new UnspentLitecoinService(blockcypherGateway);
+        litecoinP2SHConverter = mock(LitecoinP2SHConverter.class);
+        unspentLitecoinService = new UnspentLitecoinService(blockcypherGateway, litecoinP2SHConverter);
+
+        when(litecoinP2SHConverter.convert(address)).thenReturn(convertedAddress);
     }
 
     private BlockcypherAddressUnspents createExpectedTransaction() {
@@ -45,10 +53,10 @@ class UnspentLitecoinServiceTest {
     @Test
     void getsUnspentForAddress() {
         BlockcypherAddressUnspents expectedTransaction = createExpectedTransaction();
-        when(blockcypherGateway.getUnspentTransactions(Network.LITECOIN, "an address"))
+        when(blockcypherGateway.getUnspentTransactions(Network.LITECOIN, convertedAddress))
                 .thenReturn(expectedTransaction);
 
-        List<Unspent> unspents = unspentLitecoinService.getUnspentForAddress("an address");
+        List<Unspent> unspents = unspentLitecoinService.getUnspentForAddress(address);
 
         assertThat(unspents).hasSize(1);
         assertThat(unspents.get(0).getAmount()).isEqualTo(13753330);
@@ -59,7 +67,7 @@ class UnspentLitecoinServiceTest {
 
     @Test
     void noUnspentWhenGatwayRepliesWithNull() {
-        List<Unspent> unspents = unspentLitecoinService.getUnspentForAddress("an address");
+        List<Unspent> unspents = unspentLitecoinService.getUnspentForAddress(address);
 
         assertThat(unspents).isEmpty();
     }
@@ -68,10 +76,10 @@ class UnspentLitecoinServiceTest {
     void noUnspentWhenTransactionRefsAreNull() {
         BlockcypherAddressUnspents expectedTransaction = createExpectedTransaction();
         expectedTransaction.setTransactionRefs(null);
-        when(blockcypherGateway.getUnspentTransactions(Network.LITECOIN, "an address"))
+        when(blockcypherGateway.getUnspentTransactions(Network.LITECOIN, convertedAddress))
                 .thenReturn(expectedTransaction);
 
-        List<Unspent> unspents = unspentLitecoinService.getUnspentForAddress("an address");
+        List<Unspent> unspents = unspentLitecoinService.getUnspentForAddress(address);
 
         assertThat(unspents).isEmpty();
     }
@@ -80,10 +88,10 @@ class UnspentLitecoinServiceTest {
     void noUnspentWhenTransactionRefsAreEmpty() {
         BlockcypherAddressUnspents expectedTransaction = createExpectedTransaction();
         expectedTransaction.setTransactionRefs(new ArrayList<>());
-        when(blockcypherGateway.getUnspentTransactions(Network.LITECOIN, "an address"))
+        when(blockcypherGateway.getUnspentTransactions(Network.LITECOIN, convertedAddress))
                 .thenReturn(expectedTransaction);
 
-        List<Unspent> unspents = unspentLitecoinService.getUnspentForAddress("an address");
+        List<Unspent> unspents = unspentLitecoinService.getUnspentForAddress(address);
 
         assertThat(unspents).isEmpty();
     }

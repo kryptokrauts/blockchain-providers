@@ -3,6 +3,7 @@ package network.arkane.provider.litecoin.sign;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.litecoin.address.LitecoinP2SHConverter;
 import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import network.arkane.provider.litecoin.unspent.Unspent;
 import network.arkane.provider.litecoin.unspent.UnspentLitecoinService;
@@ -20,16 +21,18 @@ import java.util.List;
 public class LitecoinTransactionFactory {
 
     private final UnspentLitecoinService unspentService;
+    private final LitecoinP2SHConverter litecoinP2SHConverter;
 
-    public LitecoinTransactionFactory(UnspentLitecoinService unspentService) {
+    public LitecoinTransactionFactory(UnspentLitecoinService unspentService, LitecoinP2SHConverter litecoinP2SHConverter) {
         this.unspentService = unspentService;
+        this.litecoinP2SHConverter = litecoinP2SHConverter;
     }
 
 
     public Transaction createLitecoinTransaction(final LitecoinTransactionSignable signable, final String from) {
         try {
-            final Address fromAddress = Address.fromBase58(new LitecoinParams(), from);
-            final Address toAddress = Address.fromBase58(new LitecoinParams(), signable.getAddress());
+            final Address fromAddress = toAddress(from);
+            final Address toAddress = toAddress(signable.getAddress());
             final long amountToSend = signable.getPhotonValue().longValue();
 
 
@@ -56,6 +59,13 @@ public class LitecoinTransactionFactory {
                     .message(String.format("An error occurred trying to create the Litecoin transaction: %s", ex.getMessage()))
                     .build();
         }
+    }
+
+    private Address toAddress(String from) {
+        return Address.fromBase58(
+                new LitecoinParams(),
+                litecoinP2SHConverter.convert(from)
+        );
     }
 
 

@@ -5,6 +5,7 @@ import network.arkane.provider.blockcypher.BlockcypherGateway;
 import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddress;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.litecoin.address.LitecoinP2SHConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,20 +18,25 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LitecoinBalanceGatewayTest {
 
-    private BlockcypherGateway blockcypherGateway;
-    private LitecoinBalanceGateway litecoinBalanceGateway;
+    BlockcypherGateway blockcypherGateway;
+    LitecoinBalanceGateway litecoinBalanceGateway;
+    LitecoinP2SHConverter litecoinP2SHConverter;
+
+    String address = "VuXFIzGlKwF6A1m5vUI44S9MXBmE7sCDwE";
+    String convertedAddress = "3PbLsCPghuXCSomZba4r3eEYbywQgjT9NV";
 
     @BeforeEach
     void setUp() {
         blockcypherGateway = mock(BlockcypherGateway.class);
-        litecoinBalanceGateway = new LitecoinBalanceGateway(blockcypherGateway);
+        litecoinP2SHConverter = mock(LitecoinP2SHConverter.class);
+        litecoinBalanceGateway = new LitecoinBalanceGateway(blockcypherGateway, litecoinP2SHConverter);
+
+        when(litecoinP2SHConverter.convert(address)).thenReturn(convertedAddress);
     }
 
     @Test
     public void emptyBalance() {
-        String address = "VuXFIzGlKwF6A1m5vUI44S9MXBmE7sCDwE";
-
-        when(blockcypherGateway.getBalance(Network.LITECOIN, address)).thenReturn(
+        when(blockcypherGateway.getBalance(Network.LITECOIN, convertedAddress)).thenReturn(
                 BlockcypherAddress.builder()
                         .address(address)
                         .balance(null)
@@ -51,9 +57,7 @@ class LitecoinBalanceGatewayTest {
 
     @Test
     public void withBalance() {
-        String address = "VuXFIzGlKwF6A1m5vUI44S9MXBmE7sCDwE";
-
-        when(blockcypherGateway.getBalance(Network.LITECOIN, address)).thenReturn(
+        when(blockcypherGateway.getBalance(Network.LITECOIN, convertedAddress)).thenReturn(
                 BlockcypherAddress.builder()
                         .address(address)
                         .balance(new BigInteger("123456789"))
