@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.kryptokrauts</groupId>
             <artifactId>aepp-sdk-java</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>

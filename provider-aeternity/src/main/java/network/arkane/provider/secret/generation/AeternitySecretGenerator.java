@@ -7,7 +7,7 @@ import network.arkane.provider.chain.SecretType;
 
 public class AeternitySecretGenerator implements SecretGenerator<AeternitySecretKey> {
 
-    final KeyPairService keyPairService = new KeyPairServiceFactory().getService();
+    private final KeyPairService keyPairService = new KeyPairServiceFactory().getService();
 
     @Override
     public AeternitySecretKey generate() {
