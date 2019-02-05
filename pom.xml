@@ -17,7 +17,8 @@
         <module>provider-vechain</module>
         <module>provider-ethereum</module>
         <module>provider-bitcoin</module>
-        <module>sochain</module>
+        <module>provider-tron</module>
+        <module>provider-integrationtests</module>
         <module>blockcypher</module>
     </modules>
 
@@ -75,6 +76,11 @@
             <dependency>
                 <groupId>network.arkane</groupId>
                 <artifactId>provider-ethereum</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-tron</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
