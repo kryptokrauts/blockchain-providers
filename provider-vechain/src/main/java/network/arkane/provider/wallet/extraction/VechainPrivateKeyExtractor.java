@@ -31,9 +31,4 @@ public class VechainPrivateKeyExtractor implements SecretExtractor<VechainPrivat
             return privateKey;
         }
     }
-
-    @Override
-    public Class<VechainPrivateKeyExtractionRequest> getImportRequestType() {
-        return VechainPrivateKeyExtractionRequest.class;
-    }
 }

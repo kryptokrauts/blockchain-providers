@@ -17,6 +17,11 @@
             <artifactId>provider-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.tronprotocol</groupId>
+            <artifactId>java-tron</artifactId>
+            <version>Odyssey-v3.2.1.1</version>
+        </dependency>
+        <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
             <scope>test</scope>

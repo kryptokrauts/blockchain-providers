@@ -29,9 +29,4 @@ public class EthereumKeystoreExtractor implements SecretExtractor<EthereumKeysto
             throw new IllegalArgumentException(msg);
         }
     }
-
-    @Override
-    public Class<EthereumKeystoreExtractionRequest> getImportRequestType() {
-        return EthereumKeystoreExtractionRequest.class;
-    }
 }

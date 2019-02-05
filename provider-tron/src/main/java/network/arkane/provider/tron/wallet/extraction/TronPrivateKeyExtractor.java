@@ -1,23 +1,24 @@
-package network.arkane.provider.wallet.extraction;
+package network.arkane.provider.tron.wallet.extraction;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.secret.generation.EthereumSecretKey;
+import network.arkane.provider.tron.secret.generation.TronSecretKey;
+import network.arkane.provider.tron.wallet.extraction.request.TronPrivateKeyExtractionRequest;
 import network.arkane.provider.wallet.domain.SecretKey;
-import network.arkane.provider.wallet.extraction.request.EthereumPrivateKeyExtractionRequest;
+import network.arkane.provider.wallet.extraction.SecretExtractor;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
-import org.web3j.crypto.ECKeyPair;
+import org.tron.common.crypto.ECKey;
 
 @Component
 @Slf4j
-public class EthereumPrivateKeyExtractor implements SecretExtractor<EthereumPrivateKeyExtractionRequest> {
+public class TronPrivateKeyExtractor implements SecretExtractor<TronPrivateKeyExtractionRequest> {
 
     @Override
-    public SecretKey extract(final EthereumPrivateKeyExtractionRequest importWalletRequest) {
+    public SecretKey extract(final TronPrivateKeyExtractionRequest importWalletRequest) {
         try {
             String sanitizedKey = sanitize(importWalletRequest.getPrivateKey());
-            return EthereumSecretKey.builder()
-                                    .keyPair(ECKeyPair.create(Hex.decodeHex(sanitizedKey))).build();
+            return TronSecretKey.builder()
+                                .keyPair(ECKey.fromPrivate(Hex.decodeHex(sanitizedKey))).build();
         } catch (final Exception ex) {
             log.error("Unable to decode ethereum private key {}", importWalletRequest.getPrivateKey());
             throw new IllegalArgumentException("Unable to decode ethereum private key " + importWalletRequest.getPrivateKey());
