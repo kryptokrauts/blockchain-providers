@@ -3,8 +3,8 @@ package network.arkane.provider.litecoin.sign;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.litecoin.LitecoinEnv;
 import network.arkane.provider.litecoin.address.LitecoinP2SHConverter;
-import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import network.arkane.provider.litecoin.unspent.Unspent;
 import network.arkane.provider.litecoin.unspent.UnspentLitecoinService;
 import org.apache.commons.codec.DecoderException;
@@ -20,10 +20,14 @@ import java.util.List;
 @Component
 public class LitecoinTransactionFactory {
 
+    private final LitecoinEnv litecoinEnv;
     private final UnspentLitecoinService unspentService;
     private final LitecoinP2SHConverter litecoinP2SHConverter;
 
-    public LitecoinTransactionFactory(UnspentLitecoinService unspentService, LitecoinP2SHConverter litecoinP2SHConverter) {
+    public LitecoinTransactionFactory(LitecoinEnv litecoinEnv,
+                                      UnspentLitecoinService unspentService,
+                                      LitecoinP2SHConverter litecoinP2SHConverter) {
+        this.litecoinEnv = litecoinEnv;
         this.unspentService = unspentService;
         this.litecoinP2SHConverter = litecoinP2SHConverter;
     }
@@ -36,7 +40,7 @@ public class LitecoinTransactionFactory {
             final long amountToSend = signable.getPhotonValue().longValue();
 
 
-            Transaction transaction = new Transaction(new LitecoinParams());
+            Transaction transaction = new Transaction(litecoinEnv.getNetworkParameters());
             transaction.setPurpose(Transaction.Purpose.USER_PAYMENT);
             transaction.addOutput(Coin.valueOf(amountToSend), toAddress);
 
@@ -63,7 +67,7 @@ public class LitecoinTransactionFactory {
 
     private Address toAddress(String from) {
         return Address.fromBase58(
-                new LitecoinParams(),
+                litecoinEnv.getNetworkParameters(),
                 litecoinP2SHConverter.convert(from)
         );
     }
@@ -123,7 +127,7 @@ public class LitecoinTransactionFactory {
     }
 
     private TransactionInput createTransactionInput(final Transaction tx, final Unspent unspent) throws DecoderException {
-        final TransactionOutPoint outPoint = new TransactionOutPoint(new LitecoinParams(), unspent.getVOut(), Sha256Hash.wrap(unspent.getTxId()));
-        return new TransactionInput(new LitecoinParams(), tx, Hex.decodeHex(unspent.getScriptPubKey()), outPoint, Coin.valueOf(unspent.getAmount()));
+        final TransactionOutPoint outPoint = new TransactionOutPoint(litecoinEnv.getNetworkParameters(), unspent.getVOut(), Sha256Hash.wrap(unspent.getTxId()));
+        return new TransactionInput(litecoinEnv.getNetworkParameters(), tx, Hex.decodeHex(unspent.getScriptPubKey()), outPoint, Coin.valueOf(unspent.getAmount()));
     }
 }

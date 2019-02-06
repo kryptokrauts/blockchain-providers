@@ -6,6 +6,8 @@ import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionResponse;
 import network.arkane.provider.blockcypher.domain.TX;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.litecoin.LitecoinEnv;
+import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignature;
@@ -24,7 +26,10 @@ class LitecoinTransactionGatewayTest {
     @BeforeEach
     void setUp() {
         blockcypherGateway = mock(BlockcypherGateway.class);
-        litecoinTransactionGateway = new LitecoinTransactionGateway(blockcypherGateway);
+        litecoinTransactionGateway = new LitecoinTransactionGateway(
+                new LitecoinEnv(Network.LITECOIN, new LitecoinParams()),
+                blockcypherGateway
+        );
     }
 
     @Test

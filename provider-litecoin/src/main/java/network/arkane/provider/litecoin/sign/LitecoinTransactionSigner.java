@@ -2,14 +2,13 @@ package network.arkane.provider.litecoin.sign;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
+import network.arkane.provider.litecoin.LitecoinEnv;
 import network.arkane.provider.litecoin.secret.generation.LitecoinSecretKey;
 import network.arkane.provider.sign.Signer;
 import network.arkane.provider.sign.domain.Signature;
 import org.apache.commons.codec.binary.Hex;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.ScriptException;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Transaction;
@@ -24,17 +23,18 @@ import java.util.stream.IntStream;
 @Slf4j
 public class LitecoinTransactionSigner implements Signer<LitecoinTransactionSignable, LitecoinSecretKey> {
 
-    private final NetworkParameters networkParameters = new LitecoinParams();
+    private final LitecoinEnv litecoinEnv;
     private final LitecoinTransactionFactory transactionFactory;
 
-    public LitecoinTransactionSigner(final LitecoinTransactionFactory transactionFactory) {
+    public LitecoinTransactionSigner(LitecoinEnv litecoinEnv, final LitecoinTransactionFactory transactionFactory) {
+        this.litecoinEnv = litecoinEnv;
         this.transactionFactory = transactionFactory;
     }
 
     @Override
     public Signature createSignature(final LitecoinTransactionSignable signable, final LitecoinSecretKey secretKey) {
         try {
-            final Address fromAddress = new Address(networkParameters, secretKey.getKey().getPubKeyHash());
+            final Address fromAddress = new Address(litecoinEnv.getNetworkParameters(), secretKey.getKey().getPubKeyHash());
             final Transaction tx = transactionFactory.createLitecoinTransaction(signable, fromAddress.toBase58());
             signInputsOfTransaction(fromAddress, tx, secretKey.getKey());
             return network.arkane.provider.sign.domain.TransactionSignature.signTransactionBuilder()

@@ -1,6 +1,9 @@
 package network.arkane.provider.litecoin.address;
 
 
+import network.arkane.provider.blockcypher.Network;
+import network.arkane.provider.litecoin.LitecoinEnv;
+import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +15,9 @@ class LitecoinP2SHConverterTest {
 
     @BeforeEach
     void setUp() {
-        converter = new LitecoinP2SHConverter();
+        converter = new LitecoinP2SHConverter(
+                new LitecoinEnv(Network.LITECOIN, new LitecoinParams())
+        );
     }
 
     @Test

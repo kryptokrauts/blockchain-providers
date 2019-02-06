@@ -3,6 +3,9 @@ package network.arkane.provider.litecoin.wallet.generation;
 
 import com.google.protobuf.ByteString;
 import network.arkane.provider.JSONUtil;
+import network.arkane.provider.blockcypher.Network;
+import network.arkane.provider.litecoin.LitecoinEnv;
+import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import network.arkane.provider.litecoin.secret.generation.LitecoinSecretGenerator;
 import network.arkane.provider.litecoin.secret.generation.LitecoinSecretKey;
 import network.arkane.provider.wallet.generation.GeneratedWallet;
@@ -22,7 +25,9 @@ class LitecoinWalletGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        litecoinWalletGenerator = new LitecoinWalletGenerator();
+        litecoinWalletGenerator = new LitecoinWalletGenerator(
+                new LitecoinEnv(Network.LITECOIN, new LitecoinParams())
+        );
     }
 
     @Test

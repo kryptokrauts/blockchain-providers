@@ -5,7 +5,9 @@ import network.arkane.provider.blockcypher.BlockcypherGateway;
 import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddress;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.litecoin.LitecoinEnv;
 import network.arkane.provider.litecoin.address.LitecoinP2SHConverter;
+import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +31,11 @@ class LitecoinBalanceGatewayTest {
     void setUp() {
         blockcypherGateway = mock(BlockcypherGateway.class);
         litecoinP2SHConverter = mock(LitecoinP2SHConverter.class);
-        litecoinBalanceGateway = new LitecoinBalanceGateway(blockcypherGateway, litecoinP2SHConverter);
+        litecoinBalanceGateway = new LitecoinBalanceGateway(
+                new LitecoinEnv(Network.LITECOIN, new LitecoinParams()),
+                blockcypherGateway,
+                litecoinP2SHConverter
+        );
 
         when(litecoinP2SHConverter.convert(address)).thenReturn(convertedAddress);
     }

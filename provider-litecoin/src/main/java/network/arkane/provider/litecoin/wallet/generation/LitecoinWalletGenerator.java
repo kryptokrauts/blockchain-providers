@@ -1,7 +1,7 @@
 package network.arkane.provider.litecoin.wallet.generation;
 
 import com.google.protobuf.ByteString;
-import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
+import network.arkane.provider.litecoin.LitecoinEnv;
 import network.arkane.provider.litecoin.secret.generation.LitecoinSecretKey;
 import network.arkane.provider.wallet.generation.GeneratedWallet;
 import network.arkane.provider.wallet.generation.WalletGenerator;
@@ -15,6 +15,12 @@ import org.springframework.util.StringUtils;
 @Component
 public class LitecoinWalletGenerator implements WalletGenerator<LitecoinSecretKey> {
 
+    private final LitecoinEnv litecoinEnv;
+
+    public LitecoinWalletGenerator(LitecoinEnv litecoinEnv) {
+        this.litecoinEnv = litecoinEnv;
+    }
+
     @Override
     public GeneratedWallet generateWallet(String password, LitecoinSecretKey secret) {
         if (StringUtils.isEmpty(password)) {
@@ -25,7 +31,7 @@ public class LitecoinWalletGenerator implements WalletGenerator<LitecoinSecretKe
 
         ECKey encryptedEcKey = encrypt(secret.getKey(), password, salt);
         return GeneratedLitecoinWallet.builder()
-                .address(secret.getKey().toAddress(new LitecoinParams()).toBase58())
+                .address(secret.getKey().toAddress(litecoinEnv.getNetworkParameters()).toBase58())
                 .secret(new LitecoinKeystore(Base64.encodeBase64String(encryptedEcKey.getPubKey()),
                         Base64.encodeBase64String(encryptedEcKey.getEncryptedData().initialisationVector),
                         Base64.encodeBase64String(encryptedEcKey.getEncryptedData().encryptedBytes),

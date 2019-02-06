@@ -1,7 +1,9 @@
 package network.arkane.provider.litecoin.sign;
 
 import com.subgraph.orchid.encoders.Hex;
+import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.litecoin.LitecoinEnv;
 import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import network.arkane.provider.litecoin.secret.generation.LitecoinSecretKey;
 import network.arkane.provider.sign.domain.TransactionSignature;
@@ -28,7 +30,7 @@ class LitecoinTransactionSignerTest {
     @BeforeEach
     void setUp() {
         litecoinTransactionFactory = mock(LitecoinTransactionFactory.class);
-        signer = new LitecoinTransactionSigner(litecoinTransactionFactory);
+        signer = new LitecoinTransactionSigner(new LitecoinEnv(Network.LITECOIN, new LitecoinParams()), litecoinTransactionFactory);
 
         signable = new LitecoinTransactionSignable("LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx", BigInteger.valueOf(123000), 12);
         litecoinSecretKey = new LitecoinSecretKey(ECKey.fromPrivate(Hex.decode("9d2e1932224ce4e814167da2cebd59882b6d1cc05c6eacf499bf7101e7abd5e9")));

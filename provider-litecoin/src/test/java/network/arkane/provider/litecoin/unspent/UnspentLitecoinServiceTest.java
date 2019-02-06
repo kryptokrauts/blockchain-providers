@@ -4,7 +4,9 @@ import network.arkane.provider.blockcypher.BlockcypherGateway;
 import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddressUnspents;
 import network.arkane.provider.blockcypher.domain.BlockcypherTransactionRef;
+import network.arkane.provider.litecoin.LitecoinEnv;
 import network.arkane.provider.litecoin.address.LitecoinP2SHConverter;
+import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +32,11 @@ class UnspentLitecoinServiceTest {
     void setUp() {
         blockcypherGateway = mock(BlockcypherGateway.class);
         litecoinP2SHConverter = mock(LitecoinP2SHConverter.class);
-        unspentLitecoinService = new UnspentLitecoinService(blockcypherGateway, litecoinP2SHConverter);
+        unspentLitecoinService = new UnspentLitecoinService(
+                new LitecoinEnv(Network.LITECOIN, new LitecoinParams()),
+                blockcypherGateway,
+                litecoinP2SHConverter
+        );
 
         when(litecoinP2SHConverter.convert(address)).thenReturn(convertedAddress);
     }

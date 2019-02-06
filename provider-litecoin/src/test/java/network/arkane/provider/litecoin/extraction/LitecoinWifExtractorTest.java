@@ -1,9 +1,10 @@
 package network.arkane.provider.litecoin.extraction;
 
+import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.litecoin.LitecoinEnv;
 import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import network.arkane.provider.litecoin.secret.generation.LitecoinSecretKey;
-import network.arkane.provider.wallet.domain.SecretKey;
 import org.bitcoinj.core.ECKey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,9 @@ class LitecoinWifExtractorTest {
 
     @BeforeEach
     void setUp() {
-        extractor = new LitecoinWifExtractor();
+        extractor = new LitecoinWifExtractor(
+                new LitecoinEnv(Network.LITECOIN, new LitecoinParams())
+        );
     }
 
     @Test

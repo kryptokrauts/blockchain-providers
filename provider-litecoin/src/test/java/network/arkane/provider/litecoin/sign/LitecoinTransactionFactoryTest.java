@@ -1,6 +1,8 @@
 package network.arkane.provider.litecoin.sign;
 
+import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.litecoin.LitecoinEnv;
 import network.arkane.provider.litecoin.address.LitecoinP2SHConverter;
 import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import network.arkane.provider.litecoin.unspent.Unspent;
@@ -32,7 +34,11 @@ class LitecoinTransactionFactoryTest {
     void setUp() {
         unspentLitecoinService = mock(UnspentLitecoinService.class);
         litecoinP2SHConverter = mock(LitecoinP2SHConverter.class);
-        litecoinTransactionFactory = new LitecoinTransactionFactory(unspentLitecoinService, litecoinP2SHConverter);
+        litecoinTransactionFactory = new LitecoinTransactionFactory(
+                new LitecoinEnv(Network.LITECOIN, new LitecoinParams()),
+                unspentLitecoinService,
+                litecoinP2SHConverter
+        );
 
         signable = new LitecoinTransactionSignable("to address", BigInteger.valueOf(123000), 12);
 
@@ -164,7 +170,8 @@ class LitecoinTransactionFactoryTest {
     }
 
     @Test
-    @Disabled // TODO
+    @Disabled
+        // TODO
     void receiverAddressIsNotAcceptableVersion() {
         assertThatThrownBy(() -> {
             signable.setAddress("1DSfKJ8rPEGW1HkvEnNCozwXB4itn2a4Bh");
