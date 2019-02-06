@@ -5,7 +5,7 @@
 
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane</groupId>
-    <version>0.1.9</version>
+    <version>0.2.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -17,7 +17,7 @@
         <module>provider-vechain</module>
         <module>provider-ethereum</module>
         <module>provider-bitcoin</module>
-        <module>sochain</module>
+        <module>provider-tron</module>
         <module>blockcypher</module>
     </modules>
 
@@ -75,6 +75,11 @@
             <dependency>
                 <groupId>network.arkane</groupId>
                 <artifactId>provider-ethereum</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-tron</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -262,4 +267,11 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 </project>

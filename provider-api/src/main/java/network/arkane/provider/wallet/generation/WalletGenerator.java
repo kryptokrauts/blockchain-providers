@@ -1,6 +1,8 @@
 package network.arkane.provider.wallet.generation;
 
 
+import net.jodah.typetools.TypeResolver;
+import network.arkane.provider.sign.Signer;
 import network.arkane.provider.wallet.domain.SecretKey;
 
 public interface WalletGenerator<T extends SecretKey> {
@@ -19,5 +21,7 @@ public interface WalletGenerator<T extends SecretKey> {
      *
      * @return
      */
-    Class<T> type();
+    default Class<T> type() {
+        return (Class<T>) TypeResolver.resolveRawArguments(WalletGenerator.class, getClass())[0];
+    }
 }

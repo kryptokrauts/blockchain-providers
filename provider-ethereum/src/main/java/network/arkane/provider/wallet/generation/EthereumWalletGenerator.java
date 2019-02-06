@@ -32,9 +32,4 @@ public class EthereumWalletGenerator implements WalletGenerator<EthereumSecretKe
     private String getAddress(final EthereumSecretKey ethereumSecret) {
         return Keys.toChecksumAddress(Keys.getAddress(ethereumSecret.getKeyPair()));
     }
-
-    @Override
-    public Class<EthereumSecretKey> type() {
-        return EthereumSecretKey.class;
-    }
 }

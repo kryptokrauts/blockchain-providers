@@ -31,9 +31,4 @@ public class VechainWalletGenerator implements WalletGenerator<VechainSecretKey>
     private String getAddress(final VechainSecretKey vechainSecretKey) {
         return Keys.toChecksumAddress(Keys.getAddress(vechainSecretKey.getKeyPair()));
     }
-
-    @Override
-    public Class<VechainSecretKey> type() {
-        return VechainSecretKey.class;
-    }
 }
