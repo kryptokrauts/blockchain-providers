@@ -1,0 +1,10 @@
+version: '3'
+services:
+  tron-fullnode:
+    build: tron
+    container_name: tron-fullnode
+    ports:
+      - "50051:50051"
+      - "18891:18891"
+    volumes:
+      - ./docker_data/tron/data:/tron
