@@ -52,7 +52,6 @@ public class EthereumTransactionGateway implements TransactionGateway {
                 }
             } else {
                 log.debug("Updating last nonce");
-                //TODO: update last used nonce (using events)
                 return signAndSubmitTransactionBuilder()
                         .transactionHash(send.getTransactionHash())
                         .signedTransaction(signTransactionResponse.getSignedTransaction())
