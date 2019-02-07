@@ -11,7 +11,6 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.bitcoinj.core.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -165,28 +164,6 @@ class LitecoinTransactionFactoryTest {
             litecoinTransactionFactory.createLitecoinTransaction(signable, "from address");
         }).hasMessage("Not enough funds to create the transaction")
                 .hasFieldOrPropertyWithValue("errorCode", "litecoin.not-enough-funds")
-                .isInstanceOf(ArkaneException.class);
-    }
-
-    @Test
-    @Disabled
-        // TODO
-    void senderAddressIsNotAcceptableVersion() {
-        assertThatThrownBy(() -> litecoinTransactionFactory.createLitecoinTransaction(signable, "from address"))
-                .hasMessageStartingWith("Version code of address did not match acceptable versions for network")
-                .hasFieldOrPropertyWithValue("errorCode", "litecoin.address-wrong-network")
-                .isInstanceOf(ArkaneException.class);
-    }
-
-    @Test
-    @Disabled
-        // TODO
-    void receiverAddressIsNotAcceptableVersion() {
-        assertThatThrownBy(() -> {
-            signable.setAddress("1DSfKJ8rPEGW1HkvEnNCozwXB4itn2a4Bh");
-            litecoinTransactionFactory.createLitecoinTransaction(signable, "from address");
-        }).hasMessageStartingWith("Version code of address did not match acceptable versions for network")
-                .hasFieldOrPropertyWithValue("errorCode", "litecoin.address-wrong-network")
                 .isInstanceOf(ArkaneException.class);
     }
 
