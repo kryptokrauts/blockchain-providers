@@ -23,13 +23,16 @@ public class LitecoinTransactionFactory {
     private final LitecoinEnv litecoinEnv;
     private final UnspentLitecoinService unspentService;
     private final LitecoinP2SHConverter litecoinP2SHConverter;
+    private final LitecoinFeeCalculator litecoinFeeCalculator;
 
     public LitecoinTransactionFactory(LitecoinEnv litecoinEnv,
                                       UnspentLitecoinService unspentService,
-                                      LitecoinP2SHConverter litecoinP2SHConverter) {
+                                      LitecoinP2SHConverter litecoinP2SHConverter,
+                                      LitecoinFeeCalculator litecoinFeeCalculator) {
         this.litecoinEnv = litecoinEnv;
         this.unspentService = unspentService;
         this.litecoinP2SHConverter = litecoinP2SHConverter;
+        this.litecoinFeeCalculator = litecoinFeeCalculator;
     }
 
 
@@ -44,7 +47,7 @@ public class LitecoinTransactionFactory {
             transaction.setPurpose(Transaction.Purpose.USER_PAYMENT);
             transaction.addOutput(Coin.valueOf(amountToSend), toAddress);
 
-            addInputsAndOutputsToTransaction(fromAddress, transaction, amountToSend, signable.getFeePerByte());
+            addInputsAndOutputsToTransaction(fromAddress, transaction, amountToSend, signable.getFeePerKiloByte());
 
             transaction.verify();
 
@@ -85,7 +88,7 @@ public class LitecoinTransactionFactory {
     }
 
     @SneakyThrows
-    private void addInputsAndOutputsToTransaction(final Address sourceAddress, final Transaction tx, final Long requiredAmount, int feePerByte) {
+    private void addInputsAndOutputsToTransaction(final Address sourceAddress, final Transaction tx, final Long requiredAmount, int feePerKiloByte) {
         final Iterator<Unspent> unspentIterator = fetchUnspents(sourceAddress).iterator();
         boolean isRequiredAmountCovered = false;
         long gatheredAmount = 0L;
@@ -97,7 +100,7 @@ public class LitecoinTransactionFactory {
             tx.addInput(createTransactionInput(tx, unspent));
 
             if (gatheredAmount >= requiredAmount) {
-                isRequiredAmountCovered = addChangeAndTxFee(sourceAddress, tx, requiredAmount, gatheredAmount, feePerByte);
+                isRequiredAmountCovered = addChangeAndTxFee(sourceAddress, tx, requiredAmount, gatheredAmount, feePerKiloByte);
             }
         }
 
@@ -110,8 +113,8 @@ public class LitecoinTransactionFactory {
 
     }
 
-    private boolean addChangeAndTxFee(final Address sourceAddress, final Transaction tx, final long requiredAmount, final long gatheredAmount, final int feePerByte) {
-        final long txFee = calculateTxFee(tx, feePerByte);
+    private boolean addChangeAndTxFee(final Address sourceAddress, final Transaction tx, final long requiredAmount, final long gatheredAmount, final int feePerKiloByte) {
+        final long txFee = calculateTxFee(tx, feePerKiloByte);
         if (gatheredAmount >= (requiredAmount + txFee)) {
             final Coin change = Coin.valueOf((gatheredAmount - requiredAmount - txFee));
             if (change.value > 0) {
@@ -122,8 +125,8 @@ public class LitecoinTransactionFactory {
         return false;
     }
 
-    private long calculateTxFee(final Transaction tx, final int feePerByte) {
-        return (tx.getInputs().size() * 148 + (tx.getOutputs().size() + 1) * 34 + 10) * feePerByte;
+    private long calculateTxFee(final Transaction tx, final int feePerKiloByte) {
+        return litecoinFeeCalculator.calculate(tx, feePerKiloByte);
     }
 
     private TransactionInput createTransactionInput(final Transaction tx, final Unspent unspent) throws DecoderException {

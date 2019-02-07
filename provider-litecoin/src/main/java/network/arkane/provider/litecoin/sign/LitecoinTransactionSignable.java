@@ -11,5 +11,6 @@ import java.math.BigInteger;
 public class LitecoinTransactionSignable implements Signable {
     private String address;
     private BigInteger photonValue;
-    private int feePerByte;
+    // Default fee is 0.001LTC --> 100000 photon
+    private int feePerKiloByte;
 }

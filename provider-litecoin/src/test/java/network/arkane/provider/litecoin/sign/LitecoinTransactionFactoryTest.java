@@ -18,6 +18,8 @@ import java.math.BigInteger;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,21 +31,26 @@ class LitecoinTransactionFactoryTest {
     LitecoinTransactionFactory litecoinTransactionFactory;
     LitecoinTransactionSignable signable;
     LitecoinP2SHConverter litecoinP2SHConverter;
+    LitecoinFeeCalculator litecoinFeeCalculator;
 
     @BeforeEach
     void setUp() {
         unspentLitecoinService = mock(UnspentLitecoinService.class);
         litecoinP2SHConverter = mock(LitecoinP2SHConverter.class);
+        litecoinFeeCalculator = mock(LitecoinFeeCalculator.class);
+
         litecoinTransactionFactory = new LitecoinTransactionFactory(
                 new LitecoinEnv(Network.LITECOIN, new LitecoinParams()),
                 unspentLitecoinService,
-                litecoinP2SHConverter
-        );
+                litecoinP2SHConverter,
+                litecoinFeeCalculator);
 
-        signable = new LitecoinTransactionSignable("to address", BigInteger.valueOf(123000), 12);
+        signable = new LitecoinTransactionSignable("to address", BigInteger.valueOf(12300000), 12);
 
         when(litecoinP2SHConverter.convert("to address")).thenReturn("LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx");
         when(litecoinP2SHConverter.convert("from address")).thenReturn("LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk");
+        when(litecoinFeeCalculator.calculate(any(Transaction.class), eq(12))).thenReturn(100000L);
+
     }
 
     private Unspent createUnspent(int amount, String txId) {
@@ -74,7 +81,7 @@ class LitecoinTransactionFactoryTest {
     @Test
     void createsTransaction() throws Exception {
         when(unspentLitecoinService.getUnspentForAddress("LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk")).thenReturn(newArrayList(
-                createUnspent(123000, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b")
+                createUnspent(12300000, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b")
         ));
 
         Transaction result = litecoinTransactionFactory.createLitecoinTransaction(signable, "from address");
@@ -84,32 +91,33 @@ class LitecoinTransactionFactoryTest {
         assertThat(result.getPurpose()).isEqualTo(Transaction.Purpose.USER_PAYMENT);
 
         assertThat(result.getOutputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionOutput(result, 123000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx")
+                createExpectedTransactionOutput(result, 12300000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx")
         );
 
         assertThat(result.getInputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 123000)
+                createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 12300000)
         );
     }
 
     @Test
     void createsTransactionThatConsumesMultipleUnspent() throws Exception {
         when(unspentLitecoinService.getUnspentForAddress("LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk")).thenReturn(newArrayList(
-                createUnspent(100000, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b"),
-                createUnspent(50000, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c"),
-                createUnspent(75000, "346361635f87439b9930c1e9b7fca0c6a89f13d21225008e7042124ddf7b6a70")
+                createUnspent(10000000, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b"),
+                createUnspent(5000000, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c"),
+                createUnspent(7500000, "346361635f87439b9930c1e9b7fca0c6a89f13d21225008e7042124ddf7b6a70")
         ));
 
         Transaction result = litecoinTransactionFactory.createLitecoinTransaction(signable, "from address");
 
 
         assertThat(result.getOutputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionOutput(result, 123000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx"),
-                createExpectedTransactionOutput(result, 22512, "LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk")
+                createExpectedTransactionOutput(result, 12300000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx"),
+                createExpectedTransactionOutput(result, 2600000, "LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk")
         );
 
         assertThat(result.getInputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 100000), createExpectedTransactionInput(result, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c", 50000)
+                createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 10000000),
+                createExpectedTransactionInput(result, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c", 5000000)
         );
 
     }
@@ -117,21 +125,22 @@ class LitecoinTransactionFactoryTest {
     @Test
     void createsTransactionThatConsumesMultipleUnspent_includeFeeInCalculation() throws Exception {
         when(unspentLitecoinService.getUnspentForAddress("LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk")).thenReturn(newArrayList(
-                createUnspent(100000, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b"),
-                createUnspent(23000, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c"),
-                createUnspent(75000, "346361635f87439b9930c1e9b7fca0c6a89f13d21225008e7042124ddf7b6a70")
+                createUnspent(10000000, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b"),
+                createUnspent(24000000, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c"),
+                createUnspent(7500000, "346361635f87439b9930c1e9b7fca0c6a89f13d21225008e7042124ddf7b6a70")
         ));
 
         Transaction result = litecoinTransactionFactory.createLitecoinTransaction(signable, "from address");
 
 
         assertThat(result.getOutputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionOutput(result, 123000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx"),
-                createExpectedTransactionOutput(result, 68736, "LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk")
+                createExpectedTransactionOutput(result, 12300000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx"),
+                createExpectedTransactionOutput(result, 21600000, "LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk")
         );
 
         assertThat(result.getInputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 100000), createExpectedTransactionInput(result, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c", 23000), createExpectedTransactionInput(result, "346361635f87439b9930c1e9b7fca0c6a89f13d21225008e7042124ddf7b6a70", 75000)
+                createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 10000000),
+                createExpectedTransactionInput(result, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c", 24000000)
         );
 
     }
@@ -185,8 +194,8 @@ class LitecoinTransactionFactoryTest {
     void transactionShouldBeVerified() {
         assertThatThrownBy(() -> {
             when(unspentLitecoinService.getUnspentForAddress("LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk")).thenReturn(newArrayList(
-                    createUnspent(122999, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b"),
-                    createUnspent(122999, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b")
+                    createUnspent(12299900, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b"),
+                    createUnspent(12299900, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b")
             ));
             litecoinTransactionFactory.createLitecoinTransaction(signable, "from address");
         }).hasMessage("An error occurred trying to create the Litecoin transaction: Duplicated outpoint")
