@@ -23,42 +23,13 @@ class LitecoinFeeCalculatorTest {
         transaction = new Transaction(new LitecoinParams());
     }
 
-
     @Test
-    void calculatesFee_lessThen1KB() {
-        when(estimator.estimateFinalSize(transaction)).thenReturn(999);
+    void calculatesFee() {
+        when(estimator.estimateFinalSize(transaction)).thenReturn(372);
 
-        Long fee = calculator.calculate(transaction, 100000);
+        Long fee = calculator.calculate(transaction, 99817);
 
-        assertThat(fee).isEqualTo(100000);
-    }
-
-
-    @Test
-    void calculatesFee_1KB() {
-        when(estimator.estimateFinalSize(transaction)).thenReturn(1000);
-
-        Long fee = calculator.calculate(transaction, 100000);
-
-        assertThat(fee).isEqualTo(100000);
-    }
-
-    @Test
-    void calculatesFee_moreThen1KB() {
-        when(estimator.estimateFinalSize(transaction)).thenReturn(1001);
-
-        Long fee = calculator.calculate(transaction, 100000);
-
-        assertThat(fee).isEqualTo(200000);
-    }
-
-    @Test
-    void calculatesFee_almost2KB() {
-        when(estimator.estimateFinalSize(transaction)).thenReturn(1999);
-
-        Long fee = calculator.calculate(transaction, 100000);
-
-        assertThat(fee).isEqualTo(200000);
+        assertThat(fee).isEqualTo(37132);
     }
 
 

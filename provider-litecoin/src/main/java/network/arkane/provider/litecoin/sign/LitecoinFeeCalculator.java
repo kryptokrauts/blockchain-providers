@@ -15,6 +15,6 @@ public class LitecoinFeeCalculator {
     public Long calculate(Transaction transaction, int feePerKiloByte) {
         int estimateFinalSize = estimator.estimateFinalSize(transaction);
 
-        return (long) Math.ceil(estimateFinalSize / 1000.0) * feePerKiloByte;
+        return Math.round(estimateFinalSize * (feePerKiloByte / 1000.0));
     }
 }
