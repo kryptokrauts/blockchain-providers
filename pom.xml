@@ -16,7 +16,7 @@
         <module>provider-autoconfiguration</module>
         <module>provider-vechain</module>
         <module>provider-ethereum</module>
-        <module>provider-go</module
+        <module>provider-gochain</module>
         <module>provider-bitcoin</module>
         <module>sochain</module>
         <module>blockcypher</module>
@@ -80,7 +80,7 @@
             </dependency>
             <dependency>
                 <groupId>network.arkane</groupId>
-                <artifactId>provider-go</artifactId>
+                <artifactId>provider-gochain</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

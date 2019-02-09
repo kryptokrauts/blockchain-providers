@@ -4,9 +4,9 @@ package network.arkane.provider.chain;
  * Secret types, also known as chains, should be added here.
  * Supported chains
  * - ETHEREUM
- * - GO
+ * - GOCHAIN
  * - VECHAIN
  */
 public enum SecretType {
-    ETHEREUM, GO, VECHAIN, BITCOIN
+    ETHEREUM, GOCHAIN, VECHAIN, BITCOIN
 }
