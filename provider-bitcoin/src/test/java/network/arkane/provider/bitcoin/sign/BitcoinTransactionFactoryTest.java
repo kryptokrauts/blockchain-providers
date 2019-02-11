@@ -122,6 +122,32 @@ class BitcoinTransactionFactoryTest {
     }
 
     @Test
+    void createBitcoinTransaction_noFee() {
+        when(unspentService.getUnspentForAddress(any(Address.class))).thenReturn(buildUnspents(14482195));
+
+        assertThatThrownBy(() -> bitcoinTransactionFactory.createBitcoinTransaction(BitcoinTransactionSignable.builder()
+                                                                                                              .satoshiValue(BigInteger.valueOf(14482195))
+                                                                                                              .address("mhSwuar1U3Hf6phh2LMkFefkjCgFt8Xg5H")
+                                                                                                              .feePerByte(3)
+                                                                                                              .build(),
+                                                                                    "mpi2SkK5vKipCNE9h1HtRgDg6UM44AuN9S"))
+                .hasMessageContaining("Not enough funds to create the transaction");
+    }
+
+    @Test
+    void createBitcoinTransaction_notEnoughFundsForFee() {
+        when(unspentService.getUnspentForAddress(any(Address.class))).thenReturn(buildUnspents(14482195));
+
+        assertThatThrownBy(() -> bitcoinTransactionFactory.createBitcoinTransaction(BitcoinTransactionSignable.builder()
+                                                                                                              .satoshiValue(BigInteger.valueOf(14482195 - 677))
+                                                                                                              .address("mhSwuar1U3Hf6phh2LMkFefkjCgFt8Xg5H")
+                                                                                                              .feePerByte(3)
+                                                                                                              .build(),
+                                                                                    "mpi2SkK5vKipCNE9h1HtRgDg6UM44AuN9S"))
+                .hasMessageContaining("Not enough funds to create the transaction");
+    }
+
+    @Test
     void wrongNetwork() {
         assertThatThrownBy(() -> bitcoinTransactionFactory.createBitcoinTransaction(BitcoinTransactionSignable.builder()
                                                                                                               .satoshiValue(BigInteger.valueOf(14482195))
