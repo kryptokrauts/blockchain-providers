@@ -11,7 +11,7 @@ public class TronKeystoreExtractionRequest extends ExtractionRequest {
 
     public TronKeystoreExtractionRequest(final String keystore,
                                          final String password) {
-        super(SecretType.ETHEREUM);
+        super(SecretType.TRON);
         this.keystore = keystore;
         this.password = password;
     }

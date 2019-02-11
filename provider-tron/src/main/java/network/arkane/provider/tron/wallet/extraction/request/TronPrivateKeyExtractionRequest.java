@@ -9,7 +9,7 @@ public class TronPrivateKeyExtractionRequest extends ExtractionRequest {
     private String privateKey;
 
     public TronPrivateKeyExtractionRequest(final String privateKey) {
-        super(SecretType.ETHEREUM);
+        super(SecretType.TRON);
         this.privateKey = privateKey;
     }
 }
