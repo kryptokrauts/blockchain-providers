@@ -1,4 +1,4 @@
-package network.arkane.provider.balance;
+package network.arkane.provider.bridge;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.BlockProvidersIT;
@@ -21,23 +21,23 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BlockProvidersIT.class)
 @Slf4j
-public class BalanceGatewayTests {
+public class TransactionGatewayTests {
 
     @Autowired
     @Lazy
-    private List<BalanceGateway> balanceGateways;
+    private List<TransactionGateway> transactionGateways;
 
     @Test
-    void balanceGatewaysShouldBeProvidedForEverySecretType() {
+    void transactionGatewaysShouldBeProvidedForEverySecretType() {
 
-        final Map<SecretType, BalanceGateway> collect = balanceGateways.stream()
-                                                                       .collect(Collectors.toMap(BalanceGateway::type, Function.identity()));
+        final Map<SecretType, TransactionGateway> collect = transactionGateways.stream().collect(Collectors.toMap(TransactionGateway::getType, Function.identity()));
         final long count = Stream.of(SecretType.values())
                                  .filter(type -> collect.get(type) == null)
-                                 .peek(type -> log.error("An implementation of BalanceGateway does not exist yet for SecretType.{}", type))
+                                 .peek(type -> log.error("An implementation of TransactionGateway does not exist yet for SecretType.{}", type))
                                  .count();
         if (count > 0) {
-            fail(String.format("A total of %d implementation(s) of BalanceGateway were not implemented", count));
+            fail(String.format("A total of %d implementation(s) of TransactionGateway were not implemented", count));
         }
     }
+
 }
