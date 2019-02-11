@@ -24,6 +24,7 @@ public class SecretKeyTests {
         return x -> {
             try {
                 SecretKey secretKey = x.newInstance();
+                System.out.println(secretKey);
             } catch (final Exception ex) {
 
             }
