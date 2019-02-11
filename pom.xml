@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
+
     <modules>
         <module>provider-api</module>
         <module>provider-autoconfiguration</module>
