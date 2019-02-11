@@ -20,7 +20,7 @@ public class BitcoinSecretKey implements SecretKey {
     }
 
     @Builder
-    public BitcoinSecretKey(ECKey key) {
+    public BitcoinSecretKey(final ECKey key) {
         this.key = key;
     }
 }
