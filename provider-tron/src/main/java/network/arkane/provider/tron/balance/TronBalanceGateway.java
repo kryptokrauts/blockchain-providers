@@ -37,7 +37,7 @@ public class TronBalanceGateway implements BalanceGateway {
 
     @Override
     public SecretType type() {
-        return SecretType.ETHEREUM;
+        return SecretType.TRON;
     }
 
     @Override

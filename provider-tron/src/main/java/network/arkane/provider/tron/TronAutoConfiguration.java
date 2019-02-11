@@ -1,6 +1,5 @@
 package network.arkane.provider.tron;
 
-import io.grpc.Grpc;
 import network.arkane.provider.tron.grpc.GrpcClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,10 +13,12 @@ public class TronAutoConfiguration {
     private final String fullNode;
     private final String solidityNode;
 
-    public TronAutoConfiguration(final @Value("${network.arkane.tron.fullnode.url:'grpc.trongrid.io:50051'}") String fullNode, final @Value("${network.arkane.tron.soliditynode.url:'grpc.trongrid.io:50052'}") String solidityNode, final String environment) {
+    public TronAutoConfiguration(final @Value("${network.arkane.tron.fullnode.url:grpc.trongrid.io:50051}") String fullNode,
+                                 final @Value("${network.arkane.tron.soliditynode.url:grpc.trongrid.io:50052}") String solidityNode,
+                                 final @Value("${tron.network}") String tronNetwork) {
         this.fullNode = fullNode;
         this.solidityNode = solidityNode;
-        if ("testnet".equals(environment)) {
+        if ("testnet".equals(tronNetwork)) {
             Wallet.setAddressPreFixByte(Constant.ADD_PRE_FIX_BYTE_TESTNET);
             Wallet.setAddressPreFixString(Constant.ADD_PRE_FIX_STRING_TESTNET);
         } else {
