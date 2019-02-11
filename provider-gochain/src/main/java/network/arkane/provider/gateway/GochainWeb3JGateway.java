@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.contract.DeltaBalances;
 import network.arkane.provider.contract.HumanStandardToken;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.gas.EthereumEstimateGasResult;
+import network.arkane.provider.gas.GochainEstimateGasResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -26,15 +26,14 @@ import java.util.concurrent.ExecutionException;
 
 @Component
 @Slf4j
-public class Web3JGateway {
+public class GochainWeb3JGateway {
     private static final BigInteger DEFAULT_GAS_LIMIT_FAILED = new BigInteger("200000");
     private final EnsResolver ensResolver;
     private Web3j web3j;
     private DeltaBalances deltaBalances;
 
-    public Web3JGateway(Web3j web3j,
-                        final @Value("${network.arkane.ethereum.deltabalances.contract-address}") String deltaBalancesAddress) {
-        web3j = Web3j.build(new HttpService("https://rpc.gochain.io"));
+    public GochainWeb3JGateway(Web3j web3j,
+                        final @Value("${network.arkane.gochain.deltabalances.contract-address}") String deltaBalancesAddress) {
         this.web3j = web3j;
         ensResolver = new EnsResolver(this.web3j);
         deltaBalances = new DeltaBalances(deltaBalancesAddress, web3j);
@@ -48,15 +47,15 @@ public class Web3JGateway {
         try {
             return web3().ethGetBalance(account, DefaultBlockParameterName.LATEST).send();
         } catch (final Exception ex) {
-            log.error("Problem trying to get balance from the Ethereum network");
+            log.error("Problem trying to get balance from the Gochain network");
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Unable to get the balance for the specified account (%s) (Gochain)", account))
+                                 .message(String.format("Unable to get the balance for the specified account (%s) ()", account))
                                  .build();
         }
     }
 
-    @Cacheable(value = "address_to_ens", key = "#address")
+    @Cacheable(value = "address_to_ens_gochain", key = "#address")
     public Optional<String> getEnsName(String address) {
         try {
             return Optional.ofNullable(ensResolver.reverseResolve(address));
@@ -66,7 +65,7 @@ public class Web3JGateway {
         }
     }
 
-    @Cacheable(value = "ens_to_address", key = "#ensName")
+    @Cacheable(value = "ens_to_address_gochain", key = "#ensName")
     public Optional<String> getAddressForEnsName(String ensName) {
         try {
             return Optional.ofNullable(ensResolver.resolve(ensName));
@@ -82,7 +81,7 @@ public class Web3JGateway {
             log.error(String.format("Problem trying to get the token balances of %s", owner), ex);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the token balances of %s (Gochain)", owner))
+                                 .message(String.format("Problem trying to get the token balances of %s ()", owner))
                                  .build();
         }
     }
@@ -94,12 +93,12 @@ public class Web3JGateway {
             log.error(String.format("Problem trying to get the token balance of %s for token %s", owner, tokenAddress), ex);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the token balance of %s for token %s (Gochain)", owner, tokenAddress))
+                                 .message(String.format("Problem trying to get the token balance of %s for token %s ()", owner, tokenAddress))
                                  .build();
         }
     }
 
-    public EthereumEstimateGasResult estimateGas(final String from, final String to, BigInteger value, String data) {
+    public GochainEstimateGasResult estimateGas(final String from, final String to, BigInteger value, String data) {
         try {
             BigInteger blockGasLimit = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock().getGasLimit();
 
@@ -109,13 +108,13 @@ public class Web3JGateway {
 
             EthEstimateGas ethEstimateGas = web3().ethEstimateGas(transaction).send();
             if (ethEstimateGas.hasError()) {
-                return EthereumEstimateGasResult.builder()
+                return GochainEstimateGasResult.builder()
                                                 .gasLimit(DEFAULT_GAS_LIMIT_FAILED)
                                                 .reverted(true)
                                                 .build();
             }
             BigInteger amountUsed = ethEstimateGas.getAmountUsed();
-            return EthereumEstimateGasResult.builder()
+            return GochainEstimateGasResult.builder()
                                             .gasLimit(amountUsed)
                                             .reverted(amountUsed.compareTo(blockGasLimit) >= 0)
                                             .build();
@@ -150,10 +149,10 @@ public class Web3JGateway {
                     .ethSendRawTransaction(signedTransaction)
                     .send();
         } catch (final Exception ex) {
-            log.error("Problem trying to submit transaction to the Ethereum network: {}", ex.getMessage());
+            log.error("Problem trying to submit transaction to the Gochain network: {}", ex.getMessage());
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.transaction.submit.internal-error")
-                                 .message("A problem occurred trying to submit the transaction to the Ethereum network")
+                                 .message("A problem occurred trying to submit the transaction to the Gochain network")
                                  .cause(ex)
                                  .build();
         }
@@ -163,10 +162,10 @@ public class Web3JGateway {
         try {
             return getERC20(tokenAddress).name().send();
         } catch (Exception ex) {
-            log.error(String.format("Problem trying to get the name for token %s (Gochain)", tokenAddress), ex);
+            log.error(String.format("Problem trying to get the name for token %s ()", tokenAddress), ex);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the name for token %s (Gochain)", tokenAddress))
+                                 .message(String.format("Problem trying to get the name for token %s ()", tokenAddress))
                                  .build();
         }
     }
@@ -175,10 +174,10 @@ public class Web3JGateway {
         try {
             return getERC20(tokenAddress).symbol().send();
         } catch (Exception ex) {
-            log.error(String.format("Problem trying to get the symbol for token %s (Gochain)", tokenAddress), ex);
+            log.error(String.format("Problem trying to get the symbol for token %s ()", tokenAddress), ex);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the symbol for token %s (Gochain)", tokenAddress))
+                                 .message(String.format("Problem trying to get the symbol for token %s ()", tokenAddress))
                                  .build();
         }
     }
@@ -187,10 +186,10 @@ public class Web3JGateway {
         try {
             return getERC20(tokenAddress).decimals().send();
         } catch (Exception ex) {
-            log.error(String.format("Problem trying to get the decimals for token %s (Gochain)", tokenAddress), ex);
+            log.error(String.format("Problem trying to get the decimals for token %s ()", tokenAddress), ex);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the decimals for token %s (Gochain)", tokenAddress))
+                                 .message(String.format("Problem trying to get the decimals for token %s ()", tokenAddress))
                                  .build();
         }
     }

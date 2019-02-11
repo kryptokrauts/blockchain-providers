@@ -1,6 +1,6 @@
 package network.arkane.provider.token;
 
-import network.arkane.provider.gateway.Web3JGateway;
+import network.arkane.provider.gateway.GochainWeb3JGateway;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,15 +11,15 @@ import java.util.Optional;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class NativeEthereumTokenDiscoveryServiceTest {
+class NativeGochainTokenDiscoveryServiceTest {
 
-    private NativeEthereumTokenDiscoveryService nativeEthereumTokenDiscoveryService;
-    private Web3JGateway web3JGateway;
+    private NativeGochainTokenDiscoveryService nativeGochainTokenDiscoveryService;
+    private GochainWeb3JGateway web3JGateway;
 
     @BeforeEach
     void setUp() {
-        this.web3JGateway = mock(Web3JGateway.class);
-        this.nativeEthereumTokenDiscoveryService = new NativeEthereumTokenDiscoveryService(web3JGateway);
+        this.web3JGateway = mock(GochainWeb3JGateway.class);
+        this.nativeGochainTokenDiscoveryService = new NativeGochainTokenDiscoveryService(web3JGateway);
     }
 
     @Test
@@ -32,7 +32,7 @@ class NativeEthereumTokenDiscoveryServiceTest {
         when(web3JGateway.getName(tokenAddress)).thenReturn(null);
         when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
 
-        final Optional<TokenInfo> result = nativeEthereumTokenDiscoveryService.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = nativeGochainTokenDiscoveryService.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isEmpty();
     }
@@ -47,7 +47,7 @@ class NativeEthereumTokenDiscoveryServiceTest {
         when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
         when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
 
-        final Optional<TokenInfo> result = nativeEthereumTokenDiscoveryService.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = nativeGochainTokenDiscoveryService.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isEmpty();
     }
@@ -62,7 +62,7 @@ class NativeEthereumTokenDiscoveryServiceTest {
         when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
         when(web3JGateway.getSymbol(tokenAddress)).thenReturn(null);
 
-        final Optional<TokenInfo> result = nativeEthereumTokenDiscoveryService.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = nativeGochainTokenDiscoveryService.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isEmpty();
     }
@@ -78,7 +78,7 @@ class NativeEthereumTokenDiscoveryServiceTest {
         when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
         when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
 
-        final Optional<TokenInfo> result = nativeEthereumTokenDiscoveryService.getTokenInfo(tokenAddress);
+        final Optional<TokenInfo> result = nativeGochainTokenDiscoveryService.getTokenInfo(tokenAddress);
 
         Assertions.assertThat(result).isNotEmpty();
         Assertions.assertThat(result.get().getAddress()).isEqualTo(tokenAddress);

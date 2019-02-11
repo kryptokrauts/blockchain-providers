@@ -4,7 +4,7 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.balance.domain.TokenBalanceMother;
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.gateway.Web3JGateway;
+import network.arkane.provider.gateway.GochainWeb3JGateway;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import network.arkane.provider.token.TokenInfoMother;
@@ -23,21 +23,21 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class EthereumBalanceGatewayTest {
-    private EthereumBalanceGateway balanceGateway;
-    private Web3JGateway web3JGateway;
+class GochainBalanceGatewayTest {
+    private GochainBalanceGateway balanceGateway;
+    private GochainWeb3JGateway web3JGateway;
     private TokenDiscoveryService tokenDiscoveryService;
 
     @BeforeEach
     void setUp() {
-        web3JGateway = mock(Web3JGateway.class);
+        web3JGateway = mock(GochainWeb3JGateway.class);
         EthGetBalance balance = mock(EthGetBalance.class);
         when(balance.getBalance()).thenReturn(new BigInteger("1000000000000000000"));
         when(web3JGateway.getBalance(any(String.class))).thenReturn(balance);
         when(web3JGateway.getTokenBalance(any(String.class), any(String.class))).thenReturn(BigInteger.valueOf(1000000000000000000L));
         tokenDiscoveryService = mock(TokenDiscoveryService.class);
 
-        balanceGateway = new EthereumBalanceGateway(web3JGateway, tokenDiscoveryService);
+        balanceGateway = new GochainBalanceGateway(web3JGateway, tokenDiscoveryService);
     }
 
     @Test
@@ -55,7 +55,7 @@ class EthereumBalanceGatewayTest {
         final TokenInfo fndTokenInfo = TokenInfoMother.fnd().build();
         final TokenBalance fndBalance = TokenBalanceMother.fndResult();
 
-        when(tokenDiscoveryService.getTokenInfo(SecretType.ETHEREUM, fndTokenInfo.getAddress())).thenReturn(Optional.of(fndTokenInfo));
+        when(tokenDiscoveryService.getTokenInfo(SecretType.GOCHAIN, fndTokenInfo.getAddress())).thenReturn(Optional.of(fndTokenInfo));
         when(web3JGateway.getTokenBalance("address", fndTokenInfo.getAddress())).thenReturn(new BigInteger(fndBalance.getRawBalance()));
 
         final TokenBalance result = balanceGateway.getTokenBalance("address", fndTokenInfo.getAddress());
@@ -76,7 +76,7 @@ class EthereumBalanceGatewayTest {
 
         when(web3JGateway.getTokenBalances("address", Arrays.asList(fnd.getAddress(), zrx.getAddress(), dai.getAddress()))).thenReturn(
                 Arrays.asList(new BigInteger(fndBalance.getRawBalance()), new BigInteger(zrxBalance.getRawBalance()), new BigInteger(daiBalance.getRawBalance())));
-        when(tokenDiscoveryService.getTokens(SecretType.ETHEREUM)).thenReturn(Arrays.asList(fnd, zrx, dai));
+        when(tokenDiscoveryService.getTokens(SecretType.GOCHAIN)).thenReturn(Arrays.asList(fnd, zrx, dai));
         final List<TokenBalance> results = balanceGateway.getTokenBalances("address");
         assertThat(results).containsExactlyInAnyOrder(fndBalance, zrxBalance, daiBalance);
     }

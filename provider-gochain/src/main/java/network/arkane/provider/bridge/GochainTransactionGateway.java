@@ -3,7 +3,7 @@ package network.arkane.provider.bridge;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.gateway.Web3JGateway;
+import network.arkane.provider.gateway.GochainWeb3JGateway;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.token.TokenInfo;
@@ -20,9 +20,9 @@ import static network.arkane.provider.sign.domain.SubmittedAndSignedTransactionS
 @Slf4j
 public class GochainTransactionGateway implements TransactionGateway {
 
-    private Web3JGateway web3j;
+    private GochainWeb3JGateway web3j;
 
-    public GochainTransactionGateway(Web3JGateway web3j) {
+    public GochainTransactionGateway(GochainWeb3JGateway web3j) {
         this.web3j = web3j;
     }
 

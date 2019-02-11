@@ -1,6 +1,6 @@
 package network.arkane.provider.gateway;
 
-import network.arkane.provider.gas.EthereumEstimateGasResult;
+import network.arkane.provider.gas.GochainEstimateGasResult;
 import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -16,16 +16,16 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Disabled("Disabled Test Because it fails during build for unknown reason")
-class Web3JGatewayTest {
+class GochainWeb3JGatewayTest {
 
     private static final String DELTA_BALANCES_ADDRESS = "0x0";
-    private Web3JGateway web3JGateway;
+    private GochainWeb3JGateway web3JGateway;
     private Web3j web3j;
 
     @BeforeEach
     void setUp() throws InterruptedException {
         web3j = Web3j.build(new HttpService("https://testnet-rpc.gochain.io"));
-        web3JGateway = new Web3JGateway(web3j, DELTA_BALANCES_ADDRESS);
+        web3JGateway = new GochainWeb3JGateway(web3j, DELTA_BALANCES_ADDRESS);
         Thread.sleep(100);
     }
 
@@ -49,7 +49,7 @@ class Web3JGatewayTest {
 
     @Test
     void estimateGas() {
-        EthereumEstimateGasResult result = web3JGateway.estimateGas("0x0011c2119bffee8d0c1a9e99ca9ebd8264812dcb",
+        GochainEstimateGasResult result = web3JGateway.estimateGas("0x0011c2119bffee8d0c1a9e99ca9ebd8264812dcb",
         "0x4df47b4969b2911c966506e3592c41389493953b",
         BigInteger.ZERO,
         "0xa9059cbb00000000000000000000000065edadd2a809e3d7cb0e4c28e5a9e1d0339765860000000000000000000000000000000000000000000003a23ed6ba6c67200000");
@@ -59,7 +59,7 @@ class Web3JGatewayTest {
 
     @Test
     void estimateGasReverts() {
-        EthereumEstimateGasResult result = web3JGateway.estimateGas("0x9ca4e34ad23a3b177bd0d6e48149efd0852a7752",
+        GochainEstimateGasResult result = web3JGateway.estimateGas("0x9ca4e34ad23a3b177bd0d6e48149efd0852a7752",
         "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
         BigInteger.ZERO,
         "0xa9059cbb000000000000000000000000107af532e6f828da6fe79699123c9a5ea0123d160000000000000000000000000000000000000000000000000de0b9f291777780");

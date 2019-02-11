@@ -9,7 +9,7 @@ import org.web3j.protocol.http.HttpService;
 @Configuration
 public class Web3AutoConfiguration {
     @Bean
-    public Web3j provideWeb3j(final @Value("${network.arkane.ethereum.endpoint.url}") String gochainEndpoint) {
+    public Web3j provideWeb3j(final @Value("${network.arkane.gochain.endpoint.url}") String gochainEndpoint) {
         return Web3j.build(new HttpService(gochainEndpoint));
     }
 }

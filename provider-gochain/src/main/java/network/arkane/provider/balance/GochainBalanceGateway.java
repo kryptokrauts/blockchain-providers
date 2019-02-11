@@ -6,7 +6,7 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.gateway.Web3JGateway;
+import network.arkane.provider.gateway.GochainWeb3JGateway;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import org.springframework.stereotype.Component;
@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 @Component
 public class GochainBalanceGateway implements BalanceGateway {
 
-    private Web3JGateway web3JGateway;
+    private GochainWeb3JGateway web3JGateway;
     private final TokenDiscoveryService tokenDiscoveryService;
 
-    public GochainBalanceGateway(final Web3JGateway web3JGateway,
+    public GochainBalanceGateway(final GochainWeb3JGateway web3JGateway,
                                   final TokenDiscoveryService tokenDiscoveryService) {
         this.web3JGateway = web3JGateway;
         this.tokenDiscoveryService = tokenDiscoveryService;

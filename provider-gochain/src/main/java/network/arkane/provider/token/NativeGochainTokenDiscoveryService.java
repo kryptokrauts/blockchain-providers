@@ -1,7 +1,7 @@
 package network.arkane.provider.token;
 
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.gateway.Web3JGateway;
+import network.arkane.provider.gateway.GochainWeb3JGateway;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
@@ -10,9 +10,9 @@ import java.util.Optional;
 @Component
 public class NativeGochainTokenDiscoveryService implements NativeTokenDiscoveryService {
 
-    private Web3JGateway web3JGateway;
+    private GochainWeb3JGateway web3JGateway;
 
-    public NativeGochainTokenDiscoveryService(Web3JGateway web3JGateway) {
+    public NativeGochainTokenDiscoveryService(GochainWeb3JGateway web3JGateway) {
         this.web3JGateway = web3JGateway;
     }
 

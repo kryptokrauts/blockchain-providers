@@ -1,7 +1,7 @@
 package network.arkane.provider.sign;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.secret.generation.EthereumSecretKey;
+import network.arkane.provider.secret.generation.GochainSecretKey;
 import network.arkane.provider.sign.domain.HexSignature;
 import org.springframework.stereotype.Component;
 import org.web3j.crypto.Sign;

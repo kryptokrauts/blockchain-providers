@@ -5,17 +5,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class EthereumTransactionSignerTest {
+class GochainTransactionSignerTest {
 
-    private EthereumTransactionSigner signer;
+    private GochainTransactionSigner signer;
 
     @BeforeEach
     void setUp() {
-        this.signer = new EthereumTransactionSigner();
+        this.signer = new GochainTransactionSigner();
     }
 
     @Test
     void correctType() {
-        assertThat(signer.getType()).isEqualTo(EthereumTransactionSignable.class);
+        assertThat(signer.getType()).isEqualTo(GochainTransactionSignable.class);
     }
 }

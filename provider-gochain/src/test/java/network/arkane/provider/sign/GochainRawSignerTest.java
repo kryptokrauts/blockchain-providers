@@ -1,6 +1,6 @@
 package network.arkane.provider.sign;
 
-import network.arkane.provider.secret.generation.EthereumSecretKey;
+import network.arkane.provider.secret.generation.GochainSecretKey;
 import network.arkane.provider.sign.domain.HexSignature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,18 +14,18 @@ import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class EthereumRawSignerTest {
+class GochainRawSignerTest {
 
-    private EthereumRawSigner signer;
+    private GochainRawSigner signer;
 
     @BeforeEach
     void setUp() {
-        this.signer = new EthereumRawSigner();
+        this.signer = new GochainRawSigner();
     }
 
     @Test
     void name() {
-        assertThat(signer.getType()).isEqualTo(EthereumRawSignable.class);
+        assertThat(signer.getType()).isEqualTo(GochainRawSignable.class);
     }
 
 
@@ -42,7 +42,7 @@ class EthereumRawSignerTest {
         assertThat(Numeric.toHexString(signatureData.getR())).isEqualTo("0xb91467e570a6466aa9e9876cbcd013baba02900b8979d43fe208a4a4f339f5fd");
         assertThat(Numeric.toHexString(signatureData.getS())).isEqualTo("0x6007e74cd82e037b800186422fc2da167c747ef045e5d18a5f5d4300f8e1a029");
 
-        HexSignature result = signer.createSignature(EthereumRawSignable.builder().data("Some data").build(), EthereumSecretKey.builder().keyPair(aPair).build());
+        HexSignature result = signer.createSignature(GochainRawSignable.builder().data("Some data").build(), GochainSecretKey.builder().keyPair(aPair).build());
 
         assertThat(result.getV()).isEqualTo("0x1c");
         assertThat(result.getR()).isEqualTo("0xb91467e570a6466aa9e9876cbcd013baba02900b8979d43fe208a4a4f339f5fd");

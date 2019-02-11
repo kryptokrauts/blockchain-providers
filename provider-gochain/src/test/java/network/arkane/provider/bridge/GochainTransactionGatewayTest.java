@@ -1,7 +1,7 @@
 package network.arkane.provider.bridge;
 
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.gateway.Web3JGateway;
+import network.arkane.provider.gateway.GochainWeb3JGateway;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignature;
@@ -18,15 +18,15 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class EthereumTransactionGatewayTest {
-    private EthereumTransactionGateway ethereumTransactionGateway;
+class GochainTransactionGatewayTest {
+    private GochainTransactionGateway gochainTransactionGateway;
 
-    private Web3JGateway web3JGateway;
+    private GochainWeb3JGateway web3JGateway;
 
     @BeforeEach
     public void setUp() {
-        web3JGateway = mock(Web3JGateway.class);
-        ethereumTransactionGateway = new EthereumTransactionGateway(web3JGateway);
+        web3JGateway = mock(GochainWeb3JGateway.class);
+        gochainTransactionGateway = new GochainTransactionGateway(web3JGateway);
     }
 
     @Test
@@ -41,7 +41,7 @@ class EthereumTransactionGatewayTest {
         when(web3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
                 .thenReturn(ethSendTransaction);
 
-        final Signature response = ethereumTransactionGateway.submit(signTransactionResponse);
+        final Signature response = gochainTransactionGateway.submit(signTransactionResponse);
         assertThat(response).isInstanceOf(SubmittedAndSignedTransactionSignature.class);
         assertThat(((SubmittedAndSignedTransactionSignature) response).getTransactionHash()).isEqualTo(expectedHash);
     }
@@ -56,7 +56,7 @@ class EthereumTransactionGatewayTest {
         when(web3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
                 .thenReturn(ethSendTransaction);
 
-        ethereumTransactionGateway.submit(signTransactionResponse);
+        gochainTransactionGateway.submit(signTransactionResponse);
     }
 
     @Test
@@ -65,7 +65,7 @@ class EthereumTransactionGatewayTest {
                 .thenThrow(IllegalArgumentException.class);
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
         assertThrows(ArkaneException.class,
-                     () -> ethereumTransactionGateway.submit(signTransactionResponse));
+                     () -> gochainTransactionGateway.submit(signTransactionResponse));
     }
 
     @Test
@@ -77,6 +77,6 @@ class EthereumTransactionGatewayTest {
                 .thenReturn(sendTransaction);
 
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
-        assertThrows(ArkaneException.class, () -> ethereumTransactionGateway.submit(signTransactionResponse), "The account that initiated the transfer does not have enough energy");
+        assertThrows(ArkaneException.class, () -> gochainTransactionGateway.submit(signTransactionResponse), "The account that initiated the transfer does not have enough energy");
     }
 }

@@ -1,19 +1,19 @@
 package network.arkane.provider.wallet.extraction;
 
-import network.arkane.provider.secret.generation.EthereumSecretKey;
-import network.arkane.provider.wallet.extraction.request.EthereumKeystoreExtractionRequest;
+import network.arkane.provider.secret.generation.GochainSecretKey;
+import network.arkane.provider.wallet.extraction.request.GochainKeystoreExtractionRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-class EthereumKeystoreExtractorTest {
-    private EthereumKeystoreExtractor extractor;
+class GochainKeystoreExtractorTest {
+    private GochainKeystoreExtractor extractor;
 
     @BeforeEach
     public void setUp() throws Exception {
-        extractor = new EthereumKeystoreExtractor();
+        extractor = new GochainKeystoreExtractor();
     }
 
     @Test
@@ -24,7 +24,7 @@ class EthereumKeystoreExtractorTest {
                                 + "\"salt\":\"c3c9f2b87b3caaf502a2e9571b7e5b517ae6805e6d029b1ef42380b24f4700d4\"},"
                                 + "\"mac\":\"001f3a9be5ef4035ff5f2370e8029e915efa23c00e822658ff2e560692ff0c99\",\"cipher\":\"aes-128-ctr\"},"
                                 + "\"address\":\"937bbac40da751ff4c72297dd377cd4da3ac1aee\"}";
-        final EthereumSecretKey password = (EthereumSecretKey) extractor.extract(new EthereumKeystoreExtractionRequest(keystore, "TestTest123"));
+        final GochainSecretKey password = (GochainSecretKey) extractor.extract(new GochainKeystoreExtractionRequest(keystore, "TestTest123"));
         assertThat(password).isNotNull();
         assertThat(password.getKeyPair().getPrivateKey()).isNotNull();
         assertThat(password.getKeyPair().getPublicKey()).isNotNull();
@@ -34,7 +34,7 @@ class EthereumKeystoreExtractorTest {
     @Test
     public void extractKeystoreWrong() {
         final String keystore = "blah";
-        assertThatThrownBy(() -> extractor.extract(new EthereumKeystoreExtractionRequest(keystore, "TestTest123")))
+        assertThatThrownBy(() -> extractor.extract(new GochainKeystoreExtractionRequest(keystore, "TestTest123")))
                 .hasMessageContaining("Not a valid keystore file");
     }
 
@@ -46,7 +46,7 @@ class EthereumKeystoreExtractorTest {
                                 + "\"salt\":\"c3c9f2b87b3caaf502a2e9571b7e5b517ae6805e6d029b1ef42380b24f4700d4\"},"
                                 + "\"cipher\":\"aes-128-ctr\"},"
                                 + "\"address\":\"937bbac40da751ff4c72297dd377cd4da3ac1aee\"}";
-        assertThatThrownBy(() -> extractor.extract(new EthereumKeystoreExtractionRequest(keystore, "TestTest123")))
+        assertThatThrownBy(() -> extractor.extract(new GochainKeystoreExtractionRequest(keystore, "TestTest123")))
                 .hasMessageContaining("Not a valid keystore file");
     }
 
@@ -58,7 +58,7 @@ class EthereumKeystoreExtractorTest {
                                 + "\"salt\":\"c3c9f2b87b3caaf502a2e9571b7e5b517ae6805e6d029b1ef42380b24f4700d4\"},"
                                 + "\"mac\":\"001f3a9be5ef4035ff5f2370e8029e915efa23c00e822658ff2e560692ff0c99\",\"cipher\":\"aes-128-ctr\"},"
                                 + "\"address\":\"937bbac40da751ff4c72297dd377cd4da3ac1aee\"}";
-        assertThatThrownBy(() -> extractor.extract(new EthereumKeystoreExtractionRequest(keystore, "blah")))
+        assertThatThrownBy(() -> extractor.extract(new GochainKeystoreExtractionRequest(keystore, "blah")))
                 .hasMessageContaining("Wrong password provided for given keystore file");
     }
 }
