@@ -5,6 +5,7 @@ import network.arkane.provider.contract.DeltaBalances;
 import network.arkane.provider.contract.HumanStandardToken;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gas.EthereumEstimateGasResult;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,9 @@ public class Web3JGateway {
 
     public Web3JGateway(Web3j web3j,
                         final @Value("${network.arkane.ethereum.deltabalances.contract-address}") String deltaBalancesAddress) {
+        if (StringUtils.isEmpty(deltaBalancesAddress)) {
+            throw new IllegalArgumentException("address for deltabalances should be set [ethereum]");
+        }
         this.web3j = web3j;
         ensResolver = new EnsResolver(this.web3j);
         deltaBalances = new DeltaBalances(deltaBalancesAddress, web3j);
