@@ -57,6 +57,7 @@ public class TronBalanceGateway implements BalanceGateway {
                           .decimals(18)
                           .build();
         } catch (final Exception ex) {
+            log.error("Unable to get the balance for the specified account", ex);
             throw ArkaneException.arkaneException()
                                  .message(String.format("Unable to get the balance for the specified account (%s)", account))
                                  .errorCode("web3.internal-error")
