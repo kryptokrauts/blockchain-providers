@@ -54,7 +54,7 @@ public class TronBalanceGateway implements BalanceGateway {
                           .balance(PrecisionUtil.toDecimal(BigInteger.valueOf(result.getBalance()), 6))
                           .symbol("TRX")
                           .gasSymbol("TRX")
-                          .decimals(18)
+                          .decimals(6)
                           .build();
         } catch (final Exception ex) {
             log.error("Unable to get the balance for the specified account", ex);
