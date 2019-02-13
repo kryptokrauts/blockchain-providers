@@ -1,8 +1,9 @@
-package network.arkane.provider.bridge;
+package network.arkane.provider.secret.generation;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.BlockProvidersIT;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.wallet.domain.SecretKey;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +22,15 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BlockProvidersIT.class)
 @Slf4j
-public class TransactionGatewayTests {
+public class SecretGeneratorTests {
 
     @Autowired
     @Lazy
-    private List<TransactionGateway> transactionGateways;
+    private List<SecretGenerator<? extends SecretKey>> secretGenerators;
 
     @Test
-    void transactionGatewaysShouldBeProvidedForEverySecretType() {
-
-        final Map<SecretType, TransactionGateway> collect = transactionGateways.stream().collect(Collectors.toMap(TransactionGateway::getType, Function.identity()));
+    void secretGeneratorsShouldBeProvidedForEverySecretType() {
+        final Map<SecretType, SecretGenerator> collect = secretGenerators.stream().collect(Collectors.toMap(SecretGenerator::type, Function.identity()));
         final long count = Stream.of(SecretType.values())
                                  .filter(type -> collect.get(type) == null)
                                  .peek(type -> log.error("An implementation of TransactionGateway does not exist yet for SecretType.{}", type))
