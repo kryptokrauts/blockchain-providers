@@ -1,4 +1,4 @@
-<a href="https://gochain.io"><img src="color_logo_transparent.png" width="480"></a>
+<a href="https://gochain.io"><img src="https://github.com/gochain-io/docs/raw/master/color_logo_transparent.png" width="480"></a>
 
 # GoChain Docs
 
@@ -29,7 +29,7 @@ There are many great projects developing or already deployed on GoChain, [check 
 
 ### Developing on GoChain
 
-* [GoChain TestNet Information](public-network/testnet/)
+* [GoChain TestNet Information](https://github.com/gochain-io/docs/blob/master/public-network/testnet)
 * [How to Deploy a Smart Contract to GoChain in 5 Minutes](https://medium.com/gochain/how-to-deploy-a-smart-contract-in-5-minutes-bed2443be23c)
 * [Learn why GoChain fees are 7500x cheaper than Ethereum](https://medium.com/gochain/gochain-transaction-fees-are-at-least-7500x-less-than-ethereum-3b7060743717)
 
@@ -43,7 +43,7 @@ are:
 
 ### Running a Public Network Node
 
-[Node Documentation](public-network/nodes/)
+[Node Documentation](https://github.com/gochain-io/docs/blob/master/public-network/nodes)
 
 ## Private Networks
 
@@ -51,7 +51,7 @@ If you'd like to run your own GoChain private blockchain network, click here.
 
 [Learn why GoChain is the best option for an Ethereum/web3 compatible private network](https://medium.com/gochain/ethereum-vs-gochain-private-network-showdown-d094096e7d88).
 
-Learn how to [deploy your own GoChain network here](private-networks).
+Learn how to [deploy your own GoChain network here](https://github.com/gochain-io/docs/blob/master/private-networks).
 
 # Running a Node
 
@@ -62,7 +62,7 @@ If you want to do it yourself, please continue below.
 
 This directory contains instructions for configuring and running GoChain with `docker-compose` on the `testnet`, `mainnet`, a private network, or a local development instance.
 
-Instructions for running a *signing* node are [here](../signers/nodes).
+Instructions for running a *signing* node are [here](https://github.com/gochain-io/docs/blob/master/public-network/signers/nodes).
 
 ## Prerequisites
 
@@ -96,8 +96,8 @@ docker-compose --version
 
 \**Note: If you are moving from the testnet to the mainnet, it is best to start fresh in a new folder.*
 
-1. Copy `docker-compose.yml` into your folder from either the [`testnet`](testnet) or [`mainnet`](mainnet) directory.
-2. (Optional) Create a file `.env` to override the default variables: (see [`example.env`](example.env) for more details)
+1. Copy `docker-compose.yml` into your folder from either the [`testnet`](https://github.com/gochain-io/docs/blob/master/public-network/nodes/testnet) or [`mainnet`](https://github.com/gochain-io/docs/blob/master/public-network/nodes/mainnet) directory.
+2. (Optional) Create a file `.env` to override the default variables: (see [`example.env`](https://github.com/gochain-io/docs/blob/master/public-network/nodes/example.env) for more details)
 ```
 GOCHAIN_TAG=2.1.16
 GOCHAIN_CACHE=2048
