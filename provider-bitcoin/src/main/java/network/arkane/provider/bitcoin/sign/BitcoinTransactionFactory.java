@@ -91,7 +91,7 @@ public class BitcoinTransactionFactory {
             }
         }
 
-        if (gatheredAmount < requiredAmount) {
+        if (gatheredAmount < requiredAmount || !isRequiredAmountCovered) {
             throw ArkaneException.arkaneException()
                                  .errorCode("bitcoin.not-enough-funds")
                                  .message("Not enough funds to create the transaction")
