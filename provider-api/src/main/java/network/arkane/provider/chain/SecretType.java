@@ -5,7 +5,9 @@ package network.arkane.provider.chain;
  * Supported chains
  * - ETHEREUM
  * - VECHAIN
+ * - BITCOIN
+ * - LITECOIN
  */
 public enum SecretType {
-    ETHEREUM, VECHAIN, BITCOIN
+    ETHEREUM, VECHAIN, BITCOIN, LITECOIN
 }
