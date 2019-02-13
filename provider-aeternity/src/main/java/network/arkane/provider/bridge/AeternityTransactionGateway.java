@@ -19,7 +19,6 @@ public class AeternityTransactionGateway implements TransactionGateway {
 
     public AeternityTransactionGateway(TransactionService transactionService) { this.transactionService = transactionService; }
 
-
     @Override
     public Signature submit(TransactionSignature transactionSignature) {
         Tx tx = new Tx();
