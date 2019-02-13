@@ -5,7 +5,7 @@
 
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane</groupId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.2.3-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -17,7 +17,6 @@
         <module>provider-vechain</module>
         <module>provider-ethereum</module>
         <module>provider-bitcoin</module>
-        <module>sochain</module>
         <module>blockcypher</module>
         <module>integrationtests</module>
     </modules>

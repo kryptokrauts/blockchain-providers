@@ -6,7 +6,7 @@
     <parent>
         <groupId>network.arkane</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>0.2.3-SNAPSHOT</version>
     </parent>
 
     <properties>
