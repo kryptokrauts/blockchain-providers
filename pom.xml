@@ -18,6 +18,7 @@
         <module>provider-ethereum</module>
         <module>provider-gochain</module>
         <module>provider-bitcoin</module>
+        <module>provider-litecoin</module>
         <module>sochain</module>
         <module>blockcypher</module>
     </modules>
