@@ -17,7 +17,7 @@ public class AeternitySpendTransactionSigner implements Signer<AeternitySpendTra
 
     @Override
     public Signature createSignature( final AeternitySpendTransactionSignable signable, final AeternitySecretKey key ) {
-        UnsignedTx unsignedTx = transactionService.createSpendTx( signable.getSender(), signable.getRecipient(), signable.getAmount(), signable.getPayload(), signable.getFee(), signable.getTtl(), signable.getNonce() ).blockingSingle();
+        UnsignedTx unsignedTx = transactionService.createSpendTx( signable.getSender(), signable.getRecipient(), signable.getAmount(), signable.getPayload(), signable.getFee(), signable.getTtl(), signable.getNonce() ).blockingGet();
         BaseKeyPair baseKeyPair = EncodingUtils.createBaseKeyPair(key.getKeyPair());
         try {
             Tx tx = transactionService.signTransaction(unsignedTx, baseKeyPair.getPrivateKey());
