@@ -4,6 +4,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.sign.Signer;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
@@ -65,14 +66,19 @@ public class TronTransactionSigner implements Signer<TronTransactionSignable, Tr
             Any any = Any.pack(transferContractBuilder.build());
             contractBuilder.setParameter(any);
         } catch (Exception e) {
-            return null;
+            log.error("An error occurred trying to create a TRON-signature");
+            throw ArkaneException.arkaneException()
+                                 .cause(e)
+                                 .message("An error occurred trying to create a TRON-signature")
+                                 .errorCode("tron.signature.error")
+                                 .build();
         }
         contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TransferContract);
         transactionBuilder.getRawDataBuilder().addContract(contractBuilder)
                           .setTimestamp(System.currentTimeMillis())
                           .setExpiration(newestBlock.getBlockHeader().getRawData().getTimestamp() + 10 * 60 * 60 * 1000);
-        Protocol.Transaction transaction = transactionBuilder.build();
-        Protocol.Transaction refTransaction = setReference(transaction, newestBlock);
+        final Protocol.Transaction transaction = transactionBuilder.build();
+        final Protocol.Transaction refTransaction = setReference(transaction, newestBlock);
         return refTransaction;
     }
 
