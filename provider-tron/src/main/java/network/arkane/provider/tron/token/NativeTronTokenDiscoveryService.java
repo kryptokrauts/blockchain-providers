@@ -21,22 +21,33 @@ public class NativeTronTokenDiscoveryService implements NativeTokenDiscoveryServ
 
     @Override
     public Optional<TokenInfo> getTokenInfo(final String tokenAddress) {
-        final Contract.AssetIssueContract asset = grpcClient.getAssetIssueById(tokenAddress);
-        final String name = asset.getName().toStringUtf8();
-        final String symbol = asset.getAbbr().toStringUtf8();
-        final BigInteger decimals = BigInteger.valueOf(asset.getPrecision());
-
-        if (name != null && decimals != null && symbol != null) {
+        if ("BANDWIDTH".equals(tokenAddress)) {
             return Optional.of(TokenInfo.builder()
-                                        .address(tokenAddress)
-                                        .name(name)
-                                        .decimals(decimals.intValue())
-                                        .symbol(symbol)
-                                        .type("Tron-native")
+                                        .decimals(0)
+                                        .address("BANDWIDTH")
+                                        .name("Bandwidth")
+                                        .symbol("bandwidth")
+                                        .logo("tron-bandwidth")
                                         .build());
         } else {
-            return Optional.empty();
+            final Contract.AssetIssueContract asset = grpcClient.getAssetIssueById(tokenAddress);
+            final String name = asset.getName().toStringUtf8();
+            final String symbol = asset.getAbbr().toStringUtf8();
+            final BigInteger decimals = BigInteger.valueOf(asset.getPrecision());
+
+            if (name != null && decimals != null && symbol != null) {
+                return Optional.of(TokenInfo.builder()
+                                            .address(tokenAddress)
+                                            .name(name)
+                                            .decimals(decimals.intValue())
+                                            .symbol(symbol)
+                                            .type("Tron-native")
+                                            .build());
+            } else {
+                return Optional.empty();
+            }
         }
+
     }
 
     @Override

@@ -12,6 +12,7 @@ import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import network.arkane.provider.tron.grpc.GrpcClient;
 import org.springframework.stereotype.Component;
+import org.tron.api.GrpcAPI;
 import org.tron.protos.Protocol;
 
 import java.math.BigDecimal;
@@ -73,6 +74,40 @@ public class TronBalanceGateway implements BalanceGateway {
     }
 
     private TokenBalance getTokenBalance(final String walletAddress, final TokenInfo tokenInfo) {
+
+        if ("BANDWIDTH".equals(tokenInfo.getAddress())) {
+            return getBandwidth(walletAddress, tokenInfo);
+        } else {
+            return getTRC20Balance(walletAddress, tokenInfo);
+        }
+    }
+
+    private TokenBalance getBandwidth(String walletAddress, TokenInfo tokenInfo) {
+        try {
+            final GrpcAPI.AccountNetMessage accountNet = this.rpcCli.getBlockingStubFull()
+                                                                    .getAccountNet(Protocol.Account.newBuilder()
+                                                                                                   .setAddress(ByteString.copyFrom(GrpcClient.decodeFromBase58Check(walletAddress)))
+                                                                                                   .build());
+            long fullBandwidth = accountNet.getNetLimit() + accountNet.getFreeNetLimit();
+            return TokenBalance.builder()
+                               .decimals(tokenInfo.getDecimals())
+                               .symbol(tokenInfo.getSymbol())
+                               .rawBalance(String.valueOf(fullBandwidth))
+                               .logo(tokenInfo.getLogo())
+                               .balance(fullBandwidth)
+                               .tokenAddress(tokenInfo.getAddress())
+                               .build();
+        } catch (final Exception ex) {
+            log.debug("Unable to get bandwidth", ex);
+            throw ArkaneException.arkaneException()
+                                 .cause(ex)
+                                 .errorCode("tron.balance.bandwidth-error")
+                                 .message("Unable to fetch bandwidth")
+                                 .build();
+        }
+    }
+
+    private TokenBalance getTRC20Balance(String walletAddress, TokenInfo tokenInfo) {
         final byte[] bytes = GrpcClient.decodeFromBase58Check(walletAddress);
         final Protocol.Account result = this.rpcCli.getBlockingStubSolidity().getAccount(Protocol.Account.newBuilder().setAddress(ByteString.copyFrom(bytes)).build());
         final Long tokenBalance = result.getAssetV2OrDefault(tokenInfo.getAddress(), 0);

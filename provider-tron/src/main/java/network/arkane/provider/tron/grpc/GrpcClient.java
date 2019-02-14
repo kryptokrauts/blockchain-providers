@@ -70,13 +70,6 @@ public class GrpcClient {
     @Getter
     private WalletExtensionGrpc.WalletExtensionBlockingStub blockingStubExtension = null;
 
-    //  public GrpcClient(String host, int port) {
-    //    channel = ManagedChannelBuilder.forAddress(host, port)
-    //        .usePlaintext(true)
-    //        .build();
-    //    blockingStub = WalletGrpc.newBlockingStub(channel);
-    //  }
-
     public GrpcClient(String fullnode, String soliditynode) {
         if (!StringUtils.isEmpty(fullnode)) {
             channelFull = ManagedChannelBuilder.forTarget(fullnode)
