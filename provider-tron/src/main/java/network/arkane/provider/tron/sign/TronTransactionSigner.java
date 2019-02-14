@@ -33,8 +33,8 @@ public class TronTransactionSigner implements Signer<TronTransactionSignable, Tr
     public Signature createSignature(final TronTransactionSignable signable,
                                      final TronSecretKey key) {
         log.info("Creating signature for: {}", signable);
-        Protocol.Transaction transaction = createTransaction(key.getKeyPair().getAddress(), GrpcClient.decodeFromBase58Check(signable.getTo()), signable.getAmount());
-        byte[] signature = signTransaction2Byte(transaction.toByteArray(), key.getKeyPair().getPrivKeyBytes());
+        final Protocol.Transaction transaction = createTransaction(key.getKeyPair().getAddress(), GrpcClient.decodeFromBase58Check(signable.getTo()), signable.getAmount());
+        final byte[] signature = signTransaction2Byte(transaction.toByteArray(), key.getKeyPair().getPrivKeyBytes());
         return TransactionSignature.signTransactionBuilder()
                                    .signedTransaction(Hex.encodeHexString(signature))
                                    .build();
@@ -78,8 +78,8 @@ public class TronTransactionSigner implements Signer<TronTransactionSignable, Tr
                           .setTimestamp(System.currentTimeMillis())
                           .setExpiration(newestBlock.getBlockHeader().getRawData().getTimestamp() + 10 * 60 * 60 * 1000);
         final Protocol.Transaction transaction = transactionBuilder.build();
-        final Protocol.Transaction refTransaction = setReference(transaction, newestBlock);
-        return refTransaction;
+        setReference(transaction, newestBlock);
+        return transaction;
     }
 
     public static Protocol.Transaction setReference(Protocol.Transaction transaction, Protocol.Block newestBlock) {
