@@ -3,6 +3,7 @@ package network.arkane.provider.tron.sign;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.sign.Signer;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
@@ -18,6 +19,7 @@ import org.tron.protos.Contract;
 import org.tron.protos.Protocol;
 
 @Component
+@Slf4j
 public class TronTransactionSigner implements Signer<TronTransactionSignable, TronSecretKey> {
 
     private BlockGateway blockGateway;
@@ -29,6 +31,7 @@ public class TronTransactionSigner implements Signer<TronTransactionSignable, Tr
     @Override
     public Signature createSignature(final TronTransactionSignable signable,
                                      final TronSecretKey key) {
+        log.info("Creating signature for: {}", signable);
         Protocol.Transaction transaction = createTransaction(key.getKeyPair().getAddress(), GrpcClient.decodeFromBase58Check(signable.getTo()), signable.getAmount());
         byte[] signature = signTransaction2Byte(transaction.toByteArray(), key.getKeyPair().getPrivKeyBytes());
         return TransactionSignature.signTransactionBuilder()
