@@ -75,7 +75,7 @@ public class TronBalanceGateway implements BalanceGateway {
 
     private TokenBalance getTokenBalance(final String walletAddress, final TokenInfo tokenInfo) {
 
-        if ("BANDWIDTH".equals(tokenInfo.getAddress())) {
+        if ("BANDWIDTH".equals(tokenInfo.getType())) {
             return getBandwidth(walletAddress, tokenInfo);
         } else {
             return getTRC20Balance(walletAddress, tokenInfo);
