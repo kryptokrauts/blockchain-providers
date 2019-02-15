@@ -15,8 +15,10 @@
         <module>provider-autoconfiguration</module>
         <module>provider-vechain</module>
         <module>provider-ethereum</module>
+        <module>provider-gochain</module>
         <module>provider-bitcoin</module>
         <module>provider-tron</module>
+        <module>provider-litecoin</module>
         <module>blockcypher</module>
     </modules>
 
@@ -79,6 +81,16 @@
             <dependency>
                 <groupId>network.arkane</groupId>
                 <artifactId>provider-tron</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-gochain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-litecoin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
