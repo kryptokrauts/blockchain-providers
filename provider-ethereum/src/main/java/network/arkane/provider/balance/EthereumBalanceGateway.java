@@ -75,6 +75,7 @@ public class EthereumBalanceGateway implements BalanceGateway {
                            .decimals(tokenInfo.getDecimals())
                            .symbol(tokenInfo.getSymbol())
                            .logo(tokenInfo.getLogo())
+                           .type(tokenInfo.getType())
                            .build();
     }
 
@@ -94,6 +95,7 @@ public class EthereumBalanceGateway implements BalanceGateway {
                                     .balance(calculateBalance(balances.get(i), token))
                                     .decimals(token.getDecimals())
                                     .symbol(token.getSymbol())
+                                    .type(token.getType())
                                     .logo(token.getLogo())
                                     .build());
         }

@@ -147,6 +147,7 @@ public class TronBalanceGateway implements BalanceGateway {
                                     .decimals(token.getDecimals())
                                     .symbol(token.getSymbol())
                                     .logo(token.getLogo())
+                                    .type(token.getType())
                                     .build());
         });
         return results;

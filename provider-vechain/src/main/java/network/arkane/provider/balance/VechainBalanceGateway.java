@@ -75,6 +75,7 @@ public class VechainBalanceGateway implements BalanceGateway {
                                     .balance(calculateBalance(balances.get(i), token))
                                     .decimals(token.getDecimals())
                                     .symbol(token.getSymbol())
+                                    .type(token.getType())
                                     .logo(token.getLogo())
                                     .build());
         }
@@ -97,6 +98,7 @@ public class VechainBalanceGateway implements BalanceGateway {
                            .rawBalance(tokenBalance.getAmount() == null ? "0" : tokenBalance.toBigInteger().toString())
                            .decimals(tokenInfo.getDecimals())
                            .symbol(tokenInfo.getSymbol())
+                           .type(tokenInfo.getType())
                            .logo(tokenInfo.getLogo())
                            .build();
     }
