@@ -13,6 +13,8 @@ public class TokenBalance {
     private int decimals;
     private String symbol;
     private String logo;
+    private String type;
+    private boolean transferable = false;
 
     @Builder
     public TokenBalance(String tokenAddress,
@@ -20,12 +22,16 @@ public class TokenBalance {
                         final double balance,
                         final int decimals,
                         final String symbol,
-                        final String logo) {
+                        final String logo,
+                        final String type,
+                        final boolean transferable) {
         this.tokenAddress = tokenAddress;
         this.rawBalance = rawBalance;
         this.balance = balance;
         this.decimals = decimals;
         this.symbol = symbol;
         this.logo = logo;
+        this.type = type;
+        this.transferable = transferable;
     }
 }

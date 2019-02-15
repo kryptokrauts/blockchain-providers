@@ -26,6 +26,7 @@ import java.util.stream.IntStream;
 @Slf4j
 @Component
 public class TronBalanceGateway implements BalanceGateway {
+    public static final String BANDWIDTH = "BANDWIDTH";
     private final GrpcClient rpcCli;
     private TokenDiscoveryService tokenDiscoveryService;
 
@@ -75,7 +76,7 @@ public class TronBalanceGateway implements BalanceGateway {
 
     private TokenBalance getTokenBalance(final String walletAddress, final TokenInfo tokenInfo) {
 
-        if ("BANDWIDTH".equals(tokenInfo.getType())) {
+        if (BANDWIDTH.equals(tokenInfo.getType())) {
             return getBandwidth(walletAddress, tokenInfo);
         } else {
             return getTRC20Balance(walletAddress, tokenInfo);
@@ -95,6 +96,7 @@ public class TronBalanceGateway implements BalanceGateway {
                                .rawBalance(String.valueOf(fullBandwidth))
                                .logo(tokenInfo.getLogo())
                                .balance(fullBandwidth)
+                               .transferable(false)
                                .tokenAddress(tokenInfo.getAddress())
                                .build();
         } catch (final Exception ex) {
@@ -116,6 +118,7 @@ public class TronBalanceGateway implements BalanceGateway {
                            .rawBalance(tokenBalance.toString())
                            .balance(calculateBalance(tokenBalance, tokenInfo))
                            .decimals(tokenInfo.getDecimals())
+                           .transferable(tokenInfo.isTransferable())
                            .symbol(tokenInfo.getSymbol())
                            .logo(tokenInfo.getLogo())
                            .build();
@@ -123,7 +126,10 @@ public class TronBalanceGateway implements BalanceGateway {
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.TRON));
+        return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.TRON))
+                .stream()
+                .sorted((o1, o2) -> (BANDWIDTH.equals(o1.getType())) ? -1 : o1.getTokenAddress().compareTo(o2.getTokenAddress()))
+                .collect(Collectors.toList());
     }
 
     private List<TokenBalance> getTokenBalances(final String walletAddress, final List<TokenInfo> tokenInfo) {

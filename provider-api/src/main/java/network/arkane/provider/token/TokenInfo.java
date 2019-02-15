@@ -16,4 +16,5 @@ public class TokenInfo {
     private Integer decimals;
     private String type;
     private String logo;
+    private boolean transferable = true;
 }
