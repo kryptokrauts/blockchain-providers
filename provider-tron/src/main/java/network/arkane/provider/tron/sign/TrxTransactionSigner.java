@@ -16,16 +16,16 @@ import org.tron.protos.Protocol;
 
 @Component
 @Slf4j
-public class BasicTronTransactionSigner extends TronTransactionSigner<TronTransactionSignable, TronSecretKey> {
+public class TrxTransactionSigner extends TronTransactionSigner<TrxTransactionSignable, TronSecretKey> {
 
     private BlockGateway blockGateway;
 
-    public BasicTronTransactionSigner(BlockGateway blockGateway) {
+    public TrxTransactionSigner(BlockGateway blockGateway) {
         this.blockGateway = blockGateway;
     }
 
     @Override
-    public Signature createSignature(final TronTransactionSignable signable,
+    public Signature createSignature(final TrxTransactionSignable signable,
                                      final TronSecretKey key) {
         log.info("Creating signature for: {}", signable);
         final Protocol.Transaction transaction = createTransaction(key.getKeyPair().getAddress(), GrpcClient.decodeFromBase58Check(signable.getTo()), signable.getAmount());
