@@ -128,7 +128,15 @@ public class TronBalanceGateway implements BalanceGateway {
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
         return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.TRON))
                 .stream()
-                .sorted((o1, o2) -> (BANDWIDTH.equals(o1.getType())) ? 1 : o1.getTokenAddress().compareTo(o2.getTokenAddress()))
+                .sorted((o1, o2) -> {
+                    if (BANDWIDTH.equals(o1.getType())) {
+                        return 1;
+                    } else if (BANDWIDTH.equals(o2)) {
+                        return -1;
+                    } else {
+                        return o1.getTokenAddress().compareTo(o2.getTokenAddress());
+                    }
+                })
                 .collect(Collectors.toList());
     }
 
