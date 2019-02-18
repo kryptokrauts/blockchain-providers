@@ -96,6 +96,7 @@ public class TronBalanceGateway implements BalanceGateway {
                                .rawBalance(String.valueOf(fullBandwidth))
                                .logo(tokenInfo.getLogo())
                                .balance(fullBandwidth)
+                               .type(BANDWIDTH)
                                .transferable(false)
                                .tokenAddress(tokenInfo.getAddress())
                                .build();
@@ -129,10 +130,10 @@ public class TronBalanceGateway implements BalanceGateway {
         return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.TRON))
                 .stream()
                 .sorted((o1, o2) -> {
-                    if (BANDWIDTH.equals(o1.getType())) {
-                        return 1;
-                    } else if (BANDWIDTH.equals(o2.getType())) {
+                    if (BANDWIDTH.equals(o1.getTokenAddress())) {
                         return -1;
+                    } else if (BANDWIDTH.equals(o2.getTokenAddress())) {
+                        return 1;
                     } else {
                         return o1.getTokenAddress().compareTo(o2.getTokenAddress());
                     }
