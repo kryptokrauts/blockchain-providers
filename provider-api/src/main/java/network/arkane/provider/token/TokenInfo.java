@@ -16,5 +16,6 @@ public class TokenInfo {
     private Integer decimals;
     private String type;
     private String logo;
+    @Builder.Default
     private boolean transferable = true;
 }

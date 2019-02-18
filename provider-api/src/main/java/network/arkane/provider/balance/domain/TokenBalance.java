@@ -14,7 +14,8 @@ public class TokenBalance {
     private String symbol;
     private String logo;
     private String type;
-    private boolean transferable = false;
+    @Builder.Default
+    private boolean transferable = true;
 
     @Builder
     public TokenBalance(String tokenAddress,
