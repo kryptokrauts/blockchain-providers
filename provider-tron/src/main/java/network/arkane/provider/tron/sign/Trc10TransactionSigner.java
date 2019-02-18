@@ -44,8 +44,8 @@ public class Trc10TransactionSigner extends TronTransactionSigner<Trc10Transacti
         Contract.TransferAssetContract.Builder transferContractBuilder = Contract.TransferAssetContract
                 .newBuilder();
         transferContractBuilder.setAmount(amount);
-        ByteString bsTo = ByteString.copyFrom(to);
-        ByteString bsOwner = ByteString.copyFrom(from);
+        final ByteString bsTo = ByteString.copyFrom(to);
+        final ByteString bsOwner = ByteString.copyFrom(from);
         transferContractBuilder.setToAddress(bsTo);
         transferContractBuilder.setOwnerAddress(bsOwner);
         transferContractBuilder.setAssetName(ByteString.copyFromUtf8(token));
@@ -60,7 +60,7 @@ public class Trc10TransactionSigner extends TronTransactionSigner<Trc10Transacti
                                  .errorCode("tron.signature.error")
                                  .build();
         }
-        contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TransferContract);
+        contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TransferAssetContract);
         transactionBuilder.getRawDataBuilder().addContract(contractBuilder)
                           .setTimestamp(System.currentTimeMillis())
                           .setExpiration(newestBlock.getBlockHeader().getRawData().getTimestamp() + 10 * 60 * 60 * 1000);
