@@ -26,7 +26,7 @@ import java.util.stream.IntStream;
 @Slf4j
 @Component
 public class TronBalanceGateway implements BalanceGateway {
-    public static final String BANDWIDTH = "bandwidth";
+    public static final String BANDWIDTH = "BANDWIDTH";
 
     private final GrpcClient rpcCli;
     private TokenDiscoveryService tokenDiscoveryService;
@@ -97,7 +97,7 @@ public class TronBalanceGateway implements BalanceGateway {
                                .rawBalance(String.valueOf(fullBandwidth))
                                .logo(tokenInfo.getLogo())
                                .balance(fullBandwidth)
-                               .type(BANDWIDTH)
+                               .type(tokenInfo.getType())
                                .transferable(false)
                                .tokenAddress(tokenInfo.getAddress())
                                .build();
@@ -131,9 +131,9 @@ public class TronBalanceGateway implements BalanceGateway {
         return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.TRON))
                 .stream()
                 .sorted((o1, o2) -> {
-                    if (BANDWIDTH.equals(o1.getTokenAddress())) {
+                    if (BANDWIDTH.equals(o1.getType())) {
                         return -1;
-                    } else if (BANDWIDTH.equals(o2.getTokenAddress())) {
+                    } else if (BANDWIDTH.equals(o2.getType())) {
                         return 1;
                     } else {
                         return o1.getTokenAddress().compareTo(o2.getTokenAddress());
