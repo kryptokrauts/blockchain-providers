@@ -140,15 +140,19 @@ public class TronBalanceGateway implements BalanceGateway {
         final List<TokenBalance> results = new ArrayList<>();
         IntStream.range(0, balances.size()).forEachOrdered(i -> {
             final TokenInfo token = tokenInfo.get(i);
-            results.add(TokenBalance.builder()
-                                    .tokenAddress(token.getAddress())
-                                    .rawBalance(balances.get(i).toString())
-                                    .balance(calculateBalance(balances.get(i), token))
-                                    .decimals(token.getDecimals())
-                                    .symbol(token.getSymbol())
-                                    .logo(token.getLogo())
-                                    .type(token.getType())
-                                    .build());
+            if (token.getType().equals(BANDWIDTH)) {
+                results.add(getBandwidth(walletAddress, token));
+            } else {
+                results.add(TokenBalance.builder()
+                                        .tokenAddress(token.getAddress())
+                                        .rawBalance(balances.get(i).toString())
+                                        .balance(calculateBalance(balances.get(i), token))
+                                        .decimals(token.getDecimals())
+                                        .symbol(token.getSymbol())
+                                        .logo(token.getLogo())
+                                        .type(token.getType())
+                                        .build());
+            }
         });
         return results;
     }
