@@ -131,7 +131,7 @@ public class TronBalanceGateway implements BalanceGateway {
                 .sorted((o1, o2) -> {
                     if (BANDWIDTH.equals(o1.getType())) {
                         return 1;
-                    } else if (BANDWIDTH.equals(o2)) {
+                    } else if (BANDWIDTH.equals(o2.getType())) {
                         return -1;
                     } else {
                         return o1.getTokenAddress().compareTo(o2.getTokenAddress());
