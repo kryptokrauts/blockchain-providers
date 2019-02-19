@@ -50,7 +50,7 @@ public class Trc10TransactionSigner extends TronTransactionSigner<Trc10Transacti
         transferContractBuilder.setOwnerAddress(bsOwner);
         transferContractBuilder.setAssetName(ByteString.copyFromUtf8(token));
         try {
-            Any any = Any.pack(transferContractBuilder.build());
+            final Any any = Any.pack(transferContractBuilder.build());
             contractBuilder.setParameter(any);
         } catch (Exception e) {
             log.error("An error occurred trying to create a TRON-asset-signature");
@@ -62,8 +62,8 @@ public class Trc10TransactionSigner extends TronTransactionSigner<Trc10Transacti
         }
         contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TransferAssetContract);
         transactionBuilder.getRawDataBuilder().addContract(contractBuilder)
-                          .setTimestamp(System.currentTimeMillis())
-                          .setExpiration(newestBlock.getBlockHeader().getRawData().getTimestamp() + 10 * 60 * 60 * 1000);
+                          .setTimestamp(getCurrentTime())
+                          .setExpiration(getExpiration(newestBlock));
         final Protocol.Transaction transaction = transactionBuilder.build();
         return setReference(transaction, newestBlock);
     }

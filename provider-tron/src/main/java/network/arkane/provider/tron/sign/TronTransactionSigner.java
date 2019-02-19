@@ -38,4 +38,11 @@ public abstract class TronTransactionSigner<T extends Signable, KEY extends Secr
         return Sha256Hash.of(block.getBlockHeader().getRawData().toByteArray());
     }
 
+    long getCurrentTime() {
+        return System.currentTimeMillis();
+    }
+
+    long getExpiration(Protocol.Block newestBlock) {
+        return newestBlock.getBlockHeader().getRawData().getTimestamp() + 10 * 60 * 60 * 1000;
+    }
 }

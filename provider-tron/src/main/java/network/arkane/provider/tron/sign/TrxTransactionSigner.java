@@ -60,8 +60,8 @@ public class TrxTransactionSigner extends TronTransactionSigner<TrxTransactionSi
         }
         contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TransferContract);
         transactionBuilder.getRawDataBuilder().addContract(contractBuilder)
-                          .setTimestamp(System.currentTimeMillis())
-                          .setExpiration(newestBlock.getBlockHeader().getRawData().getTimestamp() + 10 * 60 * 60 * 1000);
+                          .setTimestamp(getCurrentTime())
+                          .setExpiration(getExpiration(newestBlock));
         final Protocol.Transaction transaction = transactionBuilder.build();
         return setReference(transaction, newestBlock);
     }
