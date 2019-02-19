@@ -27,7 +27,7 @@ public class TronKeystoreExporter implements KeyExporter<TronSecretKey> {
         } catch (final Exception ex) {
             throw ArkaneException.arkaneException()
                                  .errorCode("export.ethereum")
-                                 .message("An error occurred while trying to export the key")
+                                 .message("An error occurred while trying to export the tron-key")
                                  .build();
         }
     }
