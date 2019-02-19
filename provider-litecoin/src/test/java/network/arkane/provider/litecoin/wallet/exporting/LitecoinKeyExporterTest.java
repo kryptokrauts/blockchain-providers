@@ -4,7 +4,7 @@ import network.arkane.provider.blockcypher.Network;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.litecoin.LitecoinEnv;
-import network.arkane.provider.litecoin.bip38.BIP38;
+import network.arkane.provider.litecoin.bip38.LitecoinBIP38;
 import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import network.arkane.provider.litecoin.secret.generation.LitecoinSecretKey;
 import org.bitcoinj.core.ECKey;
@@ -28,7 +28,7 @@ class LitecoinKeyExporterTest {
 
     private LitecoinKeyExporter litecoinKeyExporter = new LitecoinKeyExporter(
             litecoinEnv,
-            new BIP38(litecoinEnv)
+            new LitecoinBIP38(litecoinEnv)
     );
 
     @Test

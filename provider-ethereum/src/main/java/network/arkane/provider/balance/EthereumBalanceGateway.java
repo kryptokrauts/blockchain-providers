@@ -6,7 +6,7 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.gateway.Web3JGateway;
+import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import org.springframework.stereotype.Component;
@@ -16,19 +16,18 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class EthereumBalanceGateway implements BalanceGateway {
 
-    private Web3JGateway web3JGateway;
+    private EthereumWeb3JGateway ethereumWeb3JGateway;
     private final TokenDiscoveryService tokenDiscoveryService;
 
-    public EthereumBalanceGateway(final Web3JGateway web3JGateway,
+    public EthereumBalanceGateway(final EthereumWeb3JGateway ethereumWeb3JGateway,
                                   final TokenDiscoveryService tokenDiscoveryService) {
-        this.web3JGateway = web3JGateway;
+        this.ethereumWeb3JGateway = ethereumWeb3JGateway;
         this.tokenDiscoveryService = tokenDiscoveryService;
     }
 
@@ -40,7 +39,7 @@ public class EthereumBalanceGateway implements BalanceGateway {
     @Override
     public Balance getBalance(final String account) {
         try {
-            final BigInteger balance = web3JGateway.getBalance(account).getBalance();
+            final BigInteger balance = ethereumWeb3JGateway.getBalance(account).getBalance();
             return Balance.builder()
                           .rawBalance(balance.toString())
                           .rawGasBalance(balance.toString())
@@ -67,7 +66,7 @@ public class EthereumBalanceGateway implements BalanceGateway {
     }
 
     private TokenBalance getTokenBalance(final String walletAddress, final TokenInfo tokenInfo) {
-        final BigInteger tokenBalance = web3JGateway.getTokenBalance(walletAddress, tokenInfo.getAddress());
+        final BigInteger tokenBalance = ethereumWeb3JGateway.getTokenBalance(walletAddress, tokenInfo.getAddress());
         return TokenBalance.builder()
                            .tokenAddress(tokenInfo.getAddress())
                            .rawBalance(tokenBalance.toString())
@@ -84,7 +83,7 @@ public class EthereumBalanceGateway implements BalanceGateway {
     }
 
     private List<TokenBalance> getTokenBalances(final String walletAddress, final List<TokenInfo> tokenInfo) {
-        final List<BigInteger> balances = web3JGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(x -> x.getAddress()).collect(Collectors.toList()));
+        final List<BigInteger> balances = ethereumWeb3JGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(x -> x.getAddress()).collect(Collectors.toList()));
         final List<TokenBalance> results = new ArrayList<>();
         for (int i = 0; i < balances.size(); i++) {
             final TokenInfo token = tokenInfo.get(i);

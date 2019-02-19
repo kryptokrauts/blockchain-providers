@@ -5,8 +5,10 @@ import network.arkane.provider.contract.DeltaBalances;
 import network.arkane.provider.contract.HumanStandardToken;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gas.EthereumEstimateGasResult;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.web3j.ens.EnsResolver;
 import org.web3j.protocol.Web3j;
@@ -26,16 +28,17 @@ import java.util.concurrent.ExecutionException;
 
 @Component
 @Slf4j
-public class Web3JGateway {
+@Primary
+public class EthereumWeb3JGateway {
 
     private static final BigInteger DEFAULT_GAS_LIMIT_FAILED = new BigInteger("200000");
     private final EnsResolver ensResolver;
     private Web3j web3j;
     private DeltaBalances deltaBalances;
 
-    public Web3JGateway(Web3j web3j,
-                        final @Value("${network.arkane.ethereum.deltabalances.contract-address}") String deltaBalancesAddress) {
-        this.web3j = web3j;
+    public EthereumWeb3JGateway(@Qualifier("ethereumWeb3j") Web3j ethereumWeb3j,
+                                final @Value("${network.arkane.ethereum.deltabalances.contract-address}") String deltaBalancesAddress) {
+        this.web3j = ethereumWeb3j;
         ensResolver = new EnsResolver(this.web3j);
         deltaBalances = new DeltaBalances(deltaBalancesAddress, web3j);
     }
