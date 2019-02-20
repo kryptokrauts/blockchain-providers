@@ -9,8 +9,12 @@ public class LitecoinWifExtractionRequest extends ExtractionRequest {
 
     private String wif;
 
-    public LitecoinWifExtractionRequest(String wif) {
+    public LitecoinWifExtractionRequest() {
         super(SecretType.LITECOIN);
+    }
+
+    public LitecoinWifExtractionRequest(String wif) {
+        this();
         this.wif = wif;
     }
 }

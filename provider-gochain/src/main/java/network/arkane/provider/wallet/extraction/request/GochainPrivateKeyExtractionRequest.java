@@ -7,8 +7,12 @@ import network.arkane.provider.chain.SecretType;
 public class GochainPrivateKeyExtractionRequest extends ExtractionRequest {
     private String privateKey;
 
-    public GochainPrivateKeyExtractionRequest(final String privateKey) {
+    public GochainPrivateKeyExtractionRequest() {
         super(SecretType.GOCHAIN);
+    }
+
+    public GochainPrivateKeyExtractionRequest(final String privateKey) {
+        this();
         this.privateKey = privateKey;
     }
 }

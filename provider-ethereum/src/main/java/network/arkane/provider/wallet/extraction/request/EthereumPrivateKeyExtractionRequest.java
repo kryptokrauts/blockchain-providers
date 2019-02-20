@@ -7,8 +7,12 @@ import network.arkane.provider.chain.SecretType;
 public class EthereumPrivateKeyExtractionRequest extends ExtractionRequest {
     private String privateKey;
 
-    public EthereumPrivateKeyExtractionRequest(final String privateKey) {
+    public EthereumPrivateKeyExtractionRequest() {
         super(SecretType.ETHEREUM);
+    }
+
+    public EthereumPrivateKeyExtractionRequest(final String privateKey) {
+        this();
         this.privateKey = privateKey;
     }
 }

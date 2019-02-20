@@ -8,9 +8,13 @@ public class GochainKeystoreExtractionRequest extends ExtractionRequest {
     private String keystore;
     private String password;
 
-    public GochainKeystoreExtractionRequest(final String keystore,
-                                             final String password) {
+    public GochainKeystoreExtractionRequest() {
         super(SecretType.GOCHAIN);
+    }
+
+    public GochainKeystoreExtractionRequest(final String keystore,
+                                            final String password) {
+        this();
         this.keystore = keystore;
         this.password = password;
     }
