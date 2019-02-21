@@ -10,8 +10,7 @@ public class NativeAeternityTokenDiscoveryService implements NativeTokenDiscover
 
     @Override
     public Optional<TokenInfo> getTokenInfo(String tokenAddress) {
-        // TODO
-        return Optional.empty();
+        throw new UnsupportedOperationException("Not implemented yet for aeternity");
     }
 
     @Override
