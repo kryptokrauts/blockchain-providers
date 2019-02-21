@@ -12,6 +12,10 @@
 
     <artifactId>provider-aeternity</artifactId>
 
+    <properties>
+        <aepp-sdk-java.version>1.0.2</aepp-sdk-java.version>
+    </properties>
+
     <repositories>
         <repository>
             <id>jcenter</id>
@@ -27,7 +31,7 @@
         <dependency>
             <groupId>com.kryptokrauts</groupId>
             <artifactId>aepp-sdk-java</artifactId>
-            <version>1.0.2</version>
+            <version>${aepp-sdk-java.version}</version>
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>
