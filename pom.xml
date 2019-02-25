@@ -20,7 +20,6 @@
         <module>provider-gochain</module>
         <module>provider-litecoin</module>
         <module>provider-vechain</module>
-        <module>sochain</module>
         <module>blockcypher</module>
         <module>integrationtests</module>
     </modules>
