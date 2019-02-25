@@ -21,6 +21,6 @@ public class AeternityServiceAutoConfiguration {
 
     @Bean(name="transactionService")
     public TransactionService transactionService(final @Value("${network.arkane.aeternity.api.baseUrl}") String baseUrl, final @Value("${network.arkane.aeternity.network}") Network network) {
-        return new TransactionServiceFactory().getServiceWithConfig( TransactionServiceConfiguration.configure().baseUrl(baseUrl).network(network).compile() );
+        return new TransactionServiceFactory().getService( TransactionServiceConfiguration.configure().baseUrl(baseUrl).network(network).compile() );
     }
 }
