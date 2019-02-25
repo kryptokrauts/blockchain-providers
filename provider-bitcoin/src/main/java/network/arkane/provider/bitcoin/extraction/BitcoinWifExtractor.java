@@ -24,9 +24,4 @@ public class BitcoinWifExtractor implements SecretExtractor<BitcoinWifExtraction
                                .key(dumpedPrivateKey.getKey())
                                .build();
     }
-
-    @Override
-    public Class<BitcoinWifExtractionRequest> getImportRequestType() {
-        return BitcoinWifExtractionRequest.class;
-    }
 }

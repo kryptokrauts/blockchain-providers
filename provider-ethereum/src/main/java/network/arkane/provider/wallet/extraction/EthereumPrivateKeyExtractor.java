@@ -31,9 +31,4 @@ public class EthereumPrivateKeyExtractor implements SecretExtractor<EthereumPriv
             return privateKey;
         }
     }
-
-    @Override
-    public Class<EthereumPrivateKeyExtractionRequest> getImportRequestType() {
-        return EthereumPrivateKeyExtractionRequest.class;
-    }
 }
