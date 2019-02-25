@@ -19,8 +19,8 @@
         <module>provider-gochain</module>
         <module>provider-bitcoin</module>
         <module>provider-litecoin</module>
-        <module>sochain</module>
         <module>blockcypher</module>
+        <module>integrationtests</module>
     </modules>
 
     <distributionManagement>
@@ -130,6 +130,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter</artifactId>
                 <version>${spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring-boot-starter.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.web3j</groupId>
