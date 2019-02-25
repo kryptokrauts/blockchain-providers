@@ -4,7 +4,9 @@ import com.kryptokrauts.aeternity.sdk.domain.secret.impl.RawKeyPair;
 import com.kryptokrauts.aeternity.sdk.service.keypair.KeyPairService;
 import com.kryptokrauts.aeternity.sdk.service.keypair.KeyPairServiceFactory;
 import network.arkane.provider.chain.SecretType;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AeternitySecretGenerator implements SecretGenerator<AeternitySecretKey> {
 
     private final KeyPairService keyPairService = new KeyPairServiceFactory().getService();

@@ -7,15 +7,18 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.List;
 
+@Component
 public class AeternityBalanceGateway implements BalanceGateway {
 
     private AccountService accountService;
 
-    public AeternityBalanceGateway(final AccountService accountService) {
+    public AeternityBalanceGateway(final @Qualifier("accountService") AccountService accountService) {
         this.accountService = accountService;
     }
 

@@ -9,15 +9,16 @@ import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignature;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
+@Component
 public class AeternityTransactionGateway implements TransactionGateway {
 
     private TransactionService transactionService;
 
-    public AeternityTransactionGateway(TransactionService transactionService) { this.transactionService = transactionService; }
+    public AeternityTransactionGateway(final @Qualifier("transactionService") TransactionService transactionService) { this.transactionService = transactionService; }
 
     @Override
     public Signature submit(TransactionSignature transactionSignature) {
