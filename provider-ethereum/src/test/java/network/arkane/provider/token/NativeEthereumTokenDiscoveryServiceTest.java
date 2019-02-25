@@ -1,6 +1,6 @@
 package network.arkane.provider.token;
 
-import network.arkane.provider.gateway.Web3JGateway;
+import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,12 +14,12 @@ import static org.mockito.Mockito.when;
 class NativeEthereumTokenDiscoveryServiceTest {
 
     private NativeEthereumTokenDiscoveryService nativeEthereumTokenDiscoveryService;
-    private Web3JGateway web3JGateway;
+    private EthereumWeb3JGateway ethereumWeb3JGateway;
 
     @BeforeEach
     void setUp() {
-        this.web3JGateway = mock(Web3JGateway.class);
-        this.nativeEthereumTokenDiscoveryService = new NativeEthereumTokenDiscoveryService(web3JGateway);
+        this.ethereumWeb3JGateway = mock(EthereumWeb3JGateway.class);
+        this.nativeEthereumTokenDiscoveryService = new NativeEthereumTokenDiscoveryService(ethereumWeb3JGateway);
     }
 
     @Test
@@ -28,9 +28,9 @@ class NativeEthereumTokenDiscoveryServiceTest {
         final String tokenSymbol = "STN";
         final int tokenDecimals = 15;
 
-        when(web3JGateway.getDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
-        when(web3JGateway.getName(tokenAddress)).thenReturn(null);
-        when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
+        when(ethereumWeb3JGateway.getDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
+        when(ethereumWeb3JGateway.getName(tokenAddress)).thenReturn(null);
+        when(ethereumWeb3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
 
         final Optional<TokenInfo> result = nativeEthereumTokenDiscoveryService.getTokenInfo(tokenAddress);
 
@@ -43,9 +43,9 @@ class NativeEthereumTokenDiscoveryServiceTest {
         final String tokenName = "SomeToken";
         final String tokenSymbol = "STN";
 
-        when(web3JGateway.getDecimals(tokenAddress)).thenReturn(null);
-        when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
-        when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
+        when(ethereumWeb3JGateway.getDecimals(tokenAddress)).thenReturn(null);
+        when(ethereumWeb3JGateway.getName(tokenAddress)).thenReturn(tokenName);
+        when(ethereumWeb3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
 
         final Optional<TokenInfo> result = nativeEthereumTokenDiscoveryService.getTokenInfo(tokenAddress);
 
@@ -58,9 +58,9 @@ class NativeEthereumTokenDiscoveryServiceTest {
         final String tokenName = "SomeToken";
         final int tokenDecimals = 15;
 
-        when(web3JGateway.getDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
-        when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
-        when(web3JGateway.getSymbol(tokenAddress)).thenReturn(null);
+        when(ethereumWeb3JGateway.getDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
+        when(ethereumWeb3JGateway.getName(tokenAddress)).thenReturn(tokenName);
+        when(ethereumWeb3JGateway.getSymbol(tokenAddress)).thenReturn(null);
 
         final Optional<TokenInfo> result = nativeEthereumTokenDiscoveryService.getTokenInfo(tokenAddress);
 
@@ -74,9 +74,9 @@ class NativeEthereumTokenDiscoveryServiceTest {
         final String tokenSymbol = "STN";
         final int tokenDecimals = 15;
 
-        when(web3JGateway.getDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
-        when(web3JGateway.getName(tokenAddress)).thenReturn(tokenName);
-        when(web3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
+        when(ethereumWeb3JGateway.getDecimals(tokenAddress)).thenReturn(new BigInteger(String.valueOf(tokenDecimals)));
+        when(ethereumWeb3JGateway.getName(tokenAddress)).thenReturn(tokenName);
+        when(ethereumWeb3JGateway.getSymbol(tokenAddress)).thenReturn(tokenSymbol);
 
         final Optional<TokenInfo> result = nativeEthereumTokenDiscoveryService.getTokenInfo(tokenAddress);
 

@@ -8,9 +8,13 @@ public class VechainKeystoreExtractionRequest extends ExtractionRequest {
     private String keystore;
     private String password;
 
+    public VechainKeystoreExtractionRequest() {
+        super(SecretType.VECHAIN);
+    }
+
     public VechainKeystoreExtractionRequest(final String keystore,
                                             final String password) {
-        super(SecretType.VECHAIN);
+        this();
         this.keystore = keystore;
         this.password = password;
     }

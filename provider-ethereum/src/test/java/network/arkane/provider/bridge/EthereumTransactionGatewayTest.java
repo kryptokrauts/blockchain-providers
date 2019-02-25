@@ -1,7 +1,7 @@
 package network.arkane.provider.bridge;
 
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.gateway.Web3JGateway;
+import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignature;
@@ -21,12 +21,12 @@ import static org.mockito.Mockito.when;
 class EthereumTransactionGatewayTest {
     private EthereumTransactionGateway ethereumTransactionGateway;
 
-    private Web3JGateway web3JGateway;
+    private EthereumWeb3JGateway ethereumWeb3JGateway;
 
     @BeforeEach
     public void setUp() {
-        web3JGateway = mock(Web3JGateway.class);
-        ethereumTransactionGateway = new EthereumTransactionGateway(web3JGateway);
+        ethereumWeb3JGateway = mock(EthereumWeb3JGateway.class);
+        ethereumTransactionGateway = new EthereumTransactionGateway(ethereumWeb3JGateway);
     }
 
     @Test
@@ -38,7 +38,7 @@ class EthereumTransactionGatewayTest {
         when(ethSendTransaction.hasError()).thenReturn(false);
 
         when(ethSendTransaction.getTransactionHash()).thenReturn(expectedHash);
-        when(web3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
+        when(ethereumWeb3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
                 .thenReturn(ethSendTransaction);
 
         final Signature response = ethereumTransactionGateway.submit(signTransactionResponse);
@@ -53,7 +53,7 @@ class EthereumTransactionGatewayTest {
         when(ethSendTransaction.hasError()).thenReturn(false);
 
         when(ethSendTransaction.getTransactionHash()).thenReturn("txHash");
-        when(web3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
+        when(ethereumWeb3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
                 .thenReturn(ethSendTransaction);
 
         ethereumTransactionGateway.submit(signTransactionResponse);
@@ -61,7 +61,7 @@ class EthereumTransactionGatewayTest {
 
     @Test
     void problemDuringTransactionCreation() {
-        when(web3JGateway.ethSendRawTransaction(any(String.class)))
+        when(ethereumWeb3JGateway.ethSendRawTransaction(any(String.class)))
                 .thenThrow(IllegalArgumentException.class);
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
         assertThrows(ArkaneException.class,
@@ -73,7 +73,7 @@ class EthereumTransactionGatewayTest {
         EthSendTransaction sendTransaction = mock(EthSendTransaction.class);
         when(sendTransaction.hasError()).thenReturn(true);
         when(sendTransaction.getError()).thenReturn(new Response.Error(500, "Insufficient funds, not enough things in wallet"));
-        when(web3JGateway.ethSendRawTransaction(any(String.class)))
+        when(ethereumWeb3JGateway.ethSendRawTransaction(any(String.class)))
                 .thenReturn(sendTransaction);
 
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();

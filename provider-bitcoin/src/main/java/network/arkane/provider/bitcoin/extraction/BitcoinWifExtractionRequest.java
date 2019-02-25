@@ -6,10 +6,15 @@ import network.arkane.provider.wallet.extraction.request.ExtractionRequest;
 
 @Getter
 public class BitcoinWifExtractionRequest extends ExtractionRequest {
+
     private String wif;
 
-    public BitcoinWifExtractionRequest(final String wif) {
+    public BitcoinWifExtractionRequest() {
         super(SecretType.BITCOIN);
+    }
+
+    public BitcoinWifExtractionRequest(final String wif) {
+        this();
         this.wif = wif;
     }
 }
