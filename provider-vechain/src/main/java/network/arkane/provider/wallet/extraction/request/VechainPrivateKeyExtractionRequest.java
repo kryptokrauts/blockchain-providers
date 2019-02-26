@@ -7,8 +7,12 @@ import network.arkane.provider.chain.SecretType;
 public class VechainPrivateKeyExtractionRequest extends ExtractionRequest {
     private String privateKey;
 
-    public VechainPrivateKeyExtractionRequest(final String privateKey) {
+    public VechainPrivateKeyExtractionRequest() {
         super(SecretType.VECHAIN);
+    }
+
+    public VechainPrivateKeyExtractionRequest(final String privateKey) {
+        this();
         this.privateKey = privateKey;
     }
 }

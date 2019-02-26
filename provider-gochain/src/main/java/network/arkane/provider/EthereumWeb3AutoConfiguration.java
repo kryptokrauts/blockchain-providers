@@ -7,9 +7,9 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
 @Configuration
-public class Web3AutoConfiguration {
-    @Bean
-    public Web3j provideWeb3j(final @Value("${network.arkane.gochain.endpoint.url}") String gochainEndpoint) {
+public class EthereumWeb3AutoConfiguration {
+    @Bean(name = "gochainWeb3j")
+    public Web3j gochainWeb3j(final @Value("${network.arkane.gochain.endpoint.url}") String gochainEndpoint) {
         return Web3j.build(new HttpService(gochainEndpoint));
     }
 }

@@ -44,14 +44,14 @@ import java.security.Security;
 import java.util.Arrays;
 
 @Component
-public class BIP38 {
+public class LitecoinBIP38 {
     private final NetworkParameters params;
 
     static {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
     }
 
-    public BIP38(LitecoinEnv bitcoinEnv) {
+    public LitecoinBIP38(LitecoinEnv bitcoinEnv) {
         this.params = bitcoinEnv.getNetworkParameters();
     }
 

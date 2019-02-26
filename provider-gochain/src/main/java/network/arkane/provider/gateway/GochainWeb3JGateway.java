@@ -5,6 +5,7 @@ import network.arkane.provider.contract.DeltaBalances;
 import network.arkane.provider.contract.HumanStandardToken;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gas.GochainEstimateGasResult;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -29,18 +30,18 @@ import java.util.concurrent.ExecutionException;
 public class GochainWeb3JGateway {
     private static final BigInteger DEFAULT_GAS_LIMIT_FAILED = new BigInteger("200000");
     private final EnsResolver ensResolver;
-    private Web3j web3j;
+    private Web3j gochainWeb3j;
     private DeltaBalances deltaBalances;
 
-    public GochainWeb3JGateway(Web3j web3j,
+    public GochainWeb3JGateway(@Qualifier("gochainWeb3j") Web3j gochainWeb3j,
                         final @Value("${network.arkane.gochain.deltabalances.contract-address}") String deltaBalancesAddress) {
-        this.web3j = web3j;
-        ensResolver = new EnsResolver(this.web3j);
-        deltaBalances = new DeltaBalances(deltaBalancesAddress, web3j);
+        this.gochainWeb3j = gochainWeb3j;
+        ensResolver = new EnsResolver(this.gochainWeb3j);
+        deltaBalances = new DeltaBalances(deltaBalancesAddress, gochainWeb3j);
     }
 
     public Web3j web3() {
-        return web3j;
+        return gochainWeb3j;
     }
 
     public EthGetBalance getBalance(final String account) {
@@ -100,7 +101,7 @@ public class GochainWeb3JGateway {
 
     public GochainEstimateGasResult estimateGas(final String from, final String to, BigInteger value, String data) {
         try {
-            BigInteger blockGasLimit = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock().getGasLimit();
+            BigInteger blockGasLimit = gochainWeb3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock().getGasLimit();
 
             Transaction transaction = Transaction.createFunctionCallTransaction(
                     from,
@@ -130,7 +131,7 @@ public class GochainWeb3JGateway {
     public BigInteger getNextNonce(String address) {
         EthGetTransactionCount ethGetTransactionCount;
         try {
-            ethGetTransactionCount = web3j.ethGetTransactionCount(
+            ethGetTransactionCount = gochainWeb3j.ethGetTransactionCount(
                     address, DefaultBlockParameterName.LATEST).sendAsync().get();
         } catch (InterruptedException | ExecutionException e) {
             throw ArkaneException.arkaneException()
