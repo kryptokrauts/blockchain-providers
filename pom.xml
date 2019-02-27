@@ -106,11 +106,6 @@
             </dependency>
             <dependency>
                 <groupId>network.arkane</groupId>
-                <artifactId>provider-litecoin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>network.arkane</groupId>
                 <artifactId>provider-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
