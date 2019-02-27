@@ -30,6 +30,10 @@
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>
+            <artifactId>provider-tron</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane</groupId>
             <artifactId>provider-bitcoin</artifactId>
         </dependency>
         <dependency>
