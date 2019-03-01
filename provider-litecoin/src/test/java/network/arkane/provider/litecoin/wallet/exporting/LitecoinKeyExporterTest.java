@@ -6,7 +6,12 @@ import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.litecoin.LitecoinEnv;
 import network.arkane.provider.litecoin.bip38.LitecoinBIP38;
 import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
+import network.arkane.provider.litecoin.secret.generation.LitecoinSecretGenerator;
 import network.arkane.provider.litecoin.secret.generation.LitecoinSecretKey;
+import network.arkane.provider.litecoin.wallet.generation.GeneratedLitecoinWallet;
+import network.arkane.provider.litecoin.wallet.generation.LitecoinWalletGenerator;
+import network.arkane.provider.wallet.generation.GeneratedWallet;
+import org.apache.commons.codec.binary.Base64;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.BIP38PrivateKey;
 import org.junit.jupiter.api.Disabled;
@@ -53,21 +58,24 @@ class LitecoinKeyExporterTest {
 
     @Test
     void reconstructsKey() {
-        LitecoinSecretKey result = litecoinKeyExporter.reconstructKey("6PRPZGZvE2PHwQiBd2vqcfKvVqupgkUC8kwgQx5J5nt4E16Y3qtY2cFTkW", "some password");
+        LitecoinWalletGenerator litecoinWalletGenerator = new LitecoinWalletGenerator(new LitecoinEnv(Network.LITECOIN, new LitecoinParams()));
+        final GeneratedLitecoinWallet wallet = (GeneratedLitecoinWallet) litecoinWalletGenerator.generateWallet("password", new LitecoinSecretGenerator().generate());
+
+
+        LitecoinSecretKey result = litecoinKeyExporter.reconstructKey(new String(Base64.decodeBase64(wallet.secretAsBase64())), "password");
 
         assertThat(result.type()).isEqualTo(SecretType.LITECOIN);
-        assertThat(result.getKey()).isEqualTo(ECKey.fromPrivate(
-                Hex.decode("91f79fabd053ff7fb2c098d54b76a0701abcd93c523fa04926f4310986867f91")
-        ));
     }
 
     @Test
     void reconstructsWithBadPassphrase() {
-        assertThatThrownBy(
-                () -> litecoinKeyExporter.reconstructKey("6PRPZGZvE2PHwQiBd2vqcfKvVqupgkUC8kwgQx5J5nt4E16Y3qtY2cFTkW", "incorrect pw")
+        LitecoinWalletGenerator litecoinWalletGenerator = new LitecoinWalletGenerator(new LitecoinEnv(Network.LITECOIN, new LitecoinParams()));
+        final GeneratedLitecoinWallet wallet = (GeneratedLitecoinWallet) litecoinWalletGenerator.generateWallet("password", new LitecoinSecretGenerator().generate());
 
-        ).hasMessage("Bad passphrase")
-                .hasFieldOrPropertyWithValue("errorCode", "litecoin.incorrect-passphrase")
+        assertThatThrownBy(
+                () -> litecoinKeyExporter.reconstructKey(new String(Base64.decodeBase64(wallet.secretAsBase64())), "wrong-password")
+        ).hasMessage("Unable to create export format from secret key")
+                .hasFieldOrPropertyWithValue("errorCode", "litecoin.export-error")
                 .isInstanceOf(ArkaneException.class);
     }
 }

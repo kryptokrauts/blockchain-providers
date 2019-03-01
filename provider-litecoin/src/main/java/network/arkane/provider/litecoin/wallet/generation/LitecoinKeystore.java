@@ -1,14 +1,15 @@
 package network.arkane.provider.litecoin.wallet.generation;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class LitecoinKeystore {
     private String pubKey;
     private String initialisationVector;
     private String encryptedBytes;
     private String salt;
-
-    public LitecoinKeystore() {
-    }
 
     public LitecoinKeystore(String pubKey,
                             String initialisationVector,
