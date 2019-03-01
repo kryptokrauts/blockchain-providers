@@ -1,5 +1,5 @@
 pipeline {
-    agent { dockerfile true }
+    agent any
     environment {
         GITHUB_CREDS = credentials('GITHUB_CRED')
         MAVEN_OPTS="-Djava.security.egd=file:/dev/./urandom"
