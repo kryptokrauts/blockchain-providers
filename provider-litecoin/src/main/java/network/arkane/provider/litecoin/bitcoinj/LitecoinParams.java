@@ -13,6 +13,7 @@ public class LitecoinParams extends AbstractBitcoinNetParams {
     public LitecoinParams() {
         super();
         p2shHeader = 5;
+        dumpedPrivateKeyHeader = 176;
         addressHeader = 48;
         acceptableAddressCodes = new int[]{addressHeader, p2shHeader, 50};
         id = "org.litecoin.production";
