@@ -86,7 +86,7 @@ public class EthereumBalanceGateway extends BalanceGateway {
     }
 
     private List<TokenBalance> getTokenBalances(final String walletAddress, final List<TokenInfo> tokenInfo) {
-        final List<BigInteger> balances = ethereumWeb3JGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(x -> x.getAddress()).collect(Collectors.toList()));
+        final List<BigInteger> balances = ethereumWeb3JGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(TokenInfo::getAddress).collect(Collectors.toList()));
         final List<TokenBalance> results = new ArrayList<>();
         for (int i = 0; i < balances.size(); i++) {
             final TokenInfo token = tokenInfo.get(i);
