@@ -13,6 +13,7 @@ public class TokenBalance {
     private int decimals;
     private String symbol;
     private String logo;
+    private boolean available;
 
     @Builder
     public TokenBalance(String tokenAddress,
