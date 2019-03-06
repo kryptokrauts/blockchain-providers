@@ -2,6 +2,7 @@ package network.arkane.provider.balance;
 
 import com.kryptokrauts.aeternity.generated.model.Account;
 import com.kryptokrauts.aeternity.sdk.service.account.AccountService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
@@ -14,7 +15,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 @Component
-public class AeternityBalanceGateway implements BalanceGateway {
+public class AeternityBalanceGateway extends BalanceGateway {
 
     private AccountService accountService;
 
@@ -23,25 +24,27 @@ public class AeternityBalanceGateway implements BalanceGateway {
     }
 
     @Override
+    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "aeternity-node")
     public Balance getBalance(String address) {
         try {
             final Account account = accountService.getAccount(address).blockingGet();
             final BigInteger balance = account.getBalance();
             return Balance.builder()
-                    .secretType(SecretType.AETERNITY)
-                    .decimals(18)
-                    .symbol("AE")
-                    .gasSymbol("AE")
-                    .rawBalance(balance.toString())
-                    .rawGasBalance(balance.toString())
-                    .balance(PrecisionUtil.toDecimal(balance, 18))
-                    .gasBalance(PrecisionUtil.toDecimal(balance, 18))
-                    .build();
+                          .available(true)
+                          .secretType(SecretType.AETERNITY)
+                          .decimals(18)
+                          .symbol("AE")
+                          .gasSymbol("AE")
+                          .rawBalance(balance.toString())
+                          .rawGasBalance(balance.toString())
+                          .balance(PrecisionUtil.toDecimal(balance, 18))
+                          .gasBalance(PrecisionUtil.toDecimal(balance, 18))
+                          .build();
         } catch (final Exception e) {
             throw ArkaneException.arkaneException()
-                    .message(String.format("Unable to get the balance for the specified address (%s)", address))
-                    .errorCode("aeternity.internal-error")
-                    .build();
+                                 .message(String.format("Unable to get the balance for the specified address (%s)", address))
+                                 .errorCode("aeternity.internal-error")
+                                 .build();
         }
     }
 
