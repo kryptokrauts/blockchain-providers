@@ -35,6 +35,10 @@ For every supported blockchain, a new provider is added.
 ## Chains already implemented
 * [Ethereum](https://github.com/ArkaneNetwork/blockchain-providers/tree/master/provider-ethereum "Have a look at the code")
 * [VeChain](https://github.com/ArkaneNetwork/blockchain-providers/tree/master/provider-vechain "Have a look at the code")
+* [GoChain](https://github.com/ArkaneNetwork/blockchain-providers/tree/master/provider-gochain "Have a look at the code")
+* [Bitcoin](https://github.com/ArkaneNetwork/blockchain-providers/tree/master/provider-bitcoin "Have a look at the code")
+* [Litecoin](https://github.com/ArkaneNetwork/blockchain-providers/tree/master/provider-litecoin "Have a look at the code")
+* [Aeternity](https://github.com/ArkaneNetwork/blockchain-providers/tree/master/provider-aeternity "Have a look at the code")
 
 # What is Arkane Network
 Not sure yet what Arkane Network is all about, where are some resources to help you get a better view:
