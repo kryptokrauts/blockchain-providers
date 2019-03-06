@@ -9,6 +9,8 @@ import network.arkane.provider.chain.SecretType;
 @NoArgsConstructor
 public class Balance {
 
+    @Builder.Default
+    private boolean available = true;
     private SecretType secretType;
     private double balance;
     private double gasBalance;
@@ -28,7 +30,8 @@ public class Balance {
                    final String rawGasBalance,
                    final String symbol,
                    final String gasSymbol,
-                   final int decimals) {
+                   final int decimals,
+                   final boolean available) {
         this.secretType = secretType;
         this.balance = balance;
         this.gasBalance = gasBalance;
@@ -37,5 +40,6 @@ public class Balance {
         this.symbol = symbol;
         this.gasSymbol = gasSymbol;
         this.decimals = decimals;
+        this.available = available;
     }
 }

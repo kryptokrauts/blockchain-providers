@@ -1,5 +1,6 @@
 package network.arkane.provider.bitcoin.balance;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.BalanceGateway;
 import network.arkane.provider.balance.domain.Balance;
@@ -14,7 +15,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 @Component
-public class BitcoinBalanceGateway implements BalanceGateway {
+public class BitcoinBalanceGateway extends BalanceGateway {
 
     private BlockcypherGateway blockcypherGateway;
     private BitcoinEnv bitcoinEnv;
@@ -25,10 +26,12 @@ public class BitcoinBalanceGateway implements BalanceGateway {
     }
 
     @Override
+    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "bitcoin-node")
     public Balance getBalance(String address) {
         BlockcypherAddress balance = blockcypherGateway.getBalance(bitcoinEnv.getNetwork(), address);
         BigInteger confirmedBalance = balance.getBalance();
         return Balance.builder()
+                      .available(true)
                       .decimals(8)
                       .gasBalance(confirmedBalance == null ? 0 : PrecisionUtil.toDecimal(confirmedBalance, 8))
                       .balance(confirmedBalance == null ? 0 : PrecisionUtil.toDecimal(confirmedBalance, 8))

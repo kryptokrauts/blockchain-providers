@@ -1,5 +1,6 @@
 package network.arkane.provider.balance;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class EthereumBalanceGateway implements BalanceGateway {
+public class EthereumBalanceGateway extends BalanceGateway {
 
     private EthereumWeb3JGateway ethereumWeb3JGateway;
     private final TokenDiscoveryService tokenDiscoveryService;
@@ -37,10 +38,12 @@ public class EthereumBalanceGateway implements BalanceGateway {
     }
 
     @Override
+    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "ethereum-node")
     public Balance getBalance(final String account) {
         try {
             final BigInteger balance = ethereumWeb3JGateway.getBalance(account).getBalance();
             return Balance.builder()
+                          .available(true)
                           .rawBalance(balance.toString())
                           .rawGasBalance(balance.toString())
                           .secretType(SecretType.ETHEREUM)
@@ -83,7 +86,7 @@ public class EthereumBalanceGateway implements BalanceGateway {
     }
 
     private List<TokenBalance> getTokenBalances(final String walletAddress, final List<TokenInfo> tokenInfo) {
-        final List<BigInteger> balances = ethereumWeb3JGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(x -> x.getAddress()).collect(Collectors.toList()));
+        final List<BigInteger> balances = ethereumWeb3JGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(TokenInfo::getAddress).collect(Collectors.toList()));
         final List<TokenBalance> results = new ArrayList<>();
         for (int i = 0; i < balances.size(); i++) {
             final TokenInfo token = tokenInfo.get(i);

@@ -46,9 +46,4 @@ public class BitcoinWalletGenerator implements WalletGenerator<BitcoinSecretKey>
         return key.encrypt(scrypt, scrypt.deriveKey(password));
 
     }
-
-    @Override
-    public Class<BitcoinSecretKey> type() {
-        return BitcoinSecretKey.class;
-    }
 }

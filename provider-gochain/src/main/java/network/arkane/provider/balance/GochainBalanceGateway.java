@@ -1,5 +1,6 @@
 package network.arkane.provider.balance;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class GochainBalanceGateway implements BalanceGateway {
+public class GochainBalanceGateway extends BalanceGateway {
 
     private GochainWeb3JGateway web3JGateway;
     private final TokenDiscoveryService tokenDiscoveryService;
@@ -38,10 +39,12 @@ public class GochainBalanceGateway implements BalanceGateway {
     }
 
     @Override
+    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "gochain-node")
     public Balance getBalance(final String account) {
         try {
             final BigInteger balance = web3JGateway.getBalance(account).getBalance();
             return Balance.builder()
+                          .available(true)
                           .rawBalance(balance.toString())
                           .rawGasBalance(balance.toString())
                           .secretType(SecretType.GOCHAIN)
