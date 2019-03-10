@@ -9,4 +9,5 @@
 - [requirements](https://github.com/kryptokrauts/aepp-sdk-java#requirements)
     - it is important to have libsodium installed on the host system
 - [generate and post a transaction](https://github.com/kryptokrauts/aepp-sdk-java#example-code-to-generate-and-post-a-transaction)
-    - currently no methods available to estimate tx fees and to convert Æ-units
+    - tx fee can be automatically calculated
+    - conversion of Æ-units is currently not supported
