@@ -29,9 +29,4 @@ public class VechainKeystoreExtractor implements SecretExtractor<VechainKeystore
             throw new IllegalArgumentException(msg);
         }
     }
-
-    @Override
-    public Class<VechainKeystoreExtractionRequest> getImportRequestType() {
-        return VechainKeystoreExtractionRequest.class;
-    }
 }

@@ -16,6 +16,10 @@
             <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

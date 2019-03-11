@@ -42,6 +42,10 @@
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>
+            <artifactId>provider-tron</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane</groupId>
             <artifactId>provider-bitcoin</artifactId>
         </dependency>
         <dependency>
@@ -51,6 +55,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
