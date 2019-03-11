@@ -40,4 +40,10 @@ class LitecoinWifExtractorTest {
         assertThat(result.getKey()).isEqualTo(privateKey);
         assertThat(result.type()).isEqualTo(SecretType.LITECOIN);
     }
+
+    @Test
+    void name() {
+        LitecoinSecretKey extract = extractor.extract(new LitecoinWifExtractionRequest("6vRpuhEHyygBx8ck6M3YhJNfUDE3ZdgxD84f7CxirAYudE2VLif"));
+        assertThat(extract.getKey().getPrivateKeyAsHex()).isEqualTo("ac21953e05073ad3f31731073ad9ddec554bb2e763217f5deee903203c255537");
+    }
 }

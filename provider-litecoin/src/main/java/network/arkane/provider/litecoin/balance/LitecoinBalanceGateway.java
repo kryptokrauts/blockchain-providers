@@ -1,5 +1,6 @@
 package network.arkane.provider.litecoin.balance;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.BalanceGateway;
 import network.arkane.provider.balance.domain.Balance;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class LitecoinBalanceGateway implements BalanceGateway {
+public class LitecoinBalanceGateway extends BalanceGateway {
 
     private final LitecoinEnv litecoinEnv;
     private final BlockcypherGateway blockcypherGateway;
@@ -29,6 +30,7 @@ public class LitecoinBalanceGateway implements BalanceGateway {
     }
 
     @Override
+    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "litecoin-node")
     public Balance getBalance(String address) {
         BlockcypherAddress balance = blockcypherGateway.getBalance(
                 litecoinEnv.getNetwork(),
@@ -45,6 +47,7 @@ public class LitecoinBalanceGateway implements BalanceGateway {
 
         return Balance
                 .builder()
+                .available(true)
                 .balance(balanceAsDouble)
                 .gasBalance(balanceAsDouble)
                 .rawBalance(rawBalance)

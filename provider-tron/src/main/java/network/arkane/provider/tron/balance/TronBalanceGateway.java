@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @Component
-public class TronBalanceGateway implements BalanceGateway {
+public class TronBalanceGateway extends BalanceGateway {
     public static final String BANDWIDTH = "BANDWIDTH";
 
     private final GrpcClient rpcCli;

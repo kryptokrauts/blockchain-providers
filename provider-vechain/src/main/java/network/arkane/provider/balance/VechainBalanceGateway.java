@@ -1,5 +1,6 @@
 package network.arkane.provider.balance;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
@@ -17,11 +18,10 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class VechainBalanceGateway implements BalanceGateway {
+public class VechainBalanceGateway extends BalanceGateway {
 
     private VechainGateway vechainGateway;
     private final TokenDiscoveryService tokenDiscoveryService;
@@ -38,9 +38,11 @@ public class VechainBalanceGateway implements BalanceGateway {
     }
 
     @Override
+    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "vechain-node")
     public Balance getBalance(final String hexAccount) {
         final Account account = vechainGateway.getAccount(hexAccount);
         return Balance.builder()
+                      .available(true)
                       .secretType(SecretType.VECHAIN)
                       .balance(account.VETBalance().getAmount().doubleValue())
                       .rawBalance(account.VETBalance().toBigInteger().toString())
