@@ -4,6 +4,7 @@ import com.kryptokrauts.aeternity.generated.model.Tx;
 import com.kryptokrauts.aeternity.generated.model.UnsignedTx;
 import com.kryptokrauts.aeternity.sdk.domain.secret.impl.BaseKeyPair;
 import com.kryptokrauts.aeternity.sdk.service.transaction.TransactionService;
+import com.kryptokrauts.aeternity.sdk.service.transaction.type.AbstractTransaction;
 import com.kryptokrauts.aeternity.sdk.util.EncodingUtils;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.secret.generation.AeternitySecretKey;
@@ -27,7 +28,8 @@ public class AeternitySpendTransactionSigner implements Signer<AeternitySpendTra
 
     @Override
     public Signature createSignature(final AeternitySpendTransactionSignable signable, final AeternitySecretKey key) {
-        UnsignedTx unsignedTx = transactionService.createSpendTx( signable.getSender(), signable.getRecipient(), signable.getAmount(), signable.getPayload(), signable.getFee(), signable.getTtl(), signable.getNonce() ).blockingGet();
+        AbstractTransaction<?> spendTx = transactionService.getTransactionFactory().createSpendTransaction( signable.getSender(), signable.getRecipient(), signable.getAmount(), signable.getPayload(), signable.getFee(), signable.getTtl(), signable.getNonce() );
+        UnsignedTx unsignedTx = transactionService.createUnsignedTransaction(spendTx).blockingGet();
         BaseKeyPair baseKeyPair = EncodingUtils.createBaseKeyPair(key.getKeyPair());
         try {
             Tx tx = transactionService.signTransaction(unsignedTx, baseKeyPair.getPrivateKey());
