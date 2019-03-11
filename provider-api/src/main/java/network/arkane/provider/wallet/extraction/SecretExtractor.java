@@ -22,4 +22,5 @@ public interface SecretExtractor<T extends ExtractionRequest> {
     default Class<T> getImportRequestType() {
         return (Class<T>) TypeResolver.resolveRawArguments(SecretExtractor.class, getClass())[0];
     }
+
 }

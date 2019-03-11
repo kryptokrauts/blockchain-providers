@@ -6,4 +6,6 @@ pom.xml.versionsBackup
 
 target/
 
+docker_data/
+logs/
 

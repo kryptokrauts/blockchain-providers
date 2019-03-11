@@ -35,6 +35,8 @@ public class TokenBalanceMother {
                            .rawBalance(rawBalance.toString())
                            .balance(calculateBalance(rawBalance, tokenInfo))
                            .decimals(tokenInfo.getDecimals())
+                           .transferable(tokenInfo.isTransferable())
+                           .type(tokenInfo.getType())
                            .symbol(tokenInfo.getSymbol())
                            .build();
     }

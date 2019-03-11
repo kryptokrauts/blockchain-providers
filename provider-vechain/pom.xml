@@ -25,6 +25,10 @@
             <artifactId>blake2b</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
             <scope>test</scope>
