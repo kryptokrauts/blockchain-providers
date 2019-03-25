@@ -1,6 +1,7 @@
 package network.arkane.provider.tron.balance;
 
 import com.google.protobuf.ByteString;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.BalanceGateway;
@@ -44,12 +45,14 @@ public class TronBalanceGateway extends BalanceGateway {
     }
 
     @Override
+    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "tron-node")
     public Balance getBalance(final String account) {
         try {
             final byte[] bytes = GrpcClient.decodeFromBase58Check(account);
             Protocol.Account result = this.rpcCli.getBlockingStubSolidity()
                                                  .getAccount(Protocol.Account.newBuilder().setAddress(ByteString.copyFrom(bytes)).build());
             return Balance.builder()
+                          .available(true)
                           .rawBalance(String.valueOf(result.getBalance()))
                           .rawGasBalance(String.valueOf(result.getBalance()))
                           .secretType(SecretType.TRON)
