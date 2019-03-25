@@ -9,6 +9,10 @@ public class TronKeystoreExtractionRequest extends ExtractionRequest {
     private String keystore;
     private String password;
 
+    public TronKeystoreExtractionRequest() {
+        super(SecretType.TRON);
+    }
+
     public TronKeystoreExtractionRequest(final String keystore,
                                          final String password) {
         super(SecretType.TRON);

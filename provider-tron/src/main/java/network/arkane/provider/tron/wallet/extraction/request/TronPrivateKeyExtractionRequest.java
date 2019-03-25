@@ -8,6 +8,10 @@ import network.arkane.provider.wallet.extraction.request.ExtractionRequest;
 public class TronPrivateKeyExtractionRequest extends ExtractionRequest {
     private String privateKey;
 
+    public TronPrivateKeyExtractionRequest() {
+        super(SecretType.TRON);
+    }
+
     public TronPrivateKeyExtractionRequest(final String privateKey) {
         super(SecretType.TRON);
         this.privateKey = privateKey;
