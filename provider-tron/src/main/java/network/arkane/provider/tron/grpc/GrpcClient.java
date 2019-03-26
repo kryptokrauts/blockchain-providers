@@ -6,22 +6,18 @@ import io.grpc.ManagedChannelBuilder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.tron.api.GrpcAPI;
 import org.tron.api.GrpcAPI.AccountNetMessage;
 import org.tron.api.GrpcAPI.AccountPaginated;
 import org.tron.api.GrpcAPI.AccountResourceMessage;
-import org.tron.api.GrpcAPI.AddressPrKeyPairMessage;
 import org.tron.api.GrpcAPI.AssetIssueList;
 import org.tron.api.GrpcAPI.BlockExtention;
 import org.tron.api.GrpcAPI.BlockLimit;
 import org.tron.api.GrpcAPI.BlockList;
 import org.tron.api.GrpcAPI.BlockListExtention;
 import org.tron.api.GrpcAPI.BytesMessage;
-import org.tron.api.GrpcAPI.DelegatedResourceList;
-import org.tron.api.GrpcAPI.DelegatedResourceMessage;
-import org.tron.api.GrpcAPI.EasyTransferByPrivateMessage;
-import org.tron.api.GrpcAPI.EasyTransferMessage;
-import org.tron.api.GrpcAPI.EasyTransferResponse;
 import org.tron.api.GrpcAPI.EmptyMessage;
 import org.tron.api.GrpcAPI.ExchangeList;
 import org.tron.api.GrpcAPI.NodeList;
@@ -42,16 +38,11 @@ import org.tron.common.utils.Sha256Hash;
 import org.tron.protos.Contract;
 import org.tron.protos.Protocol.Account;
 import org.tron.protos.Protocol.Block;
-import org.tron.protos.Protocol.ChainParameters;
-import org.tron.protos.Protocol.DelegatedResourceAccountIndex;
-import org.tron.protos.Protocol.Exchange;
-import org.tron.protos.Protocol.Proposal;
 import org.tron.protos.Protocol.SmartContract;
 import org.tron.protos.Protocol.Transaction;
 import org.tron.protos.Protocol.TransactionInfo;
-import org.tron.protos.Protocol.TransactionSign;
 
-import java.util.Objects;
+import javax.annotation.PostConstruct;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -59,10 +50,14 @@ import static org.tron.core.Wallet.addressValid;
 
 
 @Slf4j
+@Component
 public class GrpcClient {
 
     private ManagedChannel channelFull = null;
     private ManagedChannel channelSolidity = null;
+
+    private TronNodeProvider tronNodeProvider;
+
     @Getter
     private WalletGrpc.WalletBlockingStub blockingStubFull = null;
     @Getter
@@ -70,19 +65,46 @@ public class GrpcClient {
     @Getter
     private WalletExtensionGrpc.WalletExtensionBlockingStub blockingStubExtension = null;
 
-    public GrpcClient(String fullnode, String soliditynode) {
-        if (!StringUtils.isEmpty(fullnode)) {
-            channelFull = ManagedChannelBuilder.forTarget(fullnode)
-                                               .usePlaintext(true)
+    public GrpcClient(final TronNodeProvider tronNodeProvider) {
+        this.tronNodeProvider = tronNodeProvider;
+    }
+
+    private void initializeFullNode() {
+        channelFull = ManagedChannelBuilder.forTarget(tronNodeProvider.randomFullNode())
+                                           .usePlaintext()
+                                           .build();
+        blockingStubFull = WalletGrpc.newBlockingStub(channelFull);
+    }
+
+    private void initializeSolidityNode() {
+        channelSolidity = ManagedChannelBuilder.forTarget(tronNodeProvider.randomSolidityNode())
+                                               .usePlaintext()
                                                .build();
-            blockingStubFull = WalletGrpc.newBlockingStub(channelFull);
+        blockingStubSolidity = WalletSolidityGrpc.newBlockingStub(channelSolidity);
+        blockingStubExtension = WalletExtensionGrpc.newBlockingStub(channelSolidity);
+    }
+
+    private boolean currentNodesAvailable() {
+        try {
+            return (this.channelFull != null && this.channelSolidity != null) && getBlockingStubFull()
+                    .getNowBlock(GrpcAPI.EmptyMessage.getDefaultInstance())
+                    .hasBlockHeader() &&
+                   getBlockingStubSolidity()
+                           .getNowBlock(GrpcAPI.EmptyMessage.getDefaultInstance())
+                           .hasBlockHeader();
+        } catch (final Exception ex) {
+            log.error(ex.getMessage());
+            return false;
         }
-        if (!StringUtils.isEmpty(soliditynode)) {
-            channelSolidity = ManagedChannelBuilder.forTarget(soliditynode)
-                                                   .usePlaintext(true)
-                                                   .build();
-            blockingStubSolidity = WalletSolidityGrpc.newBlockingStub(channelSolidity);
-            blockingStubExtension = WalletExtensionGrpc.newBlockingStub(channelSolidity);
+    }
+
+    @Scheduled(fixedDelay = 60000)
+    @PostConstruct
+    public void updateNodeAvailability() {
+        while (!currentNodesAvailable()) {
+            log.error("fullnode or soliditynode is not available, looking for new ones");
+            initializeFullNode();
+            initializeSolidityNode();
         }
     }
 
@@ -93,66 +115,6 @@ public class GrpcClient {
         if (channelSolidity != null) {
             channelSolidity.shutdown().awaitTermination(5, TimeUnit.SECONDS);
         }
-    }
-
-    public Account queryAccount(byte[] address) {
-        ByteString addressBS = ByteString.copyFrom(address);
-        Account request = Account.newBuilder().setAddress(addressBS).build();
-        if (blockingStubSolidity != null) {
-            return blockingStubSolidity.getAccount(request);
-        } else {
-            return blockingStubFull.getAccount(request);
-        }
-    }
-
-    public Account queryAccountById(String accountId) {
-        ByteString bsAccountId = ByteString.copyFromUtf8(accountId);
-        Account request = Account.newBuilder().setAccountId(bsAccountId).build();
-        if (blockingStubSolidity != null) {
-            return blockingStubSolidity.getAccountById(request);
-        } else {
-            return blockingStubFull.getAccountById(request);
-        }
-    }
-
-    //Warning: do not invoke this interface provided by others.
-    public Transaction signTransaction(TransactionSign transactionSign) {
-        return blockingStubFull.getTransactionSign(transactionSign);
-    }
-
-    //Warning: do not invoke this interface provided by others.
-    public TransactionExtention signTransaction2(TransactionSign transactionSign) {
-        return blockingStubFull.getTransactionSign2(transactionSign);
-    }
-
-    //Warning: do not invoke this interface provided by others.
-    public byte[] createAdresss(byte[] passPhrase) {
-        BytesMessage.Builder builder = BytesMessage.newBuilder();
-        builder.setValue(ByteString.copyFrom(passPhrase));
-
-        BytesMessage result = blockingStubFull.createAddress(builder.build());
-        return result.getValue().toByteArray();
-    }
-
-    //Warning: do not invoke this interface provided by others.
-    public EasyTransferResponse easyTransfer(byte[] passPhrase, byte[] toAddress, long amount) {
-        EasyTransferMessage.Builder builder = EasyTransferMessage.newBuilder();
-        builder.setPassPhrase(ByteString.copyFrom(passPhrase));
-        builder.setToAddress(ByteString.copyFrom(toAddress));
-        builder.setAmount(amount);
-
-        return blockingStubFull.easyTransfer(builder.build());
-    }
-
-    //Warning: do not invoke this interface provided by others.
-    public EasyTransferResponse easyTransferByPrivate(byte[] privateKey, byte[] toAddress,
-                                                      long amount) {
-        EasyTransferByPrivateMessage.Builder builder = EasyTransferByPrivateMessage.newBuilder();
-        builder.setPrivateKey(ByteString.copyFrom(privateKey));
-        builder.setToAddress(ByteString.copyFrom(toAddress));
-        builder.setAmount(amount);
-
-        return blockingStubFull.easyTransferByPrivate(builder.build());
     }
 
     public Transaction createTransaction(Contract.AccountUpdateContract contract) {
@@ -229,172 +191,6 @@ public class GrpcClient {
 
     public Transaction createTransferAssetTransaction(Contract.TransferAssetContract contract) {
         return blockingStubFull.transferAsset(contract);
-    }
-
-    public TransactionExtention createTransferAssetTransaction2(
-            Contract.TransferAssetContract contract) {
-        return blockingStubFull.transferAsset2(contract);
-    }
-
-    public Transaction createParticipateAssetIssueTransaction(
-            Contract.ParticipateAssetIssueContract contract) {
-        return blockingStubFull.participateAssetIssue(contract);
-    }
-
-    public TransactionExtention createParticipateAssetIssueTransaction2(
-            Contract.ParticipateAssetIssueContract contract) {
-        return blockingStubFull.participateAssetIssue2(contract);
-    }
-
-    public Transaction createAssetIssue(Contract.AssetIssueContract contract) {
-        return blockingStubFull.createAssetIssue(contract);
-    }
-
-    public TransactionExtention createAssetIssue2(Contract.AssetIssueContract contract) {
-        return blockingStubFull.createAssetIssue2(contract);
-    }
-
-    public Transaction voteWitnessAccount(Contract.VoteWitnessContract contract) {
-        return blockingStubFull.voteWitnessAccount(contract);
-    }
-
-    public TransactionExtention voteWitnessAccount2(Contract.VoteWitnessContract contract) {
-        return blockingStubFull.voteWitnessAccount2(contract);
-    }
-
-    public TransactionExtention proposalCreate(Contract.ProposalCreateContract contract) {
-        return blockingStubFull.proposalCreate(contract);
-    }
-
-    public Optional<ProposalList> listProposals() {
-        ProposalList proposalList = blockingStubFull.listProposals(EmptyMessage.newBuilder().build());
-        return Optional.ofNullable(proposalList);
-    }
-
-    public Optional<Proposal> getProposal(String id) {
-        BytesMessage request = BytesMessage.newBuilder().setValue(ByteString.copyFrom(
-                ByteArray.fromLong(Long.parseLong(id))))
-                                           .build();
-        Proposal proposal = blockingStubFull.getProposalById(request);
-        return Optional.ofNullable(proposal);
-    }
-
-    public Optional<DelegatedResourceList> getDelegatedResource(String fromAddress,
-                                                                String toAddress) {
-
-        ByteString fromAddressBS = ByteString.copyFrom(
-                Objects.requireNonNull(decodeFromBase58Check(fromAddress)));
-        ByteString toAddressBS = ByteString.copyFrom(
-                Objects.requireNonNull(decodeFromBase58Check(toAddress)));
-
-        DelegatedResourceMessage request = DelegatedResourceMessage.newBuilder()
-                                                                   .setFromAddress(fromAddressBS)
-                                                                   .setToAddress(toAddressBS)
-                                                                   .build();
-        DelegatedResourceList delegatedResource = blockingStubFull
-                .getDelegatedResource(request);
-        return Optional.ofNullable(delegatedResource);
-    }
-
-    public Optional<DelegatedResourceAccountIndex> getDelegatedResourceAccountIndex(String address) {
-
-        ByteString addressBS = ByteString.copyFrom(
-                Objects.requireNonNull(decodeFromBase58Check(address)));
-
-        BytesMessage bytesMessage = BytesMessage.newBuilder().setValue(addressBS).build();
-
-        DelegatedResourceAccountIndex accountIndex = blockingStubFull
-                .getDelegatedResourceAccountIndex(bytesMessage);
-        return Optional.ofNullable(accountIndex);
-    }
-
-
-    public Optional<ExchangeList> listExchanges() {
-        ExchangeList exchangeList;
-        if (blockingStubSolidity != null) {
-            exchangeList = blockingStubSolidity.listExchanges(EmptyMessage.newBuilder().build());
-        } else {
-            exchangeList = blockingStubFull.listExchanges(EmptyMessage.newBuilder().build());
-        }
-
-        return Optional.ofNullable(exchangeList);
-    }
-
-    public Optional<Exchange> getExchange(String id) {
-        BytesMessage request = BytesMessage.newBuilder().setValue(ByteString.copyFrom(
-                ByteArray.fromLong(Long.parseLong(id))))
-                                           .build();
-
-        Exchange exchange;
-        if (blockingStubSolidity != null) {
-            exchange = blockingStubSolidity.getExchangeById(request);
-        } else {
-            exchange = blockingStubFull.getExchangeById(request);
-        }
-
-        return Optional.ofNullable(exchange);
-    }
-
-    public Optional<ChainParameters> getChainParameters() {
-        ChainParameters chainParameters = blockingStubFull
-                .getChainParameters(EmptyMessage.newBuilder().build());
-        return Optional.ofNullable(chainParameters);
-    }
-
-    public TransactionExtention proposalApprove(Contract.ProposalApproveContract contract) {
-        return blockingStubFull.proposalApprove(contract);
-    }
-
-    public TransactionExtention proposalDelete(Contract.ProposalDeleteContract contract) {
-        return blockingStubFull.proposalDelete(contract);
-    }
-
-    public TransactionExtention exchangeCreate(Contract.ExchangeCreateContract contract) {
-        return blockingStubFull.exchangeCreate(contract);
-    }
-
-    public TransactionExtention exchangeInject(Contract.ExchangeInjectContract contract) {
-        return blockingStubFull.exchangeInject(contract);
-    }
-
-    public TransactionExtention exchangeWithdraw(Contract.ExchangeWithdrawContract contract) {
-        return blockingStubFull.exchangeWithdraw(contract);
-    }
-
-    public TransactionExtention exchangeTransaction(Contract.ExchangeTransactionContract contract) {
-        return blockingStubFull.exchangeTransaction(contract);
-    }
-
-    public Transaction createAccount(Contract.AccountCreateContract contract) {
-        return blockingStubFull.createAccount(contract);
-    }
-
-    public TransactionExtention createAccount2(Contract.AccountCreateContract contract) {
-        return blockingStubFull.createAccount2(contract);
-    }
-
-    public AddressPrKeyPairMessage generateAddress(EmptyMessage emptyMessage) {
-        if (blockingStubSolidity != null) {
-            return blockingStubSolidity.generateAddress(emptyMessage);
-        } else {
-            return blockingStubFull.generateAddress(emptyMessage);
-        }
-    }
-
-    public Transaction createWitness(Contract.WitnessCreateContract contract) {
-        return blockingStubFull.createWitness(contract);
-    }
-
-    public TransactionExtention createWitness2(Contract.WitnessCreateContract contract) {
-        return blockingStubFull.createWitness2(contract);
-    }
-
-    public Transaction updateWitness(Contract.WitnessUpdateContract contract) {
-        return blockingStubFull.updateWitness(contract);
-    }
-
-    public TransactionExtention updateWitness2(Contract.WitnessUpdateContract contract) {
-        return blockingStubFull.updateWitness2(contract);
     }
 
     public boolean broadcastTransaction(Transaction signaturedTransaction) {
