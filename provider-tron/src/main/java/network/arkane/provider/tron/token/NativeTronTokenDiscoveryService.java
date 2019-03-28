@@ -28,6 +28,7 @@ public class NativeTronTokenDiscoveryService implements NativeTokenDiscoveryServ
                                         .name("Bandwidth")
                                         .symbol("bandwidth")
                                         .logo("tron-bandwidth")
+                                        .transferable(false)
                                         .build());
         } else {
             final Contract.AssetIssueContract asset = grpcClient.getAssetIssueById(tokenAddress);
@@ -41,6 +42,7 @@ public class NativeTronTokenDiscoveryService implements NativeTokenDiscoveryServ
                                             .name(name)
                                             .decimals(decimals.intValue())
                                             .symbol(symbol)
+                                            .transferable(true)
                                             .type("Tron-native")
                                             .build());
             } else {

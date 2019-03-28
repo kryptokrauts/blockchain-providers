@@ -83,7 +83,7 @@ public class TronBalanceGateway extends BalanceGateway {
         if (BANDWIDTH.equals(tokenInfo.getType())) {
             return getBandwidth(walletAddress, tokenInfo);
         } else {
-            return getTRC20Balance(walletAddress, tokenInfo);
+            return getTrc10Balance(walletAddress, tokenInfo);
         }
     }
 
@@ -114,7 +114,7 @@ public class TronBalanceGateway extends BalanceGateway {
         }
     }
 
-    private TokenBalance getTRC20Balance(String walletAddress, TokenInfo tokenInfo) {
+    private TokenBalance getTrc10Balance(String walletAddress, TokenInfo tokenInfo) {
         final byte[] bytes = GrpcClient.decodeFromBase58Check(walletAddress);
         final Protocol.Account result = this.rpcCli.getBlockingStubSolidity().getAccount(Protocol.Account.newBuilder().setAddress(ByteString.copyFrom(bytes)).build());
         final Long tokenBalance = result.getAssetV2OrDefault(tokenInfo.getAddress(), 0);
@@ -161,6 +161,7 @@ public class TronBalanceGateway extends BalanceGateway {
                                         .rawBalance(balances.get(i).toString())
                                         .balance(calculateBalance(balances.get(i), token))
                                         .decimals(token.getDecimals())
+                                        .transferable(token.isTransferable())
                                         .symbol(token.getSymbol())
                                         .logo(token.getLogo())
                                         .type(token.getType())
