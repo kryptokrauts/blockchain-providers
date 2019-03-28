@@ -1,7 +1,6 @@
 package network.arkane.provider.sign;
 
 import network.arkane.provider.BytesUtils;
-import network.arkane.provider.JSONUtil;
 import network.arkane.provider.Prefix;
 import network.arkane.provider.clients.BlockchainClient;
 import network.arkane.provider.core.model.clients.Address;
@@ -16,10 +15,8 @@ import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.utils.CryptoUtils;
 import network.arkane.provider.utils.RawTransactionFactory;
 import network.arkane.provider.utils.crypto.ECDSASign;
-import network.arkane.provider.wallet.decryption.VechainWalletDecryptor;
-import network.arkane.provider.wallet.generation.GeneratedVechainWallet;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import org.web3j.crypto.WalletFile;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -91,7 +88,7 @@ public class VechainTransactionSigner implements Signer<VechainTransactionSignab
 
                     ToData data;
 
-                    if (x.getData() != null) {
+                    if (StringUtils.isNotBlank(x.getData()) && !"0x".equalsIgnoreCase(x.getData())) {
                         data = new ToData();
                         data.setData(x.getData());
                     } else {
