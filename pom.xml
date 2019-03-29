@@ -53,6 +53,7 @@
         <assertj-core.version>3.11.1</assertj-core.version>
         <mockito-all.version>1.10.19</mockito-all.version>
         <typetools.version>0.5.0</typetools.version>
+        <spring-cloud-dependencies.version>Finchley.SR2</spring-cloud-dependencies.version>
     </properties>
 
     <dependencies>
@@ -85,7 +86,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Finchley.SR2</version>
+                <version>${spring-cloud-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
