@@ -5,10 +5,9 @@
 
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane</groupId>
-    <version>0.3.0</version>
+    <version>0.4.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
-
     <modelVersion>4.0.0</modelVersion>
 
     <modules>
@@ -18,6 +17,7 @@
         <module>provider-bitcoin</module>
         <module>provider-ethereum</module>
         <module>provider-gochain</module>
+        <module>provider-tron</module>
         <module>provider-litecoin</module>
         <module>provider-vechain</module>
         <module>blockcypher</module>
@@ -53,6 +53,7 @@
         <assertj-core.version>3.11.1</assertj-core.version>
         <mockito-all.version>1.10.19</mockito-all.version>
         <typetools.version>0.5.0</typetools.version>
+        <spring-cloud-dependencies.version>Finchley.SR2</spring-cloud-dependencies.version>
     </properties>
 
     <dependencies>
@@ -76,9 +77,16 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-starter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Finchley.SR2</version>
+                <version>${spring-cloud-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -115,6 +123,11 @@
             <dependency>
                 <groupId>network.arkane</groupId>
                 <artifactId>provider-litecoin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-tron</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -293,4 +306,11 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 </project>

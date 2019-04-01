@@ -17,7 +17,6 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,7 +27,7 @@ public class GochainBalanceGateway extends BalanceGateway {
     private final TokenDiscoveryService tokenDiscoveryService;
 
     public GochainBalanceGateway(final GochainWeb3JGateway web3JGateway,
-                                  final TokenDiscoveryService tokenDiscoveryService) {
+                                 final TokenDiscoveryService tokenDiscoveryService) {
         this.web3JGateway = web3JGateway;
         this.tokenDiscoveryService = tokenDiscoveryService;
     }
@@ -78,6 +77,8 @@ public class GochainBalanceGateway extends BalanceGateway {
                            .decimals(tokenInfo.getDecimals())
                            .symbol(tokenInfo.getSymbol())
                            .logo(tokenInfo.getLogo())
+                           .type(tokenInfo.getType())
+                           .transferable(tokenInfo.isTransferable())
                            .build();
     }
 
@@ -97,7 +98,9 @@ public class GochainBalanceGateway extends BalanceGateway {
                                     .balance(calculateBalance(balances.get(i), token))
                                     .decimals(token.getDecimals())
                                     .symbol(token.getSymbol())
+                                    .type(token.getType())
                                     .logo(token.getLogo())
+                                    .transferable(token.isTransferable())
                                     .build());
         }
         return results;
