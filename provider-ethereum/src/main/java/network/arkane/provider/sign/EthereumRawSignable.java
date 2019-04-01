@@ -9,17 +9,20 @@ import network.arkane.provider.sign.domain.Signable;
 @NoArgsConstructor
 public class EthereumRawSignable implements Signable {
     private String data;
-    @Builder.Default
     private boolean prefix = true;
-    @Builder.Default
     private boolean hash = true;
 
-    @Builder
+    @Builder(builderClassName = "EthereumRawSignableBuilder")
     public EthereumRawSignable(final String data,
                                final boolean prefix,
                                final boolean hash) {
         this.data = data;
         this.prefix = prefix;
         this.hash = hash;
+    }
+
+    public static class EthereumRawSignableBuilder {
+        private boolean hash = true;
+        private boolean prefix = true;
     }
 }

@@ -2,6 +2,7 @@ package network.arkane.provider.sign;
 
 import network.arkane.provider.secret.generation.EthereumSecretKey;
 import network.arkane.provider.sign.domain.HexSignature;
+import org.apache.commons.codec.binary.Hex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.ECKeyPair;
@@ -28,6 +29,37 @@ class EthereumRawSignerTest {
         assertThat(signer.getType()).isEqualTo(EthereumRawSignable.class);
     }
 
+    @Test
+    void canSignWithoutPrefixAndWithoutHashing() {
+        BigInteger privateKeyInBT = new BigInteger("4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318", 16);
+        ECKeyPair aPair = ECKeyPair.create(privateKeyInBT);
+
+        final String input = "Some data";
+        String message = input;
+        final Sign.SignatureData signatureData = Sign.signMessage(message.getBytes(StandardCharsets.UTF_8), aPair, false);
+
+        HexSignature result = signer.createSignature(EthereumRawSignable.builder().data(input).prefix(false).hash(false).build(), EthereumSecretKey.builder().keyPair(aPair).build());
+
+        assertThat(Numeric.toHexString(signatureData.getR())).isEqualTo(result.getR());
+        assertThat(Numeric.toHexString(signatureData.getS())).isEqualTo(result.getS());
+        assertThat("0x" + Integer.toHexString(signatureData.getV())).isEqualTo(result.getV());
+    }
+
+    @Test
+    void canSignWithoutPrefix() {
+        BigInteger privateKeyInBT = new BigInteger("4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318", 16);
+        ECKeyPair aPair = ECKeyPair.create(privateKeyInBT);
+
+        final String input = "Some data";
+        String message = input;
+        final Sign.SignatureData signatureData = Sign.signMessage(message.getBytes(StandardCharsets.UTF_8), aPair);
+
+        HexSignature result = signer.createSignature(EthereumRawSignable.builder().data(input).prefix(false).build(), EthereumSecretKey.builder().keyPair(aPair).build());
+
+        assertThat(Numeric.toHexString(signatureData.getR())).isEqualTo(result.getR());
+        assertThat(Numeric.toHexString(signatureData.getS())).isEqualTo(result.getS());
+        assertThat("0x" + Integer.toHexString(signatureData.getV())).isEqualTo(result.getV());
+    }
 
     @Test
     void isSameAsWeb3Js() throws UnsupportedEncodingException {
