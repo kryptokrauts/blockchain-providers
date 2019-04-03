@@ -8,6 +8,10 @@ public class AeternityKeystoreExtractionRequest extends ExtractionRequest {
     private String keystore;
     private String password;
 
+    public AeternityKeystoreExtractionRequest() {
+        super(SecretType.AETERNITY);
+    }
+
     public AeternityKeystoreExtractionRequest(final String keystore,
                                               final String password) {
         super(SecretType.AETERNITY);

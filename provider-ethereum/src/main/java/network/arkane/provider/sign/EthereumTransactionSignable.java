@@ -19,7 +19,12 @@ public class EthereumTransactionSignable implements Signable {
     protected String to;
 
     @Builder
-    public EthereumTransactionSignable(BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce, BigInteger value, String data, String to) {
+    public EthereumTransactionSignable(final BigInteger gasPrice,
+                                       final BigInteger gasLimit,
+                                       final BigInteger nonce,
+                                       final BigInteger value,
+                                       final String data,
+                                       final String to) {
         this.gasPrice = gasPrice;
         this.gasLimit = gasLimit;
         this.nonce = nonce;

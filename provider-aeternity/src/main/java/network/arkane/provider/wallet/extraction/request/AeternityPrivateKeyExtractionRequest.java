@@ -7,6 +7,10 @@ import network.arkane.provider.chain.SecretType;
 public class AeternityPrivateKeyExtractionRequest extends ExtractionRequest {
     private String privateKey;
 
+    public AeternityPrivateKeyExtractionRequest() {
+        super(SecretType.AETERNITY);
+    }
+
     public AeternityPrivateKeyExtractionRequest(final String privateKey) {
         super(SecretType.AETERNITY);
         this.privateKey = privateKey;

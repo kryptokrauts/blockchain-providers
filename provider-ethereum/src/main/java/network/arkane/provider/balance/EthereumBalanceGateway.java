@@ -77,6 +77,8 @@ public class EthereumBalanceGateway extends BalanceGateway {
                            .decimals(tokenInfo.getDecimals())
                            .symbol(tokenInfo.getSymbol())
                            .logo(tokenInfo.getLogo())
+                           .type(tokenInfo.getType())
+                           .transferable(tokenInfo.isTransferable())
                            .build();
     }
 
@@ -96,6 +98,8 @@ public class EthereumBalanceGateway extends BalanceGateway {
                                     .balance(calculateBalance(balances.get(i), token))
                                     .decimals(token.getDecimals())
                                     .symbol(token.getSymbol())
+                                    .type(token.getType())
+                                    .transferable(token.isTransferable())
                                     .logo(token.getLogo())
                                     .build());
         }
