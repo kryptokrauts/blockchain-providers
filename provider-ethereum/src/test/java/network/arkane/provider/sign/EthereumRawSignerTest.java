@@ -11,6 +11,7 @@ import org.web3j.utils.Numeric;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,6 +82,38 @@ class EthereumRawSignerTest {
         assertThat(result.getS()).isEqualTo("0x6007e74cd82e037b800186422fc2da167c747ef045e5d18a5f5d4300f8e1a029");
         assertThat(result.getSignature()).isEqualTo(
                 "0xb91467e570a6466aa9e9876cbcd013baba02900b8979d43fe208a4a4f339f5fd6007e74cd82e037b800186422fc2da167c747ef045e5d18a5f5d4300f8e1a0291c");
+    }
+
+    @Test
+    void decodesHex() throws UnsupportedEncodingException {
+        BigInteger privateKeyInBT = new BigInteger("4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318", 16);
+
+        ECKeyPair aPair = ECKeyPair.create(privateKeyInBT);
+
+        String message = "0x536f6d652064617461";
+
+        HexSignature result = signer.createSignature(EthereumRawSignable.builder().data(message).build(), EthereumSecretKey.builder().keyPair(aPair).build());
+
+        assertThat(result.getV()).isEqualTo("0x1c");
+        assertThat(result.getR()).isEqualTo("0xb91467e570a6466aa9e9876cbcd013baba02900b8979d43fe208a4a4f339f5fd");
+        assertThat(result.getS()).isEqualTo("0x6007e74cd82e037b800186422fc2da167c747ef045e5d18a5f5d4300f8e1a029");
+        assertThat(result.getSignature()).isEqualTo(
+                "0xb91467e570a6466aa9e9876cbcd013baba02900b8979d43fe208a4a4f339f5fd6007e74cd82e037b800186422fc2da167c747ef045e5d18a5f5d4300f8e1a0291c");
+    }
+
+    @Test
+    void hexAndPlainTextReturnSameResult() throws UnsupportedEncodingException {
+        BigInteger privateKeyInBT = new BigInteger("4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318", 16);
+
+        ECKeyPair aPair = ECKeyPair.create(privateKeyInBT);
+
+        String message = "Some data";
+        String messageAsHex = "0x" + Hex.encodeHexString(message.getBytes(Charset.forName("UTF-8")));
+
+        HexSignature result = signer.createSignature(EthereumRawSignable.builder().data(message).build(), EthereumSecretKey.builder().keyPair(aPair).build());
+        HexSignature hexResult = signer.createSignature(EthereumRawSignable.builder().data(messageAsHex).build(), EthereumSecretKey.builder().keyPair(aPair).build());
+
+        assertThat(result).isEqualTo(hexResult);
     }
 
 
