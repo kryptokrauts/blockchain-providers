@@ -46,7 +46,7 @@ public class GochainTransactionGateway implements TransactionGateway {
                 } else {
                     log.debug("Got error from Gochain network: {}", send.getError().getMessage());
                     throw arkaneException()
-                            .errorCode("transaction.submit.Gochain-error")
+                            .errorCode("transaction.submit.gochain-error")
                             .message(send.getError().getMessage())
                             .build();
                 }

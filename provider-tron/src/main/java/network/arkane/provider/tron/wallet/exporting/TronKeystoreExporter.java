@@ -26,7 +26,7 @@ public class TronKeystoreExporter implements KeyExporter<TronSecretKey> {
             return JSONUtil.toJson(Wallet.createStandard(password, key.getKeyPair()));
         } catch (final Exception ex) {
             throw ArkaneException.arkaneException()
-                                 .errorCode("export.ethereum")
+                                 .errorCode("export.tron")
                                  .message("An error occurred while trying to export the tron-key")
                                  .build();
         }
