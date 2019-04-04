@@ -17,6 +17,7 @@ public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSe
     @Override
     public HexSignature createSignature(EthereumRawSignable signable, EthereumSecretKey key) {
         try {
+            log.info("Signing raw ethereum transaction: {}", signable.toString());
             final Sign.SignatureData signatureData = signable.isPrefix() ? Sign.signPrefixedMessage(signable.getData().getBytes(StandardCharsets.UTF_8), key.getKeyPair())
                                                                          : signable.isHash()
                                                                            ? Sign.signMessage(signable.getData().getBytes(StandardCharsets.UTF_8),
