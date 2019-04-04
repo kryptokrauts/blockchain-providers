@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.secret.generation.EthereumSecretKey;
 import network.arkane.provider.sign.domain.HexSignature;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 import org.web3j.crypto.Sign;
 
@@ -18,13 +19,14 @@ public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSe
     @Override
     public HexSignature createSignature(EthereumRawSignable signable, EthereumSecretKey key) {
         try {
+            log.info("Signing raw ethereum transaction: {}", signable.toString());
             byte[] dataToSign;
             if (signable.getData() != null && signable.getData().startsWith("0x")) {
                 dataToSign = Hex.decodeHex(signable.getData().replaceFirst("0x", ""));
             } else {
                 dataToSign = signable.getData().getBytes(StandardCharsets.UTF_8);
             }
-            final Sign.SignatureData signatureData = signable.isPrefix() ? Sign.signPrefixedMessage(dataToSign, key.getKeyPair())
+            final Sign.SignatureData signatureData = signable.isPrefix() ? Sign.signPrefixedMessage(signable.getData().getBytes(StandardCharsets.UTF_8), key.getKeyPair())
                                                                          : signable.isHash()
                                                                            ? Sign.signMessage(dataToSign, key.getKeyPair())
                                                                            : Sign.signMessage(dataToSign, key.getKeyPair(), false);
