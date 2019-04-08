@@ -106,7 +106,7 @@ public class GrpcClient {
     @PostConstruct
     public void updateNodeAvailability() {
         while (!currentNodesAvailable()) {
-            if (rateLimiter.tryAcquire()) {
+            if (rateLimiter.tryAcquire(1, TimeUnit.SECONDS)) {
                 initialize();
             }
         }
