@@ -52,7 +52,7 @@ public class LitecoinKeyExporter implements KeyExporter<LitecoinSecretKey> {
             throw ArkaneException
                     .arkaneException()
                     .message("Unable to create export format from secret key")
-                    .errorCode("litecoin.export-error")
+                    .errorCode("export.litecoin")
                     .build();
         }
     }
