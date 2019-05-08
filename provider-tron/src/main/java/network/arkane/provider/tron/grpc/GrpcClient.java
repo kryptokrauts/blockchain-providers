@@ -1,5 +1,6 @@
 package network.arkane.provider.tron.grpc;
 
+import com.google.common.util.concurrent.RateLimiter;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -65,8 +66,11 @@ public class GrpcClient {
     @Getter
     private WalletExtensionGrpc.WalletExtensionBlockingStub blockingStubExtension = null;
 
+    private RateLimiter rateLimiter;
+
     public GrpcClient(final TronNodeProvider tronNodeProvider) {
         this.tronNodeProvider = tronNodeProvider;
+        this.rateLimiter = RateLimiter.create(1, 1, TimeUnit.SECONDS);
     }
 
     private void initializeFullNode() {
@@ -102,10 +106,16 @@ public class GrpcClient {
     @PostConstruct
     public void updateNodeAvailability() {
         while (!currentNodesAvailable()) {
-            log.error("fullnode or soliditynode is not available, looking for new ones");
-            initializeFullNode();
-            initializeSolidityNode();
+            if (rateLimiter.tryAcquire(1, TimeUnit.SECONDS)) {
+                initialize();
+            }
         }
+    }
+
+    void initialize() {
+        log.error("fullnode or soliditynode is not available, looking for new ones");
+        initializeFullNode();
+        initializeSolidityNode();
     }
 
     public void shutdown() throws InterruptedException {
