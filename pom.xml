@@ -22,6 +22,7 @@
         <module>provider-vechain</module>
         <module>blockcypher</module>
         <module>integrationtests</module>
+        <module>provider-neo</module>
     </modules>
 
     <distributionManagement>

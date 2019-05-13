@@ -10,7 +10,8 @@ package network.arkane.provider.chain;
  * - LITECOIN
  * - TRON
  * - VECHAIN
+ * - NEO
  */
 public enum SecretType {
-    AETERNITY, BITCOIN, ETHEREUM, GOCHAIN, LITECOIN, TRON, VECHAIN
+    AETERNITY, BITCOIN, ETHEREUM, GOCHAIN, LITECOIN, TRON, VECHAIN, NEO
 }

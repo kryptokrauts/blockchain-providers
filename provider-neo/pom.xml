@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>network.arkane</groupId>
+        <artifactId>blockchain-providers</artifactId>
+        <version>0.5.0-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <neow3j.version>1.0.9</neow3j.version>
+    </properties>
+
+    <artifactId>provider-neo</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>network.arkane</groupId>
+            <artifactId>provider-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane</groupId>
+            <artifactId>blockcypher</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.neow3j</groupId>
+            <artifactId>core</artifactId>
+            <version>${neow3j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.briandilley.jsonrpc4j</groupId>
+            <artifactId>jsonrpc4j</artifactId>
+            <version>1.5.3</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jackson-annotations</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jackson-core</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+
+</project>
