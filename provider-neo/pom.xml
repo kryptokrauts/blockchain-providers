@@ -27,9 +27,14 @@
             <artifactId>blockcypher</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>io.neow3j</groupId>
             <artifactId>core</artifactId>
+            <version>${neow3j.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>io.neow3j</groupId>
+            <artifactId>crypto</artifactId>
             <version>${neow3j.version}</version>
         </dependency>
         <dependency>
