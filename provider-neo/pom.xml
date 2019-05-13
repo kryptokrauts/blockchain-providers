@@ -27,11 +27,22 @@
             <artifactId>blockcypher</artifactId>
             <version>${project.version}</version>
         </dependency>
+<!--
         <dependency>
             <groupId>io.neow3j</groupId>
             <artifactId>core</artifactId>
             <version>${neow3j.version}</version>
         </dependency>
+-->
+
+        <dependency>
+            <groupId>io.neow3j</groupId>
+            <artifactId>core</artifactId>
+            <version>${neow3j.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/neocrypto-1.0.jar</systemPath>
+        </dependency>
+
         <dependency>
             <groupId>com.github.briandilley.jsonrpc4j</groupId>
             <artifactId>jsonrpc4j</artifactId>
