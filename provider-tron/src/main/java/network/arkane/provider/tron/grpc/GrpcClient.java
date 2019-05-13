@@ -43,7 +43,6 @@ import org.tron.protos.Protocol.SmartContract;
 import org.tron.protos.Protocol.Transaction;
 import org.tron.protos.Protocol.TransactionInfo;
 
-import javax.annotation.PostConstruct;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -103,7 +102,6 @@ public class GrpcClient {
     }
 
     @Scheduled(fixedDelay = 60000)
-    @PostConstruct
     public void updateNodeAvailability() {
         while (!currentNodesAvailable()) {
             if (rateLimiter.tryAcquire(1, TimeUnit.SECONDS)) {
