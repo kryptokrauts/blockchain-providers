@@ -41,7 +41,7 @@ public class VechainTransactionSigner implements Signer<VechainTransactionSignab
     }
 
     private RawTransaction constructTransaction(final VechainTransactionSignable signable) {
-        final Byte chainTag = !isEmpty(signable.getChainTag()) ? getChainTag() : Byte.valueOf(signable.getChainTag());
+        final Byte chainTag = isEmpty(signable.getChainTag()) ? getChainTag() : Byte.valueOf(signable.getChainTag());
         byte[] blockRef = isEmpty(signable.getBlockRef()) ? getBlockRef() : BytesUtils.toByteArray(signable.getBlockRef());
         byte[] nonce = isEmpty(signable.getNonce()) ? CryptoUtils.generateTxNonce() : BytesUtils.toByteArray(signable.getNonce());
         return RawTransactionFactory.getInstance()
