@@ -24,7 +24,6 @@ public class AeternityBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "aeternity-node")
     public Balance getBalance(String address) {
         try {
             final Account account = accountService.getAccount(address).blockingGet();
@@ -41,10 +40,17 @@ public class AeternityBalanceGateway extends BalanceGateway {
                           .gasBalance(PrecisionUtil.toDecimal(balance, 18))
                           .build();
         } catch (final Exception e) {
-            throw ArkaneException.arkaneException()
-                                 .message(String.format("Unable to get the balance for the specified address (%s)", address))
-                                 .errorCode("aeternity.internal-error")
-                                 .build();
+            return Balance.builder()
+                          .available(true)
+                          .secretType(SecretType.AETERNITY)
+                          .decimals(18)
+                          .symbol("AE")
+                          .gasSymbol("AE")
+                          .rawBalance("0")
+                          .rawGasBalance("0")
+                          .balance(0)
+                          .gasBalance(0)
+                          .build();
         }
     }
 
