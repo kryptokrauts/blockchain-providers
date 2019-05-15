@@ -19,7 +19,7 @@ public class AeternityBalanceGateway extends BalanceGateway {
 
     private AccountService accountService;
 
-    public AeternityBalanceGateway(final @Qualifier("accountService") AccountService accountService) {
+    public AeternityBalanceGateway(final @Qualifier("aeternity-accountService") AccountService accountService) {
         this.accountService = accountService;
     }
 

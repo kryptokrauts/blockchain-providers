@@ -18,7 +18,7 @@ public class AeternityTransactionGateway implements TransactionGateway {
 
     private TransactionService transactionService;
 
-    public AeternityTransactionGateway(final @Qualifier("transactionService") TransactionService transactionService) { this.transactionService = transactionService; }
+    public AeternityTransactionGateway(final @Qualifier("aeternity-transactionService") TransactionService transactionService) { this.transactionService = transactionService; }
 
     @Override
     public Signature submit(TransactionSignature transactionSignature) {
