@@ -29,7 +29,7 @@ public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSe
         final byte[] dataToSign;
 
         if (signable.getData().startsWith("0x")) {
-            dataToSign = decode(signable.getData());
+            dataToSign = decode(signable.getData().replaceFirst("0x", ""));
         } else {
             dataToSign = signable.getData().getBytes(Charsets.UTF_8);
         }
