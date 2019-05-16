@@ -13,10 +13,10 @@ import static org.spongycastle.util.encoders.Hex.decode;
 
 @Component
 @Slf4j
-public class TrxRawSigner extends TronTransactionSigner<TrxRawSignable, TronSecretKey> {
+public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSecretKey> {
 
     @Override
-    public Signature createSignature(final TrxRawSignable signable,
+    public Signature createSignature(final TronRawSignable signable,
                                      final TronSecretKey key) {
 
         if (signable.getData() == null) {
