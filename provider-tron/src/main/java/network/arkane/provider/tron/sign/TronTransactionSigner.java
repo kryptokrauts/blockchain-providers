@@ -10,17 +10,17 @@ import org.tron.common.utils.ByteArray;
 import org.tron.common.utils.Sha256Hash;
 import org.tron.protos.Protocol;
 
-public abstract class TronTransactionSigner<T extends Signable, KEY extends SecretKey> implements Signer<T, KEY> {
+abstract class TronTransactionSigner<T extends Signable, KEY extends SecretKey> implements Signer<T, KEY> {
 
 
     @SneakyThrows
-    static byte[] signTransaction2Byte(byte[] transaction, byte[] privateKey) {
+    static byte[] signTransaction2Byte(byte[] transactionBytes, byte[] privateKey) {
         final ECKey ecKey = ECKey.fromPrivate(privateKey);
-        final Protocol.Transaction transaction1 = Protocol.Transaction.parseFrom(transaction);
-        final byte[] rawdata = transaction1.getRawData().toByteArray();
+        final Protocol.Transaction transaction = Protocol.Transaction.parseFrom(transactionBytes);
+        final byte[] rawdata = transaction.getRawData().toByteArray();
         final byte[] hash = Sha256Hash.hash(rawdata);
         final byte[] sign = ecKey.sign(hash).toByteArray();
-        return transaction1.toBuilder().addSignature(ByteString.copyFrom(sign)).build().toByteArray();
+        return transaction.toBuilder().addSignature(ByteString.copyFrom(sign)).build().toByteArray();
     }
 
     static Protocol.Transaction setReference(Protocol.Transaction transaction, Protocol.Block newestBlock) {
@@ -34,7 +34,7 @@ public abstract class TronTransactionSigner<T extends Signable, KEY extends Secr
         return transaction.toBuilder().setRawData(rawData).build();
     }
 
-    static Sha256Hash getBlockHash(Protocol.Block block) {
+    private static Sha256Hash getBlockHash(Protocol.Block block) {
         return Sha256Hash.of(block.getBlockHeader().getRawData().toByteArray());
     }
 

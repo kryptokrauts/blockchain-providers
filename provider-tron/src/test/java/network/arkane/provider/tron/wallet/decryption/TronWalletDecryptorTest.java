@@ -22,7 +22,7 @@ class TronWalletDecryptorTest {
     @Test
     void generateKey() {
         final String generatedPassword = "password";
-        final GeneratedTronWallet generatedWallet = (GeneratedTronWallet) new TronWalletGenerator().generateWallet(generatedPassword, TronSecretKeyMother.aTronSecretKey());
+        final GeneratedTronWallet generatedWallet = (GeneratedTronWallet) new TronWalletGenerator().generateWallet(generatedPassword, TronSecretKeyMother.aRandomSecretKey());
         final TronSecretKey tronSecretKey = tronWalletDecryptor.generateKey(generatedWallet, generatedPassword);
         assertThat(Hex.encodeHexString(tronSecretKey.getKeyPair().getAddress())).isNotEmpty();
     }

@@ -10,7 +10,7 @@ import org.tron.core.Constant;
 import org.tron.core.Wallet;
 import org.tron.protos.Protocol;
 
-import static network.arkane.provider.tron.secret.generation.TronSecretKeyMother.aTronSecretKey;
+import static network.arkane.provider.tron.secret.generation.TronSecretKeyMother.aRandomSecretKey;
 import static network.arkane.provider.tron.sign.Trc10TransactionSignableMother.aTrc10TransactionSignable;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
@@ -32,7 +32,7 @@ class Trc10TransactionSignerTest {
     @Test
     void createSignature() throws Exception {
         when(blockGateway.getBlock(-1)).thenReturn(getBlock());
-        Signature signature = signer.createSignature(aTrc10TransactionSignable(), aTronSecretKey());
+        Signature signature = signer.createSignature(aTrc10TransactionSignable(), aRandomSecretKey());
         assertThat(signature).isInstanceOf(TransactionSignature.class);
         Protocol.Transaction parsedTx = Protocol.Transaction.parseFrom(Hex.decodeHex(((TransactionSignature) signature).getSignedTransaction()));
         assertThat(parsedTx.getRawData().getExpiration()).isEqualTo(36000001);

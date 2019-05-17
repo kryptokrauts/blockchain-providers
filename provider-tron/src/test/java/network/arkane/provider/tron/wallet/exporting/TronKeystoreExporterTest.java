@@ -1,9 +1,7 @@
 package network.arkane.provider.tron.wallet.exporting;
 
-import network.arkane.provider.tron.secret.generation.TronSecretKey;
 import network.arkane.provider.tron.secret.generation.TronSecretKeyMother;
 import network.arkane.provider.tron.wallet.decryption.TronWalletDecryptor;
-import org.apache.commons.codec.binary.Hex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,12 +22,12 @@ class TronKeystoreExporterTest {
 
     @Test
     void export() {
-        assertThat(tronKeystoreExporter.export(TronSecretKeyMother.aTronSecretKey(), "password")).isNotEmpty();
+        assertThat(tronKeystoreExporter.export(TronSecretKeyMother.aRandomSecretKey(), "password")).isNotEmpty();
     }
 
     @Test
     void exportWithoutPasswordImpossible() {
-        assertThatThrownBy(() -> tronKeystoreExporter.export(TronSecretKeyMother.aTronSecretKey(), null))
+        assertThatThrownBy(() -> tronKeystoreExporter.export(TronSecretKeyMother.aRandomSecretKey(), null))
                 .hasMessageContaining("An error occurred while trying to export the tron-key");
     }
 }
