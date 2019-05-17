@@ -19,7 +19,6 @@ public class NeoTransactionSignable implements Signable {
 
     private TransactionType transactionType;
     private byte version;
-    private List<Object> specificTransactionData;
     private List<RawTransactionAttribute> attributes;
     private List<RawTransactionInput> inputs;
     private List<RawTransactionOutput> outputs;
@@ -28,14 +27,12 @@ public class NeoTransactionSignable implements Signable {
     @Builder
     public NeoTransactionSignable(final TransactionType transactionType,
                                        final byte version,
-                                       final List<Object> specificTransactionData,
                                        final List<RawTransactionAttribute> attributes,
                                        final List<RawTransactionInput> inputs,
                                        final List<RawTransactionOutput> outputs,
                                        final List<RawScript> scripts) {
         this.transactionType = transactionType;
         this.version = version;
-        this.specificTransactionData= specificTransactionData;
         this.attributes = attributes;
         this.inputs = inputs;
         this.outputs = outputs;

@@ -1,7 +1,10 @@
 package network.arkane.provider.neo.balance;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import io.neow3j.model.types.GASAsset;
+import io.neow3j.model.types.NEOAsset;
 import io.neow3j.protocol.Neow3j;
+import io.neow3j.protocol.core.methods.response.NeoGetAccountState;
 import io.neow3j.utils.Numeric;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.PrecisionUtil;
@@ -14,6 +17,7 @@ import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -44,17 +48,29 @@ public class NeoBalanceGateway extends BalanceGateway {
     @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "Neo-node")
     public Balance getBalance(final String account) {
         try {
-            final BigInteger balance = Numeric.decodeQuantity(NeoWeb3JGateway.getBalance(account).send().getBalance().getBalance()) ;
+            final List<NeoGetAccountState.Balance> balances = NeoWeb3JGateway.getAccountState(account).send().getAccountState().getBalances();
+            String neoBalance= "0";
+            String gasBalance= "0";
+
+            for (NeoGetAccountState.Balance item:balances
+                 ) {
+                if(item.getAssetAddress().equals(NEOAsset.HASH_ID)){
+                    neoBalance = item.getValue();
+                }else if(item.getAssetAddress().equals((GASAsset.HASH_ID))){
+                    gasBalance =item.getValue();
+                }
+            }
+
             return Balance.builder()
                     .available(true)
-                    .rawBalance(balance.toString())
-                    .rawGasBalance(balance.toString())
+                    .rawBalance(neoBalance)
+                    .rawGasBalance(gasBalance)
                     .secretType(SecretType.NEO)
-                    .gasBalance(PrecisionUtil.toDecimal(balance, 18))
-                    .balance(PrecisionUtil.toDecimal(balance, 18))
-                    .symbol("NEO")
-                    .gasSymbol("GAS")
-                    .decimals(18)
+                    .gasBalance(PrecisionUtil.toDecimal(NEOAsset.toBigInt(neoBalance), 10))
+                    .balance(PrecisionUtil.toDecimal(GASAsset.toBigInt(gasBalance), 10))
+                    .symbol(NEOAsset.NAME)
+                    .gasSymbol(GASAsset.NAME)
+                    .decimals(10)
                     .build();
         } catch (final Exception ex) {
             throw ArkaneException.arkaneException()
@@ -73,17 +89,22 @@ public class NeoBalanceGateway extends BalanceGateway {
 
     private TokenBalance getTokenBalance(final String walletAddress, final TokenInfo tokenInfo) {
         throw new UnsupportedOperationException("Not implemented yet for neo");
-        /*final BigInteger tokenBalance =  NeoWeb3JGateway.getAccountState(walletAddress).send().getAccountState().getBalances().get(0);
-        return TokenBalance.builder()
-                .tokenAddress(tokenInfo.getAddress())
-                .rawBalance(tokenBalance.toString())
-                .balance(calculateBalance(tokenBalance, tokenInfo))
-                .decimals(tokenInfo.getDecimals())
-                .symbol(tokenInfo.getSymbol())
-                .logo(tokenInfo.getLogo())
-                .type(tokenInfo.getType())
-                .transferable(tokenInfo.isTransferable())
-                .build();*/
+//        final BigInteger tokenBalance;
+//        try {
+//            tokenBalance = NeoWeb3JGateway.invokeFunction(tokenInfo.getAddress(),"balanceOf" ).send().getResult().getStack().;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return TokenBalance.builder()
+//                .tokenAddress(tokenInfo.getAddress())
+//                .rawBalance(tokenBalance.toString())
+//                .balance(calculateBalance(tokenBalance, tokenInfo))
+//                .decimals(tokenInfo.getDecimals())
+//                .symbol(tokenInfo.getSymbol())
+//                .logo(tokenInfo.getLogo())
+//                .type(tokenInfo.getType())
+//                .transferable(tokenInfo.isTransferable())
+//                .build();
     }
 
     @Override

@@ -1,7 +1,12 @@
 package network.arkane.provider.neo.bridge;
 
+import io.neow3j.crypto.Hash;
+import io.neow3j.crypto.transaction.RawTransaction;
+import io.neow3j.io.BinaryWriter;
+import io.neow3j.io.NeoSerializableInterface;
 import io.neow3j.protocol.Neow3j;
 import io.neow3j.protocol.core.methods.response.NeoSendRawTransaction;
+import io.neow3j.utils.ArrayUtils;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.bridge.TransactionGateway;
 import network.arkane.provider.chain.SecretType;
@@ -11,10 +16,13 @@ import network.arkane.provider.sign.domain.TransactionSignature;
 import org.springframework.stereotype.Service;
 
 
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 import static network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature.signAndSubmitTransactionBuilder;
 
+import io.neow3j.utils.Numeric;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 @Service
 @Slf4j
@@ -53,8 +61,7 @@ public class NeoTransactionGateway implements TransactionGateway {
             } else {
                 log.debug("Updating last nonce");
                 return signAndSubmitTransactionBuilder()
-                        //?? what's this for
-                        .transactionHash(send.getRawResponse())
+                        .transactionHash(getTxId(signTransactionResponse.getSignedTransaction()))
                         .signedTransaction(signTransactionResponse.getSignedTransaction())
                         .build();
             }
@@ -70,4 +77,18 @@ public class NeoTransactionGateway implements TransactionGateway {
                     .build();
         }
     }
+
+    // Get TxId from a signedTransaction
+    private String getTxId(String signedTransaction) throws IllegalAccessException, InstantiationException, IOException {
+        RawTransaction rawTransaction = NeoSerializableInterface.from(Numeric.hexStringToByteArray(signedTransaction), RawTransaction.class);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        BinaryWriter binaryWriter = new BinaryWriter(outputStream);
+        rawTransaction.getScripts().clear();
+        rawTransaction.serialize(binaryWriter);
+        binaryWriter.flush();
+        byte[] unsignedTx = outputStream.toByteArray();
+        byte[] data_bytes = Hash.sha256(Hash.sha256(unsignedTx));
+        return Numeric.toHexString(ArrayUtils.reverseArray(data_bytes));
+    }
+
 }

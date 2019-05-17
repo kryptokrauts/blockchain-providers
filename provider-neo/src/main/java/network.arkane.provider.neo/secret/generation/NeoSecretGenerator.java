@@ -13,10 +13,10 @@ import io.neow3j.crypto.Keys;
 public class NeoSecretGenerator implements SecretGenerator<NeoSecretKey> {
 
     @Override
-    public network.arkane.provider.neo.secret.generation.NeoSecretKey generate() {
+    public NeoSecretKey generate() {
         try {
             final ECKeyPair ecKeyPair = Keys.createEcKeyPair();
-            return new network.arkane.provider.neo.secret.generation.NeoSecretKey(ecKeyPair);
+            return new NeoSecretKey(ecKeyPair);
         } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | NoSuchProviderException e) {
             throw new RuntimeException(e);
         }
