@@ -2,6 +2,7 @@ package network.arkane.provider.tron.sign;
 
 import com.google.protobuf.ByteString;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.sign.Signer;
 import network.arkane.provider.sign.domain.Signable;
 import network.arkane.provider.wallet.domain.SecretKey;
@@ -10,6 +11,7 @@ import org.tron.common.utils.ByteArray;
 import org.tron.common.utils.Sha256Hash;
 import org.tron.protos.Protocol;
 
+@Slf4j
 abstract class TronTransactionSigner<T extends Signable, KEY extends SecretKey> implements Signer<T, KEY> {
 
 
@@ -20,6 +22,7 @@ abstract class TronTransactionSigner<T extends Signable, KEY extends SecretKey> 
         final byte[] rawdata = transaction.getRawData().toByteArray();
         final byte[] hash = Sha256Hash.hash(rawdata);
         final byte[] sign = ecKey.sign(hash).toByteArray();
+        log.debug("Done signing for tron");
         return transaction.toBuilder().addSignature(ByteString.copyFrom(sign)).build().toByteArray();
     }
 
