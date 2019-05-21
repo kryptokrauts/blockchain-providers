@@ -28,12 +28,11 @@
             <version>${project.version}</version>
         </dependency>
 
-<!--        <dependency>
-            <groupId>io.neow3j</groupId>
-            <artifactId>core</artifactId>
-            <version>${neow3j.version}</version>
-        </dependency>-->
-
+<!--        <dependency>-->
+<!--            <groupId>io.neow3j</groupId>-->
+<!--            <artifactId>core</artifactId>-->
+<!--            <version>1.0.10</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>io.neow3j</groupId>

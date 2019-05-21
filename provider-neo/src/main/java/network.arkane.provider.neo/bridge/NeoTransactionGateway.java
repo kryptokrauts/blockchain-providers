@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.bridge.TransactionGateway;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.neo.gateway.NeoW3JGateway;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,10 @@ import java.io.IOException;
 @Slf4j
 public class NeoTransactionGateway implements TransactionGateway {
 
-    private Neow3j web3j;
+    private NeoW3JGateway neow3j;
 
-    public NeoTransactionGateway(Neow3j web3j) {
-        this.web3j = web3j;
+    public NeoTransactionGateway(NeoW3JGateway neow3j) {
+        this.neow3j = neow3j;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class NeoTransactionGateway implements TransactionGateway {
     public Signature submit(final TransactionSignature signTransactionResponse) {
         try {
             log.debug("Sending transaction to Neo node {}", signTransactionResponse.getSignedTransaction());
-            final NeoSendRawTransaction send = web3j.sendRawTransaction(signTransactionResponse.getSignedTransaction()).send();
+            final NeoSendRawTransaction send = neow3j.sendRawTransaction(signTransactionResponse.getSignedTransaction());
             if (send.hasError()) {
                 if (send.getError().getMessage().contains("Insufficient funds")) {
                     log.debug("Got error from Neo chain: insufficient funds");
