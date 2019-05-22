@@ -28,12 +28,6 @@
             <type>test-jar</type>
         </dependency>
 
-        <dependency>
-            <groupId>network.arkane</groupId>
-            <artifactId>blockcypher</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
 <!--        <dependency>-->
 <!--            <groupId>io.neow3j</groupId>-->
 <!--            <artifactId>core</artifactId>-->
@@ -48,21 +42,6 @@
             <systemPath>${project.basedir}/lib/neow3j10.jar</systemPath>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.briandilley.jsonrpc4j</groupId>
-            <artifactId>jsonrpc4j</artifactId>
-            <version>1.5.3</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jackson-annotations</artifactId>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jackson-core</artifactId>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
 
 

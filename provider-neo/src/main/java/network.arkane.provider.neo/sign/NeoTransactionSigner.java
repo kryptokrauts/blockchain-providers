@@ -23,8 +23,11 @@ public class NeoTransactionSigner implements Signer<NeoTransactionSignable, NeoS
     public Signature createSignature(final NeoTransactionSignable signable, final NeoSecretKey key) {
         final RawTransaction rawTx = constructTransaction(signable);
 
+        // Unsigned message
+        final RawTransaction unsignTx = constructUnsignedTransaction(signable);
+
         // serialize the base raw transaction
-        byte[] rawTxUnsignedArray = rawTx.toArray();
+        byte[] rawTxUnsignedArray = unsignTx.toArray();
 
         // Create the Invocation Script
         List<RawInvocationScript> rawInvocationScriptList = Arrays.asList(
@@ -50,5 +53,12 @@ public class NeoTransactionSigner implements Signer<NeoTransactionSignable, NeoS
                 signTransactionRequest.getInputs(),
                 signTransactionRequest.getOutputs(),
                 signTransactionRequest.getScripts());
+    }
+
+    private RawTransaction constructUnsignedTransaction(final NeoTransactionSignable signTransactionRequest) {
+        return RawTransaction.createContractTransaction(
+                signTransactionRequest.getAttributes(),
+                signTransactionRequest.getInputs(),
+                signTransactionRequest.getOutputs());
     }
 }
