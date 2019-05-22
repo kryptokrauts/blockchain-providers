@@ -1,6 +1,7 @@
 package network.arkane.provider.neo.bridge;
 
 import io.neow3j.crypto.Hash;
+import io.neow3j.crypto.transaction.ContractTransaction;
 import io.neow3j.crypto.transaction.RawTransaction;
 import io.neow3j.io.BinaryWriter;
 import io.neow3j.io.NeoSerializableInterface;
@@ -80,8 +81,8 @@ public class NeoTransactionGateway implements TransactionGateway {
     }
 
     // Get TxId from a signedTransaction
-    private String getTxId(String signedTransaction) throws IllegalAccessException, InstantiationException, IOException {
-        RawTransaction rawTransaction = NeoSerializableInterface.from(Numeric.hexStringToByteArray(signedTransaction), RawTransaction.class);
+    public String getTxId(String signedTransaction) throws IllegalAccessException, InstantiationException, IOException {
+        RawTransaction rawTransaction = NeoSerializableInterface.from(Numeric.hexStringToByteArray(signedTransaction), ContractTransaction.class);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         BinaryWriter binaryWriter = new BinaryWriter(outputStream);
         rawTransaction.getScripts().clear();

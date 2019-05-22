@@ -8,10 +8,7 @@ import io.neow3j.protocol.core.methods.response.NeoSendRawTransaction;
 import io.neow3j.utils.Numeric;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.token.TokenInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -27,11 +24,7 @@ public class NeoW3JGateway {
 
     private Neow3j neow3j;
 
-    public NeoW3JGateway(@Qualifier("neow3j") Neow3j NeoW3j,
-                                final @Value("${network.arkane.ethereum.deltabalances.contract-address}") String deltaBalancesAddress) {
-        if (StringUtils.isEmpty(deltaBalancesAddress)) {
-            throw new IllegalArgumentException("address for deltabalances should be set [neo]");
-        }
+    public NeoW3JGateway(@Qualifier("neow3j") Neow3j NeoW3j) {
         this.neow3j = NeoW3j;
     }
 

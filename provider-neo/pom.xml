@@ -20,8 +20,14 @@
         <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>network.arkane</groupId>
+            <artifactId>provider-api</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
+
         <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>blockcypher</artifactId>
