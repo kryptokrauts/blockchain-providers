@@ -7,11 +7,11 @@ import network.arkane.provider.sign.domain.Signable;
 
 @Data
 @NoArgsConstructor
-public class TrxRawSignable implements Signable {
+public class TronRawSignable implements Signable {
     private String data;
 
     @Builder
-    public TrxRawSignable(String data) {
+    public TronRawSignable(String data) {
         this.data = data;
     }
 }
