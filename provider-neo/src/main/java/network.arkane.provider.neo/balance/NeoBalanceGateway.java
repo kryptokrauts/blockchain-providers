@@ -1,13 +1,9 @@
 package network.arkane.provider.neo.balance;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import io.neow3j.model.types.ContractParameter;
-import io.neow3j.model.types.ContractParameterType;
 import io.neow3j.model.types.GASAsset;
 import io.neow3j.model.types.NEOAsset;
-import io.neow3j.protocol.Neow3j;
 import io.neow3j.protocol.core.methods.response.NeoGetAccountState;
-import io.neow3j.utils.Numeric;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.BalanceGateway;
@@ -20,12 +16,10 @@ import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,12 +29,11 @@ import java.util.stream.Collectors;
 public class NeoBalanceGateway extends BalanceGateway {
 
     private NeoW3JGateway neoGate;
-    private final TokenDiscoveryService tokenDiscoveryService;
+    private final TokenDiscoveryService service;
 
-    public NeoBalanceGateway(final NeoW3JGateway neoGate,
-                                  final TokenDiscoveryService tokenDiscoveryService) {
+    public NeoBalanceGateway(final NeoW3JGateway neoGate, final TokenDiscoveryService service) {
         this.neoGate = neoGate;
-        this.tokenDiscoveryService = tokenDiscoveryService;
+        this.service = service;
     }
 
     @Override
@@ -87,7 +80,7 @@ public class NeoBalanceGateway extends BalanceGateway {
     @Override
     public TokenBalance getTokenBalance(final String walletAddress,
                                         final String tokenAddress) {
-        final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(SecretType.NEO, tokenAddress).orElseThrow(IllegalArgumentException::new);
+        final TokenInfo tokenInfo = service.getTokenInfo(SecretType.NEO, tokenAddress).orElseThrow(IllegalArgumentException::new);
         return getTokenBalance(walletAddress, tokenInfo);
     }
 
@@ -108,8 +101,7 @@ public class NeoBalanceGateway extends BalanceGateway {
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
-
-        return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.NEO));
+        return getTokenBalances(walletAddress, service.getTokens(SecretType.NEO));
     }
 
     private List<TokenBalance> getTokenBalances(final String walletAddress, final List<TokenInfo> tokenInfo) {

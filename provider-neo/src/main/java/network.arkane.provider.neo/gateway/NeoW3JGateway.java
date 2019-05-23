@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -34,8 +35,7 @@ public class NeoW3JGateway {
 
     public List<NeoGetAccountState.Balance> getBalance(final String account) {
         try {
-            final List<NeoGetAccountState.Balance> balances = web3().getAccountState(account).send().getAccountState().getBalances();
-            return balances;
+            return web3().getAccountState(account).send().getAccountState().getBalances();
         } catch (final Exception ex) {
             log.error("Problem trying to get balance from the Neo network");
             throw ArkaneException.arkaneException()
@@ -45,18 +45,22 @@ public class NeoW3JGateway {
         }
     }
 
+    // will change to new interface getnep5balances in neo 2.10.1 after neow3j update
     public List<BigInteger> getTokenBalances(final String owner, final List<String> tokenAddress) {
-        throw new UnsupportedOperationException("Not implemented yet for neo");
+        return tokenAddress.stream().map(p -> getTokenBalance(owner, p)).collect(Collectors.toList());
     }
 
     public BigInteger getTokenBalance(final String owner, final String tokenAddress) {
         try {
 
-            final BigInteger tokenBalance= Numeric.toBigInt(web3().invokeFunction(tokenAddress,"balanceOf",
-                    Arrays.asList(new ContractParameter(ContractParameterType.HASH160, owner)) ).send()
-                    .getResult().getStack().get(0).getValue().toString());
-            return tokenBalance;
-
+            return  Numeric.toBigInt(web3().invokeFunction(tokenAddress, "balanceOf",
+                    Arrays.asList(new ContractParameter(ContractParameterType.HASH160, owner)))
+                    .send()
+                    .getResult()
+                    .getStack()
+                    .get(0)
+                    .getValue()
+                    .toString());
         } catch (final Exception ex) {
             log.error(String.format("Problem trying to get the token balance of %s for token %s", owner, tokenAddress), ex);
             throw ArkaneException.arkaneException()

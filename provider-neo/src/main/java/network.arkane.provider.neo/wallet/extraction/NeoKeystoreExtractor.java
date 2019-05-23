@@ -25,10 +25,7 @@ public class NeoKeystoreExtractor implements SecretExtractor<NeoKeystoreExtracti
                     .key(keyPair)
                     .build();
         } catch (final Exception ex) {
-            String msg = "Not a valid keystore file";
-            if (ex.getMessage() != null && ex.getMessage().contains("Invalid password provided")) {
-                msg = "Wrong password provided for given keystore file";
-            }
+            String msg = "Not a valid keystore file or Invalid password";
             throw new IllegalArgumentException(msg);
         }
     }

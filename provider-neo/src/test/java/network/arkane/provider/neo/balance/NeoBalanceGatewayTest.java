@@ -5,15 +5,18 @@ import io.neow3j.model.types.NEOAsset;
 import io.neow3j.protocol.core.methods.response.NeoGetAccountState;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
+import network.arkane.provider.balance.domain.TokenBalanceMother;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.neo.gateway.NeoW3JGateway;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
+import network.arkane.provider.token.TokenInfoMother;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,19 +54,31 @@ class NeoBalanceGatewayTest {
 
     @Test
     void checkTokenBalance() {
-//        final TokenInfo fndTokenInfo = TokenInfoMother.fnd().build();
-//        final TokenBalance fndBalance = TokenBalanceMother.fndResult();
-//
-//        when(tokenDiscoveryService.getTokenInfo(SecretType.NEO, fndTokenInfo.getAddress())).thenReturn(Optional.of(fndTokenInfo));
-//        when(neoGateway.getTokenBalance("address", fndTokenInfo.getAddress())).thenReturn(new BigInteger(fndBalance.getRawBalance()));
-//
-//        final TokenBalance result = balanceGateway.getTokenBalance("address", fndTokenInfo.getAddress());
-//
-//        assertThat(result).isEqualTo(fndBalance);
+        final TokenInfo fndTokenInfo = TokenInfoMother.fnd().build();
+        final TokenBalance fndBalance = TokenBalanceMother.fndResult();
+
+        when(tokenDiscoveryService.getTokenInfo(SecretType.NEO, fndTokenInfo.getAddress())).thenReturn(Optional.of(fndTokenInfo));
+        when(neoGateway.getTokenBalance("address", fndTokenInfo.getAddress())).thenReturn(new BigInteger(fndBalance.getRawBalance()));
+
+        final TokenBalance result = balanceGateway.getTokenBalance("address", fndTokenInfo.getAddress());
+
+        assertThat(result).isEqualTo(fndBalance);
     }
 
     @Test
     void getTokenBalances() {
+        final TokenInfo fnd = TokenInfoMother.fnd().build();
+        final TokenInfo zrx = TokenInfoMother.zrx().build();
+        final TokenInfo dai = TokenInfoMother.dai().build();
+        final TokenBalance fndBalance = TokenBalanceMother.fndResult();
+        final TokenBalance zrxBalance = TokenBalanceMother.zrxResult();
+        final TokenBalance daiBalance = TokenBalanceMother.daiResult();
+
+        when(neoGateway.getTokenBalances("address", Arrays.asList(fnd.getAddress(), zrx.getAddress(), dai.getAddress()))).thenReturn(
+                Arrays.asList(new BigInteger(fndBalance.getRawBalance()), new BigInteger(zrxBalance.getRawBalance()), new BigInteger(daiBalance.getRawBalance())));
+        when(tokenDiscoveryService.getTokens(SecretType.NEO)).thenReturn(Arrays.asList(fnd, zrx, dai));
+        final List<TokenBalance> results = balanceGateway.getTokenBalances("address");
+        assertThat(results).containsExactlyInAnyOrder(fndBalance, zrxBalance, daiBalance);
 
     }
 }
