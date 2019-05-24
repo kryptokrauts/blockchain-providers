@@ -10,10 +10,6 @@
         <version>0.6.0-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <neow3j.version>1.0.10</neow3j.version>
-    </properties>
-
     <artifactId>provider-neo</artifactId>
 
     <dependencies>
@@ -28,18 +24,10 @@
             <type>test-jar</type>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>io.neow3j</groupId>-->
-<!--            <artifactId>core</artifactId>-->
-<!--            <version>1.0.10</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>io.neow3j</groupId>
             <artifactId>core</artifactId>
-            <version>${neow3j.version}</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/neow3j10.jar</systemPath>
+            <version>1.0.11</version>
         </dependency>
 
     </dependencies>

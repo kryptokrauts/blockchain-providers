@@ -49,6 +49,7 @@ public class NeoTransactionSigner implements Signer<NeoTransactionSignable, NeoS
 
     private RawTransaction constructTransaction(final NeoTransactionSignable signTransactionRequest) {
         return RawTransaction.createContractTransaction(
+                null,
                 signTransactionRequest.getAttributes(),
                 signTransactionRequest.getInputs(),
                 signTransactionRequest.getOutputs(),
