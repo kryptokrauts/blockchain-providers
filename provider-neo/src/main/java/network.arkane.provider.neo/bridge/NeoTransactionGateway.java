@@ -44,24 +44,14 @@ public class NeoTransactionGateway implements TransactionGateway {
     @Override
     public Signature submit(final TransactionSignature signTransactionResponse) {
         try {
-            log.debug("Sending transaction to Neo node {}", signTransactionResponse.getSignedTransaction());
             final NeoSendRawTransaction send = neow3j.sendRawTransaction(signTransactionResponse.getSignedTransaction());
             if (send.hasError()) {
-                if (send.getError().getMessage().contains("Insufficient funds")) {
                     log.debug("Got error from Neo chain: insufficient funds");
                     throw arkaneException()
-                            .errorCode("transaction.insufficient-funds")
-                            .message("The account that initiated the transfer does not have enough energy")
-                            .build();
-                } else {
-                    log.debug("Got error from Neo chain: {}", send.getError().getMessage());
-                    throw arkaneException()
-                            .errorCode("transaction.submit.Neo-error")
+                            .errorCode("transaction.submit.neo-error")
                             .message(send.getError().getMessage())
                             .build();
-                }
             } else {
-                log.debug("Updating last nonce");
                 return signAndSubmitTransactionBuilder()
                         .transactionHash(getTxId(signTransactionResponse.getSignedTransaction()))
                         .signedTransaction(signTransactionResponse.getSignedTransaction())
@@ -81,7 +71,7 @@ public class NeoTransactionGateway implements TransactionGateway {
     }
 
     // Get TxId from a signedTransaction
-    public String getTxId(String signedTransaction) throws IllegalAccessException, InstantiationException, IOException {
+    private String getTxId(String signedTransaction) throws IllegalAccessException, InstantiationException, IOException {
         RawTransaction rawTransaction = NeoSerializableInterface.from(Numeric.hexStringToByteArray(signedTransaction), ContractTransaction.class);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         BinaryWriter binaryWriter = new BinaryWriter(outputStream);

@@ -2,10 +2,7 @@ package network.arkane.provider.neo.sign;
 
 import io.neow3j.crypto.ECKeyPair;
 import io.neow3j.crypto.WIF;
-import io.neow3j.crypto.transaction.RawScript;
-import io.neow3j.crypto.transaction.RawTransactionInput;
-import io.neow3j.crypto.transaction.RawTransactionOutput;
-import io.neow3j.crypto.transaction.RawVerificationScript;
+import io.neow3j.crypto.transaction.*;
 import io.neow3j.model.types.NEOAsset;
 import io.neow3j.utils.Numeric;
 import network.arkane.provider.neo.secret.generation.NeoSecretKey;
@@ -13,8 +10,7 @@ import network.arkane.provider.sign.domain.TransactionSignature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,17 +30,17 @@ class NeoTransactionSignerTest {
 
         final NeoTransactionSignable signable = NeoTransactionSignable
                 .builder()
-                .inputs(Arrays.asList(
+                .inputs(Collections.singletonList(
                         new RawTransactionInput("c94d0f94b0ac9bacd86737c428344cb2d8be9aad296659e85c065d4f88cd2dd2", 0)
                 ))
                 .outputs(Arrays.asList(
                         new RawTransactionOutput(0, NEOAsset.HASH_ID, "10.0", "AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y"),
                         new RawTransactionOutput(1, NEOAsset.HASH_ID, "90.0", "AKYdmtzCD6DtGx16KHzSTKY8ji29sMTbEZ")
                 ))
-                .scripts(new LinkedList(Arrays.asList(
+                .scripts(new LinkedList<>(Collections.singletonList(
                         new RawScript(
-                                Arrays.asList(),
-                                new RawVerificationScript(Arrays.asList(Numeric.toBigIntNoPrefix("0265bf906bf385fbf3f777832e55a87991bcfbe19b097fb7c5ca2e4025a4d5e5d6")), 1)
+                                new LinkedList<>(),
+                                new RawVerificationScript(Collections.singletonList(Numeric.toBigIntNoPrefix("0265bf906bf385fbf3f777832e55a87991bcfbe19b097fb7c5ca2e4025a4d5e5d6")), 1)
                         )
                 )))
                 .build();
