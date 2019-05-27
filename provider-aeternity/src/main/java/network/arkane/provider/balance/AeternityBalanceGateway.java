@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class AeternityBalanceGateway extends BalanceGateway {
@@ -26,7 +27,7 @@ public class AeternityBalanceGateway extends BalanceGateway {
     @Override
     public Balance getBalance(String address) {
         try {
-            final Account account = accountService.getAccount(address).blockingGet();
+            final Account account = accountService.getAccount(address).timeout(5, TimeUnit.SECONDS).blockingGet();
             final BigInteger balance = account.getBalance();
             return Balance.builder()
                           .available(true)
