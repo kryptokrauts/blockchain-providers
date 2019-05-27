@@ -9,7 +9,9 @@ import java.security.NoSuchProviderException;
 
 import io.neow3j.crypto.ECKeyPair;
 import io.neow3j.crypto.Keys;
+import org.springframework.stereotype.Component;
 
+@Component
 public class NeoSecretGenerator implements SecretGenerator<NeoSecretKey> {
 
     @Override

@@ -44,7 +44,7 @@ public class NeoKeystoreExporter implements KeyExporter<NeoSecretKey> {
 
     @Override
     public SecretType type() {
-        return SecretType.ETHEREUM;
+        return SecretType.NEO;
     }
 }
 

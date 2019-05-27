@@ -5,7 +5,6 @@ import io.neow3j.crypto.transaction.ContractTransaction;
 import io.neow3j.crypto.transaction.RawTransaction;
 import io.neow3j.io.BinaryWriter;
 import io.neow3j.io.NeoSerializableInterface;
-import io.neow3j.protocol.Neow3j;
 import io.neow3j.protocol.core.methods.response.NeoSendRawTransaction;
 import io.neow3j.utils.ArrayUtils;
 import lombok.extern.slf4j.Slf4j;

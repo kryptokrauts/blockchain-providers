@@ -30,6 +30,10 @@
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>
+            <artifactId>provider-neo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane</groupId>
             <artifactId>provider-gochain</artifactId>
         </dependency>
         <dependency>
