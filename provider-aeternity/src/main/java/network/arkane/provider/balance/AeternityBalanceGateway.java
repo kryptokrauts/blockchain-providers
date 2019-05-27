@@ -1,13 +1,13 @@
 package network.arkane.provider.balance;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.kryptokrauts.aeternity.generated.model.Account;
 import com.kryptokrauts.aeternity.sdk.service.account.AccountService;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import io.vertx.core.json.Json;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.exceptions.ArkaneException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +21,7 @@ public class AeternityBalanceGateway extends BalanceGateway {
     private AccountService accountService;
 
     public AeternityBalanceGateway(final @Qualifier("aeternity-accountService") AccountService accountService) {
+        Json.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.accountService = accountService;
     }
 
