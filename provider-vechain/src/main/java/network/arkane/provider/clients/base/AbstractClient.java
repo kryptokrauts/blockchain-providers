@@ -1,5 +1,6 @@
 package network.arkane.provider.clients.base;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -54,8 +55,12 @@ public abstract class AbstractClient {
 
     }
 
+    private static ObjectMapper objectMapper;
+
     static {
         setTimeout(5000);
+        objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     private static String rawUrl(Path path) {
@@ -109,7 +114,7 @@ public abstract class AbstractClient {
             clientIOException.setHttpStatus(status);
             throw clientIOException;
         } else {
-            return new ObjectMapper().readValue(jsonNode.getBody(), tClass);
+            return objectMapper.readValue(jsonNode.getBody(), tClass);
         }
     }
 
@@ -130,7 +135,7 @@ public abstract class AbstractClient {
         String postURL = URLUtils.urlComposite(rawURL, uriParams, queryParams);
 
         HttpResponse<String> jsonNode = null;
-        String postString = new ObjectMapper().writeValueAsString(postBody);
+        String postString = objectMapper.writeValueAsString(postBody);
         try {
             jsonNode = Unirest.post(postURL).body(postString).asString();
         } catch (UnirestException e) {
