@@ -151,21 +151,6 @@ public class EthereumWeb3JGateway {
 
     }
 
-    public EthSendTransaction ethSendRawTransaction(final String signedTransaction) {
-        try {
-            return web3()
-                    .ethSendRawTransaction(signedTransaction)
-                    .send();
-        } catch (final Exception ex) {
-            log.error("Problem trying to submit transaction to the Ethereum network: {}", ex.getMessage());
-            throw ArkaneException.arkaneException()
-                                 .errorCode("web3j.transaction.submit.internal-error")
-                                 .message("A problem occurred trying to submit the transaction to the Ethereum network")
-                                 .cause(ex)
-                                 .build();
-        }
-    }
-
     public String getName(final String tokenAddress) {
         try {
             return getERC20(tokenAddress).name().send();

@@ -10,6 +10,8 @@ import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignatur
 import network.arkane.provider.sign.domain.TransactionSignature;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class LitecoinTransactionGateway implements TransactionGateway {
 
@@ -22,7 +24,7 @@ public class LitecoinTransactionGateway implements TransactionGateway {
     }
 
     @Override
-    public Signature submit(TransactionSignature transactionSignature) {
+    public Signature submit(TransactionSignature transactionSignature, final Optional<String> endpoint) {
         BlockCypherRawTransactionResponse response = blockcypherGateway.sendSignedTransaction(
                 litecoinEnv.getNetwork(),
                 transactionSignature.getSignedTransaction()
