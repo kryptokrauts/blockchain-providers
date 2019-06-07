@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.tron.common.utils.Sha256Hash;
 import org.tron.protos.Protocol;
 
+import java.util.Optional;
+
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 
 @Component
@@ -27,7 +29,7 @@ public class TronTransactionGateway implements TransactionGateway {
 
     @Override
     @SneakyThrows
-    public Signature submit(final TransactionSignature transactionSignature) {
+    public Signature submit(final TransactionSignature transactionSignature, final Optional<String> endpoint) {
         try {
             if (broadcast(Hex.decode(transactionSignature.getSignedTransaction()))) {
                 return SubmittedAndSignedTransactionSignature.signAndSubmitTransactionBuilder()

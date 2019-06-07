@@ -12,6 +12,8 @@ import org.bitcoinj.params.TestNet3Params;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,7 +37,7 @@ class BitcoinTransactionGatewayTest {
         BlockCypherRawTransactionResponse response = new BlockCypherRawTransactionResponse(new TX("txId"));
         when(blockcypherGateway.sendSignedTransaction(Network.BTC_TEST, sig)).thenReturn(response);
 
-        Signature result = bitcoinTransactionGateway.submit(new TransactionSignature(sig));
+        Signature result = bitcoinTransactionGateway.submit(new TransactionSignature(sig), Optional.empty());
 
         assertThat(result).isExactlyInstanceOf(SubmittedAndSignedTransactionSignature.class);
         assertThat(((SubmittedAndSignedTransactionSignature) result).getTransactionHash()).isEqualTo("txId");

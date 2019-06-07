@@ -32,7 +32,7 @@ public class GochainTransactionGateway implements TransactionGateway {
     }
 
     @Override
-    public Signature submit(final TransactionSignature signTransactionResponse) {
+    public Signature submit(final TransactionSignature signTransactionResponse, final Optional<String> endpoint) {
         try {
             log.debug("Sending transaction to Gochain node {}", signTransactionResponse.getSignedTransaction());
             final EthSendTransaction send = web3j.ethSendRawTransaction(signTransactionResponse.getSignedTransaction());
