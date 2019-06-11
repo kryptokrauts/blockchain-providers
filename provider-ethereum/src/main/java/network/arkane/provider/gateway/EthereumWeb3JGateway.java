@@ -5,8 +5,8 @@ import network.arkane.provider.contract.DeltaBalances;
 import network.arkane.provider.contract.HumanStandardToken;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gas.EthereumEstimateGasResult;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
@@ -18,7 +18,7 @@ import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthEstimateGas;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.http.HttpService;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -34,17 +34,24 @@ public class EthereumWeb3JGateway {
 
     private static final BigInteger DEFAULT_GAS_LIMIT_FAILED = new BigInteger("200000");
     private final EnsResolver ensResolver;
-    private Web3j web3j;
-    private DeltaBalances deltaBalances;
+    private final String deltaBalancesAddress;
+    private final Web3j web3j;
+    private final DeltaBalances deltaBalances;
 
-    public EthereumWeb3JGateway(@Qualifier("ethereumWeb3j") Web3j ethereumWeb3j,
+    public EthereumWeb3JGateway(final @Qualifier("ethereumWeb3j") Web3j ethereumWeb3j,
                                 final @Value("${network.arkane.ethereum.deltabalances.contract-address}") String deltaBalancesAddress) {
         if (StringUtils.isEmpty(deltaBalancesAddress)) {
-            throw new IllegalArgumentException("address for deltabalances should be set [ethereum]");
+            throw new IllegalArgumentException("Address for deltabalances should be set [ethereum]");
         }
+        this.deltaBalancesAddress = deltaBalancesAddress;
         this.web3j = ethereumWeb3j;
         ensResolver = new EnsResolver(this.web3j);
         deltaBalances = new DeltaBalances(deltaBalancesAddress, web3j);
+    }
+
+    public EthereumWeb3JGateway cloneForEndpoint(final String endpoint) {
+        return new EthereumWeb3JGateway(Web3j.build(new HttpService(endpoint, false)),
+                                        this.deltaBalancesAddress);
     }
 
     public Web3j web3() {
