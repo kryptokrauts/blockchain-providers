@@ -32,8 +32,8 @@ public class Web3AutoConfiguration {
         }
     }
 
-    @Bean(name = "ethereumWeb3j")
     @Primary
+    @Bean(name = "ethereumWeb3j")
     public Web3j ethereumWeb3j(final @Value("${network.arkane.ethereum.endpoint.url}") String endpoint) {
         if (endpoint.startsWith("ws")) {
             this.websocket = new WebSocketClient(URI.create(endpoint));
