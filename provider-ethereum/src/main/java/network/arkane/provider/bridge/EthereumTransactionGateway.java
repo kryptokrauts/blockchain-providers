@@ -43,14 +43,14 @@ public class EthereumTransactionGateway implements TransactionGateway {
 
             final EthSendTransaction send = ethSendRawTransaction(web3j, signTransactionResponse.getSignedTransaction());
             if (send.hasError()) {
-                if (send.getError().getMessage().contains("Insufficient funds")) {
-                    log.debug("Got error from ethereum chain: insufficient funds");
+                if (send.getError().getMessage().matches(".*[I,i]nsufficient funds.*")) {
+                    log.warn("Got error from ethereum chain: insufficient funds");
                     throw arkaneException()
                             .errorCode("transaction.insufficient-funds")
                             .message("The account that initiated the transfer does not have enough energy")
                             .build();
                 } else {
-                    log.debug("Got error from ethereum chain: {}", send.getError().getMessage());
+                    log.error("Got error from ethereum chain: {}", send.getError().getMessage());
                     throw arkaneException()
                             .errorCode("transaction.submit.ethereum-error")
                             .build();
@@ -80,9 +80,7 @@ public class EthereumTransactionGateway implements TransactionGateway {
 
     private EthSendTransaction ethSendRawTransaction(final Web3j web3j, final String signedTransaction) {
         try {
-            return web3j
-                    .ethSendRawTransaction(signedTransaction)
-                    .send();
+            return web3j.ethSendRawTransaction(signedTransaction).send();
         } catch (final Exception ex) {
             log.error("Problem trying to submit transaction to the Ethereum network: {}", ex.getMessage());
             throw ArkaneException.arkaneException()

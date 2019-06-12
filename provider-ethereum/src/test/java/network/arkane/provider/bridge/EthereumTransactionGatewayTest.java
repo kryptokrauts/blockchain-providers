@@ -8,6 +8,8 @@ import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignatureMother;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.Response;
@@ -16,7 +18,7 @@ import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -29,14 +31,14 @@ class EthereumTransactionGatewayTest {
     private Web3j web3j;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         web3j = mock(Web3j.class);
         ethereumTransactionGateway = new EthereumTransactionGateway(web3j);
     }
 
     @Test
     @SneakyThrows
-    public void sendingTransactionCreatesTxHash() {
+    void sendingTransactionCreatesTxHash() {
         final String expectedHash = "txHash";
 
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
@@ -56,7 +58,7 @@ class EthereumTransactionGatewayTest {
 
     @Test
     @SneakyThrows
-    public void sendingTransactionThrowsEvent() {
+    void sendingTransactionThrowsEvent() {
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
         final EthSendTransaction ethSendTransaction = mock(EthSendTransaction.class);
         when(ethSendTransaction.hasError()).thenReturn(false);
@@ -76,27 +78,28 @@ class EthereumTransactionGatewayTest {
                 .thenThrow(IllegalArgumentException.class);
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
 
-        assertThrows(ArkaneException.class,
-                     () -> ethereumTransactionGateway.submit(signTransactionResponse, Optional.empty()));
+        assertThatThrownBy(() -> ethereumTransactionGateway.submit(signTransactionResponse, Optional.empty()))
+                .isInstanceOf(ArkaneException.class)
+                .hasMessage("A problem occurred trying to submit the transaction to the Ethereum network")
+                .hasFieldOrPropertyWithValue("errorCode", "web3j.transaction.submit.internal-error");
     }
 
-    @Test
     @SneakyThrows
-    void insufficientFunds() {
+    @ParameterizedTest
+    @ValueSource(strings = {"insufficient funds for gas * price + value", "Insufficient funds, not enough things in wallet"})
+    void insufficientFunds(final String errorMessage) {
         final EthSendTransaction sendTransaction = mock(EthSendTransaction.class);
         when(sendTransaction.hasError()).thenReturn(true);
-        when(sendTransaction.getError()).thenReturn(new Response.Error(500, "Insufficient funds, not enough things in wallet"));
+        when(sendTransaction.getError()).thenReturn(new Response.Error(500, errorMessage));
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
+        final Request request = mock(Request.class);
 
-        Request mock = mock(Request.class);
-        Response expectedResponse = new Response();
-        expectedResponse.setResult(sendTransaction);
-        when(mock.send()).thenReturn(expectedResponse);
-        when(web3j.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
-                .thenReturn(mock);
+        when(request.send()).thenReturn(sendTransaction);
+        when(web3j.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction()))).thenReturn(request);
 
-        assertThrows(ArkaneException.class,
-                     () -> ethereumTransactionGateway.submit(signTransactionResponse, Optional.empty()),
-                     "The account that initiated the transfer does not have enough energy");
+        assertThatThrownBy(() -> ethereumTransactionGateway.submit(signTransactionResponse, Optional.empty()))
+                .isInstanceOf(ArkaneException.class)
+                .hasMessage("The account that initiated the transfer does not have enough energy")
+                .hasFieldOrPropertyWithValue("errorCode", "transaction.insufficient-funds");
     }
 }
