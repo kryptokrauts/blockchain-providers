@@ -47,7 +47,7 @@ public class EthereumWeb3JGateway {
         try {
             return web3().ethGetBalance(account, DefaultBlockParameterName.LATEST).send();
         } catch (final Exception ex) {
-            log.error("Problem trying to get balance from the Ethereum network");
+            log.error("Problem trying to get balance from the Ethereum network", ex);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.internal-error")
                                  .message(String.format("Unable to get the balance for the specified account (%s) (Ethereum)", account))
@@ -133,6 +133,7 @@ public class EthereumWeb3JGateway {
             ethGetTransactionCount = web3j.ethGetTransactionCount(
                     address, DefaultBlockParameterName.LATEST).sendAsync().get();
         } catch (InterruptedException | ExecutionException e) {
+            log.error("Problem trying to get balance from the Ethereum network", e);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.nonce.internal-error")
                                  .message("A problem occurred trying to get the next nonce")
