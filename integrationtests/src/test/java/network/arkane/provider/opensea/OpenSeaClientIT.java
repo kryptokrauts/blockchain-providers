@@ -38,6 +38,14 @@ class OpenSeaClientIT {
         assertThat(assets.getAssets()).isNotEmpty();
         assets.getAssets().forEach((asset) -> assertThat(asset.getAssetContract().getAddress()).isIn(contract1, contract2));
     }
+
+    @Test
+    void listAssets_walletHasNoAssets() {
+        final Assets assets = client.listAssets("0xf88282A842E730f24dE8892421cE2C86CC630AF7", new ArrayList<>());
+
+        assertThat(assets).isNotNull();
+        assertThat(assets.getAssets()).isEmpty();
+    }
 }
 
 

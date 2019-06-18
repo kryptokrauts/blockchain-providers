@@ -52,4 +52,17 @@ class OpenSeaGatewayTest {
 
         assertThat(result).containsOnly(asset1, asset2);
     }
+
+    @Test
+    void listAssets_contractAddressesNull() {
+        final String owner = "gshdfg";
+        final Asset asset1 = mock(Asset.class);
+        final Asset asset2 = mock(Asset.class);
+
+        when(client.listAssets(owner, new ArrayList<>())).thenReturn(Assets.builder().assets(Arrays.asList(asset1, asset2)).build());
+
+        final List<Asset> result = gateway.listAssets(owner, null);
+
+        assertThat(result).containsOnly(asset1, asset2);
+    }
 }
