@@ -24,6 +24,7 @@ public class OpenSeaClientConfiguration {
     @Bean
     public RequestInterceptor apiTokenInterceptor() {
         return requestTemplate -> {
+            requestTemplate.header("User-Agent","curl/7.54.0");
             if (StringUtils.isNotBlank(apiToken) && !requestTemplate.headers().containsKey(API_KEY_KEY)) {
                 requestTemplate.header(API_KEY_KEY, apiToken);
             }
