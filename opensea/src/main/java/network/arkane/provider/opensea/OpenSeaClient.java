@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "opensea-client", url = "https://api.opensea.io/api/v1", decode404 = true, configuration = {OpenSeaClientConfiguration.class})
+@FeignClient(name = "opensea-client", url = "${opensea.api-base-url}", decode404 = true, configuration = {OpenSeaClientConfiguration.class})
 public interface OpenSeaClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/assets")
