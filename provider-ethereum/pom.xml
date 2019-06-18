@@ -22,5 +22,15 @@
             <scope>test</scope>
             <type>test-jar</type>
         </dependency>
+        <dependency>
+            <groupId>network.arkane</groupId>
+            <artifactId>opensea</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane</groupId>
+            <artifactId>opensea</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
     </dependencies>
 </project>

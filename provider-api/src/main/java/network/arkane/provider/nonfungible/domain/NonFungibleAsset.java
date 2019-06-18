@@ -4,9 +4,10 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class NonFungible {
+public class NonFungibleAsset {
 
     private String id;
+    private String owner;
     private String name;
     private String description;
     private String url;
@@ -15,14 +16,16 @@ public class NonFungible {
     private NonFungibleContract contract;
 
     @Builder
-    public NonFungible(final String id,
-                       final String name,
-                       final String description,
-                       final String url,
-                       final String backgroundColor,
-                       final String imageUrl,
-                       final NonFungibleContract contract) {
+    public NonFungibleAsset(final String id,
+                            final String owner,
+                            final String name,
+                            final String description,
+                            final String url,
+                            final String backgroundColor,
+                            final String imageUrl,
+                            final NonFungibleContract contract) {
         this.id = id;
+        this.owner = owner;
         this.name = name;
         this.description = description;
         this.url = url;
