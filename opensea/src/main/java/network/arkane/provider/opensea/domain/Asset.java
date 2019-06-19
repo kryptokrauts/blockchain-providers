@@ -21,7 +21,7 @@ public class Asset {
     private List<Trait> traits;
 
     @Builder
-    public Asset(@JsonProperty("tokenId") final String tokenId,
+    public Asset(@JsonProperty("token_id") final String tokenId,
                  @JsonProperty("image_url") final String imageUrl,
                  @JsonProperty("image_original_url") final String imageOriginalUrl,
                  @JsonProperty("background_color") final String backgroundColor,
