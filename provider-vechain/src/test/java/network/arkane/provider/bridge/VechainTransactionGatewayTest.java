@@ -8,6 +8,8 @@ import network.arkane.provider.sign.domain.TransactionSignature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
@@ -32,7 +34,7 @@ class VechainTransactionGatewayTest {
         transferResult.setId("transferId");
         when(vechainGateway.sendRawTransaction(transactionSignature.getSignedTransaction())).thenReturn(transferResult);
 
-        Signature result = vechainTransactionGateway.submit(transactionSignature);
+        Signature result = vechainTransactionGateway.submit(transactionSignature, Optional.empty());
 
         assertThat(result).isExactlyInstanceOf(SubmittedAndSignedTransactionSignature.class);
         assertThat(((SubmittedAndSignedTransactionSignature) result).getTransactionHash()).isEqualTo("transferId");
@@ -45,7 +47,7 @@ class VechainTransactionGatewayTest {
         transferResult.setId("transferId");
         when(vechainGateway.sendRawTransaction(transactionSignature.getSignedTransaction())).thenThrow(new RuntimeException("error signing"));
 
-        assertThatThrownBy(() -> vechainTransactionGateway.submit(transactionSignature)).hasMessage(
+        assertThatThrownBy(() -> vechainTransactionGateway.submit(transactionSignature, Optional.empty())).hasMessage(
                 "problem trying to submit transaction to vechain: error signing");
     }
 }

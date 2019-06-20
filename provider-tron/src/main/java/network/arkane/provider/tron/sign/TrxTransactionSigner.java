@@ -30,6 +30,7 @@ public class TrxTransactionSigner extends TronTransactionSigner<TrxTransactionSi
         log.info("Creating signature for: {}", signable);
         final Protocol.Transaction transaction = createTransaction(key.getKeyPair().getAddress(), GrpcClient.decodeFromBase58Check(signable.getTo()), signable.getAmount());
         final byte[] signature = signTransaction2Byte(transaction.toByteArray(), key.getKeyPair().getPrivKeyBytes());
+        log.info("Done creating signature: {}", Hex.encodeHexString(signature));
         return TransactionSignature.signTransactionBuilder()
                                    .signedTransaction(Hex.encodeHexString(signature))
                                    .build();

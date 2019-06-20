@@ -5,12 +5,8 @@ import network.arkane.provider.contract.DeltaBalances;
 import network.arkane.provider.contract.HumanStandardToken;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gas.EthereumEstimateGasResult;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
 import org.web3j.ens.EnsResolver;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -18,7 +14,6 @@ import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthEstimateGas;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -27,20 +22,17 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 
-@Component
 @Slf4j
-@Primary
 public class EthereumWeb3JGateway {
 
     private static final BigInteger DEFAULT_GAS_LIMIT_FAILED = new BigInteger("200000");
     private final EnsResolver ensResolver;
-    private Web3j web3j;
-    private DeltaBalances deltaBalances;
+    private final Web3j web3j;
+    private final DeltaBalances deltaBalances;
 
-    public EthereumWeb3JGateway(@Qualifier("ethereumWeb3j") Web3j ethereumWeb3j,
-                                final @Value("${network.arkane.ethereum.deltabalances.contract-address}") String deltaBalancesAddress) {
+    public EthereumWeb3JGateway(final Web3j ethereumWeb3j, final String deltaBalancesAddress) {
         if (StringUtils.isEmpty(deltaBalancesAddress)) {
-            throw new IllegalArgumentException("address for deltabalances should be set [ethereum]");
+            throw new IllegalArgumentException("Address for deltabalances should be set [ethereum]");
         }
         this.web3j = ethereumWeb3j;
         ensResolver = new EnsResolver(this.web3j);
@@ -55,7 +47,7 @@ public class EthereumWeb3JGateway {
         try {
             return web3().ethGetBalance(account, DefaultBlockParameterName.LATEST).send();
         } catch (final Exception ex) {
-            log.error("Problem trying to get balance from the Ethereum network");
+            log.error("Problem trying to get balance from the Ethereum network", ex);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.internal-error")
                                  .message(String.format("Unable to get the balance for the specified account (%s) (Ethereum)", account))
@@ -141,6 +133,7 @@ public class EthereumWeb3JGateway {
             ethGetTransactionCount = web3j.ethGetTransactionCount(
                     address, DefaultBlockParameterName.LATEST).sendAsync().get();
         } catch (InterruptedException | ExecutionException e) {
+            log.error("Problem trying to get balance from the Ethereum network", e);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.nonce.internal-error")
                                  .message("A problem occurred trying to get the next nonce")
@@ -149,21 +142,6 @@ public class EthereumWeb3JGateway {
         }
         return ethGetTransactionCount.getTransactionCount();
 
-    }
-
-    public EthSendTransaction ethSendRawTransaction(final String signedTransaction) {
-        try {
-            return web3()
-                    .ethSendRawTransaction(signedTransaction)
-                    .send();
-        } catch (final Exception ex) {
-            log.error("Problem trying to submit transaction to the Ethereum network: {}", ex.getMessage());
-            throw ArkaneException.arkaneException()
-                                 .errorCode("web3j.transaction.submit.internal-error")
-                                 .message("A problem occurred trying to submit the transaction to the Ethereum network")
-                                 .cause(ex)
-                                 .build();
-        }
     }
 
     public String getName(final String tokenAddress) {

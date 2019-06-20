@@ -10,6 +10,8 @@ import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignatur
 import network.arkane.provider.sign.domain.TransactionSignature;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class BitcoinTransactionGateway implements TransactionGateway {
 
@@ -22,7 +24,7 @@ public class BitcoinTransactionGateway implements TransactionGateway {
     }
 
     @Override
-    public Signature submit(TransactionSignature transactionSignature) {
+    public Signature submit(TransactionSignature transactionSignature, final Optional<String> endpoint) {
         BlockCypherRawTransactionResponse submission = blockcypherGateway.sendSignedTransaction(bitcoinEnv.getNetwork(), transactionSignature.getSignedTransaction());
         return new SubmittedAndSignedTransactionSignature(submission.getTransactionId(), transactionSignature.getSignedTransaction());
     }

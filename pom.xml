@@ -22,6 +22,7 @@
         <module>provider-vechain</module>
         <module>provider-neo</module>
         <module>blockcypher</module>
+        <module>opensea</module>
         <module>integrationtests</module>
     </modules>
 
@@ -55,12 +56,19 @@
         <mockito-all.version>1.10.19</mockito-all.version>
         <typetools.version>0.5.0</typetools.version>
         <spring-cloud-dependencies.version>Finchley.SR2</spring-cloud-dependencies.version>
+        <guava.version>27.0.1-jre</guava.version>
+        <arkane-common.version>0.0.1-SNAPSHOT</arkane-common.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -217,6 +225,27 @@
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj-core.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fundrequest.arkane</groupId>
+                <artifactId>common</artifactId>
+                <version>${arkane-common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>opensea</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>opensea</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
             </dependency>
         </dependencies>
     </dependencyManagement>

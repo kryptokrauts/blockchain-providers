@@ -14,6 +14,8 @@ import network.arkane.provider.sign.domain.TransactionSignature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -49,7 +51,7 @@ class LitecoinTransactionGatewayTest {
                 new BlockCypherRawTransactionResponse(new TX("txId"))
         );
 
-        Signature result = litecoinTransactionGateway.submit(new TransactionSignature(sig));
+        Signature result = litecoinTransactionGateway.submit(new TransactionSignature(sig), Optional.empty());
 
         assertThat(result).isExactlyInstanceOf(SubmittedAndSignedTransactionSignature.class);
         assertThat(((SubmittedAndSignedTransactionSignature) result).getTransactionHash()).isEqualTo("txId");
