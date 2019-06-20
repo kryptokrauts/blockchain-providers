@@ -20,6 +20,7 @@
         <module>provider-tron</module>
         <module>provider-litecoin</module>
         <module>provider-vechain</module>
+        <module>provider-neo</module>
         <module>blockcypher</module>
         <module>opensea</module>
         <module>integrationtests</module>
@@ -141,6 +142,11 @@
             <dependency>
                 <groupId>network.arkane</groupId>
                 <artifactId>provider-vechain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-neo</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
