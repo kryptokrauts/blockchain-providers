@@ -7,16 +7,18 @@ import network.arkane.provider.neo.gateway.NeoW3JGateway;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignature;
+import network.arkane.provider.sign.domain.TransactionSignatureMother;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import network.arkane.provider.sign.domain.TransactionSignatureMother;
 
 class NeoTransactionGatewayTest {
     private NeoTransactionGateway NeoTransactionGateway;
@@ -47,7 +49,7 @@ class NeoTransactionGatewayTest {
         when(NeoW3JGateway.sendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
                 .thenReturn(sendTransaction);
 
-        final Signature response = NeoTransactionGateway.submit(signTransactionResponse);
+        final Signature response = NeoTransactionGateway.submit(signTransactionResponse, Optional.empty());
         assertThat(response).isInstanceOf(SubmittedAndSignedTransactionSignature.class);
         assertThat(((SubmittedAndSignedTransactionSignature) response).getTransactionHash()).isEqualTo(expectedHash);
     }
@@ -61,16 +63,15 @@ class NeoTransactionGatewayTest {
         when(NeoW3JGateway.sendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
                 .thenReturn(ethSendTransaction);
 
-        NeoTransactionGateway.submit(signTransactionResponse);
+        NeoTransactionGateway.submit(signTransactionResponse, Optional.empty());
     }
 
     @Test
     void problemDuringTransactionCreation() {
-        when(NeoW3JGateway.sendRawTransaction(any(String.class)))
-                .thenThrow(IllegalArgumentException.class);
+        when(NeoW3JGateway.sendRawTransaction(any(String.class))).thenThrow(IllegalArgumentException.class);
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
         assertThrows(ArkaneException.class,
-                () -> NeoTransactionGateway.submit(signTransactionResponse));
+                () -> NeoTransactionGateway.submit(signTransactionResponse, Optional.empty()));
     }
 
     @Test
@@ -82,6 +83,6 @@ class NeoTransactionGatewayTest {
                 .thenReturn(sendTransaction);
 
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
-        assertThrows(ArkaneException.class, () -> NeoTransactionGateway.submit(signTransactionResponse), "The account that initiated the transfer does not have enough energy");
+        assertThrows(ArkaneException.class, () -> NeoTransactionGateway.submit(signTransactionResponse, Optional.empty()), "The account that initiated the transfer does not have enough energy");
     }
 }
