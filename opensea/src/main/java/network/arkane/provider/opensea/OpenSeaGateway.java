@@ -29,6 +29,10 @@ public class OpenSeaGateway {
         return executeWithRateLimiter(() -> this.openSeaClient.listAssets(owner, resolveContractAddresses(contractAddresses)).getAssets());
     }
 
+    public Asset getAsset(final String contractAddress, final String tokenId) {
+        return executeWithRateLimiter(() -> this.openSeaClient.getAsset(contractAddress, tokenId));
+    }
+
     private List<String> resolveContractAddresses(final String[] contractAddresses) {
         return contractAddresses != null ? Arrays.asList(contractAddresses) : new ArrayList<>();
     }

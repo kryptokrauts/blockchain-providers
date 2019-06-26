@@ -10,4 +10,6 @@ public interface NonFungibleGateway {
     SecretType getSecretType();
 
     List<NonFungibleAsset> listNonFungibles(String walletId, String... contractAddresses);
+
+    NonFungibleAsset getNonFungible(String contractAddress, String tokenId);
 }

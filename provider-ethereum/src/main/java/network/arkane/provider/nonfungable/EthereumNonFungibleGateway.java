@@ -28,4 +28,9 @@ public class EthereumNonFungibleGateway implements NonFungibleGateway {
     public List<NonFungibleAsset> listNonFungibles(final String walletId, final String... contractAddresses) {
         return mapper.mapToList(openSeaGateway.listAssets(walletId, contractAddresses));
     }
+
+    @Override
+    public NonFungibleAsset getNonFungible(final String contractAddress, final String tokenId) {
+        return mapper.map(openSeaGateway.getAsset(contractAddress, tokenId));
+    }
 }
