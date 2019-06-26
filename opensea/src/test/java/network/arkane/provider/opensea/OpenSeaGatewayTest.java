@@ -65,4 +65,15 @@ class OpenSeaGatewayTest {
 
         assertThat(result).containsOnly(asset1, asset2);
     }
+
+    @Test
+    void getAsset() {
+        final Asset asset = mock(Asset.class);
+
+        when(client.getAsset("0x12345", "123")).thenReturn(asset);
+
+        final Asset result = gateway.getAsset("0x12345", "123");
+
+        assertThat(result).isEqualTo(asset);
+    }
 }
