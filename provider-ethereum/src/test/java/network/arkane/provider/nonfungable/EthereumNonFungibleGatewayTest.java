@@ -62,4 +62,19 @@ class EthereumNonFungibleGatewayTest {
 
         assertThat(result).isSameAs(expected);
     }
+
+    @Test
+    void getNonFungible() {
+        final String contractAddress = "afdsgd";
+        final String tokenId = "131";
+        final Asset openSeaToken = Asset.builder().build();
+        final NonFungibleAsset expected = NonFungibleAsset.builder().build();
+
+        when(openSeaGateway.getAsset(contractAddress, tokenId)).thenReturn(openSeaToken);
+        when(mapper.map(same(openSeaToken))).thenReturn(expected);
+
+        final NonFungibleAsset result = this.ethereumNonFungibleGateway.getNonFungible(contractAddress, tokenId);
+
+        assertThat(result).isSameAs(expected);
+    }
 }
