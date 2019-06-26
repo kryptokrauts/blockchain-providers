@@ -116,5 +116,22 @@ class EthereumRawSignerTest {
         assertThat(result).isEqualTo(hexResult);
     }
 
+    @Test
+    void canSignDataStartingWith0xWhichIsNotHex() throws UnsupportedEncodingException {
+        BigInteger privateKeyInBT = new BigInteger("4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318", 16);
+
+        ECKeyPair aPair = ECKeyPair.create(privateKeyInBT);
+
+        String message = "0xRacers";
+
+        HexSignature result = signer.createSignature(EthereumRawSignable.builder().data(message).build(), EthereumSecretKey.builder().keyPair(aPair).build());
+
+        assertThat(result.getV()).isEqualTo("0x1c");
+        assertThat(result.getR()).isEqualTo("0x3de0d6ed6097fc48e51d98432e093119ae1ec55b3a8a98c5a089fe4f02c8347e");
+        assertThat(result.getS()).isEqualTo("0x4b2faf7668218e9f91c592a6278be7ac09fb0ea89977b361e2bf1826b0fda65c");
+        assertThat(result.getSignature()).isEqualTo(
+                "0x3de0d6ed6097fc48e51d98432e093119ae1ec55b3a8a98c5a089fe4f02c8347e4b2faf7668218e9f91c592a6278be7ac09fb0ea89977b361e2bf1826b0fda65c1c");
+    }
+
 
 }
