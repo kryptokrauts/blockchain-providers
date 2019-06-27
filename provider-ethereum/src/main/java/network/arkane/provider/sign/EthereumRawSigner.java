@@ -3,25 +3,35 @@ package network.arkane.provider.sign;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.secret.generation.EthereumSecretKey;
 import network.arkane.provider.sign.domain.HexSignature;
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 import org.web3j.crypto.Sign;
 
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.compile;
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 
 @Slf4j
 @Component
 public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSecretKey> {
 
+    private static final Pattern HEXADECIMAL_PATTERN = compile("0x\\p{XDigit}+");
+
     @Override
     public HexSignature createSignature(EthereumRawSignable signable, EthereumSecretKey key) {
         try {
             log.info("Signing raw ethereum transaction: {}", signable.toString());
             byte[] dataToSign;
-            if (signable.getData() != null && signable.getData().startsWith("0x")) {
-                dataToSign = Hex.decodeHex(signable.getData().replaceFirst("0x", ""));
+            if (signable.getData() != null && isHexadecimal(signable.getData())) {
+                try {
+                    dataToSign = Hex.decodeHex(signable.getData().replaceFirst("0x", ""));
+                } catch (DecoderException de) {
+                    dataToSign = signable.getData().getBytes(StandardCharsets.UTF_8);
+                }
             } else {
                 dataToSign = signable.getData().getBytes(StandardCharsets.UTF_8);
             }
@@ -43,5 +53,10 @@ public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSe
                     .cause(ex)
                     .build();
         }
+    }
+
+    private boolean isHexadecimal(String input) {
+        final Matcher matcher = HEXADECIMAL_PATTERN.matcher(input);
+        return matcher.matches();
     }
 }
