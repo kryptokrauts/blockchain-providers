@@ -22,7 +22,7 @@ public class AeternitySpendTransactionSigner implements Signer<AeternitySpendTra
 
     private TransactionService transactionService;
 
-    public AeternitySpendTransactionSigner(final @Qualifier("transactionService") TransactionService transactionService) {
+    public AeternitySpendTransactionSigner(final @Qualifier("aeternity-transactionService") TransactionService transactionService) {
         this.transactionService = transactionService;
     }
 

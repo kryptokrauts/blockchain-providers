@@ -1,33 +1,34 @@
 package network.arkane.provider.balance;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.kryptokrauts.aeternity.generated.model.Account;
 import com.kryptokrauts.aeternity.sdk.service.account.AccountService;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import io.vertx.core.json.Json;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.exceptions.ArkaneException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class AeternityBalanceGateway extends BalanceGateway {
 
     private AccountService accountService;
 
-    public AeternityBalanceGateway(final @Qualifier("accountService") AccountService accountService) {
+    public AeternityBalanceGateway(final @Qualifier("aeternity-accountService") AccountService accountService) {
+        Json.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.accountService = accountService;
     }
 
     @Override
-    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "aeternity-node")
     public Balance getBalance(String address) {
         try {
-            final Account account = accountService.getAccount(address).blockingGet();
+            final Account account = accountService.getAccount(address).timeout(5, TimeUnit.SECONDS).blockingGet();
             final BigInteger balance = account.getBalance();
             return Balance.builder()
                           .available(true)
@@ -41,10 +42,17 @@ public class AeternityBalanceGateway extends BalanceGateway {
                           .gasBalance(PrecisionUtil.toDecimal(balance, 18))
                           .build();
         } catch (final Exception e) {
-            throw ArkaneException.arkaneException()
-                                 .message(String.format("Unable to get the balance for the specified address (%s)", address))
-                                 .errorCode("aeternity.internal-error")
-                                 .build();
+            return Balance.builder()
+                          .available(true)
+                          .secretType(SecretType.AETERNITY)
+                          .decimals(18)
+                          .symbol("AE")
+                          .gasSymbol("AE")
+                          .rawBalance("0")
+                          .rawGasBalance("0")
+                          .balance(0)
+                          .gasBalance(0)
+                          .build();
         }
     }
 

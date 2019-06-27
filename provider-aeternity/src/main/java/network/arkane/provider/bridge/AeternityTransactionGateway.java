@@ -12,16 +12,18 @@ import network.arkane.provider.sign.domain.TransactionSignature;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Slf4j
 @Component
 public class AeternityTransactionGateway implements TransactionGateway {
 
     private TransactionService transactionService;
 
-    public AeternityTransactionGateway(final @Qualifier("transactionService") TransactionService transactionService) { this.transactionService = transactionService; }
+    public AeternityTransactionGateway(final @Qualifier("aeternity-transactionService") TransactionService transactionService) { this.transactionService = transactionService; }
 
     @Override
-    public Signature submit(TransactionSignature transactionSignature) {
+    public Signature submit(TransactionSignature transactionSignature, final Optional<String> endpoint) {
         Tx tx = new Tx();
         tx.setTx(transactionSignature.getSignedTransaction());
         log.debug("Sending transaction to aeternity node {}", transactionSignature.getSignedTransaction());

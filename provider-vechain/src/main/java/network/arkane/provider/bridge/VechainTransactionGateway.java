@@ -32,7 +32,7 @@ public class VechainTransactionGateway implements TransactionGateway {
     }
 
     @Override
-    public Signature submit(final TransactionSignature signTransactionResponse) {
+    public Signature submit(final TransactionSignature signTransactionResponse, final Optional<String> endpoint) {
         try {
             TransferResult transferResult = vechainGateway.sendRawTransaction(signTransactionResponse.getSignedTransaction());
             return SubmittedAndSignedTransactionSignature.signAndSubmitTransactionBuilder()

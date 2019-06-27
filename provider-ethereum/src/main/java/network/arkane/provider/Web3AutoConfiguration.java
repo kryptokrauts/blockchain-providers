@@ -1,6 +1,8 @@
 package network.arkane.provider;
 
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.provider.gateway.EthereumWeb3JGateway;
+import network.arkane.provider.gateway.EthereumWeb3JGatewayFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,8 +34,8 @@ public class Web3AutoConfiguration {
         }
     }
 
-    @Bean(name = "ethereumWeb3j")
     @Primary
+    @Bean(name = "ethereumWeb3j")
     public Web3j ethereumWeb3j(final @Value("${network.arkane.ethereum.endpoint.url}") String endpoint) {
         if (endpoint.startsWith("ws")) {
             this.websocket = new WebSocketClient(URI.create(endpoint));
@@ -41,5 +43,10 @@ public class Web3AutoConfiguration {
         } else {
             return Web3j.build(new HttpService(endpoint, false));
         }
+    }
+
+    @Bean
+    public EthereumWeb3JGateway ethereumWeb3JGateway(final EthereumWeb3JGatewayFactory ethereumWeb3JGatewayFactory) {
+        return ethereumWeb3JGatewayFactory.getInstance();
     }
 }

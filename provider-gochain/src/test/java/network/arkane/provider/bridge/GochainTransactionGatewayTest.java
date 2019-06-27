@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
@@ -41,7 +43,7 @@ class GochainTransactionGatewayTest {
         when(web3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
                 .thenReturn(ethSendTransaction);
 
-        final Signature response = gochainTransactionGateway.submit(signTransactionResponse);
+        final Signature response = gochainTransactionGateway.submit(signTransactionResponse, Optional.empty());
         assertThat(response).isInstanceOf(SubmittedAndSignedTransactionSignature.class);
         assertThat(((SubmittedAndSignedTransactionSignature) response).getTransactionHash()).isEqualTo(expectedHash);
     }
@@ -56,7 +58,7 @@ class GochainTransactionGatewayTest {
         when(web3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
                 .thenReturn(ethSendTransaction);
 
-        gochainTransactionGateway.submit(signTransactionResponse);
+        gochainTransactionGateway.submit(signTransactionResponse, Optional.empty());
     }
 
     @Test
@@ -65,7 +67,7 @@ class GochainTransactionGatewayTest {
                 .thenThrow(IllegalArgumentException.class);
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
         assertThrows(ArkaneException.class,
-                     () -> gochainTransactionGateway.submit(signTransactionResponse));
+                     () -> gochainTransactionGateway.submit(signTransactionResponse, Optional.empty()));
     }
 
     @Test
@@ -77,6 +79,6 @@ class GochainTransactionGatewayTest {
                 .thenReturn(sendTransaction);
 
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
-        assertThrows(ArkaneException.class, () -> gochainTransactionGateway.submit(signTransactionResponse), "The account that initiated the transfer does not have enough energy");
+        assertThrows(ArkaneException.class, () -> gochainTransactionGateway.submit(signTransactionResponse, Optional.empty()), "The account that initiated the transfer does not have enough energy");
     }
 }
