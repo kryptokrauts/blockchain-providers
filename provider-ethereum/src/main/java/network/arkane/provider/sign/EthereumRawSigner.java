@@ -33,7 +33,7 @@ public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSe
                     dataToSign = signable.getData().getBytes(StandardCharsets.UTF_8);
                 }
             } else {
-                dataToSign = signable.getData().getBytes(StandardCharsets.UTF_8);
+                dataToSign = signable.getData() == null ? "".getBytes(StandardCharsets.UTF_8) : signable.getData().getBytes(StandardCharsets.UTF_8);
             }
             final Sign.SignatureData signatureData = signable.isPrefix() ? Sign.signPrefixedMessage(dataToSign, key.getKeyPair())
                                                                          : signable.isHash()
