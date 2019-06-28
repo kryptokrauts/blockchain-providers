@@ -21,23 +21,23 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BlockProvidersIT.class)
 @Slf4j
-public class TransactionServiceTests {
+public class TransactionInfoServiceTests {
 
     @Autowired
     @Lazy
-    private List<TransactionService> transactionServices;
+    private List<TransactionInfoService> transactionInfoServices;
 
     @Test
     void transactionServiceShouldBeProvidedForEverySecretType() {
 
-        final Map<SecretType, TransactionService> collect = transactionServices.stream()
-                                                                       .collect(Collectors.toMap(TransactionService::type, Function.identity()));
+        final Map<SecretType, TransactionInfoService> collect = transactionInfoServices.stream()
+                                                                                       .collect(Collectors.toMap(TransactionInfoService::type, Function.identity()));
         final long count = Stream.of(SecretType.values())
                                  .filter(type -> collect.get(type) == null)
-                                 .peek(type -> log.error("An implementation of TransactionService does not exist yet for SecretType.{}", type))
+                                 .peek(type -> log.error("An implementation of TransactionInfoService does not exist yet for SecretType.{}", type))
                                  .count();
         if (count > 0) {
-            fail(String.format("A total of %d implementation(s) of TransactionService were not implemented", count));
+            fail(String.format("A total of %d implementation(s) of TransactionInfoService were not implemented", count));
         }
     }
 }

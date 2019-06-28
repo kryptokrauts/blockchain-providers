@@ -1,17 +1,15 @@
-package network.arkane.provider.bitcoin.tx;
+package network.arkane.provider.tx;
 
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.tx.TransactionService;
-import network.arkane.provider.tx.TxInfo;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BitcoinTransactionService implements TransactionService {
+public class EthereumTransactionInfoService implements TransactionInfoService {
 
 
     public SecretType type() {
-        return SecretType.BITCOIN;
+        return SecretType.ETHEREUM;
     }
 
     @Override

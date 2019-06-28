@@ -1,15 +1,17 @@
-package network.arkane.provider.tx;
+package network.arkane.provider.litecoin.tx;
 
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.tx.TransactionInfoService;
+import network.arkane.provider.tx.TxInfo;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AeternityTransactionService implements TransactionService {
+public class LitecoinTransactionInfoService implements TransactionInfoService {
 
 
     public SecretType type() {
-        return SecretType.AETERNITY;
+        return SecretType.LITECOIN;
     }
 
     @Override

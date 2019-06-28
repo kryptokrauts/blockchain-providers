@@ -1,17 +1,15 @@
-package network.arkane.provider.neo.tx;
+package network.arkane.provider.tx;
 
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.tx.TransactionService;
-import network.arkane.provider.tx.TxInfo;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NeoTransactionService implements TransactionService {
+public class GochainTransactionInfoService implements TransactionInfoService {
 
 
     public SecretType type() {
-        return SecretType.NEO;
+        return SecretType.GOCHAIN;
     }
 
     @Override

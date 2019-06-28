@@ -5,11 +5,11 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VechainTransactionService implements TransactionService {
+public class AeternityTransactionInfoService implements TransactionInfoService {
 
 
     public SecretType type() {
-        return SecretType.VECHAIN;
+        return SecretType.AETERNITY;
     }
 
     @Override
