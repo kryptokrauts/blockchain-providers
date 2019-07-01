@@ -19,7 +19,7 @@ class EthereumTransactionInfoServiceIntegrationTest {
     @BeforeEach
     void setUp() throws InterruptedException {
         web3j = Web3j.build(new HttpService("https://ethereum.arkane.network"));
-        ethereumWeb3JGateway = new EthereumWeb3JGateway(web3j, "0xb9b604f149e72b1f09f5943f6a403c09afcc0eb31ba5546b294fd6fe8d234e19");
+        ethereumWeb3JGateway = new EthereumWeb3JGateway(web3j, "0x40a38911e470fC088bEEb1a9480c2d69C847BCeC");
         Thread.sleep(100);
         ethereumTransactionInfoService = new EthereumTransactionInfoService(ethereumWeb3JGateway);
     }
