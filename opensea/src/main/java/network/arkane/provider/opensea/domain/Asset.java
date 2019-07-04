@@ -13,7 +13,6 @@ public class Asset {
     private String imageUrl;
     private final String imagePreviewUrl;
     private final String imageThumbnailUrl;
-    private final String imageOriginalUrl;
     private String backgroundColor;
     private String name;
     private String description;
@@ -27,7 +26,6 @@ public class Asset {
                  @JsonProperty("image_url") final String imageUrl,
                  @JsonProperty("image_preview_url") final String imagePreviewUrl,
                  @JsonProperty("image_thumbnail_url") final String imageThumbnailUrl,
-                 @JsonProperty("image_original_url") final String imageOriginalUrl,
                  @JsonProperty("background_color") final String backgroundColor,
                  @JsonProperty("name") final String name,
                  @JsonProperty("description") final String description,
@@ -39,7 +37,6 @@ public class Asset {
         this.imageUrl = imageUrl;
         this.imagePreviewUrl = imagePreviewUrl;
         this.imageThumbnailUrl = imageThumbnailUrl;
-        this.imageOriginalUrl = imageOriginalUrl;
         this.backgroundColor = backgroundColor;
         this.name = name;
         this.description = description;
