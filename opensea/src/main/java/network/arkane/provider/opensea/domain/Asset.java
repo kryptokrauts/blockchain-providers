@@ -11,6 +11,8 @@ public class Asset {
 
     private String tokenId;
     private String imageUrl;
+    private final String imagePreviewUrl;
+    private final String imageThumbnailUrl;
     private final String imageOriginalUrl;
     private String backgroundColor;
     private String name;
@@ -23,6 +25,8 @@ public class Asset {
     @Builder
     public Asset(@JsonProperty("token_id") final String tokenId,
                  @JsonProperty("image_url") final String imageUrl,
+                 @JsonProperty("image_preview_url") final String imagePreviewUrl,
+                 @JsonProperty("image_thumbnail_url") final String imageThumbnailUrl,
                  @JsonProperty("image_original_url") final String imageOriginalUrl,
                  @JsonProperty("background_color") final String backgroundColor,
                  @JsonProperty("name") final String name,
@@ -33,6 +37,8 @@ public class Asset {
                  @JsonProperty("traits") final List<Trait> traits) {
         this.tokenId = tokenId;
         this.imageUrl = imageUrl;
+        this.imagePreviewUrl = imagePreviewUrl;
+        this.imageThumbnailUrl = imageThumbnailUrl;
         this.imageOriginalUrl = imageOriginalUrl;
         this.backgroundColor = backgroundColor;
         this.name = name;
