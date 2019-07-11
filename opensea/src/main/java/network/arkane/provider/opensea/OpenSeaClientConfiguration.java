@@ -1,6 +1,7 @@
 package network.arkane.provider.opensea;
 
 import feign.Logger;
+import feign.Request;
 import feign.RequestInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,11 @@ public class OpenSeaClientConfiguration {
     @Bean
     public Logger.Level loggerLevel() {
         return Logger.Level.BASIC;
+    }
+
+    @Bean
+    public Request.Options options() {
+        return new Request.Options(2000, 3000);
     }
 
     @Bean

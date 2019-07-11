@@ -7,6 +7,7 @@ import io.neow3j.io.BinaryWriter;
 import io.neow3j.io.NeoSerializableInterface;
 import io.neow3j.protocol.core.methods.response.NeoSendRawTransaction;
 import io.neow3j.utils.ArrayUtils;
+import io.neow3j.utils.Numeric;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.bridge.TransactionGateway;
 import network.arkane.provider.chain.SecretType;
@@ -16,14 +17,12 @@ import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Optional;
 
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 import static network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature.signAndSubmitTransactionBuilder;
-
-import io.neow3j.utils.Numeric;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 @Service
 @Slf4j
@@ -41,7 +40,7 @@ public class NeoTransactionGateway implements TransactionGateway {
     }
 
     @Override
-    public Signature submit(final TransactionSignature signTransactionResponse) {
+    public Signature submit(final TransactionSignature signTransactionResponse, final Optional<String> endpoint) {
         try {
             final NeoSendRawTransaction send = neow3j.sendRawTransaction(signTransactionResponse.getSignedTransaction());
             if (send.hasError()) {
