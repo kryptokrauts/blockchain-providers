@@ -1,14 +1,13 @@
 package network.arkane.provider.neo.wallet.exporting;
 
 import io.neow3j.crypto.WIF;
+import io.neow3j.wallet.nep6.NEP6Wallet;
 import network.arkane.provider.JSONUtil;
 import network.arkane.provider.neo.secret.generation.NeoSecretKey;
 import network.arkane.provider.neo.wallet.decryption.NeoWalletDecryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import io.neow3j.crypto.ECKeyPair;
-import io.neow3j.crypto.WalletFile;
-
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -31,7 +30,7 @@ class NeoKeystoreExporterTest {
         ECKeyPair keyPair = ECKeyPair.create(WIF.getPrivateKeyFromWIF("Kx9xMQVipBYAAjSxYEoZVatdVQfhYHbMFWSYPinSgAVd1d4Qgbpf"));
         final String export = neoKeystoreExporter.export(NeoSecretKey.builder().key(keyPair).build(), "test");
 
-        final WalletFile exportedWallet = JSONUtil.fromJson(export, WalletFile.class);
+        final NEP6Wallet exportedWallet = JSONUtil.fromJson(export, NEP6Wallet.class);
         assertThat(exportedWallet.getAccounts().get(0).getAddress()).isEqualTo("AH16QyTdjADiuQwbSdXpjBVm6THz5w7Bro");
     }
 

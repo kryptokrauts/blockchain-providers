@@ -1,7 +1,7 @@
 package network.arkane.provider.neo.wallet.generation;
 
 import io.neow3j.crypto.Keys;
-import io.neow3j.crypto.WalletFile;
+import io.neow3j.wallet.nep6.NEP6Wallet;
 import network.arkane.provider.neo.secret.generation.NeoSecretKey;
 import network.arkane.provider.wallet.generation.GeneratedWallet;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ class NeoWalletGeneratorTest {
 
         assertThat(generatedWallet.getAddress()).isNotEmpty();
 
-        WalletFile walletFile = ((GeneratedNeoWallet) generatedWallet).getWalletFile();
+        NEP6Wallet walletFile = ((GeneratedNeoWallet) generatedWallet).getWalletFile();
         assertThat(walletFile).isNotNull();
     }
 

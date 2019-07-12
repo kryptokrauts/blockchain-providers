@@ -4,11 +4,15 @@ import io.neow3j.crypto.Keys;
 import io.neow3j.crypto.Sign;
 import io.neow3j.crypto.transaction.RawInvocationScript;
 import io.neow3j.crypto.transaction.RawVerificationScript;
+import io.neow3j.model.types.TransactionType;
+import io.neow3j.protocol.transaction.ClaimTransaction;
+import io.neow3j.protocol.transaction.ContractTransaction;
 import io.neow3j.utils.Numeric;
 import network.arkane.provider.neo.secret.generation.NeoSecretKey;
 import network.arkane.provider.sign.Signer;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.stereotype.Component;
 import io.neow3j.crypto.transaction.RawTransaction;
 
@@ -24,7 +28,7 @@ public class NeoTransactionSigner implements Signer<NeoTransactionSignable, NeoS
         final RawTransaction rawTx = constructTransaction(signable);
 
         // Unsigned message
-        final RawTransaction unsignTx = constructUnsignedTransaction(signable);
+        final RawTransaction unsignTx = constructTransaction(signable);
 
         // serialize the base raw transaction
         byte[] rawTxUnsignedArray = unsignTx.toArray();
@@ -48,18 +52,23 @@ public class NeoTransactionSigner implements Signer<NeoTransactionSignable, NeoS
     }
 
     private RawTransaction constructTransaction(final NeoTransactionSignable signTransactionRequest) {
-        return RawTransaction.createContractTransaction(
-                null,
-                signTransactionRequest.getAttributes(),
-                signTransactionRequest.getInputs(),
-                signTransactionRequest.getOutputs(),
-                signTransactionRequest.getScripts());
+        if (signTransactionRequest.getTransactionType() == TransactionType.INVOCATION_TRANSACTION) {
+            throw new NotImplementedException();
+        } else if (signTransactionRequest.getTransactionType() == TransactionType.CLAIM_TRANSACTION) {
+            return new ClaimTransaction.Builder()
+                    .outputs(signTransactionRequest.getOutputs())
+                    .claims(signTransactionRequest.getClaims())
+                    .attributes(signTransactionRequest.getAttributes())
+                    .build();
+        } else {
+            return new ContractTransaction.Builder()
+                    .inputs(signTransactionRequest.getInputs())
+                    .outputs(signTransactionRequest.getOutputs())
+                    .attributes(signTransactionRequest.getAttributes())
+                    .build();
+
+        }
+
     }
 
-    private RawTransaction constructUnsignedTransaction(final NeoTransactionSignable signTransactionRequest) {
-        return RawTransaction.createContractTransaction(
-                signTransactionRequest.getAttributes(),
-                signTransactionRequest.getInputs(),
-                signTransactionRequest.getOutputs());
-    }
 }

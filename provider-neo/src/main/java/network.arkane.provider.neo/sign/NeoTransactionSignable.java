@@ -11,25 +11,34 @@ import lombok.NoArgsConstructor;
 import network.arkane.provider.sign.domain.Signable;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class NeoTransactionSignable implements Signable {
 
+    private TransactionType transactionType;
     private List<RawTransactionAttribute> attributes;
     private List<RawTransactionInput> inputs;
     private List<RawTransactionOutput> outputs;
-    private List<RawScript> scripts;
+
+    private List<RawTransactionInput> claims;
 
     @Builder
-    public NeoTransactionSignable(final List<RawTransactionAttribute> attributes,
-                                       final List<RawTransactionInput> inputs,
-                                       final List<RawTransactionOutput> outputs,
-                                       final List<RawScript> scripts) {
-        this.attributes = attributes;
-        this.inputs = inputs;
-        this.outputs = outputs;
-        this.scripts = scripts;
+    public NeoTransactionSignable(final TransactionType transactionType,
+                                  final List<RawTransactionAttribute> attributes,
+                                  final List<RawTransactionInput> inputs,
+                                  final List<RawTransactionOutput> outputs,
+                                  final List<RawTransactionInput> claims) {
+
+        this.attributes = new ArrayList<>();
+        this.inputs = new ArrayList<>();
+        this.outputs = new ArrayList<>();
+
+        this.attributes = attributes == null ? new ArrayList<>() : attributes;
+        this.inputs = inputs == null ? new ArrayList<>() : inputs;
+        this.outputs = outputs == null ? new ArrayList<>() : outputs;
+        this.claims = claims == null ? new ArrayList<>() : claims;
     }
 }

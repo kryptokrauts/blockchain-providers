@@ -1,15 +1,17 @@
 package network.arkane.provider.neo.wallet.exporting;
 
+import io.neow3j.wallet.Account;
+import io.neow3j.wallet.Wallet;
+import io.neow3j.wallet.nep6.NEP6Wallet;
 import network.arkane.provider.JSONUtil;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.neo.NeoW3JConfiguration;
 import network.arkane.provider.neo.secret.generation.NeoSecretKey;
 import network.arkane.provider.neo.wallet.decryption.NeoWalletDecryptor;
 import network.arkane.provider.neo.wallet.generation.GeneratedNeoWallet;
 import network.arkane.provider.wallet.exporting.KeyExporter;
 import org.springframework.stereotype.Component;
-import io.neow3j.crypto.Wallet;
-import io.neow3j.crypto.WalletFile;
 
 
 @Component
@@ -24,9 +26,14 @@ public class NeoKeystoreExporter implements KeyExporter<NeoSecretKey> {
     @Override
     public String export(NeoSecretKey key, final String password) {
         try {
-            final WalletFile walletFile = Wallet.createStandardWallet();
-            walletFile.addAccount(Wallet.createStandardAccount(password, key.getKey()));
-            return JSONUtil.toJson(walletFile);
+            Account account = Account.fromECKeyPair(key.getKey()).build();
+            account.encryptPrivateKey(password, NeoW3JConfiguration.defaultScrypt);
+
+            Wallet wallet = new Wallet.Builder()
+                    .account(account)
+                    .scryptParams(NeoW3JConfiguration.defaultScrypt)
+                    .build();
+            return JSONUtil.toJson(wallet.toNEP6Wallet());
         } catch (final Exception ex) {
             throw ArkaneException.arkaneException()
                     .errorCode("export.neo")
@@ -38,7 +45,7 @@ public class NeoKeystoreExporter implements KeyExporter<NeoSecretKey> {
     @Override
     public NeoSecretKey reconstructKey(String secret, String password) {
         return neoWalletDecryptor.generateKey(GeneratedNeoWallet.builder()
-                .walletFile(JSONUtil.fromJson(secret, WalletFile.class))
+                .walletFile(JSONUtil.fromJson(secret, NEP6Wallet.class))
                 .build(), password);
     }
 

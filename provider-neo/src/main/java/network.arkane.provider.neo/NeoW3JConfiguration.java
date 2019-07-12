@@ -1,5 +1,6 @@
 package network.arkane.provider.neo;
 
+import io.neow3j.crypto.ScryptParams;
 import io.neow3j.protocol.Neow3j;
 import io.neow3j.protocol.http.HttpService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,13 +16,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Slf4j
 public class NeoW3JConfiguration {
 
+    public static ScryptParams defaultScrypt = new ScryptParams(16384, 8, 8);
+
     @Bean(name = "neow3j")
     @Primary
     public Neow3j neoNeow3j(final @Value("${network.arkane.neo.endpoint.url}") String endpoint) {
         if (endpoint != null && !endpoint.isEmpty()) {
             return Neow3j.build(new HttpService(endpoint, false));
-        }else {
-            return  Neow3j.build(new HttpService(false));
+        } else {
+            return Neow3j.build(new HttpService(false));
         }
     }
 }
