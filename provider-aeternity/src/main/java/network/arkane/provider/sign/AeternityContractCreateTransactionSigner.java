@@ -18,25 +18,28 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class AeternitySpendTransactionSigner implements
-    Signer<AeternitySpendTransactionSignable, AeternitySecretKey> {
+public class AeternityContractCreateTransactionSigner implements
+    Signer<AeternityContractCreateSignable, AeternitySecretKey> {
 
   private TransactionService transactionService;
 
-  public AeternitySpendTransactionSigner(
+  public AeternityContractCreateTransactionSigner(
       final @Qualifier("aeternity-transactionService") TransactionService transactionService) {
     this.transactionService = transactionService;
   }
 
   @Override
-  public Signature createSignature(final AeternitySpendTransactionSignable signable,
+  public Signature createSignature(final AeternityContractCreateSignable signable,
       final AeternitySecretKey key) {
-    AbstractTransaction<?> spendTx = transactionService.getTransactionFactory()
-        .createSpendTransaction(signable.getSender(), signable.getRecipient(), signable.getAmount(),
-            signable.getPayload(), signable.getTtl(), signable.getNonce());
+    AbstractTransaction<?> contractCreateTx = transactionService.getTransactionFactory()
+        .createContractCreateTransaction(signable.getAbiVersion(), signable.getAmount(),
+            signable.getCallData(), signable.getContractByteCode(), signable.getDeposit(),
+            signable.getGas(), signable.getGasPrice(), signable.getNonce(), signable.getOwnerId(),
+            signable.getTtl(), signable.getVmVersion());
     // the fee is optional because the SDK can calculate it automatically
-    spendTx.setFee(signable.getFee());
-    UnsignedTx unsignedTx = transactionService.createUnsignedTransaction(spendTx).blockingGet();
+    contractCreateTx.setFee(signable.getFee());
+    UnsignedTx unsignedTx = transactionService.createUnsignedTransaction(contractCreateTx)
+        .blockingGet();
     BaseKeyPair baseKeyPair = EncodingUtils.createBaseKeyPair(key.getKeyPair());
     try {
       Tx tx = transactionService.signTransaction(unsignedTx, baseKeyPair.getPrivateKey());
