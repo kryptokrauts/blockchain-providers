@@ -10,6 +10,8 @@ public class NonFungibleAssetMother {
                                .url("https://godsunchained.com/card/359127")
                                .backgroundColor("f3f3f3")
                                .imageUrl("https://images.godsunchained.com/cards/250/143.png")
+                               .imagePreviewUrl("https://images.godsunchained.com/cards/250/143.png")
+                               .imageThumbnailUrl("https://images.godsunchained.com/cards/250/143.png")
                                .contract(NonFungibleContract.builder()
                                                        .name("Gods Unchained")
                                                        .description("Gods Unchained is a free-to-play, turn-based competitive trading"
@@ -38,6 +40,8 @@ public class NonFungibleAssetMother {
                                .backgroundColor("FBFBFB")
                                .description("Strong against helis & tanks\\n\\nWeak against mechs & jeeps\\n\\nFlies over water, mountains, and ground units\\n\\nLow mining rate\\n")
                                .imageUrl("https://cryptoassault.io/units/unit_21.png")
+                               .imagePreviewUrl("https://cryptoassault.io/units/unit_21.png")
+                               .imageThumbnailUrl("https://cryptoassault.io/units/unit_21.png")
                                .url("https://cryptoassault.io/unit/?id=4420")
                                .owner("0x0239769a1adf4def9f07da824b80b9c4fcb59593")
                                .contract(NonFungibleContract.builder()
