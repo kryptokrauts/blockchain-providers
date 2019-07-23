@@ -13,6 +13,8 @@ public class NonFungibleAsset {
     private String url;
     private String backgroundColor;
     private String imageUrl;
+    private String imagePreviewUrl;
+    private String imageThumbnailUrl;
     private NonFungibleContract contract;
 
     @Builder
@@ -23,6 +25,8 @@ public class NonFungibleAsset {
                             final String url,
                             final String backgroundColor,
                             final String imageUrl,
+                            final String imagePreviewUrl,
+                            final String imageThumbnailUrl,
                             final NonFungibleContract contract) {
         this.id = id;
         this.owner = owner;
@@ -31,6 +35,8 @@ public class NonFungibleAsset {
         this.url = url;
         this.backgroundColor = backgroundColor;
         this.imageUrl = imageUrl;
+        this.imagePreviewUrl = imagePreviewUrl;
+        this.imageThumbnailUrl = imageThumbnailUrl;
         this.contract = contract;
     }
 }
