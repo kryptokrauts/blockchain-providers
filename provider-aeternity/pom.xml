@@ -1,54 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>network.arkane</groupId>
-        <artifactId>blockchain-providers</artifactId>
-        <version>0.6.3-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <groupId>network.arkane</groupId>
+    <artifactId>blockchain-providers</artifactId>
+    <version>0.6.3-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>provider-aeternity</artifactId>
+  <artifactId>provider-aeternity</artifactId>
 
-    <properties>
-        <aepp-sdk-java.version>1.1.0</aepp-sdk-java.version>
-    </properties>
+  <properties>
+    <aepp-sdk-java.version>1.2.0</aepp-sdk-java.version>
+  </properties>
 
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com/</url>
-        </repository>
-    </repositories>
+  <repositories>
+    <repository>
+      <id>jcenter</id>
+      <url>https://jcenter.bintray.com/</url>
+    </repository>
+    <repository>
+      <id>tuweni</id>
+      <url>https://dl.bintray.com/tuweni/tuweni/</url>
+    </repository>
+  </repositories>
 
-    <dependencies>
-        <dependency>
-            <groupId>network.arkane</groupId>
-            <artifactId>provider-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.kryptokrauts</groupId>
-            <artifactId>aepp-sdk-java</artifactId>
-            <version>${aepp-sdk-java.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>network.arkane</groupId>
-            <artifactId>provider-api</artifactId>
-            <scope>test</scope>
-            <type>test-jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring-boot-starter.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>network.arkane</groupId>
+      <artifactId>provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kryptokrauts</groupId>
+      <artifactId>aepp-sdk-java</artifactId>
+      <version>${aepp-sdk-java.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>network.arkane</groupId>
+      <artifactId>provider-api</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <version>${spring-boot-starter.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>

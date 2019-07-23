@@ -6,8 +6,14 @@
     - a local network e.g. can be easily started through cloning the repository and starting the local 3 node setup via docker-compose (located in the root folder)
 
 ## how to use the [aepp-sdk-java](https://github.com/kryptokrauts/aepp-sdk-java)
-- [requirements](https://github.com/kryptokrauts/aepp-sdk-java#requirements)
-    - it is important to have libsodium installed on the host system
-- [generate and post a transaction](https://github.com/kryptokrauts/aepp-sdk-java#example-code-to-generate-and-post-a-transaction)
-    - tx fee can be automatically calculated
-    - conversion of Æ-units is currently not supported
+the documentation is available here:
+- https://kryptokrauts.gitbook.io/aepp-sdk-java/
+
+a showcase application demonstrating the features of the java sdk can be found here:
+- https://github.com/kryptokrauts/aepps-sdk-showcase
+
+## support us
+visit https://kryptokrauts.com
+
+use [ArkaneNetwork](https://arkane.network) and send any coin or token to:
+- kryptokrauts@protonmail.com
