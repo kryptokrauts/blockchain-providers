@@ -9,7 +9,6 @@ import network.arkane.provider.wallet.generation.WalletGenerator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import io.neow3j.crypto.Keys;
 import io.neow3j.crypto.exceptions.CipherException;
 
 
@@ -42,6 +41,6 @@ public class NeoWalletGenerator implements WalletGenerator<NeoSecretKey> {
     }
 
     private String getAddress(final NeoSecretKey neoSecret) {
-        return Keys.getAddress(neoSecret.getKey());
+        return neoSecret.getKey().getAddress();
     }
 }

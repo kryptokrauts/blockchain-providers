@@ -1,6 +1,6 @@
 package network.arkane.provider.neo.wallet.generation;
 
-import io.neow3j.crypto.Keys;
+import io.neow3j.crypto.ECKeyPair;
 import io.neow3j.wallet.nep6.NEP6Wallet;
 import network.arkane.provider.neo.secret.generation.NeoSecretKey;
 import network.arkane.provider.wallet.generation.GeneratedWallet;
@@ -21,7 +21,7 @@ class NeoWalletGeneratorTest {
 
     @Test
     public void generateWallet() throws Exception {
-        final GeneratedWallet generatedWallet = generator.generateWallet("password", new NeoSecretKey(Keys.createEcKeyPair()));
+        final GeneratedWallet generatedWallet = generator.generateWallet("password", new NeoSecretKey(ECKeyPair.createEcKeyPair()));
         assertThat(generatedWallet).isInstanceOf(GeneratedNeoWallet.class);
 
         assertThat(generatedWallet.getAddress()).isNotEmpty();
@@ -32,7 +32,7 @@ class NeoWalletGeneratorTest {
 
     @Test
     public void passwordShouldNotBeEmpty() {
-        assertThatThrownBy(() -> generator.generateWallet("", new NeoSecretKey(Keys.createEcKeyPair()))).hasMessage("Password should not be empty")
+        assertThatThrownBy(() -> generator.generateWallet("", new NeoSecretKey(ECKeyPair.createEcKeyPair()))).hasMessage("Password should not be empty")
         ;
     }
 }
