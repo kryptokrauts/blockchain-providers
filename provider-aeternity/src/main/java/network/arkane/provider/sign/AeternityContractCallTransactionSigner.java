@@ -7,6 +7,7 @@ import com.kryptokrauts.aeternity.generated.model.UnsignedTx;
 import com.kryptokrauts.aeternity.sdk.domain.secret.impl.BaseKeyPair;
 import com.kryptokrauts.aeternity.sdk.service.transaction.TransactionService;
 import com.kryptokrauts.aeternity.sdk.service.transaction.type.AbstractTransaction;
+import com.kryptokrauts.aeternity.sdk.service.transaction.type.impl.ContractCallTransaction;
 import com.kryptokrauts.aeternity.sdk.util.EncodingUtils;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.secret.generation.AeternitySecretKey;
@@ -18,25 +19,29 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class AeternitySpendTransactionSigner implements
-    Signer<AeternitySpendTransactionSignable, AeternitySecretKey> {
+public class AeternityContractCallTransactionSigner implements
+    Signer<AeternityContractCallSignable, AeternitySecretKey> {
 
   private TransactionService transactionService;
 
-  public AeternitySpendTransactionSigner(
+  public AeternityContractCallTransactionSigner(
       final @Qualifier("aeternity-transactionService") TransactionService transactionService) {
     this.transactionService = transactionService;
   }
 
   @Override
-  public Signature createSignature(final AeternitySpendTransactionSignable signable,
+  public Signature createSignature(final AeternityContractCallSignable signable,
       final AeternitySecretKey key) {
-    AbstractTransaction<?> spendTx = transactionService.getTransactionFactory()
-        .createSpendTransaction(signable.getSender(), signable.getRecipient(), signable.getAmount(),
-            signable.getPayload(), signable.getTtl(), signable.getNonce());
+    AbstractTransaction<?> contractCallTx = transactionService.getTransactionFactory()
+        .createContractCallTransaction(signable.getAbiVersion(), signable.getCallData(),
+            signable.getContractId(), signable.getGas(), signable.getGasPrice(),
+            signable.getNonce(), signable.getCallerId(), signable.getTtl());
+    // the amount is optional because most contract calls are performed without sending a token
+    ((ContractCallTransaction) contractCallTx).setAmount(signable.getAmount());
     // the fee is optional because the SDK can calculate it automatically
-    spendTx.setFee(signable.getFee());
-    UnsignedTx unsignedTx = transactionService.createUnsignedTransaction(spendTx).blockingGet();
+    contractCallTx.setFee(signable.getFee());
+    UnsignedTx unsignedTx = transactionService.createUnsignedTransaction(contractCallTx)
+        .blockingGet();
     BaseKeyPair baseKeyPair = EncodingUtils.createBaseKeyPair(key.getKeyPair());
     try {
       Tx tx = transactionService.signTransaction(unsignedTx, baseKeyPair.getPrivateKey());
