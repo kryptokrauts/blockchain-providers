@@ -1,10 +1,10 @@
 package network.arkane.provider.neo.wallet.extraction;
 
+import io.neow3j.crypto.NEP2;
 import io.neow3j.wallet.Account;
 import io.neow3j.wallet.Wallet;
 import io.neow3j.wallet.nep6.NEP6Wallet;
 import network.arkane.provider.JSONUtil;
-import network.arkane.provider.neo.NeoW3JConfiguration;
 import network.arkane.provider.neo.secret.generation.NeoSecretKey;
 import network.arkane.provider.wallet.domain.SecretKey;
 import network.arkane.provider.wallet.extraction.SecretExtractor;
@@ -19,9 +19,9 @@ public class NeoKeystoreExtractor implements SecretExtractor<NeoKeystoreExtracti
     public SecretKey extract(final NeoKeystoreExtractionRequest importWalletRequest) {
         try {
             NEP6Wallet nep6Wallet = JSONUtil.fromJson(importWalletRequest.getKeystore(), NEP6Wallet.class);
-            Wallet wallet= Wallet.fromNEP6Wallet(nep6Wallet).build();
-            Account  account= wallet.getAccounts().get(0);
-            account.decryptPrivateKey(importWalletRequest.getPassword(),NeoW3JConfiguration.defaultScrypt);
+            Wallet wallet = Wallet.fromNEP6Wallet(nep6Wallet).build();
+            Account account = wallet.getAccounts().get(0);
+            account.decryptPrivateKey(importWalletRequest.getPassword(), NEP2.DEFAULT_SCRYPT_PARAMS);
 
             final ECKeyPair keyPair = account.getECKeyPair();
             return NeoSecretKey

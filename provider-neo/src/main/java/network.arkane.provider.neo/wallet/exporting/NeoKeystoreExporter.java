@@ -6,7 +6,6 @@ import io.neow3j.wallet.nep6.NEP6Wallet;
 import network.arkane.provider.JSONUtil;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.neo.NeoW3JConfiguration;
 import network.arkane.provider.neo.secret.generation.NeoSecretKey;
 import network.arkane.provider.neo.wallet.decryption.NeoWalletDecryptor;
 import network.arkane.provider.neo.wallet.generation.GeneratedNeoWallet;
@@ -27,12 +26,12 @@ public class NeoKeystoreExporter implements KeyExporter<NeoSecretKey> {
     public String export(NeoSecretKey key, final String password) {
         try {
             Account account = Account.fromECKeyPair(key.getKey()).build();
-            account.encryptPrivateKey(password, NeoW3JConfiguration.defaultScrypt);
 
             Wallet wallet = new Wallet.Builder()
                     .account(account)
-                    .scryptParams(NeoW3JConfiguration.defaultScrypt)
                     .build();
+
+            wallet.encryptAllAccounts(password);
             return JSONUtil.toJson(wallet.toNEP6Wallet());
         } catch (final Exception ex) {
             throw ArkaneException.arkaneException()
