@@ -20,8 +20,8 @@ public class NeoW3JConfiguration {
     public Neow3j neoNeow3j(final @Value("${network.arkane.neo.endpoint.url}") String endpoint) {
         if (endpoint != null && !endpoint.isEmpty()) {
             return Neow3j.build(new HttpService(endpoint, false));
-        }else {
-            return  Neow3j.build(new HttpService(false));
+        } else {
+            return Neow3j.build(new HttpService(false));
         }
     }
 }

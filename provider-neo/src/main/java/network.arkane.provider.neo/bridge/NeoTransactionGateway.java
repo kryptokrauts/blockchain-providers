@@ -1,12 +1,12 @@
 package network.arkane.provider.neo.bridge;
 
-import io.neow3j.crypto.Hash;
-import io.neow3j.crypto.transaction.ContractTransaction;
 import io.neow3j.crypto.transaction.RawTransaction;
-import io.neow3j.io.BinaryWriter;
 import io.neow3j.io.NeoSerializableInterface;
+import io.neow3j.model.types.TransactionType;
 import io.neow3j.protocol.core.methods.response.NeoSendRawTransaction;
-import io.neow3j.utils.ArrayUtils;
+import io.neow3j.transaction.ClaimTransaction;
+import io.neow3j.transaction.ContractTransaction;
+import io.neow3j.transaction.InvocationTransaction;
 import io.neow3j.utils.Numeric;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.bridge.TransactionGateway;
@@ -17,8 +17,6 @@ import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Optional;
 
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
@@ -44,11 +42,11 @@ public class NeoTransactionGateway implements TransactionGateway {
         try {
             final NeoSendRawTransaction send = neow3j.sendRawTransaction(signTransactionResponse.getSignedTransaction());
             if (send.hasError()) {
-                    log.debug("Got error from Neo chain: insufficient funds");
-                    throw arkaneException()
-                            .errorCode("transaction.submit.neo-error")
-                            .message(send.getError().getMessage())
-                            .build();
+                log.debug("Got error from Neo chain: insufficient funds");
+                throw arkaneException()
+                        .errorCode("transaction.submit.neo-error")
+                        .message(send.getError().getMessage())
+                        .build();
             } else {
                 return signAndSubmitTransactionBuilder()
                         .transactionHash(getTxId(signTransactionResponse.getSignedTransaction()))
@@ -69,16 +67,21 @@ public class NeoTransactionGateway implements TransactionGateway {
     }
 
     // Get TxId from a signedTransaction
-    private String getTxId(String signedTransaction) throws IllegalAccessException, InstantiationException, IOException {
-        RawTransaction rawTransaction = NeoSerializableInterface.from(Numeric.hexStringToByteArray(signedTransaction), ContractTransaction.class);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        BinaryWriter binaryWriter = new BinaryWriter(outputStream);
-        rawTransaction.getScripts().clear();
-        rawTransaction.serialize(binaryWriter);
-        binaryWriter.flush();
-        byte[] unsignedTx = outputStream.toByteArray();
-        byte[] data_bytes = Hash.sha256(Hash.sha256(unsignedTx));
-        return Numeric.toHexString(ArrayUtils.reverseArray(data_bytes));
+    private String getTxId(String signedTransaction) throws IllegalAccessException, InstantiationException {
+        byte[] tx = Numeric.hexStringToByteArray(signedTransaction);
+        TransactionType transactionType = TransactionType.valueOf(tx[0]);
+
+        RawTransaction rawTransaction = null;
+
+        if (transactionType == TransactionType.CONTRACT_TRANSACTION) {
+            rawTransaction = NeoSerializableInterface.from(tx, ContractTransaction.class);
+        } else if (transactionType == TransactionType.CLAIM_TRANSACTION) {
+            rawTransaction = NeoSerializableInterface.from(tx, ClaimTransaction.class);
+        } else {
+            rawTransaction = NeoSerializableInterface.from(tx, InvocationTransaction.class);
+        }
+
+        return rawTransaction.getTxId();
     }
 
 }
