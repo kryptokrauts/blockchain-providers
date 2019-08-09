@@ -6,6 +6,7 @@ import io.neow3j.transaction.ClaimTransaction;
 import io.neow3j.transaction.ContractTransaction;
 import io.neow3j.transaction.InvocationTransaction;
 import io.neow3j.utils.Numeric;
+import io.neow3j.wallet.AssetTransfer;
 import network.arkane.provider.neo.secret.generation.NeoSecretKey;
 import network.arkane.provider.sign.Signer;
 import network.arkane.provider.sign.domain.Signature;
