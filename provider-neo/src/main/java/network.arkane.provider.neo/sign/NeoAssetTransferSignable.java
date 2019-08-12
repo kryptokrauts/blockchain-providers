@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import network.arkane.provider.sign.domain.Signable;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 @Data
 @NoArgsConstructor
@@ -14,10 +13,14 @@ public class NeoAssetTransferSignable implements Signable {
 
     private String to;
     private BigDecimal amount;
+    private String assetId;
 
     @Builder
-    public NeoAssetTransferSignable(String to, BigDecimal amount) {
+    public NeoAssetTransferSignable(final String to,
+                                    final BigDecimal amount,
+                                    final String assetId) {
         this.to = to;
         this.amount = amount;
+        this.assetId = assetId;
     }
 }
