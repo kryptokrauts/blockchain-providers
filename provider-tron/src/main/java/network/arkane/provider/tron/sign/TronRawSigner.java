@@ -1,6 +1,5 @@
 package network.arkane.provider.tron.sign;
 
-import com.google.common.base.Charsets;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.sign.domain.HexSignature;
 import network.arkane.provider.sign.domain.Signature;
@@ -9,7 +8,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 import org.tron.common.crypto.ECKey;
-import org.tron.common.utils.Sha256Hash;
+import org.web3j.crypto.Hash;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
@@ -23,6 +22,8 @@ import static org.tron.common.utils.ByteUtil.bytesToBigInteger;
 @Slf4j
 @Component
 public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSecretKey> {
+
+    private static final String MESSAGE_PREFIX = "\u0019TRON Signed Message:\n32";
 
     @Override
     public Signature createSignature(final TronRawSignable signable,
@@ -66,7 +67,7 @@ public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSe
         BigInteger publicKey = bytesToBigInteger(keyPair.getPubKey());
         byte[] messageHash;
         if (needToHash) {
-            messageHash = Sha256Hash.hash(message);
+            messageHash = getTronMessageHash(message);
         } else {
             messageHash = message;
         }
@@ -92,6 +93,19 @@ public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSe
             byte[] s = Numeric.toBytesPadded(sig.s, 32);
             return new Sign.SignatureData(v, r, s);
         }
+    }
+
+    static byte[] getTronMessageHash(byte[] message) {
+        byte[] prefix = getTronMessagePrefix();
+        byte[] result = new byte[prefix.length + message.length];
+        System.arraycopy(prefix, 0, result, 0, prefix.length);
+        System.arraycopy(message, 0, result, prefix.length, message.length);
+
+        return Hash.sha3(result);
+    }
+
+    static byte[] getTronMessagePrefix() {
+        return MESSAGE_PREFIX.getBytes();
     }
 
 }
