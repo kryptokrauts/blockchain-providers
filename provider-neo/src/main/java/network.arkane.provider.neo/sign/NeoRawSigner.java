@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 import io.neow3j.crypto.transaction.RawTransaction;
 
 @Component
-public class NeoTransactionSigner implements Signer<NeoTransactionSignable, NeoSecretKey> {
+public class NeoRawSigner implements Signer<NeoRawSignable, NeoSecretKey> {
 
     @Override
-    public Signature createSignature(final NeoTransactionSignable signable, final NeoSecretKey key) {
+    public Signature createSignature(final NeoRawSignable signable, final NeoSecretKey key) {
         final RawTransaction rawTx = constructTransaction(signable);
 
         // Unsigned message
@@ -35,7 +35,7 @@ public class NeoTransactionSigner implements Signer<NeoTransactionSignable, NeoS
                 .build();
     }
 
-    private RawTransaction constructTransaction(final NeoTransactionSignable signTransactionRequest) {
+    private RawTransaction constructTransaction(final NeoRawSignable signTransactionRequest) {
         if (signTransactionRequest.getTransactionType() == TransactionType.INVOCATION_TRANSACTION) {
             return new InvocationTransaction.Builder()
                     .inputs(signTransactionRequest.getInputs())

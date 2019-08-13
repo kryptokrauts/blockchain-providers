@@ -16,7 +16,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class NeoTransactionSignable implements Signable {
+public class NeoRawSignable implements Signable {
 
     private TransactionType transactionType;
     private List<RawTransactionAttribute> attributes;
@@ -29,13 +29,13 @@ public class NeoTransactionSignable implements Signable {
     private BigDecimal systemFee;
 
     @Builder
-    public NeoTransactionSignable(final TransactionType transactionType,
-                                  final List<RawTransactionAttribute> attributes,
-                                  final List<RawTransactionInput> inputs,
-                                  final List<RawTransactionOutput> outputs,
-                                  final List<RawTransactionInput> claims,
-                                  final  byte[] contractScript,
-                                  final  BigDecimal systemFee ) {
+    public NeoRawSignable(final TransactionType transactionType,
+                          final List<RawTransactionAttribute> attributes,
+                          final List<RawTransactionInput> inputs,
+                          final List<RawTransactionOutput> outputs,
+                          final List<RawTransactionInput> claims,
+                          final  byte[] contractScript,
+                          final  BigDecimal systemFee) {
         this.transactionType = transactionType;
         this.attributes = attributes == null ? new ArrayList<>() : attributes;
         this.inputs = inputs == null ? new ArrayList<>() : inputs;
