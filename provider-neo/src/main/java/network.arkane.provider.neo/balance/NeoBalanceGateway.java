@@ -49,11 +49,11 @@ public class NeoBalanceGateway extends BalanceGateway {
             BigInteger neoBalance = BigInteger.ZERO;
             BigInteger gasBalance = BigInteger.ZERO;
 
-            for (NeoGetAccountState.Balance item:balances
+            for (NeoGetAccountState.Balance item : balances
             ) {
-                if(item.getAssetAddress().equals(NEOAsset.HASH_ID)){
-                    neoBalance = NEOAsset.toBigInt(item.getValue());
-                }else if(item.getAssetAddress().equals((GASAsset.HASH_ID))){
+                if (item.getAssetAddress().equals(NEOAsset.HASH_ID)) {
+                    neoBalance = new BigInteger(item.getValue());
+                } else if (item.getAssetAddress().equals((GASAsset.HASH_ID))) {
                     gasBalance = GASAsset.toBigInt(item.getValue());
                 }
             }
@@ -63,7 +63,7 @@ public class NeoBalanceGateway extends BalanceGateway {
                     .rawBalance(neoBalance.toString())
                     .rawGasBalance(gasBalance.toString())
                     .secretType(SecretType.NEO)
-                    .balance(PrecisionUtil.toDecimal(neoBalance, 8))
+                    .balance(PrecisionUtil.toDecimal(neoBalance, 0))
                     .gasBalance(PrecisionUtil.toDecimal(gasBalance, 8))
                     .symbol(NEOAsset.NAME)
                     .gasSymbol(GASAsset.NAME)
@@ -85,7 +85,7 @@ public class NeoBalanceGateway extends BalanceGateway {
     }
 
     private TokenBalance getTokenBalance(final String walletAddress, final TokenInfo tokenInfo) {
-        final BigInteger tokenBalance = neoGate.getTokenBalance(walletAddress,tokenInfo.getAddress());
+        final BigInteger tokenBalance = neoGate.getTokenBalance(walletAddress, tokenInfo.getAddress());
 
         return TokenBalance.builder()
                 .tokenAddress(tokenInfo.getAddress())

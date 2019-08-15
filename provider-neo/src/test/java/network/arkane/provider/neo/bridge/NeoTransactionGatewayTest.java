@@ -40,7 +40,7 @@ class NeoTransactionGatewayTest {
 
     @Test
     public void sendingTransactionCreatesTxHash() {
-        final String expectedHash = "0xf4250dab094c38d8265acc15c366dc508d2e14bf5699e12d9df26577ed74d657";
+        final String expectedHash = "f4250dab094c38d8265acc15c366dc508d2e14bf5699e12d9df26577ed74d657";
 
         final TransactionSignature signTransactionResponse = signedTx;
         final NeoSendRawTransaction sendTransaction = mock(NeoSendRawTransaction.class);
