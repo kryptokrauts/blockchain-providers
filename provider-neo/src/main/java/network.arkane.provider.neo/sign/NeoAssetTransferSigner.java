@@ -3,6 +3,7 @@ package network.arkane.provider.neo.sign;
 import io.neow3j.model.types.TransactionType;
 import io.neow3j.protocol.Neow3j;
 import io.neow3j.transaction.ContractTransaction;
+import io.neow3j.wallet.Account;
 import io.neow3j.wallet.AssetTransfer;
 import network.arkane.provider.neo.secret.generation.NeoSecretKey;
 import network.arkane.provider.sign.Signer;
@@ -26,6 +27,7 @@ public class NeoAssetTransferSigner implements Signer<NeoAssetTransferSignable, 
                                      final NeoSecretKey key) {
         final ContractTransaction transaction = new AssetTransfer.Builder(neow3j)
                 .toAddress(signable.getTo())
+                .account(Account.fromECKeyPair(key.getKey()).build())
                 .amount(signable.getAmount())
                 .asset(signable.getAssetId())
                 .build().getTransaction();
