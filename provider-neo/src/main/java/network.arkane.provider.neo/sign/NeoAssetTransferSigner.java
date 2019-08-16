@@ -11,16 +11,11 @@ import network.arkane.provider.sign.Signer;
 import network.arkane.provider.sign.domain.Signature;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 @Component
 public class NeoAssetTransferSigner implements Signer<NeoAssetTransferSignable, NeoSecretKey> {
 
     private Neow3j neow3j;
     private NeoRawSigner neoRawSigner;
-    private ExecutorService executor = Executors.newFixedThreadPool(2);
 
     public NeoAssetTransferSigner(final Neow3j neow3j,
                                   final NeoRawSigner neoRawSigner) {
@@ -33,9 +28,7 @@ public class NeoAssetTransferSigner implements Signer<NeoAssetTransferSignable, 
     public Signature createSignature(final NeoAssetTransferSignable signable,
                                      final NeoSecretKey key) {
         Account account = Account.fromECKeyPair(key.getKey()).build();
-        executor.submit(() -> updateAccountAssetBalances(account));
-        executor.submit(() -> updateAccountTokenBalances(account));
-        executor.awaitTermination(10, TimeUnit.SECONDS);
+        updateAccountAssetBalances(account);
 
         final ContractTransaction transaction = new AssetTransfer.Builder(neow3j)
                 .toAddress(signable.getTo())
@@ -51,11 +44,6 @@ public class NeoAssetTransferSigner implements Signer<NeoAssetTransferSignable, 
                               .transactionType(TransactionType.CONTRACT_TRANSACTION)
                               .build(),
                 key);
-    }
-
-    @SneakyThrows
-    private void updateAccountTokenBalances(Account account) {
-        account.updateTokenBalances(neow3j);
     }
 
     @SneakyThrows
