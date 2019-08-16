@@ -34,8 +34,8 @@ class NeoBalanceGatewayTest {
         neoGateway = mock(NeoW3JGateway.class);
         NeoGetAccountState.Balance balance = mock(NeoGetAccountState.Balance.class);
         when(neoGateway.getBalance(any(String.class))).thenReturn(
-                Arrays.asList(new NeoGetAccountState.Balance(NEOAsset.HASH_ID, "1"),
-                        new NeoGetAccountState.Balance(GASAsset.HASH_ID, "2.2")));
+                Arrays.asList(new NeoGetAccountState.Balance("0x" + NEOAsset.HASH_ID, "1"),
+                        new NeoGetAccountState.Balance("0x" + GASAsset.HASH_ID, "2.2")));
         when(neoGateway.getTokenBalance(any(String.class), any(String.class))).thenReturn(BigInteger.valueOf(1000000000000000000L));
         tokenDiscoveryService = mock(TokenDiscoveryService.class);
 

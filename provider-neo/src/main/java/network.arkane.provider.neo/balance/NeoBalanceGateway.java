@@ -51,29 +51,29 @@ public class NeoBalanceGateway extends BalanceGateway {
 
             for (NeoGetAccountState.Balance item : balances
             ) {
-                if (item.getAssetAddress().equals(NEOAsset.HASH_ID)) {
+                if (item.getAssetAddress().equals("0x" + NEOAsset.HASH_ID)) {
                     neoBalance = new BigInteger(item.getValue());
-                } else if (item.getAssetAddress().equals((GASAsset.HASH_ID))) {
+                } else if (item.getAssetAddress().equals(("0x" + GASAsset.HASH_ID))) {
                     gasBalance = GASAsset.toBigInt(item.getValue());
                 }
             }
 
             return Balance.builder()
-                    .available(true)
-                    .rawBalance(neoBalance.toString())
-                    .rawGasBalance(gasBalance.toString())
-                    .secretType(SecretType.NEO)
-                    .balance(PrecisionUtil.toDecimal(neoBalance, 0))
-                    .gasBalance(PrecisionUtil.toDecimal(gasBalance, 8))
-                    .symbol(NEOAsset.NAME)
-                    .gasSymbol(GASAsset.NAME)
-                    .decimals(8)
-                    .build();
+                          .available(true)
+                          .rawBalance(neoBalance.toString())
+                          .rawGasBalance(gasBalance.toString())
+                          .secretType(SecretType.NEO)
+                          .balance(PrecisionUtil.toDecimal(neoBalance, 0))
+                          .gasBalance(PrecisionUtil.toDecimal(gasBalance, 8))
+                          .symbol(NEOAsset.NAME)
+                          .gasSymbol(GASAsset.NAME)
+                          .decimals(8)
+                          .build();
         } catch (final Exception ex) {
             throw ArkaneException.arkaneException()
-                    .message(String.format("Unable to get the balance for the specified account (%s)", account))
-                    .errorCode("neow3j.internal-error")
-                    .build();
+                                 .message(String.format("Unable to get the balance for the specified account (%s)", account))
+                                 .errorCode("neow3j.internal-error")
+                                 .build();
         }
     }
 
@@ -88,15 +88,15 @@ public class NeoBalanceGateway extends BalanceGateway {
         final BigInteger tokenBalance = neoGate.getTokenBalance(walletAddress, tokenInfo.getAddress());
 
         return TokenBalance.builder()
-                .tokenAddress(tokenInfo.getAddress())
-                .rawBalance(tokenBalance.toString())
-                .balance(calculateBalance(tokenBalance, tokenInfo))
-                .decimals(tokenInfo.getDecimals())
-                .symbol(tokenInfo.getSymbol())
-                .logo(tokenInfo.getLogo())
-                .type(tokenInfo.getType())
-                .transferable(tokenInfo.isTransferable())
-                .build();
+                           .tokenAddress(tokenInfo.getAddress())
+                           .rawBalance(tokenBalance.toString())
+                           .balance(calculateBalance(tokenBalance, tokenInfo))
+                           .decimals(tokenInfo.getDecimals())
+                           .symbol(tokenInfo.getSymbol())
+                           .logo(tokenInfo.getLogo())
+                           .type(tokenInfo.getType())
+                           .transferable(tokenInfo.isTransferable())
+                           .build();
     }
 
     @Override
@@ -110,15 +110,15 @@ public class NeoBalanceGateway extends BalanceGateway {
         for (int i = 0; i < balances.size(); i++) {
             final TokenInfo token = tokenInfo.get(i);
             results.add(TokenBalance.builder()
-                    .tokenAddress(token.getAddress())
-                    .rawBalance(balances.get(i).toString())
-                    .balance(calculateBalance(balances.get(i), token))
-                    .decimals(token.getDecimals())
-                    .symbol(token.getSymbol())
-                    .type(token.getType())
-                    .transferable(token.isTransferable())
-                    .logo(token.getLogo())
-                    .build());
+                                    .tokenAddress(token.getAddress())
+                                    .rawBalance(balances.get(i).toString())
+                                    .balance(calculateBalance(balances.get(i), token))
+                                    .decimals(token.getDecimals())
+                                    .symbol(token.getSymbol())
+                                    .type(token.getType())
+                                    .transferable(token.isTransferable())
+                                    .logo(token.getLogo())
+                                    .build());
         }
         return results;
     }
