@@ -60,7 +60,6 @@ class EthereumTransactionInfoServiceIntegrationTest {
 
         assertThat(transaction.getLogs()).hasSize(1);
         assertThat(transaction.getLogs().get(0).getLogIndex()).isEqualTo(new BigInteger("132"));
-        assertThat(transaction.getLogs().get(0).getType()).isEqualTo("mined");
         assertThat(transaction.getLogs().get(0).getData()).isEqualTo("0x0000000000000000000000000000000000000000000000006935c9d8a109f000");
         assertThat(transaction.getLogs().get(0).getTopics()).containsExactly("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
                                                                              "0x000000000000000000000000ef985560bda2a9ae4ed92fc7f8ef7b5279e5d3fa",
