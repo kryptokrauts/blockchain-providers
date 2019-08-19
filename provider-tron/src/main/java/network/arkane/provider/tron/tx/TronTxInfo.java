@@ -37,8 +37,6 @@ public class TronTxInfo extends TxInfo {
     @Builder(builderMethodName = "tronTxInfoBuilder")
     public TronTxInfo(String hash,
                       TxStatus status,
-                      String from,
-                      String to,
                       BigInteger confirmations,
                       String blockHash,
                       BigInteger blockNumber,
@@ -59,7 +57,7 @@ public class TronTxInfo extends TxInfo {
                       Long exchangeWithdrawAnotherAmount,
                       Long exchangeId,
                       List<? extends TronContract> contracts) {
-        super(hash, status, from, to, confirmations, blockHash, blockNumber);
+        super(hash, status, confirmations, blockHash, blockNumber);
         this.id = id;
         this.fee = fee;
         this.contractResult = contractResult;

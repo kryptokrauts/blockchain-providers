@@ -16,6 +16,8 @@ public class EthereumTxInfo extends TxInfo {
     private BigInteger gasUsed;
     private BigInteger gasPrice;
     private List<EthereumTxLog> logs;
+    private String from;
+    private String to;
 
     protected EthereumTxInfo() {
     }
@@ -30,11 +32,13 @@ public class EthereumTxInfo extends TxInfo {
                           BigInteger blockNumber,
                           BigInteger nonce,
                           BigInteger gas, BigInteger gasUsed, BigInteger gasPrice, List<EthereumTxLog> logs) {
-        super(hash, status, from, to, confirmations, blockHash, blockNumber);
+        super(hash, status, confirmations, blockHash, blockNumber);
         this.nonce = nonce;
         this.gas = gas;
         this.gasUsed = gasUsed;
         this.gasPrice = gasPrice;
         this.logs = logs;
+        this.from = from;
+        this.to = to;
     }
 }

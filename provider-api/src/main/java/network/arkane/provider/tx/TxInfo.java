@@ -14,8 +14,6 @@ import java.math.BigInteger;
 public class TxInfo {
     private String hash;
     private TxStatus status;
-    private String from;
-    private String to;
     private BigInteger confirmations;
     private String blockHash;
     private BigInteger blockNumber;

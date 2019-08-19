@@ -1,5 +1,6 @@
 package network.arkane.provider.tron.tx;
 
+import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.tron.grpc.GrpcClient;
 import network.arkane.provider.tx.TransactionInfoService;
@@ -12,12 +13,12 @@ import org.tron.protos.Protocol;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class TronTransactionInfoService implements TransactionInfoService {
 
     private GrpcClient grpcClient;
@@ -40,8 +41,6 @@ public class TronTransactionInfoService implements TransactionInfoService {
         return TronTxInfo.tronTxInfoBuilder()
                          .hash(hash)
                          .status(getStatus(transactionInfo))
-                         //                          .from(transactionInfo.get)
-                         //                          .to()
                          .confirmations(getConfirmations(transactionInfo))
                          .blockNumber(BigInteger.valueOf(transactionInfo.getBlockNumber()))
                          .assetIssueID(transactionInfo.getAssetIssueID())
@@ -99,10 +98,12 @@ public class TronTransactionInfoService implements TransactionInfoService {
                                                                 .toAddress(Wallet.encode58Check(transferAssetContract.getToAddress().toByteArray()))
                                                                 .fromAddress(Wallet.encode58Check(transferAssetContract.getOwnerAddress().toByteArray()))
                                                                 .build());
-                 default:
-                     return Optional.empty();
+                default:
+                    log.debug("mapping {} are not supported yet", contract.getType());
+                    return Optional.empty();
             }
         } catch (final Exception ex) {
+            log.error("Error trying to convert {}", contract.getType());
             return Optional.empty();
         }
     }
