@@ -6,11 +6,15 @@ import network.arkane.provider.tx.TransactionInfoService;
 import network.arkane.provider.tx.TxStatus;
 import org.springframework.stereotype.Component;
 import org.tron.common.utils.ByteArray;
+import org.tron.core.Wallet;
+import org.tron.protos.Contract;
 import org.tron.protos.Protocol;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,10 +32,11 @@ public class TronTransactionInfoService implements TransactionInfoService {
 
     @Override
     public TronTxInfo getTransaction(String hash) {
-        return grpcClient.getTransactionInfoById(hash).map(transactionInfo -> createInfo(hash, transactionInfo)).orElse(null);
+        Optional<Protocol.Transaction> transaction = grpcClient.getTransactionById(hash);
+        return grpcClient.getTransactionInfoById(hash).map(transactionInfo -> createInfo(hash, transactionInfo, transaction.orElse(null))).orElse(null);
     }
 
-    private TronTxInfo createInfo(String hash, Protocol.TransactionInfo transactionInfo) {
+    private TronTxInfo createInfo(String hash, Protocol.TransactionInfo transactionInfo, Protocol.Transaction transaction) {
         return TronTxInfo.tronTxInfoBuilder()
                          .hash(hash)
                          .status(getStatus(transactionInfo))
@@ -62,7 +67,44 @@ public class TronTransactionInfoService implements TransactionInfoService {
                          .receipt(transactionInfo.getReceipt() == null
                                   ? null
                                   : mapReceipt(transactionInfo.getReceipt()))
+                         .contracts(toList(transaction))
                          .build();
+    }
+
+    private List<? extends TronContract> toList(Protocol.Transaction transaction) {
+        if (transaction != null) {
+            final List<TronContract> contracts = new ArrayList<>();
+            transaction.getRawData().getContractList().iterator().forEachRemaining(contract -> mapContract(contract).ifPresent(contracts::add));
+            return contracts;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    private Optional<TronContract> mapContract(Protocol.Transaction.Contract contract) {
+        try {
+            switch (contract.getType()) {
+                case TransferContract:
+                    Contract.TransferContract transferContract = Contract.TransferContract.parseFrom(contract.getParameter().getValue());
+                    return Optional.of(TronTransferContract.builder()
+                                                           .amount(transferContract.getAmount())
+                                                           .toAddress(Wallet.encode58Check(transferContract.getToAddress().toByteArray()))
+                                                           .fromAddress(Wallet.encode58Check(transferContract.getOwnerAddress().toByteArray()))
+                                                           .build());
+                case TransferAssetContract:
+                    Contract.TransferAssetContract transferAssetContract = Contract.TransferAssetContract.parseFrom(contract.getParameter().getValue());
+                    return Optional.of(TronTransferAssetContract.transferAssetContractBuilder()
+                                                                .amount(transferAssetContract.getAmount())
+                                                                .asset(transferAssetContract.getAssetName().toStringUtf8())
+                                                                .toAddress(Wallet.encode58Check(transferAssetContract.getToAddress().toByteArray()))
+                                                                .fromAddress(Wallet.encode58Check(transferAssetContract.getOwnerAddress().toByteArray()))
+                                                                .build());
+                 default:
+                     return Optional.empty();
+            }
+        } catch (final Exception ex) {
+            return Optional.empty();
+        }
     }
 
     private TronReceipt mapReceipt(Protocol.ResourceReceipt receipt) {

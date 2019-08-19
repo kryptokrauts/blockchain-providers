@@ -13,6 +13,7 @@ import java.util.List;
 @ToString
 public class TronTxInfo extends TxInfo {
 
+    private List<? extends TronContract> contracts;
     private String id;
     private Long fee;
     private List<String> contractResult;
@@ -56,7 +57,8 @@ public class TronTxInfo extends TxInfo {
                       Long exchangeReceivedAmount,
                       Long exchangeInjectAnotherAmount,
                       Long exchangeWithdrawAnotherAmount,
-                      Long exchangeId) {
+                      Long exchangeId,
+                      List<? extends TronContract> contracts) {
         super(hash, status, from, to, confirmations, blockHash, blockNumber);
         this.id = id;
         this.fee = fee;
@@ -74,5 +76,6 @@ public class TronTxInfo extends TxInfo {
         this.exchangeInjectAnotherAmount = exchangeInjectAnotherAmount;
         this.exchangeWithdrawAnotherAmount = exchangeWithdrawAnotherAmount;
         this.exchangeId = exchangeId;
+        this.contracts = contracts;
     }
 }
