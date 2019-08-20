@@ -39,7 +39,7 @@ public class TronTransactionGateway implements TransactionGateway {
                                                              .signedTransaction(transactionSignature.getSignedTransaction())
                                                              .build();
             } else {
-                log.error("Unable to submit a signed transaction: {}");
+                log.error("Unable to submit a signed transaction: {}", transactionSignature.getSignedTransaction());
                 throw arkaneException()
                         .errorCode("transaction.submit.internal-error")
                         .message("A problem occurred trying to submit the transaction to the Tron network")
