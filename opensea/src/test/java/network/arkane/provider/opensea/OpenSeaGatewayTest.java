@@ -1,6 +1,7 @@
 package network.arkane.provider.opensea;
 
 import network.arkane.provider.opensea.domain.Asset;
+import network.arkane.provider.opensea.domain.AssetContract;
 import network.arkane.provider.opensea.domain.Assets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,5 +76,17 @@ class OpenSeaGatewayTest {
         final Asset result = gateway.getAsset("0x12345", "123");
 
         assertThat(result).isEqualTo(asset);
+    }
+
+    @Test
+    void getContract() {
+        final String contractAddress = "1cf22539-df42-4ae2-be8d-e43f7c24c9ef";
+        final AssetContract expected = mock(AssetContract.class);
+
+        when(client.getContract(contractAddress)).thenReturn(expected);
+
+        final AssetContract result = gateway.getContract(contractAddress);
+
+        assertThat(result).isSameAs(expected);
     }
 }
