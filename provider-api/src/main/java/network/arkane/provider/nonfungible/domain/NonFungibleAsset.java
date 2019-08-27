@@ -7,6 +7,7 @@ import lombok.Data;
 public class NonFungibleAsset {
 
     private String id;
+    private String tokenId;
     private String owner;
     private String name;
     private String description;
@@ -18,7 +19,7 @@ public class NonFungibleAsset {
     private NonFungibleContract contract;
 
     @Builder
-    public NonFungibleAsset(final String id,
+    public NonFungibleAsset(final String tokenId,
                             final String owner,
                             final String name,
                             final String description,
@@ -28,7 +29,8 @@ public class NonFungibleAsset {
                             final String imagePreviewUrl,
                             final String imageThumbnailUrl,
                             final NonFungibleContract contract) {
-        this.id = id;
+        this.id = tokenId;
+        this.tokenId = tokenId;
         this.owner = owner;
         this.name = name;
         this.description = description;

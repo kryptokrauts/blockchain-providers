@@ -23,7 +23,7 @@ public class OpenSeaAssetToNonFungibleAssetMapper {
         }
 
         return NonFungibleAsset.builder()
-                               .id(openSeaAsset.getTokenId())
+                               .tokenId(openSeaAsset.getTokenId())
                                .name(openSeaAsset.getName())
                                .backgroundColor(openSeaAsset.getBackgroundColor())
                                .description(openSeaAsset.getDescription())
