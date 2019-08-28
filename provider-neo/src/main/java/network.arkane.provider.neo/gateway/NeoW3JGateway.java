@@ -1,7 +1,6 @@
 package network.arkane.provider.neo.gateway;
 
-import io.neow3j.model.types.ContractParameter;
-import io.neow3j.model.types.ContractParameterType;
+import io.neow3j.contract.ContractParameter;
 import io.neow3j.protocol.Neow3j;
 import io.neow3j.protocol.core.methods.response.NeoGetAccountState;
 import io.neow3j.protocol.core.methods.response.NeoSendRawTransaction;
@@ -53,14 +52,14 @@ public class NeoW3JGateway {
     public BigInteger getTokenBalance(final String owner, final String tokenAddress) {
         try {
 
-            return  Numeric.toBigInt(web3().invokeFunction(tokenAddress, "balanceOf",
-                    Arrays.asList(new ContractParameter(ContractParameterType.HASH160, owner)))
+            return Numeric.toBigInt(Numeric.reverseHexString(web3().invokeFunction(tokenAddress, "balanceOf",
+                    Arrays.asList(ContractParameter.hash160(owner)))
                     .send()
                     .getResult()
                     .getStack()
                     .get(0)
                     .getValue()
-                    .toString());
+                    .toString()));
         } catch (final Exception ex) {
             log.error(String.format("Problem trying to get the token balance of %s for token %s", owner, tokenAddress), ex);
             throw ArkaneException.arkaneException()

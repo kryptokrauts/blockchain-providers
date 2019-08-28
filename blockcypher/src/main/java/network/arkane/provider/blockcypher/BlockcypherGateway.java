@@ -3,6 +3,7 @@ package network.arkane.provider.blockcypher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionRequest;
 import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionResponse;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddress;
@@ -16,6 +17,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@Slf4j
 public class BlockcypherGateway {
 
     private static final String USER_AGENT = "curl/7.54.0";
@@ -68,9 +70,11 @@ public class BlockcypherGateway {
             try {
                 return callable.call();
             } catch (Exception e) {
+                log.debug("Exception trying to call blockcypher", e);
                 throw new RuntimeException(e);
             }
         } else {
+            log.debug("Unable to fetch for blockcypher");
             throw new RuntimeException("Bitcoin endpoint too busy");
         }
     }

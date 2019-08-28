@@ -1,18 +1,19 @@
 package network.arkane.provider.tron.sign;
 
-import com.google.common.base.Charsets;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.sign.domain.HexSignature;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.tron.secret.generation.TronSecretKey;
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 import org.tron.common.crypto.ECKey;
-import org.tron.common.utils.Sha256Hash;
+import org.web3j.crypto.Hash;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 import static org.tron.common.crypto.ECKey.recoverFromSignature;
@@ -22,23 +23,24 @@ import static org.tron.common.utils.ByteUtil.bytesToBigInteger;
 @Component
 public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSecretKey> {
 
+    private static final String MESSAGE_PREFIX = "\u0019TRON Signed Message:\n32";
+
     @Override
     public Signature createSignature(final TronRawSignable signable,
                                      final TronSecretKey key) {
         try {
-            if (signable.getData() == null) {
-                throw arkaneException()
-                        .errorCode("tron.signature.error")
-                        .message("An error occurred trying to create a TRON-signature")
-                        .build();
-            }
 
-            final byte[] dataToSign;
 
-            if (signable.getData().startsWith("0x")) {
-                dataToSign = Hex.decodeHex(signable.getData().replaceFirst("0x", ""));
+            log.debug("Signing raw ethereum transaction: {}", signable.toString());
+            byte[] dataToSign;
+            if (signable.getData() != null && isHexadecimal(signable.getData())) {
+                try {
+                    dataToSign = Hex.decodeHex(signable.getData().replaceFirst("0x", ""));
+                } catch (DecoderException de) {
+                    dataToSign = signable.getData().getBytes(StandardCharsets.UTF_8);
+                }
             } else {
-                dataToSign = signable.getData().getBytes(Charsets.UTF_8);
+                dataToSign = signable.getData() == null ? "".getBytes(StandardCharsets.UTF_8) : signable.getData().getBytes(StandardCharsets.UTF_8);
             }
 
             final Sign.SignatureData signatureData = signBytes(dataToSign, key.getKeyPair());
@@ -65,7 +67,7 @@ public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSe
         BigInteger publicKey = bytesToBigInteger(keyPair.getPubKey());
         byte[] messageHash;
         if (needToHash) {
-            messageHash = Sha256Hash.hash(message);
+            messageHash = getTronMessageHash(message);
         } else {
             messageHash = message;
         }
@@ -91,6 +93,19 @@ public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSe
             byte[] s = Numeric.toBytesPadded(sig.s, 32);
             return new Sign.SignatureData(v, r, s);
         }
+    }
+
+    static byte[] getTronMessageHash(byte[] message) {
+        byte[] prefix = getTronMessagePrefix();
+        byte[] result = new byte[prefix.length + message.length];
+        System.arraycopy(prefix, 0, result, 0, prefix.length);
+        System.arraycopy(message, 0, result, prefix.length, message.length);
+
+        return Hash.sha3(result);
+    }
+
+    static byte[] getTronMessagePrefix() {
+        return MESSAGE_PREFIX.getBytes();
     }
 
 }
