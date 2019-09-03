@@ -2,6 +2,7 @@ package network.arkane.provider.opensea;
 
 import com.google.common.util.concurrent.RateLimiter;
 import network.arkane.provider.opensea.domain.Asset;
+import network.arkane.provider.opensea.domain.AssetContract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,10 @@ public class OpenSeaGateway {
 
     public Asset getAsset(final String contractAddress, final String tokenId) {
         return executeWithRateLimiter(() -> this.openSeaClient.getAsset(contractAddress, tokenId));
+    }
+
+    public AssetContract getContract(final String contractAddress) {
+        return executeWithRateLimiter(() -> this.openSeaClient.getContract(contractAddress));
     }
 
     private List<String> resolveContractAddresses(final String[] contractAddresses) {

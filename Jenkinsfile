@@ -27,9 +27,22 @@ pipeline {
                 }
             }
         }
-        stage('Reports') {
+        stage('Record Coverage') {
+            when { branch 'develop' }
             steps {
-                sh 'curl -s https://codecov.io/bash | bash -s -- -t $CODECOV_TOKEN'
+                script {
+                    currentBuild.result = 'SUCCESS'
+                 }
+                step([$class: 'MasterCoverageAction', scmVars: [GIT_URL: env.GIT_URL]])
+            }
+        }
+        stage('PR Coverage to Github') {
+            when { allOf {not { branch 'master' }; expression { return env.CHANGE_ID != null }} }
+            steps {
+                script {
+                    currentBuild.result = 'SUCCESS'
+                 }
+                step([$class: 'CompareCoverageAction', publishResultAs: 'statusCheck', scmVars: [GIT_URL: env.GIT_URL]])
             }
         }
     }

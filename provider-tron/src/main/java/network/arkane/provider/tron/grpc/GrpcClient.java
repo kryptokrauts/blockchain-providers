@@ -496,11 +496,14 @@ public class GrpcClient {
         ByteString bsTxid = ByteString.copyFrom(ByteArray.fromHexString(txID));
         BytesMessage request = BytesMessage.newBuilder().setValue(bsTxid).build();
         TransactionInfo transactionInfo;
+
         if (blockingStubSolidity != null) {
             transactionInfo = blockingStubSolidity.getTransactionInfoById(request);
         } else {
             transactionInfo = blockingStubFull.getTransactionInfoById(request);
         }
+
+
         return Optional.ofNullable(transactionInfo);
     }
 
@@ -537,6 +540,11 @@ public class GrpcClient {
         NumberMessage numberMessage = NumberMessage.newBuilder().setNum(num).build();
         BlockListExtention blockList = blockingStubFull.getBlockByLatestNum2(numberMessage);
         return Optional.ofNullable(blockList);
+    }
+
+    public BlockExtention getNowBlock2() {
+        EmptyMessage emptyMessage = EmptyMessage.newBuilder().build();
+        return blockingStubFull.getNowBlock2(emptyMessage);
     }
 
     public TransactionExtention updateSetting(Contract.UpdateSettingContract request) {
