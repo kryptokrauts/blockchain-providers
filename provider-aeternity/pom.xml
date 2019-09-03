@@ -33,6 +33,11 @@
       <artifactId>provider-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>com.kryptokrauts</groupId>
       <artifactId>aepp-sdk-java</artifactId>
       <version>${aepp-sdk-java.version}</version>
@@ -50,7 +55,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <version>${spring-boot-starter.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

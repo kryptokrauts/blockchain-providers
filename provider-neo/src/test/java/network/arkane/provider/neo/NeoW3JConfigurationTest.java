@@ -12,7 +12,7 @@ class NeoW3JConfigurationTest {
 
     @Test
     void getsBlockCount() throws IOException {
-        Neow3j neow3j = new NeoW3JConfiguration().neoNeow3j("https://test5.cityofzion.io:443");
+        Neow3j neow3j = new NeoW3JConfiguration().neoNeow3j("http://seed1.ngd.network:20332");
         NeoBlockCount blockCountReq = neow3j.getBlockCount().send();
 
         long actual = blockCountReq.getBlockIndex().longValue();
