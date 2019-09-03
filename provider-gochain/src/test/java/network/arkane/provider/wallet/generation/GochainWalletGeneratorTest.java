@@ -31,7 +31,6 @@ class GochainWalletGeneratorTest {
 
     @Test
     public void passwordShouldNotBeEmpty() {
-        assertThatThrownBy(() -> generator.generateWallet("", new GochainSecretKey(Keys.createEcKeyPair()))).hasMessage("Password should not be empty")
-        ;
+        assertThatThrownBy(() -> generator.generateWallet("", new GochainSecretKey(Keys.createEcKeyPair()))).hasMessage("Password should not be empty");
     }
 }
