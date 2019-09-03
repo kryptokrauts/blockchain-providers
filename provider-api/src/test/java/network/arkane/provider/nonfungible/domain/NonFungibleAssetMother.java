@@ -4,7 +4,7 @@ public class NonFungibleAssetMother {
 
     public static NonFungibleAsset.NonFungibleAssetBuilder aGodsUnchainedNonFungibleBuilder() {
         return NonFungibleAsset.builder()
-                               .id("7664")
+                               .tokenId("7664")
                                .name("Pixielock")
                                .description("At the end of your turn, summon a 1/1 Nimble Pixie.")
                                .url("https://godsunchained.com/card/359127")
@@ -35,7 +35,7 @@ public class NonFungibleAssetMother {
 
     public static NonFungibleAsset.NonFungibleAssetBuilder aCryptoAssaultNonFungibleBuilder() {
         return NonFungibleAsset.builder()
-                               .id("4420")
+                               .tokenId("4420")
                                .name("Common Predator MQ-28 #4420")
                                .backgroundColor("FBFBFB")
                                .description("Strong against helis & tanks\\n\\nWeak against mechs & jeeps\\n\\nFlies over water, mountains, and ground units\\n\\nLow mining rate\\n")

@@ -1,6 +1,7 @@
 package network.arkane.provider.opensea;
 
 import network.arkane.provider.opensea.domain.Asset;
+import network.arkane.provider.opensea.domain.AssetContract;
 import network.arkane.provider.opensea.domain.Assets;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,4 +20,7 @@ public interface OpenSeaClient {
     @RequestMapping(method = RequestMethod.GET, value = "/asset/{asset_contract_address}/{token_id}")
     Asset getAsset(@PathVariable(value = "asset_contract_address") final String contractAddress,
                    @PathVariable(value = "token_id") final String tokenId);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/asset_contract/{asset_contract_address}")
+    AssetContract getContract(@PathVariable(value = "asset_contract_address") String contractAddress);
 }
