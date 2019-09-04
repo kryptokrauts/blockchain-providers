@@ -2,7 +2,6 @@ package network.arkane.provider.tron.sign;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.sign.domain.HexSignature;
-import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.tron.secret.generation.TronSecretKey;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -26,12 +25,12 @@ public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSe
     private static final String MESSAGE_PREFIX = "\u0019TRON Signed Message:\n32";
 
     @Override
-    public Signature createSignature(final TronRawSignable signable,
-                                     final TronSecretKey key) {
+    public HexSignature createSignature(final TronRawSignable signable,
+                                        final TronSecretKey key) {
         try {
 
 
-            log.debug("Signing raw ethereum transaction: {}", signable.toString());
+            log.debug("Signing raw tron transaction: {}", signable.toString());
             byte[] dataToSign;
             if (signable.getData() != null && isHexadecimal(signable.getData())) {
                 try {
@@ -60,17 +59,12 @@ public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSe
     }
 
     private Sign.SignatureData signBytes(byte[] rawBytes, final ECKey ecKey) {
-        return signMessage(rawBytes, ecKey, true);
+        return signMessage(rawBytes, ecKey);
     }
 
-    private static Sign.SignatureData signMessage(byte[] message, ECKey keyPair, boolean needToHash) {
+    private static Sign.SignatureData signMessage(byte[] message, ECKey keyPair) {
         BigInteger publicKey = bytesToBigInteger(keyPair.getPubKey());
-        byte[] messageHash;
-        if (needToHash) {
-            messageHash = getTronMessageHash(message);
-        } else {
-            messageHash = message;
-        }
+        byte[] messageHash = getTronMessageHash(message);
 
         ECKey.ECDSASignature sig = keyPair.sign(messageHash);
         int recId = -1;
