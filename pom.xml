@@ -45,9 +45,8 @@
         <jackson.version>2.9.8</jackson.version>
         <lombok.version>1.18.0</lombok.version>
         <junit-vintage-engine.version>4.12.0</junit-vintage-engine.version>
-        <junit-jupiter.version>5.0.0</junit-jupiter.version>
+        <junit-jupiter.version>5.3.2</junit-jupiter.version>
         <junit-jupiter-api.version>5.3.2</junit-jupiter-api.version>
-        <junit-platform.version>1.0.0</junit-platform.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -167,6 +166,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter</artifactId>
                 <version>${spring-boot-starter.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -317,11 +317,6 @@
                     </excludes>
                 </configuration>
                 <dependencies>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>${junit-platform.version}</version>
-                    </dependency>
                     <dependency>
                         <groupId>org.junit.jupiter</groupId>
                         <artifactId>junit-jupiter-engine</artifactId>
