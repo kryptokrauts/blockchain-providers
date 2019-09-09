@@ -94,7 +94,11 @@ public class VechainTransactionSigner implements Signer<VechainTransactionSignab
                     } else {
                         data = ToData.ZERO;
                     }
-                    return new ToClause(Address.fromHexString(x.getTo()), vet, data);
+                    return new ToClause(toAddress(x), vet, data);
                 }).toArray(ToClause[]::new);
+    }
+
+    private Address toAddress(VechainTransactionSignableToClause x) {
+        return (x.getTo() == null || x.getTo().isEmpty()) ? Address.NULL_ADDRESS : Address.fromHexString(x.getTo());
     }
 }
