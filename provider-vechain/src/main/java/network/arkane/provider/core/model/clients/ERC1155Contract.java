@@ -515,4 +515,8 @@ public class ERC1155Contract extends AbstractContract {
     }
 
     public static final ERC1155Contract defaultERC1155Contract = new ERC1155Contract();
+
+    public void balanceBatchOf() {
+
+    }
 }
