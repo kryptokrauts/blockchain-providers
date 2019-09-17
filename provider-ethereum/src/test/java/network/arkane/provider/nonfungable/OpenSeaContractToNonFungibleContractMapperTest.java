@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 class OpenSeaContractToNonFungibleContractMapperTest {
 
@@ -17,7 +18,7 @@ class OpenSeaContractToNonFungibleContractMapperTest {
 
     @BeforeEach
     void setUp() {
-        mapper = new OpenSeaContractToNonFungibleContractMapper();
+        mapper = new OpenSeaContractToNonFungibleContractMapper(mock(NonFungibleContractTypeMapper.class));
     }
 
     @Test
