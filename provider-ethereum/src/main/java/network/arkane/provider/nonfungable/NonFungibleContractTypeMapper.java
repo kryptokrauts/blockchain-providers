@@ -13,7 +13,6 @@ import org.web3j.abi.datatypes.generated.Bytes4;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,10 +51,8 @@ public class NonFungibleContractTypeMapper {
                     DefaultBlockParameterName.LATEST).send();
             String value = ethCall.getValue();
             List<Type> decoded = FunctionReturnDecoder.decode(value, function.getOutputParameters());
-            return Boolean.parseBoolean(decoded.get(0).getValue().toString());
-
-
-        } catch (IOException e) {
+            return !decoded.isEmpty() && Boolean.parseBoolean(decoded.get(0).getValue().toString());
+        } catch (Exception e) {
             return false;
         }
 
