@@ -10,6 +10,7 @@ import network.arkane.provider.tron.block.BlockGateway;
 import network.arkane.provider.tron.grpc.GrpcClient;
 import network.arkane.provider.tron.secret.generation.TronSecretKey;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.tron.protos.Contract;
 import org.tron.protos.Protocol;
@@ -28,7 +29,13 @@ public class TrxTransactionSigner extends TronTransactionSigner<TrxTransactionSi
     public Signature createSignature(final TrxTransactionSignable signable,
                                      final TronSecretKey key) {
         log.info("Creating signature for: {}", signable);
-        final Protocol.Transaction transaction = createTransaction(key.getKeyPair().getAddress(), GrpcClient.decodeFromBase58Check(signable.getTo()), signable.getAmount());
+        Protocol.Transaction transaction;
+        if (StringUtils.isNotBlank(signable.getData()) && signable.getData().replaceFirst("0x", "").length() > 0) {
+            transaction = createContractExecution(key.getKeyPair().getAddress(), GrpcClient.decodeFromBase58Check(signable.getTo()), signable.getAmount(), signable.getData());
+        } else {
+            transaction = createTransaction(key.getKeyPair().getAddress(), GrpcClient.decodeFromBase58Check(signable.getTo()), signable.getAmount());
+        }
+
         final byte[] signature = signTransaction2Byte(transaction.toByteArray(), key.getKeyPair().getPrivKeyBytes());
         log.info("Done creating signature: {}", Hex.encodeHexString(signature));
         return TransactionSignature.signTransactionBuilder()
@@ -60,6 +67,40 @@ public class TrxTransactionSigner extends TronTransactionSigner<TrxTransactionSi
                                  .build();
         }
         contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TransferContract);
+        transactionBuilder.getRawDataBuilder().addContract(contractBuilder)
+                          .setTimestamp(getCurrentTime())
+                          .setExpiration(getExpiration(newestBlock));
+        final Protocol.Transaction transaction = transactionBuilder.build();
+        return setReference(transaction, newestBlock);
+    }
+
+    public Protocol.Transaction createContractExecution(byte[] from, byte[] to, long amount, String data) {
+        final Protocol.Transaction.Builder transactionBuilder = Protocol.Transaction.newBuilder();
+        final Protocol.Block newestBlock = blockGateway.getBlock(-1);
+        if (data.startsWith("0x")) {
+            data = data.substring(2);
+        }
+
+        Protocol.Transaction.Contract.Builder contractBuilder = Protocol.Transaction.Contract.newBuilder();
+        Contract.TriggerSmartContract.Builder triggerContractBuilder = Contract.TriggerSmartContract.newBuilder();
+        triggerContractBuilder.setCallValue(amount);
+        triggerContractBuilder.setData(ByteString.copyFrom(org.bouncycastle.util.encoders.Hex.decode(data)));
+        ByteString bsTo = ByteString.copyFrom(to);
+        ByteString bsOwner = ByteString.copyFrom(from);
+        triggerContractBuilder.setContractAddress(bsTo);
+        triggerContractBuilder.setOwnerAddress(bsOwner);
+        try {
+            Any any = Any.pack(triggerContractBuilder.build());
+            contractBuilder.setParameter(any);
+        } catch (Exception e) {
+            log.error("An error occurred trying to create a TRON-signature (Contract execution)");
+            throw ArkaneException.arkaneException()
+                                 .cause(e)
+                                 .message("An error occurred trying to create a TRON-signature (Contract execution)")
+                                 .errorCode("tron.signature.error")
+                                 .build();
+        }
+        contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TriggerSmartContract);
         transactionBuilder.getRawDataBuilder().addContract(contractBuilder)
                           .setTimestamp(getCurrentTime())
                           .setExpiration(getExpiration(newestBlock));
