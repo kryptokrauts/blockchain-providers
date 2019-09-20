@@ -38,6 +38,18 @@ class TrxTransactionSignerTest {
         assertThat(parsedTx.getRawData().getContract(0).getType()).isEqualTo(Protocol.Transaction.Contract.ContractType.TransferContract);
     }
 
+    @Test
+    void createTriggerContractSignature() throws Exception {
+        when(blockGateway.getBlock(-1)).thenReturn(getBlock());
+        TrxTransactionSignable signable = TrxTransactionSignableMother.trxTransactionSignable();
+        signable.setData("0x74657374");
+        Signature signature = trxTransactionSigner.createSignature(signable, aRandomSecretKey());
+        assertThat(signature).isInstanceOf(TransactionSignature.class);
+        Protocol.Transaction parsedTx = Protocol.Transaction.parseFrom(Hex.decodeHex(((TransactionSignature) signature).getSignedTransaction()));
+        assertThat(parsedTx.getRawData().getExpiration()).isEqualTo(36000001);
+        assertThat(parsedTx.getRawData().getContract(0).getType()).isEqualTo(Protocol.Transaction.Contract.ContractType.TriggerSmartContract);
+    }
+
     private Protocol.Block getBlock() {
         return Protocol.Block.newBuilder()
                              .setBlockHeader(Protocol.BlockHeader.newBuilder()
