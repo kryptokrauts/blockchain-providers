@@ -69,6 +69,7 @@ public class TrxTransactionSigner extends TronTransactionSigner<TrxTransactionSi
         contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TransferContract);
         transactionBuilder.getRawDataBuilder().addContract(contractBuilder)
                           .setTimestamp(getCurrentTime())
+                          .setFeeLimit(100000000)
                           .setExpiration(getExpiration(newestBlock));
         final Protocol.Transaction transaction = transactionBuilder.build();
         return setReference(transaction, newestBlock);
@@ -103,6 +104,7 @@ public class TrxTransactionSigner extends TronTransactionSigner<TrxTransactionSi
         contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TriggerSmartContract);
         transactionBuilder.getRawDataBuilder().addContract(contractBuilder)
                           .setTimestamp(getCurrentTime())
+                          .setFeeLimit(100000000)
                           .setExpiration(getExpiration(newestBlock));
         final Protocol.Transaction transaction = transactionBuilder.build();
         return setReference(transaction, newestBlock);
