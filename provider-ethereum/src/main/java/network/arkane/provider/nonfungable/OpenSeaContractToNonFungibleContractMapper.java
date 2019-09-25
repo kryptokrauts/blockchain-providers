@@ -11,6 +11,12 @@ import java.util.stream.Collectors;
 @Component
 public class OpenSeaContractToNonFungibleContractMapper {
 
+    private NonFungibleContractTypeMapper contractTypeMapper;
+
+    public OpenSeaContractToNonFungibleContractMapper(NonFungibleContractTypeMapper contractTypeMapper) {
+        this.contractTypeMapper = contractTypeMapper;
+    }
+
     public NonFungibleContract map(final AssetContract openSeaAssetContract) {
         if (openSeaAssetContract == null) {
             return null;
@@ -23,6 +29,7 @@ public class OpenSeaContractToNonFungibleContractMapper {
                                   .name(openSeaAssetContract.getName())
                                   .symbol(openSeaAssetContract.getSymbol())
                                   .url(openSeaAssetContract.getExternalLink())
+                                  .type(contractTypeMapper.getType(openSeaAssetContract.getAddress()))
                                   .build();
     }
 
