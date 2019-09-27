@@ -7,6 +7,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 public class OpenSeaClientConfiguration {
 
     private static final String API_KEY_KEY = "X-API-KEY";
@@ -30,10 +35,26 @@ public class OpenSeaClientConfiguration {
     @Bean
     public RequestInterceptor apiTokenInterceptor() {
         return requestTemplate -> {
-            requestTemplate.header("User-Agent","curl/7.54.0");
+            requestTemplate.header("User-Agent", "curl/7.54.0");
             if (StringUtils.isNotBlank(apiToken) && !requestTemplate.headers().containsKey(API_KEY_KEY)) {
                 requestTemplate.header(API_KEY_KEY, apiToken);
             }
+        };
+    }
+
+    @Bean
+    public RequestInterceptor removeEmptyQueryInterceptor() {
+        return requestTemplate -> {
+            final Map<String, Collection<String>> queries = requestTemplate.queries();
+            requestTemplate.queries(null);
+            requestTemplate.queries(queries.keySet()
+                                           .stream()
+                                           .filter(key -> {
+                                               final Collection<String> value = queries.get(key);
+                                               return value != null && !value.isEmpty();
+                                           })
+                                           .collect(Collectors.toMap(Function.identity(), queries::get)));
+
         };
     }
 }

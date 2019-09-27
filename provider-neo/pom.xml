@@ -7,7 +7,7 @@
     <parent>
         <groupId>network.arkane</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.6.4</version>
+        <version>0.7.0</version>
     </parent>
 
     <artifactId>provider-neo</artifactId>
@@ -16,6 +16,16 @@
         <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>
