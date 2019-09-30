@@ -26,10 +26,12 @@ public abstract class EvmContractService implements ContractService {
 
         if (contractCall.getOutputs().size() <= 1) {
             Type result = executeRemoteCallSingleValueReturn(f, contractCall).send();
-            return Collections.singletonList(result.getValue().toString());
+            return result == null ? Collections.emptyList() : Collections.singletonList(result.getValue().toString());
         } else {
             List<Type> result = executeRemoteCallMultipleValueReturn(f, contractCall).send();
-            return result.stream().map(Type::getValue).map(Object::toString).collect(Collectors.toList());
+            return result == null
+                   ? Collections.emptyList()
+                   : result.stream().map(Type::getValue).map(Object::toString).collect(Collectors.toList());
         }
     }
 
