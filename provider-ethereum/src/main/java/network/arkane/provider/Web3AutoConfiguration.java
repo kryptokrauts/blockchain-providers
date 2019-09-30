@@ -3,6 +3,8 @@ package network.arkane.provider;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import network.arkane.provider.gateway.EthereumWeb3JGatewayFactory;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,7 @@ import org.web3j.protocol.websocket.WebSocketClient;
 import org.web3j.protocol.websocket.WebSocketService;
 
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableScheduling
@@ -41,7 +44,29 @@ public class Web3AutoConfiguration {
             this.websocket = new WebSocketClient(URI.create(endpoint));
             return Web3j.build(new WebSocketService(this.websocket, false));
         } else {
-            return Web3j.build(new HttpService(endpoint, false));
+            return Web3j.build(new HttpService(endpoint, createOkHttpClient(), false));
+        }
+    }
+
+    private OkHttpClient createOkHttpClient() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        configureLogging(builder);
+        configureTimeouts(builder);
+        return builder.build();
+    }
+
+    private void configureTimeouts(OkHttpClient.Builder builder) {
+        long tos = 60L;
+        builder.connectTimeout(tos, TimeUnit.SECONDS);
+        builder.readTimeout(tos, TimeUnit.SECONDS);
+        builder.writeTimeout(tos, TimeUnit.SECONDS);
+    }
+
+    private static void configureLogging(OkHttpClient.Builder builder) {
+        if (log.isDebugEnabled()) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(log::error);
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(logging);
         }
     }
 
