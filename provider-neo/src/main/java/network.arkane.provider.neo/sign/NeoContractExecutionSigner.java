@@ -3,6 +3,7 @@ package network.arkane.provider.neo.sign;
 import io.neow3j.contract.ContractInvocation;
 import io.neow3j.contract.ContractParameter;
 import io.neow3j.contract.ScriptHash;
+import io.neow3j.crypto.transaction.RawTransactionOutput;
 import io.neow3j.protocol.Neow3j;
 import io.neow3j.transaction.InvocationTransaction;
 import io.neow3j.utils.Numeric;
@@ -13,6 +14,7 @@ import network.arkane.provider.sign.Signer;
 import network.arkane.provider.sign.domain.TransactionSignature;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -45,6 +47,12 @@ public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSi
 
         for (NeoContractParameter input : signable.getInputs()) {
             builder = builder.parameter(mapInput(input.getType(), input.getValue()));
+        }
+
+        if (!CollectionUtils.isEmpty(signable.getOutputs())) {
+            for (NeoAssetTransferSignable output : signable.getOutputs()) {
+                builder = builder.output(new RawTransactionOutput(output.getAssetId(), output.getAmount().toString(), output.getTo()));
+            }
         }
 
         ContractInvocation invoc = builder
