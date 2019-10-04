@@ -84,10 +84,12 @@ public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSi
             case "hash256":
                 return ContractParameter.hash256(value);
             case "byte_array":
+            case "bytarray":
                 return ContractParameter.byteArray(value);
             case "address":
                 return ContractParameter.byteArrayFromAddress(value);
             case "public_key":
+            case "publickey":
                 return ContractParameter.publicKey(value);
             case "string":
                 return ContractParameter.string(value);
