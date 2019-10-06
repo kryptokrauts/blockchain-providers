@@ -35,7 +35,7 @@ public class DeltaBalances extends Contract {
                        .map(NumericType::getValue)
                        .collect(Collectors.toList());
         } catch (final Exception ex) {
-            log.error(ex.getMessage());
+            log.error(ex.getMessage(), ex);
             return new ArrayList<>();
         }
     }
