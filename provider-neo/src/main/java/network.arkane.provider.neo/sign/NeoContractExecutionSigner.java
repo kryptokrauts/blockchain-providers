@@ -42,8 +42,15 @@ public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSi
         builder = builder
                 .account(account)
                 .contractScriptHash(new ScriptHash(signable.getContractScriptHash()))
-                .networkFee(StringUtils.isBlank(signable.getNetworkFee()) ? "0.1" : signable.getNetworkFee())
                 .function(signable.getFunctionName());
+
+        if (StringUtils.isNotBlank(signable.getSystemFee())) {
+            builder.systemFee(signable.getSystemFee());
+        }
+
+        if (StringUtils.isNotBlank(signable.getNetworkFee())) {
+            builder.networkFee(signable.getNetworkFee());
+        }
 
         for (NeoContractParameter input : signable.getInputs()) {
             builder = builder.parameter(mapInput(input.getType(), input.getValue()));
