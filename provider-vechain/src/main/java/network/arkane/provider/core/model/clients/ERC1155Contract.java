@@ -1,6 +1,9 @@
 package network.arkane.provider.core.model.clients;
 
+import network.arkane.provider.core.model.clients.base.AbiDefinition;
 import network.arkane.provider.core.model.clients.base.AbstractContract;
+
+import java.math.BigInteger;
 
 public class ERC1155Contract extends AbstractContract {
     private static final String ERC1155ABIString = "[\n"
@@ -515,4 +518,29 @@ public class ERC1155Contract extends AbstractContract {
     }
 
     public static final ERC1155Contract defaultERC1155Contract = new ERC1155Contract();
+
+    public static String createType(final String tokenURI, final boolean nonFungible) {
+        final AbiDefinition abiDefinition = ERC1155Contract.defaultERC1155Contract.findAbiDefinition("create");
+        return buildData(abiDefinition,
+                  tokenURI,
+                  nonFungible);
+    }
+
+    public static String mintFungible(final BigInteger type,
+                               final String[] to,
+                               final BigInteger[] amount) {
+        final AbiDefinition abiDefinition = ERC1155Contract.defaultERC1155Contract.findAbiDefinition("mintFungible");
+        return buildData(abiDefinition,
+                         type,
+                         to,
+                         amount);
+    }
+
+    public static String mintNonFungible(final BigInteger type,
+                                  final String[] to) {
+        final AbiDefinition abiDefinition = ERC1155Contract.defaultERC1155Contract.findAbiDefinition("mintNonFungible");
+        return buildData(abiDefinition,
+                         type,
+                         to);
+    }
 }
