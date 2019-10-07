@@ -14,6 +14,7 @@ public class NeoContractExecutionSignable implements Signable {
     private String contractScriptHash;
     private String functionName;
     private String networkFee;
+    private String systemFee;
     private List<NeoContractParameter> inputs;
     private List<NeoAssetTransferSignable> outputs;
 
@@ -21,11 +22,13 @@ public class NeoContractExecutionSignable implements Signable {
     public NeoContractExecutionSignable(String contractScriptHash,
                                         String functionName,
                                         String networkFee,
+                                        String systemFee,
                                         List<NeoContractParameter> inputs,
                                         List<NeoAssetTransferSignable> outputs) {
         this.contractScriptHash = contractScriptHash;
         this.functionName = functionName;
         this.networkFee = networkFee;
+        this.systemFee = systemFee;
         this.inputs = inputs;
         this.outputs = outputs;
     }
