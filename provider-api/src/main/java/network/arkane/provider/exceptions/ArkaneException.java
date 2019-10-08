@@ -1,5 +1,7 @@
 package network.arkane.provider.exceptions;
 
+import brave.Tracing;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,6 +9,8 @@ public class ArkaneException extends RuntimeException {
 
     @Getter
     private String errorCode;
+    @Getter
+    private String traceCode;
 
     @Builder(builderMethodName = "arkaneException")
     public ArkaneException(final String message,
@@ -14,19 +18,32 @@ public class ArkaneException extends RuntimeException {
                            final String errorCode) {
         super(message, cause);
         this.errorCode = errorCode;
+        this.traceCode = getTrace();
+    }
+
+    @JsonIgnore
+    String getTrace() {
+        try {
+            return Tracing.currentTracer().currentSpan().context().traceIdString();
+        } catch (final Exception ex) {
+            //no tracing enabled;
+            return null;
+        }
     }
 
     public ArkaneException(String message, String errorCode) {
         super(message);
         this.errorCode = errorCode;
+        this.traceCode = getTrace();
     }
 
     public ArkaneException(String message, Throwable cause) {
         super(message, cause);
-        this.errorCode = errorCode;
     }
 
-    public ArkaneException(final String errorCode, String message, Throwable cause) {
+    public ArkaneException(final String errorCode,
+                           final String message,
+                           final Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
     }
