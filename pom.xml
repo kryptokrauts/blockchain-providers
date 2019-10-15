@@ -31,6 +31,7 @@
         <module>provider-neo</module>
         <module>blockcypher</module>
         <module>opensea</module>
+        <module>arkane-business</module>
         <module>integrationtests</module>
     </modules>
 
@@ -131,6 +132,11 @@
             <dependency>
                 <groupId>network.arkane</groupId>
                 <artifactId>provider-bitcoin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>arkane-business</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
