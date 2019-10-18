@@ -1,6 +1,6 @@
-package network.arkane.business.infrastructure;
+package network.arkane.provider.business.infrastructure;
 
-import network.arkane.business.ArkaneBusiness;
+import network.arkane.provider.business.ArkaneBusiness;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;
 

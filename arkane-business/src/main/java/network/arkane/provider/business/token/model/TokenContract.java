@@ -1,11 +1,9 @@
-package network.arkane.business.token.model;
+package network.arkane.provider.business.token.model;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Data

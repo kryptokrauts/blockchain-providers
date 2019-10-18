@@ -1,12 +1,14 @@
 package network.arkane.provider.nonfungible;
 
-import network.arkane.business.token.BusinessTokenGateway;
+import network.arkane.provider.business.token.BusinessTokenGateway;
+import network.arkane.provider.business.token.model.TokenContract;
+import network.arkane.provider.business.token.model.TokenDto;
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.core.model.clients.ERC1155ContractClient;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,8 @@ public class VechainNonFungibleGateway implements NonFungibleGateway {
                                    .stream()
                                    .filter(x -> x.getTokenType().isNf())
                                    .map(x -> {
+
+
                                        return NonFungibleAsset.builder()
                                                               .tokenId(x.getTokenId().toString())
                                                               .contract(NonFungibleContract.builder().build())
@@ -41,11 +45,27 @@ public class VechainNonFungibleGateway implements NonFungibleGateway {
 
     @Override
     public NonFungibleAsset getNonFungible(final String contractAddress, final String tokenId) {
-
+        final TokenDto token = businessTokenGateway.getToken(contractAddress, new BigInteger(tokenId));
+        return NonFungibleAsset.builder()
+                               .tokenId(tokenId)
+                               .imagePreviewUrl(token.getImagePreviewUrl())
+                               .contract(getNonFungibleContract(contractAddress))
+                               .backgroundColor(token.getBackgroundColor())
+                               .imageThumbnailUrl(token.getImageThumbnailUrl())
+                               .imageUrl(token.getImageUrl())
+                               .url(token.getUrl())
+                               .name(token.getTokenType().getName())
+                               .description(token.getTokenType().getDescription())
+                               .build();
     }
 
     @Override
     public NonFungibleContract getNonFungibleContract(final String contractAddress) {
-        throw new IllegalArgumentException("Not Implemented");
+        final TokenContract contract = businessTokenGateway.getContract(contractAddress);
+        return NonFungibleContract.builder()
+                                  .address(contract.getAddress())
+                                  .description(contract.getDescription())
+                                  .name(contract.getName())
+                                  .build();
     }
 }

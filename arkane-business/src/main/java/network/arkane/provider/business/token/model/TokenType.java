@@ -1,4 +1,4 @@
-package network.arkane.business.token.model;
+package network.arkane.provider.business.token.model;
 
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +24,9 @@ public class TokenType {
     private TokenContract tokenContract;
     private String properties;
 
+    private String url;
+    private String backgroundColor;
+
     @Builder
     public TokenType(final Long id,
                      final String name,
@@ -36,7 +39,9 @@ public class TokenType {
                      final Date transactionDate,
                      final TokenContract tokenContract,
                      final boolean nf,
-                     final String properties) {
+                     final String properties,
+                     final String url,
+                     final String backgroundColor) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -49,5 +54,7 @@ public class TokenType {
         this.tokenContract = tokenContract;
         this.nf = nf;
         this.properties = properties;
+        this.url = url;
+        this.backgroundColor = backgroundColor;
     }
 }
