@@ -6,5 +6,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableFeignClients(basePackageClasses = {ArkaneBusiness.class})
-public class FeignConfig {
+public class BusinessClientFeignConfig {
 }
