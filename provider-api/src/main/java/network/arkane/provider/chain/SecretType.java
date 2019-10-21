@@ -16,9 +16,33 @@ import java.util.stream.Stream;
  * - NEO
  */
 public enum SecretType {
-    AETERNITY, BITCOIN, ETHEREUM, GOCHAIN, LITECOIN, TRON, VECHAIN, NEO;
+    AETERNITY(Values.AETERNITY),
+    BITCOIN(Values.BITCOIN),
+    ETHEREUM(Values.ETHEREUM),
+    GOCHAIN(Values.GOCHAIN),
+    LITECOIN(Values.LITECOIN),
+    TRON(Values.TRON),
+    VECHAIN(Values.VECHAIN),
+    NEO(Values.NEO);
+
+    SecretType(final String stringValue) {
+        if (!this.name().equals(stringValue)) {
+            throw new IllegalStateException("Incorrect String value for SecretType");
+        }
+    }
 
     public static String getAllTypes() {
         return Stream.of(SecretType.values()).map(Enum::name).collect(Collectors.joining(", "));
+    }
+
+    public static class Values {
+        public static final String AETERNITY = "AETERNITY";
+        public static final String BITCOIN = "BITCOIN";
+        public static final String ETHEREUM = "ETHEREUM";
+        public static final String GOCHAIN = "GOCHAIN";
+        public static final String LITECOIN = "LITECOIN";
+        public static final String TRON = "TRON";
+        public static final String VECHAIN = "VECHAIN";
+        public static final String NEO = "NEO";
     }
 }
