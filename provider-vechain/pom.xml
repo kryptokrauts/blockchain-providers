@@ -14,6 +14,10 @@
     <dependencies>
         <dependency>
             <groupId>network.arkane</groupId>
+            <artifactId>arkane-business</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane</groupId>
             <artifactId>provider-api</artifactId>
         </dependency>
         <dependency>

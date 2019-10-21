@@ -21,6 +21,10 @@
             <artifactId>provider-autoconfiguration</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+        </dependency>
+        <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>provider-vechain</artifactId>
         </dependency>
@@ -35,6 +39,10 @@
         <dependency>
             <groupId>network.arkane</groupId>
             <artifactId>provider-gochain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane</groupId>
+            <artifactId>arkane-business</artifactId>
         </dependency>
         <dependency>
             <groupId>network.arkane</groupId>
