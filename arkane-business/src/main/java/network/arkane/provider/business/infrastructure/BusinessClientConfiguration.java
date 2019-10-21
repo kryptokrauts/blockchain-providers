@@ -2,6 +2,7 @@ package network.arkane.provider.business.infrastructure;
 
 import feign.Logger;
 import feign.Request;
+import feign.RequestInterceptor;
 import org.springframework.context.annotation.Bean;
 
 public class BusinessClientConfiguration {
@@ -12,6 +13,13 @@ public class BusinessClientConfiguration {
     @Bean
     public Logger.Level loggerLevel() {
         return Logger.Level.BASIC;
+    }
+
+    @Bean
+    public RequestInterceptor userAgentInterceptor() {
+        return requestTemplate -> {
+            requestTemplate.header("User-Agent", "curl/7.54.0");
+        };
     }
 
 
