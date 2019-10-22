@@ -36,9 +36,21 @@ public class VechainNonFungibleGateway implements NonFungibleGateway {
 
                                        return NonFungibleAsset.builder()
                                                               .tokenId(x.getTokenId().toString())
-                                                              .contract(NonFungibleContract.builder().build())
+                                                              .contract(
+                                                                      NonFungibleContract.builder()
+                                                                                         .name(x.getTokenType().getTokenContract().getName())
+                                                                                         .description(x.getTokenType().getTokenContract().getDescription())
+                                                                                         .address(x.getTokenType().getTokenContract().getAddress())
+                                                                                         .symbol(null)
+                                                                                         .url(null)
+                                                                                         .imageUrl(null)
+                                                                                         .type("ERC_1155")
+                                                                                         .build())
                                                               .description(x.getTokenType().getDescription())
                                                               .name(x.getTokenType().getName())
+                                                              .imageUrl(x.getImageUrl())
+                                                              .imagePreviewUrl(x.getImagePreviewUrl())
+                                                              .imageThumbnailUrl(x.getImageThumbnailUrl())
                                                               .build();
                                    }).collect(Collectors.toList());
     }
