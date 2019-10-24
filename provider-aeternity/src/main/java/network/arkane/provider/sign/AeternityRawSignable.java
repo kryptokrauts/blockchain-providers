@@ -11,7 +11,6 @@ public class AeternityRawSignable implements Signable {
     private String data;
 
     @Builder
-
     public AeternityRawSignable(String data) {
         this.data = data;
     }
