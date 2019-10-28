@@ -21,30 +21,31 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestPropertySource("/configuration.properties")
 public class AeternityServiceAutoConfigurationTest {
 
-    @Autowired
-    AeternityBalanceGateway aeternityBalanceGateway;
+  @Autowired
+  AeternityBalanceGateway aeternityBalanceGateway;
 
-    @Autowired
-    AeternitySpendTransactionSigner aeternitySpendTransactionSigner;
+  @Autowired
+  AeternitySpendTransactionSigner aeternitySpendTransactionSigner;
 
-    @Autowired
-    AeternityTransactionGateway aeternityTransactionGateway;
+  @Autowired
+  AeternityTransactionGateway aeternityTransactionGateway;
 
-    @Autowired
-    AeternityServiceConfiguration aeternityServiceConfiguration;
+  @Autowired
+  AeternityServiceConfiguration aeternityServiceConfiguration;
 
-    @Configuration
-    @ComponentScan("network.arkane.provider.aeternity")
-    public static class ComponentScanConfig {
+  @Configuration
+  @ComponentScan("network.arkane.provider.aeternity")
+  public static class ComponentScanConfig {
 
-    }
+  }
 
-    @Test
-    public void autoConfigurationTest() {
-        Assertions.assertThat(aeternityBalanceGateway).isNotNull();
-        Assertions.assertThat(aeternitySpendTransactionSigner).isNotNull();
-        Assertions.assertThat(aeternityTransactionGateway).isNotNull();
-        Assertions.assertThat(Network.DEVNET).isEqualTo(aeternityServiceConfiguration.getNetwork());
-        Assertions.assertThat(VirtualMachine.FATE).isEqualTo(aeternityServiceConfiguration.getTargetVM());
-    }
+  @Test
+  public void autoConfigurationTest() {
+    Assertions.assertThat(aeternityBalanceGateway).isNotNull();
+    Assertions.assertThat(aeternitySpendTransactionSigner).isNotNull();
+    Assertions.assertThat(aeternityTransactionGateway).isNotNull();
+    Assertions.assertThat(Network.TESTNET).isEqualTo(aeternityServiceConfiguration.getNetwork());
+    Assertions.assertThat(VirtualMachine.FATE)
+        .isEqualTo(aeternityServiceConfiguration.getTargetVM());
+  }
 }
