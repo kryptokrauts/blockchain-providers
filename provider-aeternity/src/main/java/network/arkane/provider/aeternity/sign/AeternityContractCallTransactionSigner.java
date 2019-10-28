@@ -17,44 +17,46 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class AeternityContractCallTransactionSigner implements
-        Signer<AeternityContractCallSignable, AeternitySecretKey> {
+    Signer<AeternityContractCallSignable, AeternitySecretKey> {
 
-    private AeternityService aeternityService;
+  private AeternityService aeternityService;
 
-    public AeternityContractCallTransactionSigner(
-            final @Qualifier("aeternity-service") AeternityService aeternityService) {
-        this.aeternityService = aeternityService;
+  public AeternityContractCallTransactionSigner(
+      final @Qualifier("aeternity-service") AeternityService aeternityService) {
+    this.aeternityService = aeternityService;
+  }
+
+  @Override
+  public Signature createSignature(final AeternityContractCallSignable signable,
+      final AeternitySecretKey key) {
+    ContractCallTransactionModel contractCallTransactionModel = ContractCallTransactionModel
+        .builder()
+        // the amount is optional because most contract calls are performed without sending a token
+        .amount(signable.getAmount())
+        .contractId(signable.getContractId())
+        .callData(signable.getCallData())
+        .callerId(signable.getCallerId())
+        .nonce(signable.getNonce())
+        .gas(signable.getGas())
+        .gasPrice(signable.getGasPrice())
+        // the fee is optional because the SDK can calculate it automatically
+        .fee(signable.getFee())
+        .virtualMachine(signable.getTargetVM())
+        .build();
+
+    String unsignedTx = aeternityService.transactions
+        .blockingCreateUnsignedTransaction(contractCallTransactionModel);
+    BaseKeyPair baseKeyPair = EncodingUtils.createBaseKeyPair(key.getKeyPair());
+    try {
+      String signedTx = aeternityService.transactions
+          .signTransaction(unsignedTx, baseKeyPair.getPrivateKey());
+      return TransactionSignature.signTransactionBuilder().signedTransaction(signedTx).build();
+    } catch (TransactionCreateException e) {
+      log.error("Unable to sign transaction: {}", e.getMessage());
+      throw ArkaneException.arkaneException()
+          .errorCode("A problem occurred trying to sign the aeternity transaction")
+          .cause(e)
+          .build();
     }
-
-    @Override
-    public Signature createSignature(final AeternityContractCallSignable signable,
-                                     final AeternitySecretKey key) {
-        ContractCallTransactionModel contractCallTransactionModel = ContractCallTransactionModel.builder()
-                // the amount is optional because most contract calls are performed without sending a token
-                .amount(signable.getAmount())
-                .contractId(signable.getContractId())
-                .callData(signable.getCallData())
-                .callerId(signable.getCallerId())
-                .nonce(signable.getNonce())
-                .gas(signable.getGas())
-                .gasPrice(signable.getGasPrice())
-                // the fee is optional because the SDK can calculate it automatically
-                .fee(signable.getFee())
-                .virtualMachine(signable.getTargetVM())
-                .build();
-
-        String unsignedTx = aeternityService.transactions.blockingCreateUnsignedTransaction(contractCallTransactionModel);
-        BaseKeyPair baseKeyPair = EncodingUtils.createBaseKeyPair(key.getKeyPair());
-        try {
-            String signedTx = aeternityService.transactions.signTransaction(unsignedTx, baseKeyPair.getPrivateKey());
-            return TransactionSignature.signTransactionBuilder().signedTransaction(signedTx).build();
-        } catch (TransactionCreateException e) {
-            log.error("Unable to sign transaction: {}", e.getMessage());
-            throw ArkaneException.arkaneException()
-                    .errorCode("transaction.sign.internal-error")
-                    .errorCode("A problem occurred trying to sign the aeternity transaction")
-                    .cause(e)
-                    .build();
-        }
-    }
+  }
 }
