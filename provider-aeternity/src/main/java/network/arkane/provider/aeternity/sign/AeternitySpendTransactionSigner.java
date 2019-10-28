@@ -17,40 +17,41 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class AeternitySpendTransactionSigner implements
-        Signer<AeternitySpendTransactionSignable, AeternitySecretKey> {
+    Signer<AeternitySpendTransactionSignable, AeternitySecretKey> {
 
-    private AeternityService aeternityService;
+  private AeternityService aeternityService;
 
-    public AeternitySpendTransactionSigner(
-            final @Qualifier("aeternity-service") AeternityService aeternityService) {
-        this.aeternityService = aeternityService;
+  public AeternitySpendTransactionSigner(
+      final @Qualifier("aeternity-service") AeternityService aeternityService) {
+    this.aeternityService = aeternityService;
+  }
+
+  @Override
+  public Signature createSignature(final AeternitySpendTransactionSignable signable,
+      final AeternitySecretKey key) {
+    SpendTransactionModel spendTransactionModel = SpendTransactionModel.builder()
+        .amount(signable.getAmount())
+        .sender(signable.getSender())
+        .recipient(signable.getRecipient())
+        .payload(signable.getPayload())
+        .ttl(signable.getTtl())
+        .nonce(signable.getNonce())
+        // the fee is optional because the SDK can calculate it automatically
+        .fee(signable.getFee())
+        .build();
+    String unsignedTx = aeternityService.transactions
+        .blockingCreateUnsignedTransaction(spendTransactionModel);
+    BaseKeyPair baseKeyPair = EncodingUtils.createBaseKeyPair(key.getKeyPair());
+    try {
+      String signedTx = aeternityService.transactions
+          .signTransaction(unsignedTx, baseKeyPair.getPrivateKey());
+      return TransactionSignature.signTransactionBuilder().signedTransaction(signedTx).build();
+    } catch (TransactionCreateException e) {
+      log.error("Unable to sign transaction: {}", e.getMessage());
+      throw ArkaneException.arkaneException()
+          .errorCode("A problem occurred trying to sign the aeternity transaction")
+          .cause(e)
+          .build();
     }
-
-    @Override
-    public Signature createSignature(final AeternitySpendTransactionSignable signable,
-                                     final AeternitySecretKey key) {
-        SpendTransactionModel spendTransactionModel = SpendTransactionModel.builder()
-                .amount(signable.getAmount())
-                .sender(signable.getSender())
-                .recipient(signable.getRecipient())
-                .payload(signable.getPayload())
-                .ttl(signable.getTtl())
-                .nonce(signable.getNonce())
-                // the fee is optional because the SDK can calculate it automatically
-                .fee(signable.getFee())
-                .build();
-        String unsignedTx = aeternityService.transactions.blockingCreateUnsignedTransaction(spendTransactionModel);
-        BaseKeyPair baseKeyPair = EncodingUtils.createBaseKeyPair(key.getKeyPair());
-        try {
-            String signedTx = aeternityService.transactions.signTransaction(unsignedTx, baseKeyPair.getPrivateKey());
-            return TransactionSignature.signTransactionBuilder().signedTransaction(signedTx).build();
-        } catch (TransactionCreateException e) {
-            log.error("Unable to sign transaction: {}", e.getMessage());
-            throw ArkaneException.arkaneException()
-                    .errorCode("transaction.sign.internal-error")
-                    .errorCode("A problem occurred trying to sign the aeternity transaction")
-                    .cause(e)
-                    .build();
-        }
-    }
+  }
 }
