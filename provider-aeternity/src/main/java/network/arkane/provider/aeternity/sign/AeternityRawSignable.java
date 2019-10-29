@@ -1,4 +1,4 @@
-package network.arkane.provider.sign;
+package network.arkane.provider.aeternity.sign;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,10 +8,11 @@ import network.arkane.provider.sign.domain.Signable;
 @Data
 @NoArgsConstructor
 public class AeternityRawSignable implements Signable {
-    private String data;
 
-    @Builder
-    public AeternityRawSignable(String data) {
-        this.data = data;
-    }
+  private String data;
+
+  @Builder
+  public AeternityRawSignable(String data) {
+    this.data = data;
+  }
 }
