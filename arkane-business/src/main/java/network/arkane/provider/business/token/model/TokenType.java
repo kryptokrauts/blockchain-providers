@@ -16,7 +16,7 @@ public class TokenType {
     private String description;
     private boolean nf;
     private int decimals;
-    private BigInteger typeId;
+    private BigInteger contractTypeId;
     private String transactionHash;
     private boolean confirmed;
     private Date mineDate;
@@ -32,7 +32,7 @@ public class TokenType {
                      final String name,
                      final String description,
                      final int decimals,
-                     final BigInteger typeId,
+                     final BigInteger contractTypeId,
                      final String transactionHash,
                      final Date mineDate,
                      final boolean confirmed,
@@ -46,7 +46,7 @@ public class TokenType {
         this.name = name;
         this.description = description;
         this.decimals = decimals;
-        this.typeId = typeId;
+        this.contractTypeId = contractTypeId;
         this.transactionHash = transactionHash;
         this.mineDate = mineDate;
         this.confirmed = confirmed;
