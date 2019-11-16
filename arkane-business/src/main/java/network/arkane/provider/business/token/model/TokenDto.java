@@ -12,7 +12,7 @@ import java.math.BigInteger;
 public class TokenDto {
     private SecretType secretType;
     private String contractAddress;
-    private BigInteger tokenId;
+    private BigInteger contractTokenId;
     private TokenType tokenType;
     private BigInteger amount;
     private String imageUrl;
@@ -24,7 +24,7 @@ public class TokenDto {
     @Builder
     public TokenDto(SecretType secretType,
                     String contractAddress,
-                    BigInteger tokenId,
+                    BigInteger contractTokenId,
                     TokenType tokenType,
                     BigInteger amount,
                     String imageUrl,
@@ -34,7 +34,7 @@ public class TokenDto {
                     String backgroundColor) {
         this.secretType = secretType;
         this.contractAddress = contractAddress;
-        this.tokenId = tokenId;
+        this.contractTokenId = contractTokenId;
         this.tokenType = tokenType;
         this.amount = amount;
         this.imageUrl = imageUrl;
