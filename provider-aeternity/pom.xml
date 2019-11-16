@@ -13,7 +13,7 @@
   <artifactId>provider-aeternity</artifactId>
 
   <properties>
-    <aepp-sdk-java.version>2.0.0</aepp-sdk-java.version>
+    <aepp-sdk-java.version>2.1.0</aepp-sdk-java.version>
   </properties>
 
   <repositories>
