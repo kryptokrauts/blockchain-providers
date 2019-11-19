@@ -20,7 +20,7 @@ public interface BusinessClient {
     @GetMapping("/api/contracts/{contractAddress}")
     TokenContract getContract(@PathVariable("contractAddress") final String contractAddress);
 
-    @GetMapping("/api//contracts/{contractAddress}/token/{tokenId}")
+    @GetMapping("/api/contracts/{contractAddress}/token/{tokenId}")
     TokenDto getToken(@PathVariable("contractAddress") final String contractAddress,
                       @PathVariable("tokenId") final BigInteger tokenId);
 }
