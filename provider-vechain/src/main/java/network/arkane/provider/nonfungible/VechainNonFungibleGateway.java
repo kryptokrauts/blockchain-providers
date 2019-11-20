@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class VechainNonFungibleGateway implements NonFungibleGateway {
 
+    public static final String CONTRACT_TYPE = "ERC_1155";
     final BusinessTokenGateway businessTokenGateway;
 
     public VechainNonFungibleGateway(final BusinessTokenGateway businessTokenGateway) {
@@ -41,7 +42,7 @@ public class VechainNonFungibleGateway implements NonFungibleGateway {
                                                                                      .symbol(null)
                                                                                      .url(null)
                                                                                      .imageUrl(null)
-                                                                                     .type("ERC_1155")
+                                                                                     .type(CONTRACT_TYPE)
                                                                                      .build())
                                                           .description(x.getTokenType().getDescription())
                                                           .name(x.getTokenType().getName())
@@ -74,6 +75,7 @@ public class VechainNonFungibleGateway implements NonFungibleGateway {
                                   .address(contract.getAddress())
                                   .description(contract.getDescription())
                                   .name(contract.getName())
+                                  .type(CONTRACT_TYPE)
                                   .build();
     }
 }
