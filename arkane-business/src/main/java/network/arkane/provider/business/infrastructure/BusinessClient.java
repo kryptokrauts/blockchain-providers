@@ -17,10 +17,10 @@ public interface BusinessClient {
     @GetMapping("/api/{userAddress}/items")
     List<TokenDto> getTokensForAddress(@PathVariable("userAddress") final String userAddress);
 
-    @GetMapping("/api/contract/{contractAddress}")
+    @GetMapping("/api/contracts/{contractAddress}")
     TokenContract getContract(@PathVariable("contractAddress") final String contractAddress);
 
-    @GetMapping("/contract/{contractAddress}/token/{tokenId}")
+    @GetMapping("/api/contracts/{contractAddress}/tokens/{tokenId}")
     TokenDto getToken(@PathVariable("contractAddress") final String contractAddress,
                       @PathVariable("tokenId") final BigInteger tokenId);
 }
