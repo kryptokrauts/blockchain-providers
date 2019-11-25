@@ -18,6 +18,7 @@ public class HexSignature extends Signature {
     public HexSignature(final byte[] r,
                         final byte[] s,
                         final int v) {
+        super(SignatureType.HEX_SIGNATURE);
         this.r = Hex.toHexString(r);
         this.s = Hex.toHexString(s);
         this.v = Integer.toHexString(v);

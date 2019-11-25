@@ -35,12 +35,11 @@ public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSe
                                                                          : signable.isHash()
                                                                            ? Sign.signMessage(dataToSign, key.getKeyPair())
                                                                            : Sign.signMessage(dataToSign, key.getKeyPair(), false);
-            return HexSignature
-                    .builder()
-                    .r(signatureData.getR())
-                    .s(signatureData.getS())
-                    .v(signatureData.getV())
-                    .build();
+            return HexSignature.builder()
+                               .r(signatureData.getR())
+                               .s(signatureData.getS())
+                               .v(signatureData.getV())
+                               .build();
         } catch (final Exception ex) {
             log.error("Unable to sign transaction: {}", ex.getMessage());
             throw arkaneException()

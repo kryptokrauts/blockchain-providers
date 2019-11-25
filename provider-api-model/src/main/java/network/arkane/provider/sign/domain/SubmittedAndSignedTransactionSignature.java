@@ -11,9 +11,8 @@ public class SubmittedAndSignedTransactionSignature extends TransactionSignature
     private String transactionHash;
 
     @Builder(builderMethodName = "signAndSubmitTransactionBuilder")
-    public SubmittedAndSignedTransactionSignature(final String transactionHash,
-                                                  final String signedTransaction) {
-        super(signedTransaction);
+    public SubmittedAndSignedTransactionSignature(final String transactionHash, final String signedTransaction) {
+        super(signedTransaction, SignatureType.SUBMITTED_AND_SIGNED_TRANSACTION_SIGNATURE);
         this.transactionHash = transactionHash;
     }
 }

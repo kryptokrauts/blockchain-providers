@@ -12,6 +12,11 @@ public class TransactionSignature extends Signature {
 
     @Builder(builderMethodName = "signTransactionBuilder")
     public TransactionSignature(String signedTransaction) {
+        this(signedTransaction, SignatureType.TRANSACTION_SIGNATURE);
+    }
+
+    protected TransactionSignature(String signedTransaction, final SignatureType signatureType) {
+        super(signatureType);
         this.signedTransaction = signedTransaction;
     }
 }
