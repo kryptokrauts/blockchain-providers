@@ -3,6 +3,7 @@ package network.arkane.provider.sign.domain;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.EXISTING_PROPERTY;
@@ -13,6 +14,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.EXISTING_PROPERTY
                        @JsonSubTypes.Type(value = SubmittedAndSignedTransactionSignature.class, name = SignatureType.Values.SUBMITTED_AND_SIGNED_TRANSACTION_SIGNATURE),
                        @JsonSubTypes.Type(value = TransactionSignature.class, name = SignatureType.Values.TRANSACTION_SIGNATURE),
                })
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Signature {
