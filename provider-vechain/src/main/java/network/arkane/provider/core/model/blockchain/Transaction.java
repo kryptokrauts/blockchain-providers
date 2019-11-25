@@ -62,7 +62,7 @@ public class Transaction implements Serializable {
         return expiration;
     }
 
-    public void setExpiration(int expiration) {
+    public void setExpiration(long expiration) {
         this.expiration = expiration;
     }
 
