@@ -9,7 +9,7 @@ public class Transaction implements Serializable {
     private int   size;
     private int   chainTag;
     private String  blockRef; //8 bytes
-    private int expiration;
+    private long expiration;
     private ArrayList<Clause> clauses;
 
     private int gasPriceCoef;
@@ -58,7 +58,7 @@ public class Transaction implements Serializable {
         this.blockRef = blockRef;
     }
 
-    public int getExpiration() {
+    public long getExpiration() {
         return expiration;
     }
 
