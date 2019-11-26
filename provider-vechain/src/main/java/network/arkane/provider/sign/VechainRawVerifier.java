@@ -65,7 +65,7 @@ public class VechainRawVerifier implements Verifier<VechainRawVerifiable> {
             if (publicKey != null) {
                 addressRecovered = "0x" + Keys.getAddress(publicKey);
 
-                if (addressRecovered.equals(address)) {
+                if (addressRecovered.equalsIgnoreCase(address)) {
                     match = true;
                     break;
                 }
