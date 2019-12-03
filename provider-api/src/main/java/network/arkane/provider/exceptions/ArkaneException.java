@@ -9,8 +9,6 @@ public class ArkaneException extends RuntimeException {
 
     @Getter
     private String errorCode;
-    @Getter
-    private String traceCode;
 
     @Builder(builderMethodName = "arkaneException")
     public ArkaneException(final String message,
@@ -18,7 +16,6 @@ public class ArkaneException extends RuntimeException {
                            final String errorCode) {
         super(message, cause);
         this.errorCode = errorCode;
-        this.traceCode = getTrace();
     }
 
     @JsonIgnore
@@ -32,11 +29,14 @@ public class ArkaneException extends RuntimeException {
         }
     }
 
+    public String getTraceCode() {
+        return getTrace();
+    }
+
     public ArkaneException(String message,
                            String errorCode) {
         super(message);
         this.errorCode = errorCode;
-        this.traceCode = getTrace();
     }
 
     public ArkaneException(String message,
