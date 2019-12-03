@@ -27,17 +27,20 @@ public class ArkaneException extends RuntimeException {
             return Tracing.currentTracer().currentSpan().context().traceIdString();
         } catch (final Exception ex) {
             //no tracing enabled;
+            ex.printStackTrace();
             return null;
         }
     }
 
-    public ArkaneException(String message, String errorCode) {
+    public ArkaneException(String message,
+                           String errorCode) {
         super(message);
         this.errorCode = errorCode;
         this.traceCode = getTrace();
     }
 
-    public ArkaneException(String message, Throwable cause) {
+    public ArkaneException(String message,
+                           Throwable cause) {
         super(message, cause);
     }
 
