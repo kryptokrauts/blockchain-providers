@@ -5,7 +5,7 @@
 
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane</groupId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.11.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
@@ -29,6 +29,7 @@
         <module>provider-vechain</module>
         <module>provider-evm</module>
         <module>provider-neo</module>
+        <module>provider-matic</module>
         <module>blockcypher</module>
         <module>opensea</module>
         <module>arkane-business</module>
@@ -153,6 +154,11 @@
             <dependency>
                 <groupId>network.arkane</groupId>
                 <artifactId>provider-ethereum</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane</groupId>
+                <artifactId>provider-matic</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

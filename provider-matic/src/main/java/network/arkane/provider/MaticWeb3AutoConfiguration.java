@@ -1,8 +1,6 @@
 package network.arkane.provider;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.gateway.EthereumWeb3JGateway;
-import network.arkane.provider.gateway.EthereumWeb3JGatewayFactory;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableScheduling
 @Slf4j
-public class Web3AutoConfiguration {
+public class MaticWeb3AutoConfiguration {
 
     private WebSocketClient websocket;
 
