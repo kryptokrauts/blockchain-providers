@@ -1,6 +1,6 @@
 package network.arkane.provider.wallet.generation;
 
-import network.arkane.provider.secret.generation.EthereumSecretKey;
+import network.arkane.provider.secret.generation.MaticSecretKey;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.web3j.crypto.CipherException;
@@ -9,18 +9,18 @@ import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
 
 @Component
-public class EthereumWalletGenerator implements WalletGenerator<EthereumSecretKey> {
+public class MaticWalletGenerator implements WalletGenerator<MaticSecretKey> {
 
     @Override
     public GeneratedWallet generateWallet(final String password,
-                                          final EthereumSecretKey secret) {
+                                          final MaticSecretKey secret) {
         if (StringUtils.isEmpty(password)) {
             throw new IllegalArgumentException("Password should not be empty");
         }
 
         try {
             final WalletFile theWallet = Wallet.createStandard(password, secret.getKeyPair());
-            return GeneratedEthereumWallet
+            return GeneratedMaticWallet
                     .builder()
                     .walletFile(theWallet)
                     .address(getAddress(secret))
@@ -30,7 +30,7 @@ public class EthereumWalletGenerator implements WalletGenerator<EthereumSecretKe
         }
     }
 
-    private String getAddress(final EthereumSecretKey ethereumSecret) {
-        return Keys.toChecksumAddress(Keys.getAddress(ethereumSecret.getKeyPair()));
+    private String getAddress(final MaticSecretKey maticSecret) {
+        return Keys.toChecksumAddress(Keys.getAddress(maticSecret.getKeyPair()));
     }
 }
