@@ -63,7 +63,7 @@
         <spring-cloud-dependencies.version>Greenwich.SR3</spring-cloud-dependencies.version>
         <guava.version>27.0.1-jre</guava.version>
         <arkane-common.version>0.0.1-SNAPSHOT</arkane-common.version>
-        <spring-cloud-sleuth.version>2.1.4.RELEASE</spring-cloud-sleuth.version>
+        <spring-cloud-sleuth.version>2.1.6.RELEASE</spring-cloud-sleuth.version>
     </properties>
 
     <dependencies>

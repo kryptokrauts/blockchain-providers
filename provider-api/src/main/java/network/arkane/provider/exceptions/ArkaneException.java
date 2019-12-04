@@ -1,6 +1,7 @@
 package network.arkane.provider.exceptions;
 
 import brave.Tracing;
+import brave.propagation.CurrentTraceContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +24,15 @@ public class ArkaneException extends RuntimeException {
         try {
             return Tracing.currentTracer().currentSpan().context().traceIdString();
         } catch (final Exception ex) {
-            //no tracing enabled;
+            return getAlternativeTraceId();
+        }
+    }
+
+    @JsonIgnore
+    private String getAlternativeTraceId() {
+        try {
+            return CurrentTraceContext.Default.inheritable().get().traceIdString();
+        } catch (final Exception ex) {
             ex.printStackTrace();
             return null;
         }
