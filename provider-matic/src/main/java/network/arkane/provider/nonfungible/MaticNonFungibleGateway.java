@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Service
 public class MaticNonFungibleGateway implements NonFungibleGateway {
 
-    public static final String CONTRACT_TYPE = "ERC_721";
+    public static final String CONTRACT_TYPE = "ERC-721";
     private MaticBlockscoutDiscoveryService maticBlockscoutDiscoveryService;
 
     public MaticNonFungibleGateway(final MaticBlockscoutDiscoveryService maticBlockscoutDiscoveryService) {
