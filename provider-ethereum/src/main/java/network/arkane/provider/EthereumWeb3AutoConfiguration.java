@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableScheduling
 @Slf4j
-public class Web3AutoConfiguration {
+public class EthereumWeb3AutoConfiguration {
 
     private WebSocketClient websocket;
 

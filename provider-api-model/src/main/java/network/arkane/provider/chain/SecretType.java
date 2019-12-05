@@ -23,6 +23,7 @@ public enum SecretType {
     LITECOIN(Values.LITECOIN),
     TRON(Values.TRON),
     VECHAIN(Values.VECHAIN),
+    MATIC(Values.MATIC),
     NEO(Values.NEO);
 
     SecretType(final String stringValue) {
@@ -44,5 +45,6 @@ public enum SecretType {
         public static final String TRON = "TRON";
         public static final String VECHAIN = "VECHAIN";
         public static final String NEO = "NEO";
+        public static final String MATIC = "MATIC";
     }
 }

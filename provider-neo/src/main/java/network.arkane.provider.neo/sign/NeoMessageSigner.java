@@ -20,7 +20,8 @@ public class NeoMessageSigner implements Signer<NeoSignableMessage, NeoSecretKey
 
 
     @Override
-    public Signature createSignature(NeoSignableMessage signable, NeoSecretKey key) {
+    public Signature createSignature(NeoSignableMessage signable,
+                                     NeoSecretKey key) {
         try {
             log.debug("Signing raw neo transaction: {}", signable.toString());
             byte[] dataToSign;
@@ -40,7 +41,7 @@ public class NeoMessageSigner implements Signer<NeoSignableMessage, NeoSecretKey
                     .builder()
                     .r(signatureData.getR())
                     .s(signatureData.getS())
-                    .v(signatureData.getV())
+                    .v(Hex.decodeHex(Integer.toHexString(signatureData.getV())))
                     .build();
         } catch (final Exception ex) {
             log.error("Unable to sign transaction: {}", ex.getMessage());

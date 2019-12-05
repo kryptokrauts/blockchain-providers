@@ -17,11 +17,11 @@ public class HexSignature extends Signature {
     @Builder
     public HexSignature(final byte[] r,
                         final byte[] s,
-                        final int v) {
+                        final byte[] v) {
         super(SignatureType.HEX_SIGNATURE);
         this.r = Hex.toHexString(r);
         this.s = Hex.toHexString(s);
-        this.v = Integer.toHexString(v);
+        this.v = Hex.toHexString(v);
         this.signature = "0x" + this.r + this.s + this.v;
         this.r = "0x" + this.r;
         this.s = "0x" + this.s;
