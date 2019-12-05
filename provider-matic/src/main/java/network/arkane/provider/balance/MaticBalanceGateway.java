@@ -8,15 +8,14 @@ import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gateway.MaticWeb3JGateway;
-import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,12 +23,12 @@ import java.util.stream.Collectors;
 public class MaticBalanceGateway extends BalanceGateway {
 
     private MaticWeb3JGateway maticWeb3JGateway;
-    private final TokenDiscoveryService tokenDiscoveryService;
+    private final MaticBlockscoutDiscoveryService maticBlockscoutDiscoveryService;
 
     public MaticBalanceGateway(final MaticWeb3JGateway maticWeb3JGateway,
-                               final TokenDiscoveryService tokenDiscoveryService) {
+                               final MaticBlockscoutDiscoveryService maticBlockscoutDiscoveryService) {
         this.maticWeb3JGateway = maticWeb3JGateway;
-        this.tokenDiscoveryService = tokenDiscoveryService;
+        this.maticBlockscoutDiscoveryService = maticBlockscoutDiscoveryService;
     }
 
     @Override
@@ -64,7 +63,7 @@ public class MaticBalanceGateway extends BalanceGateway {
     @Override
     public TokenBalance getTokenBalance(final String walletAddress,
                                         final String tokenAddress) {
-        final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(SecretType.MATIC, tokenAddress).orElseThrow(IllegalArgumentException::new);
+        final TokenInfo tokenInfo = maticBlockscoutDiscoveryService.getTokenInfo(tokenAddress).orElseThrow(IllegalArgumentException::new);
         return getTokenBalance(walletAddress, tokenInfo);
     }
 
@@ -85,28 +84,22 @@ public class MaticBalanceGateway extends BalanceGateway {
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.MATIC));
+        final List<MaticBlockscoutTokenResponse> tokens = maticBlockscoutDiscoveryService.getTokens(walletAddress);
+        return tokens.stream()
+                     .map(token -> maticBlockscoutDiscoveryService.getTokenInfo(token.getContractAddress())
+                                                                  .map(tokenInfo -> TokenBalance.builder()
+                                                                                                .balance(calculateBalance(token.getBalance(), tokenInfo))
+                                                                                                .rawBalance(token.getBalance().toString())
+                                                                                                .tokenAddress(tokenInfo.getAddress())
+                                                                                                .decimals(token.getDecimals())
+                                                                                                .symbol(token.getSymbol())
+                                                                                                .type(tokenInfo.getType())
+                                                                                                .transferable(tokenInfo.isTransferable())
+                                                                                                .logo(tokenInfo.getLogo())
+                                                                                                .build()).orElse(null)).filter(Objects::nonNull)
+                     .collect(Collectors.toList());
     }
 
-    private List<TokenBalance> getTokenBalances(final String walletAddress,
-                                                final List<TokenInfo> tokenInfo) {
-        final List<BigInteger> balances = maticWeb3JGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(TokenInfo::getAddress).collect(Collectors.toList()));
-        final List<TokenBalance> results = new ArrayList<>();
-        for (int i = 0; i < balances.size(); i++) {
-            final TokenInfo token = tokenInfo.get(i);
-            results.add(TokenBalance.builder()
-                                    .tokenAddress(token.getAddress())
-                                    .rawBalance(balances.get(i).toString())
-                                    .balance(calculateBalance(balances.get(i), token))
-                                    .decimals(token.getDecimals())
-                                    .symbol(token.getSymbol())
-                                    .type(token.getType())
-                                    .transferable(token.isTransferable())
-                                    .logo(token.getLogo())
-                                    .build());
-        }
-        return results;
-    }
 
     private double calculateBalance(final BigInteger tokenBalance,
                                     final TokenInfo tokenInfo) {
