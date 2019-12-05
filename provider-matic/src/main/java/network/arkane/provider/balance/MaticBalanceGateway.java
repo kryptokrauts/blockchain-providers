@@ -15,13 +15,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class MaticBalanceGateway extends BalanceGateway {
 
+    public static final String ERC_20 = "ERC-20";
     private MaticWeb3JGateway maticWeb3JGateway;
     private final MaticBlockscoutDiscoveryService maticBlockscoutDiscoveryService;
 
@@ -73,7 +74,7 @@ public class MaticBalanceGateway extends BalanceGateway {
         return TokenBalance.builder()
                            .tokenAddress(tokenInfo.getAddress())
                            .rawBalance(tokenBalance.toString())
-                           .balance(calculateBalance(tokenBalance, tokenInfo))
+                           .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
                            .decimals(tokenInfo.getDecimals())
                            .symbol(tokenInfo.getSymbol())
                            .logo(tokenInfo.getLogo())
@@ -86,25 +87,27 @@ public class MaticBalanceGateway extends BalanceGateway {
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
         final List<MaticBlockscoutTokenResponse> tokens = maticBlockscoutDiscoveryService.getTokens(walletAddress);
         return tokens.stream()
-                     .map(token -> maticBlockscoutDiscoveryService.getTokenInfo(token.getContractAddress())
-                                                                  .map(tokenInfo -> TokenBalance.builder()
-                                                                                                .balance(calculateBalance(token.getBalance(), tokenInfo))
-                                                                                                .rawBalance(token.getBalance().toString())
-                                                                                                .tokenAddress(tokenInfo.getAddress())
-                                                                                                .decimals(token.getDecimals())
-                                                                                                .symbol(token.getSymbol())
-                                                                                                .type(tokenInfo.getType())
-                                                                                                .transferable(tokenInfo.isTransferable())
-                                                                                                .logo(tokenInfo.getLogo())
-                                                                                                .build()).orElse(null)).filter(Objects::nonNull)
-                     .collect(Collectors.toList());
+                     .filter(x -> x.getType().equals(ERC_20))
+                     .map(token -> {
+                         Optional<TokenInfo> tokenInfo = maticBlockscoutDiscoveryService.getTokenInfo(token.getContractAddress());
+                         return TokenBalance.builder()
+                                            .balance(calculateBalance(token.getBalance(), token.getDecimals()))
+                                            .rawBalance(token.getBalance().toString())
+                                            .tokenAddress(token.getContractAddress())
+                                            .decimals(token.getDecimals())
+                                            .symbol(token.getSymbol())
+                                            .type(token.getType())
+                                            .transferable(tokenInfo.map(TokenInfo::isTransferable).orElse(true))
+                                            .logo(tokenInfo.map(TokenInfo::getLogo).orElse(""))
+                                            .build();
+                     }).collect(Collectors.toList());
     }
 
 
     private double calculateBalance(final BigInteger tokenBalance,
-                                    final TokenInfo tokenInfo) {
+                                    final int decimals) {
         final BigDecimal rawBalance = new BigDecimal(tokenBalance);
-        final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
+        final BigDecimal divider = BigDecimal.valueOf(10).pow(decimals);
         return rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN).doubleValue();
     }
 }
