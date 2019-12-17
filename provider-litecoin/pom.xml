@@ -9,10 +9,6 @@
         <version>0.11.1-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <bitcoinj.version>0.14.7</bitcoinj.version>
-    </properties>
-
     <artifactId>provider-litecoin</artifactId>
 
     <dependencies>
@@ -37,7 +33,6 @@
         <dependency>
             <groupId>org.bitcoinj</groupId>
             <artifactId>bitcoinj-core</artifactId>
-            <version>${bitcoinj.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.briandilley.jsonrpc4j</groupId>
