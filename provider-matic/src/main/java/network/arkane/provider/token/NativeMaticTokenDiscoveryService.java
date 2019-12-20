@@ -28,6 +28,7 @@ public class NativeMaticTokenDiscoveryService implements NativeTokenDiscoverySer
                                         .name(name)
                                         .decimals(decimals.intValue())
                                         .symbol(symbol)
+                                        .transferable(true)
                                         .type("ERC20")
                                         .build());
         } else {
