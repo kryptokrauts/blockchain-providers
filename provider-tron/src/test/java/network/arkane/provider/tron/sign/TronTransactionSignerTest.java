@@ -15,9 +15,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class TrxTransactionSignerTest {
+class TronTransactionSignerTest {
 
-    private TrxTransactionSigner trxTransactionSigner;
+    private TronTransactionSigner tronTransactionSigner;
     private BlockGateway blockGateway;
 
     @BeforeEach
@@ -25,13 +25,13 @@ class TrxTransactionSignerTest {
         Wallet.setAddressPreFixByte(Constant.ADD_PRE_FIX_BYTE_MAINNET);
         Wallet.setAddressPreFixString(Constant.ADD_PRE_FIX_STRING_MAINNET);
         this.blockGateway = mock(BlockGateway.class);
-        trxTransactionSigner = new TrxTransactionSigner(blockGateway);
+        tronTransactionSigner = new TronTransactionSigner(blockGateway);
     }
 
     @Test
     void createSignature() throws Exception {
         when(blockGateway.getBlock(-1)).thenReturn(getBlock());
-        Signature signature = trxTransactionSigner.createSignature(TrxTransactionSignableMother.trxTransactionSignable(), aRandomSecretKey());
+        Signature signature = tronTransactionSigner.createSignature(TronTransactionSignableMother.tronTransactionSignable(), aRandomSecretKey());
         assertThat(signature).isInstanceOf(TransactionSignature.class);
         Protocol.Transaction parsedTx = Protocol.Transaction.parseFrom(Hex.decodeHex(((TransactionSignature) signature).getSignedTransaction()));
         assertThat(parsedTx.getRawData().getExpiration()).isEqualTo(36000001);
@@ -41,9 +41,9 @@ class TrxTransactionSignerTest {
     @Test
     void createTriggerContractSignature() throws Exception {
         when(blockGateway.getBlock(-1)).thenReturn(getBlock());
-        TrxTransactionSignable signable = TrxTransactionSignableMother.trxTransactionSignable();
+        TronTransactionSignable signable = TronTransactionSignableMother.tronTransactionSignable();
         signable.setData("0x74657374");
-        Signature signature = trxTransactionSigner.createSignature(signable, aRandomSecretKey());
+        Signature signature = tronTransactionSigner.createSignature(signable, aRandomSecretKey());
         assertThat(signature).isInstanceOf(TransactionSignature.class);
         Protocol.Transaction parsedTx = Protocol.Transaction.parseFrom(Hex.decodeHex(((TransactionSignature) signature).getSignedTransaction()));
         assertThat(parsedTx.getRawData().getExpiration()).isEqualTo(36000001);

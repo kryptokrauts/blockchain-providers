@@ -20,7 +20,7 @@ import static org.tron.common.utils.ByteUtil.bytesToBigInteger;
 
 @Slf4j
 @Component
-public class TronRawSigner extends TronTransactionSigner<TronRawSignable, TronSecretKey> {
+public class TronRawSigner extends AbstractTronTransactionSigner<TronRawSignable, TronSecretKey> {
 
     private static final String MESSAGE_PREFIX = "\u0019TRON Signed Message:\n32";
 
