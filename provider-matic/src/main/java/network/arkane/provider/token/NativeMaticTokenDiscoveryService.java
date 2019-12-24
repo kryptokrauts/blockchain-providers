@@ -8,11 +8,11 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 @Component
-public class NativeEthereumTokenDiscoveryService implements NativeTokenDiscoveryService {
+public class NativeMaticTokenDiscoveryService implements NativeTokenDiscoveryService {
 
     private MaticWeb3JGateway maticWeb3JGateway;
 
-    public NativeEthereumTokenDiscoveryService(MaticWeb3JGateway maticWeb3JGateway) {
+    public NativeMaticTokenDiscoveryService(MaticWeb3JGateway maticWeb3JGateway) {
         this.maticWeb3JGateway = maticWeb3JGateway;
     }
 
@@ -28,6 +28,7 @@ public class NativeEthereumTokenDiscoveryService implements NativeTokenDiscovery
                                         .name(name)
                                         .decimals(decimals.intValue())
                                         .symbol(symbol)
+                                        .transferable(true)
                                         .type("ERC20")
                                         .build());
         } else {
