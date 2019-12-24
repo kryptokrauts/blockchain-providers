@@ -6,19 +6,21 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import network.arkane.provider.sign.domain.Signable;
 
+import java.math.BigInteger;
+
 @Data
 @NoArgsConstructor
 @ToString
-public class TrxTransactionSignable implements Signable {
+public class TronTransactionSignable implements Signable {
 
-    private Long amount;
+    private BigInteger amount;
     private String to;
     private String data;
 
     @Builder
-    public TrxTransactionSignable(final String to,
-                                  final Long amount,
-                                  final String data) {
+    public TronTransactionSignable(final String to,
+                                   final BigInteger amount,
+                                   final String data) {
         this.to = to;
         this.amount = amount;
         this.data = data;
