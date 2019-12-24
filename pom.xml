@@ -5,7 +5,7 @@
 
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane</groupId>
-    <version>0.10.0</version>
+    <version>0.8.3-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
@@ -225,7 +225,7 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-            </dependency>à
+            </dependency>
             <dependency>
                 <groupId>network.arkane</groupId>
                 <artifactId>provider-api</artifactId>
