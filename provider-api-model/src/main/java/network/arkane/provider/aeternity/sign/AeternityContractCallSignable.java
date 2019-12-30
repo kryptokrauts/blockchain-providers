@@ -1,6 +1,5 @@
 package network.arkane.provider.aeternity.sign;
 
-import com.kryptokrauts.aeternity.sdk.constants.VirtualMachine;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,12 +20,19 @@ public class AeternityContractCallSignable implements Signable {
     private BigInteger ttl;
     private BigInteger amount;
     private BigInteger fee;
-    private VirtualMachine targetVM;
+    private AeternityVirtualMachine targetVM;
 
     @Builder
-    public AeternityContractCallSignable(String callData, String contractId,
-                                         BigInteger gas, BigInteger gasPrice, BigInteger nonce, String callerId, BigInteger ttl,
-                                         BigInteger amount, BigInteger fee, VirtualMachine targetVM) {
+    public AeternityContractCallSignable(String callData,
+                                         String contractId,
+                                         BigInteger gas,
+                                         BigInteger gasPrice,
+                                         BigInteger nonce,
+                                         String callerId,
+                                         BigInteger ttl,
+                                         BigInteger amount,
+                                         BigInteger fee,
+                                         AeternityVirtualMachine targetVM) {
         this.callData = callData;
         this.contractId = contractId;
         this.gas = gas;
