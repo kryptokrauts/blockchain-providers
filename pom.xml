@@ -6,7 +6,6 @@
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane</groupId>
     <version>0.11.1-SNAPSHOT</version>
-
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
@@ -177,6 +176,16 @@
                 <groupId>network.arkane</groupId>
                 <artifactId>blockcypher</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bitcoinj</groupId>
+                <artifactId>bitcoinj-core</artifactId>
+                <version>${bitcoinj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.neow3j</groupId>
+                <artifactId>contract</artifactId>
+                <version>${neow3j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.bitcoinj</groupId>
