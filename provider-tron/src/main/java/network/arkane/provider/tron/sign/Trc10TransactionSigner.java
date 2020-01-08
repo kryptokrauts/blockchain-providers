@@ -16,7 +16,7 @@ import org.tron.protos.Protocol;
 
 @Component
 @Slf4j
-public class Trc10TransactionSigner extends TronTransactionSigner<Trc10TransactionSignable, TronSecretKey> {
+public class Trc10TransactionSigner extends AbstractTronTransactionSigner<Trc10TransactionSignable, TronSecretKey> {
 
     private BlockGateway blockGateway;
 

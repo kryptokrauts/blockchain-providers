@@ -65,7 +65,7 @@ public class EthereumRawVerifier implements Verifier<EthereumRawVerifiable> {
             if (publicKey != null) {
                 addressRecovered = "0x" + Keys.getAddress(publicKey);
 
-                if (addressRecovered.equals(address)) {
+                if (addressRecovered.equalsIgnoreCase(address)) {
                     match = true;
                     break;
                 }
@@ -73,4 +73,5 @@ public class EthereumRawVerifier implements Verifier<EthereumRawVerifiable> {
         }
         return match;
     }
+
 }

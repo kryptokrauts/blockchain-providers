@@ -17,7 +17,7 @@ package network.arkane.provider.bitcoin.bip38;
  */
 
 import org.bitcoinj.core.Base58;
-import org.bouncycastle.math.ec.ECPoint;
+import org.spongycastle.math.ec.ECPoint;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -50,7 +50,9 @@ public class Utils {
      * @return
      * @throws NoSuchAlgorithmException
      */
-    public static byte[] doubleHash(byte[] data, int off, int len) throws NoSuchAlgorithmException {
+    public static byte[] doubleHash(byte[] data,
+                                    int off,
+                                    int len) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(data, off, len);
         return md.digest(md.digest());
@@ -92,7 +94,8 @@ public class Utils {
      * @return
      * @throws GeneralSecurityException
      */
-    public static byte[] AESEncrypt(byte[] plaintext, byte[] key) throws GeneralSecurityException {
+    public static byte[] AESEncrypt(byte[] plaintext,
+                                    byte[] key) throws GeneralSecurityException {
         Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding", "BC");
         Key aesKey = new SecretKeySpec(key, "AES");
         cipher.init(Cipher.ENCRYPT_MODE, aesKey);
@@ -107,7 +110,8 @@ public class Utils {
      * @return
      * @throws GeneralSecurityException
      */
-    public static byte[] AESDecrypt(byte[] ciphertext, byte[] key) throws GeneralSecurityException {
+    public static byte[] AESDecrypt(byte[] ciphertext,
+                                    byte[] key) throws GeneralSecurityException {
         Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding", "BC");
         Key aesKey = new SecretKeySpec(key, "AES");
         cipher.init(Cipher.DECRYPT_MODE, aesKey);
@@ -153,7 +157,8 @@ public class Utils {
     }
 
     //for debugging
-    protected static void pb(String name, byte[] x) {
+    protected static void pb(String name,
+                             byte[] x) {
         System.out.print(name + ": ");
         for (byte b : x) {
             int l = b >= 0 ? b : 256 + b;

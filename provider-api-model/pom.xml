@@ -5,8 +5,7 @@
     <parent>
         <artifactId>blockchain-providers</artifactId>
         <groupId>network.arkane</groupId>
-        <version>0.8.3</version>
-
+        <version>0.11.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +15,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
     </dependencies>
-
-
 </project>

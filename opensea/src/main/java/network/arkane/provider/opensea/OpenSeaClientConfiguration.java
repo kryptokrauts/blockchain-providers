@@ -29,7 +29,7 @@ public class OpenSeaClientConfiguration {
 
     @Bean
     public Request.Options options() {
-        return new Request.Options(2000, 3000);
+        return new Request.Options(10000, 30000);
     }
 
     @Bean

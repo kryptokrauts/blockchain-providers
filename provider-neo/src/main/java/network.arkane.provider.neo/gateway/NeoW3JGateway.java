@@ -2,7 +2,9 @@ package network.arkane.provider.neo.gateway;
 
 import io.neow3j.contract.ContractParameter;
 import io.neow3j.protocol.Neow3j;
+import io.neow3j.protocol.core.methods.response.NeoBlockHash;
 import io.neow3j.protocol.core.methods.response.NeoGetAccountState;
+import io.neow3j.protocol.core.methods.response.NeoGetBlock;
 import io.neow3j.protocol.core.methods.response.NeoSendRawTransaction;
 import io.neow3j.utils.Numeric;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -38,34 +41,46 @@ public class NeoW3JGateway {
         } catch (final Exception ex) {
             log.error("Problem trying to get balance from the Neo network");
             throw ArkaneException.arkaneException()
-                    .errorCode("neow3j.internal-error")
-                    .message(String.format("Unable to get the balance for the specified account (%s) (Neo)", account))
-                    .build();
+                                 .errorCode("neow3j.internal-error")
+                                 .message(String.format("Unable to get the balance for the specified account (%s) (Neo)", account))
+                                 .build();
+        }
+    }
+
+    public Optional<NeoGetBlock> getLatestBlock() {
+        try {
+            NeoBlockHash send = web3().getBestBlockHash().send();
+            String blockHash = send.getBlockHash();
+            return Optional.ofNullable(web3().getBlock(blockHash, true).send());
+        } catch (final Exception ex) {
+            return Optional.empty();
         }
     }
 
     // will change to new interface getnep5balances in neo 2.10.1 after neow3j update
-    public List<BigInteger> getTokenBalances(final String owner, final List<String> tokenAddress) {
+    public List<BigInteger> getTokenBalances(final String owner,
+                                             final List<String> tokenAddress) {
         return tokenAddress.stream().map(p -> getTokenBalance(owner, p)).collect(Collectors.toList());
     }
 
-    public BigInteger getTokenBalance(final String owner, final String tokenAddress) {
+    public BigInteger getTokenBalance(final String owner,
+                                      final String tokenAddress) {
         try {
 
             return Numeric.toBigInt(Numeric.reverseHexString(web3().invokeFunction(tokenAddress, "balanceOf",
-                    Arrays.asList(ContractParameter.hash160(owner)))
-                    .send()
-                    .getResult()
-                    .getStack()
-                    .get(0)
-                    .getValue()
-                    .toString()));
+                                                                                   Arrays.asList(ContractParameter.hash160(owner)))
+                                                                   .send()
+                                                                   .getResult()
+                                                                   .getStack()
+                                                                   .get(0)
+                                                                   .getValue()
+                                                                   .toString()));
         } catch (final Exception ex) {
             log.error(String.format("Problem trying to get the token balance of %s for token %s", owner, tokenAddress), ex);
             throw ArkaneException.arkaneException()
-                    .errorCode("neow3j.internal-error")
-                    .message(String.format("Problem trying to get the token balance of %s for token %s (Neo)", owner, tokenAddress))
-                    .build();
+                                 .errorCode("neow3j.internal-error")
+                                 .message(String.format("Problem trying to get the token balance of %s for token %s (Neo)", owner, tokenAddress))
+                                 .build();
         }
     }
 
@@ -77,10 +92,10 @@ public class NeoW3JGateway {
         } catch (final Exception ex) {
             log.error("Problem trying to submit transaction to the Neo network: {}", ex.getMessage());
             throw ArkaneException.arkaneException()
-                    .errorCode("neow3j.transaction.submit.internal-error")
-                    .message("A problem occurred trying to submit the transaction to the Neo network")
-                    .cause(ex)
-                    .build();
+                                 .errorCode("neow3j.transaction.submit.internal-error")
+                                 .message("A problem occurred trying to submit the transaction to the Neo network")
+                                 .cause(ex)
+                                 .build();
         }
     }
 

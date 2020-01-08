@@ -9,10 +9,7 @@ import org.springframework.stereotype.Component;
 import org.web3j.crypto.Sign;
 
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static java.util.regex.Pattern.compile;
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 
 @Slf4j
@@ -38,17 +35,15 @@ public class EthereumRawSigner implements Signer<EthereumRawSignable, EthereumSe
                                                                          : signable.isHash()
                                                                            ? Sign.signMessage(dataToSign, key.getKeyPair())
                                                                            : Sign.signMessage(dataToSign, key.getKeyPair(), false);
-            return HexSignature
-                    .builder()
-                    .r(signatureData.getR())
-                    .s(signatureData.getS())
-                    .v(signatureData.getV())
-                    .build();
+            return HexSignature.builder()
+                               .r(signatureData.getR())
+                               .s(signatureData.getS())
+                               .v(signatureData.getV())
+                               .build();
         } catch (final Exception ex) {
             log.error("Unable to sign transaction: {}", ex.getMessage());
             throw arkaneException()
                     .errorCode("transaction.sign.internal-error")
-                    .errorCode("A problem occurred trying to sign the raw Ethereum object")
                     .cause(ex)
                     .build();
         }
