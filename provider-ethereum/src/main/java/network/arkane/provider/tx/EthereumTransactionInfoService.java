@@ -2,17 +2,21 @@ package network.arkane.provider.tx;
 
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.gateway.EthereumWeb3JGateway;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlockNumber;
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.http.HttpService;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -21,10 +25,10 @@ import java.util.stream.Collectors;
 public class EthereumTransactionInfoService implements TransactionInfoService {
 
 
-    private EthereumWeb3JGateway ethereumWeb3JGateway;
+    private Web3j defaultWeb3j;
 
-    public EthereumTransactionInfoService(EthereumWeb3JGateway ethereumWeb3JGateway) {
-        this.ethereumWeb3JGateway = ethereumWeb3JGateway;
+    public EthereumTransactionInfoService(@Qualifier("ethereumWeb3j") Web3j web3j) {
+        this.defaultWeb3j = web3j;
     }
 
     public SecretType type() {
@@ -33,12 +37,19 @@ public class EthereumTransactionInfoService implements TransactionInfoService {
 
     @Override
     public EthereumTxInfo getTransaction(String hash) {
+        return getTransaction(hash, Collections.emptyMap());
+    }
+
+    @Override
+    public EthereumTxInfo getTransaction(String hash,
+                                         Map<String, Object> parameters) {
         try {
-            return ethereumWeb3JGateway.web3().ethGetTransactionByHash(hash)
-                                       .send()
-                                       .getTransaction().map(tx -> {
+            Web3j web3J = getWeb3J(parameters);
+            return web3J.ethGetTransactionByHash(hash)
+                        .send()
+                        .getTransaction().map(tx -> {
                         try {
-                            return mapToTxInfo(tx);
+                            return mapToTxInfo(tx, web3J);
                         } catch (IOException e) {
                             throw ArkaneException.arkaneException().message("Error getting transaction").errorCode("transaction.exception.unknown").build();
                         }
@@ -49,9 +60,18 @@ public class EthereumTransactionInfoService implements TransactionInfoService {
         }
     }
 
-    private EthereumTxInfo mapToTxInfo(Transaction tx) throws IOException {
-        CompletableFuture<EthGetTransactionReceipt> receiptFuture = ethereumWeb3JGateway.web3().ethGetTransactionReceipt(tx.getHash()).sendAsync();
-        CompletableFuture<EthBlockNumber> blockNumberFuture = ethereumWeb3JGateway.web3().ethBlockNumber().sendAsync();
+    private Web3j getWeb3J(Map<String, Object> parameters) {
+        if (parameters != null && parameters.containsKey("endpoint")) {
+            return Web3j.build(new HttpService((String) parameters.get("endpoint"), false));
+        } else {
+            return defaultWeb3j;
+        }
+    }
+
+    private EthereumTxInfo mapToTxInfo(Transaction tx,
+                                       Web3j web3J) throws IOException {
+        CompletableFuture<EthGetTransactionReceipt> receiptFuture = web3J.ethGetTransactionReceipt(tx.getHash()).sendAsync();
+        CompletableFuture<EthBlockNumber> blockNumberFuture = web3J.ethBlockNumber().sendAsync();
         try {
             EthBlockNumber ethBlockNumber = blockNumberFuture.get();
             return receiptFuture.get().getTransactionReceipt()
@@ -78,7 +98,9 @@ public class EthereumTransactionInfoService implements TransactionInfoService {
                              .build();
     }
 
-    private EthereumTxInfo mapToMinedTxInfo(Transaction tx, TransactionReceipt receipt, EthBlockNumber blockNumber) {
+    private EthereumTxInfo mapToMinedTxInfo(Transaction tx,
+                                            TransactionReceipt receipt,
+                                            EthBlockNumber blockNumber) {
         return EthereumTxInfo.ethereumTxInfoBuilder()
                              .blockHash(receipt.getBlockHash())
                              .blockNumber(receipt.getBlockNumber())
