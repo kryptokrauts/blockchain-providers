@@ -1,5 +1,6 @@
 package network.arkane.provider.neo.sign;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class NeoContractExecutionSignable implements Signable {
     private String functionName;
     private String networkFee;
     private String systemFee;
-    private List<NeoContractParameter> inputs;
+    private List<JsonNode> inputs;
     private List<NeoAssetTransferSignable> outputs;
 
     @Builder
@@ -23,7 +24,7 @@ public class NeoContractExecutionSignable implements Signable {
                                         String functionName,
                                         String networkFee,
                                         String systemFee,
-                                        List<NeoContractParameter> inputs,
+                                        List<JsonNode> inputs,
                                         List<NeoAssetTransferSignable> outputs) {
         this.contractScriptHash = contractScriptHash;
         this.functionName = functionName;

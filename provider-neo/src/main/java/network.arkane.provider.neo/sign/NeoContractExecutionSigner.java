@@ -1,5 +1,6 @@
 package network.arkane.provider.neo.sign;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.neow3j.contract.ContractInvocation;
 import io.neow3j.contract.ContractParameter;
 import io.neow3j.contract.ScriptHash;
@@ -19,9 +20,13 @@ import org.springframework.util.CollectionUtils;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSignable, NeoSecretKey> {
+
+    private static final String TYPE_KEY = "type";
+    private static final String VALUE_KEY = "value";
 
     private Neow3j neow3j;
 
@@ -52,8 +57,8 @@ public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSi
             builder.networkFee(signable.getNetworkFee());
         }
 
-        for (NeoContractParameter input : signable.getInputs()) {
-            builder = builder.parameter(mapInput(input.getType(), input.getValue()));
+        for (JsonNode input : signable.getInputs()) {
+            builder = builder.parameter(mapInput(input));
         }
 
         if (!CollectionUtils.isEmpty(signable.getOutputs())) {
@@ -72,13 +77,25 @@ public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSi
         return TransactionSignature.signTransactionBuilder().signedTransaction(rawTx).build();
     }
 
-    private ContractParameter mapInput(String type, String value) {
-        if (type.endsWith("[]")) {
-            return ContractParameter.array(
-                    Arrays.stream(parseArray(value))
-                          .map(x -> mapInput(type.substring(0, type.length() - 2), x))
-                          .collect(Collectors.toList()));
+    private ContractParameter mapInput(final JsonNode input) {
+        final String type = input.get(TYPE_KEY).asText();
+        if (!isArrayType(type)) {
+            return mapSingleInput(type, input.get(VALUE_KEY).asText());
+        } else {
+            final String arrayType = type.substring(0, type.length() - 2);
+            return ContractParameter.array(StreamSupport.stream(input.get(VALUE_KEY).spliterator(), false)
+                                                        .map(JsonNode::asText)
+                                                        .map(value -> mapSingleInput(arrayType, value))
+                                                        .collect(Collectors.toList()));
         }
+    }
+
+    private boolean isArrayType(String type) {
+        return type.endsWith("[]");
+    }
+
+    private ContractParameter mapSingleInput(String type,
+                                             String value) {
         switch (type.toLowerCase()) {
             case "signature":
                 return ContractParameter.signature(value);
@@ -103,12 +120,11 @@ public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSi
             case "array":
                 return ContractParameter.array(
                         Arrays.stream(parseArray(value))
-                              .map(x -> mapInput("string", x))
+                              .map(x -> mapSingleInput("string", x))
                               .collect(Collectors.toList()));
             default:
                 throw new RuntimeException("Cannot map input to a contract input");
         }
-
     }
 
     private String[] parseArray(String value) {
