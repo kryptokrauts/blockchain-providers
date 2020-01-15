@@ -28,17 +28,18 @@ class NeoContractExecutionSignerTest {
     private NeoContractExecutionSigner signer;
     private NeoTransactionGateway neoTransactionGateway;
     private Neow3j neow3j;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         neow3j = Neow3j.build(new HttpService("http://seed5.ngd.network:20332", true));
-        signer = new NeoContractExecutionSigner(neow3j);
+        objectMapper = new ObjectMapper();
         neoTransactionGateway = new NeoTransactionGateway(new NeoW3JGateway(neow3j));
+        signer = new NeoContractExecutionSigner(neow3j, objectMapper);
     }
 
     @Test
     void name() throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
         final List<JsonNode> inputs = Arrays.asList(objectMapper.readTree("{\"type\": \"address\", \"value\": \"AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y\"}"),
                                                     objectMapper.readTree("{\"type\": \"integer\", \"value\": 0}"));
 
