@@ -1,5 +1,7 @@
 package network.arkane.provider.neo.sign;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.neow3j.crypto.ECKeyPair;
 import io.neow3j.crypto.WIF;
 import io.neow3j.protocol.Neow3j;
@@ -13,7 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,26 +28,25 @@ class NeoContractExecutionSignerTest {
     private NeoContractExecutionSigner signer;
     private NeoTransactionGateway neoTransactionGateway;
     private Neow3j neow3j;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         neow3j = Neow3j.build(new HttpService("http://seed5.ngd.network:20332", true));
-        signer = new NeoContractExecutionSigner(neow3j);
+        objectMapper = new ObjectMapper();
         neoTransactionGateway = new NeoTransactionGateway(new NeoW3JGateway(neow3j));
+        signer = new NeoContractExecutionSigner(neow3j);
     }
 
     @Test
-    void name() {
+    void name() throws IOException {
+        final List<JsonNode> inputs = Arrays.asList(objectMapper.readTree("{\"type\": \"address\", \"value\": \"AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y\"}"),
+                                                    objectMapper.readTree("{\"type\": \"integer\", \"value\": 0}"));
+
         NeoContractExecutionSignable signable = NeoContractExecutionSignable.builder()
                                                                             .contractScriptHash("94a24ee381bc386daa91984c7dd606f6fdd8f19e")
                                                                             .functionName("approve")
-                                                                            .inputs(Arrays.asList(
-                                                                                    NeoContractParameter.builder()
-                                                                                                        .type("address")
-                                                                                                        .value("AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y")
-                                                                                                        .build(),
-                                                                                    NeoContractParameter.builder().type("integer").value("0").build()
-                                                                                                 ))
+                                                                            .inputs(inputs)
                                                                             .networkFee("0.1")
                                                                             .build();
         ECKeyPair ecKeyPair = ECKeyPair.create(WIF.getPrivateKeyFromWIF("Kx9xMQVipBYAAjSxYEoZVatdVQfhYHbMFWSYPinSgAVd1d4Qgbpf"));
