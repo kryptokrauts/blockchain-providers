@@ -35,7 +35,7 @@ class NeoContractExecutionSignerTest {
         neow3j = Neow3j.build(new HttpService("http://seed5.ngd.network:20332", true));
         objectMapper = new ObjectMapper();
         neoTransactionGateway = new NeoTransactionGateway(new NeoW3JGateway(neow3j));
-        signer = new NeoContractExecutionSigner(neow3j, objectMapper);
+        signer = new NeoContractExecutionSigner(neow3j);
     }
 
     @Test

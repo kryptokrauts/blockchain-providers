@@ -34,9 +34,9 @@ public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSi
     private Neow3j neow3j;
     private final ObjectMapper objectMapper;
 
-    public NeoContractExecutionSigner(final Neow3j neow3j, final ObjectMapper objectMapper) {
+    public NeoContractExecutionSigner(final Neow3j neow3j) {
         this.neow3j = neow3j;
-        this.objectMapper = objectMapper;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
