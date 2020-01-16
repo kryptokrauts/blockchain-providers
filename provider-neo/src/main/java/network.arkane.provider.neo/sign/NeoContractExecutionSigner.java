@@ -1,5 +1,7 @@
 package network.arkane.provider.neo.sign;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.neow3j.contract.ContractInvocation;
 import io.neow3j.contract.ContractParameter;
 import io.neow3j.contract.ScriptHash;
@@ -16,17 +18,25 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSignable, NeoSecretKey> {
 
+    private static final String TYPE_KEY = "type";
+    private static final String VALUE_KEY = "value";
+
     private Neow3j neow3j;
+    private final ObjectMapper objectMapper;
 
     public NeoContractExecutionSigner(final Neow3j neow3j) {
         this.neow3j = neow3j;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -53,8 +63,8 @@ public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSi
         }
 
         if (!CollectionUtils.isEmpty(signable.getInputs())) {
-            for (NeoContractParameter input : signable.getInputs()) {
-                builder = builder.parameter(mapInput(input.getType(), input.getValue()));
+            for (JsonNode input : signable.getInputs()) {
+                builder = builder.parameter(mapInput(input));
             }
         }
 
@@ -74,13 +84,21 @@ public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSi
         return TransactionSignature.signTransactionBuilder().signedTransaction(rawTx).build();
     }
 
-    private ContractParameter mapInput(String type, String value) {
-        if (type.endsWith("[]")) {
-            return ContractParameter.array(
-                    Arrays.stream(parseArray(value))
-                          .map(x -> mapInput(type.substring(0, type.length() - 2), x))
-                          .collect(Collectors.toList()));
+    private ContractParameter mapInput(final JsonNode input) {
+        final String type = input.get(TYPE_KEY).asText();
+        if (!isArrayType(type)) {
+            return mapSingleInputNode(type, input.get(VALUE_KEY).asText());
+        } else {
+            return mapArrayNode(input);
         }
+    }
+
+    private boolean isArrayType(String type) {
+        return type.endsWith("[]");
+    }
+
+    private ContractParameter mapSingleInputNode(String type,
+                                                 String value) {
         switch (type.toLowerCase()) {
             case "signature":
                 return ContractParameter.signature(value);
@@ -105,12 +123,47 @@ public class NeoContractExecutionSigner implements Signer<NeoContractExecutionSi
             case "array":
                 return ContractParameter.array(
                         Arrays.stream(parseArray(value))
-                              .map(x -> mapInput("string", x))
+                              .map(x -> mapSingleInputNode("string", x))
                               .collect(Collectors.toList()));
             default:
                 throw new RuntimeException("Cannot map input to a contract input");
         }
+    }
 
+    private ContractParameter mapArrayNode(final JsonNode arrayNode) {
+        try {
+            final String arrayType = arrayNode.get(TYPE_KEY).asText().replace("[]", "");
+            final JsonNode valueNode = arrayNode.get(VALUE_KEY);
+
+            if (valueNode != null) {
+                final List<ContractParameter> contractParameters;
+                switch (valueNode.getNodeType()) {
+                    case ARRAY:
+                        contractParameters = mapToContractParameters(arrayType, valueNode);
+                        break;
+                    case STRING:
+                        final JsonNode arrayValueNode = objectMapper.readTree(valueNode.asText());
+                        contractParameters = mapToContractParameters(arrayType, arrayValueNode);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("JsonNodeType of an array node needs to contain a JSON array or a string representation of a JSON array: "
+                                                           + arrayNode.toString());
+                }
+                return ContractParameter.array(contractParameters);
+            } else {
+                throw new IllegalArgumentException("No 'value' present on JsonNode: " + arrayNode.toString());
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("JsonNodeType of an array node needs to contain a JSON array or a string representation of a JSON array: " + arrayNode.toString());
+        }
+    }
+
+    private List<ContractParameter> mapToContractParameters(final String type,
+                                                            final JsonNode node) {
+        return StreamSupport.stream(node.spliterator(), false)
+                            .map(JsonNode::asText)
+                            .map(value -> mapSingleInputNode(type, value))
+                            .collect(Collectors.toList());
     }
 
     private String[] parseArray(String value) {
