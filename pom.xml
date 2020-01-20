@@ -38,8 +38,9 @@
 
     <distributionManagement>
         <repository>
-            <id>bintray-repo-maven-example</id>
-            <url>https://api.bintray.com/maven/arkanenetwork/arkane-blockchain-providers/blockchain-providers/;publish=1</url>
+            <id>github-arkane-network</id>
+            <name>Arkane Github Repo</name>
+            <url>https://maven.pkg.github.com/ArkaneNetwork/blockchain-providers</url>
         </repository>
     </distributionManagement>
 
@@ -352,8 +353,18 @@
         <repository>
             <id>snapshots-repo</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases><enabled>false</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>github-arkane-network</id>
+            <name>Arkane Github Repo</name>
+            <url>https://maven.pkg.github.com/ArkaneNetwork/release-test</url>
         </repository>
     </repositories>
+
 </project>
