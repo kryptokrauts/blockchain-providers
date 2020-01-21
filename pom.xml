@@ -37,10 +37,13 @@
     </modules>
 
     <distributionManagement>
+        <snapshotRepository>
+            <id>arkane-snapshots</id>
+            <url>https://pkg.arkane.network/repository/maven-snapshots/</url>
+        </snapshotRepository>
         <repository>
-            <id>github-arkane-network</id>
-            <name>Arkane Github Repo</name>
-            <url>https://maven.pkg.github.com/ArkaneNetwork/blockchain-providers</url>
+            <id>arkane-releases</id>
+            <url>https://pkg.arkane.network/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
 
@@ -386,23 +389,8 @@
 
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>github-arkane-network</id>
-            <name>Arkane Github Repo</name>
-            <url>https://maven.pkg.github.com/ArkaneNetwork/release-test</url>
+            <id>arkane-public</id>
+            <url>https://pkg.arkane.network/repository/maven-public/</url>
         </repository>
     </repositories>
 
