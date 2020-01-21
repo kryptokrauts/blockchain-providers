@@ -35,6 +35,14 @@
                     <groupId>org.springframework</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>sqlite-jdbc</artifactId>
+                    <groupId>org.xerial</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>aspectjtools</artifactId>
+                    <groupId>org.aspectj</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
