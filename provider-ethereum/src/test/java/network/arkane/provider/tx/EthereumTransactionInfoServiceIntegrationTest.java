@@ -70,7 +70,7 @@ class EthereumTransactionInfoServiceIntegrationTest {
 
     @Test
     void getFromOtherEndpoint() {
-        Map<String, Object> parameters = Collections.singletonMap("endpoint", "https://rinkeby.infura.io");
+        Map<String, Object> parameters = Collections.singletonMap("endpoint", "https://rinkeby.arkane.network");
 
         EthereumTxInfo transaction = ethereumTransactionInfoService.getTransaction("0x3ea246bb6c7cfb8d3899addeddf4135ad0d716b041b7018b8d1b39951ee54c66", parameters);
 
