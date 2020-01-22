@@ -3,10 +3,15 @@ package network.arkane.provider.gateway;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.Prefix;
 import network.arkane.provider.clients.AccountClient;
+import network.arkane.provider.clients.BlockClient;
 import network.arkane.provider.clients.DeltaBalancesContractClient;
 import network.arkane.provider.clients.ERC20ContractClient;
+import network.arkane.provider.clients.TransactionClient;
 import network.arkane.provider.clients.base.AbstractClient;
 import network.arkane.provider.core.model.blockchain.Account;
+import network.arkane.provider.core.model.blockchain.Block;
+import network.arkane.provider.core.model.blockchain.Receipt;
+import network.arkane.provider.core.model.blockchain.Transaction;
 import network.arkane.provider.core.model.blockchain.TransferRequest;
 import network.arkane.provider.core.model.blockchain.TransferResult;
 import network.arkane.provider.core.model.clients.Address;
@@ -41,7 +46,20 @@ public class VechainGateway {
         }
     }
 
-    public Amount getTokenBalance(final String owner, final ERC20Token token) {
+    public Block getBlock() {
+        try {
+            return BlockClient.getBlock(Revision.BEST);
+        } catch (final Exception ex) {
+            log.error("Problem trying to get the block from the Vechain network");
+            throw ArkaneException.arkaneException()
+                                 .errorCode("thorify.internal-error")
+                                 .message("Unable to get the latest block info (vechain)")
+                                 .build();
+        }
+    }
+
+    public Amount getTokenBalance(final String owner,
+                                  final ERC20Token token) {
         try {
             return ERC20ContractClient.getERC20Balance(Address.fromHexString(owner), token, Revision.BEST);
         } catch (final Exception ex) {
@@ -55,7 +73,32 @@ public class VechainGateway {
         }
     }
 
-    public List<BigInteger> getTokenBalances(final String owner, List<String> tokenAddresses) {
+    public Transaction getTransaction(final String txHash) {
+        try {
+            return TransactionClient.getTransaction(txHash, false, Revision.BEST);
+        } catch (final Exception ex) {
+            log.error("Problem trying to get account from the Vechain network");
+            throw ArkaneException.arkaneException()
+                                 .errorCode("thorify.internal-error")
+                                 .message(String.format("Unable to get the status for transaction (%s) (vechain)", txHash))
+                                 .build();
+        }
+    }
+
+    public Receipt getTransactionReceipt(final String txHash) {
+        try {
+            return TransactionClient.getTransactionReceipt(txHash, Revision.BEST);
+        } catch (final Exception ex) {
+            log.error("Problem trying to get account from the Vechain network");
+            throw ArkaneException.arkaneException()
+                                 .errorCode("thorify.internal-error")
+                                 .message(String.format("Unable to get the transaction receipt for (%s) (vechain)", txHash))
+                                 .build();
+        }
+    }
+
+    public List<BigInteger> getTokenBalances(final String owner,
+                                             List<String> tokenAddresses) {
         try {
             return deltaBalancesContractClient.getVip180Balances(Address.fromHexString(owner), tokenAddresses);
         } catch (final Exception ex) {
