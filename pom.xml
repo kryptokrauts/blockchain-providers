@@ -320,6 +320,8 @@
                 <configuration>
                     <useSnapshotInRelease>true</useSnapshotInRelease>
                     <commitDevelopmentVersionAtStart>true</commitDevelopmentVersionAtStart>
+                    <versionDigitToIncrement>1</versionDigitToIncrement>
+                    <useSnapshotInHotfix>true</useSnapshotInHotfix>
                 </configuration>
             </plugin>
             <plugin>
