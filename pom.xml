@@ -318,7 +318,8 @@
                 <artifactId>gitflow-maven-plugin</artifactId>
                 <version>1.14.0</version>
                 <configuration>
-
+                    <useSnapshotInRelease>true</useSnapshotInRelease>
+                    <commitDevelopmentVersionAtStart>true</commitDevelopmentVersionAtStart>
                 </configuration>
             </plugin>
             <plugin>
