@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B -U clean install'
+                sh 'mvn -B -U clean deploy'
             }
             post {
                 always {
