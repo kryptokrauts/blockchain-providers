@@ -6,7 +6,6 @@
         <artifactId>blockchain-providers</artifactId>
         <groupId>network.arkane</groupId>
         <version>0.8.4</version>
-
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

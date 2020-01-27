@@ -8,7 +8,6 @@
     <groupId>network.arkane</groupId>
     <artifactId>blockchain-providers</artifactId>
     <version>0.8.4</version>
-
   </parent>
 
   <artifactId>provider-aeternity</artifactId>
