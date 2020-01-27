@@ -6,14 +6,14 @@
     <artifactId>provider-api</artifactId>
 
     <parent>
-        <groupId>network.arkane</groupId>
+        <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
         <version>0.12.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>network.arkane</groupId>
+            <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-api-model</artifactId>
         </dependency>
         <dependency>

@@ -6,14 +6,14 @@
     <artifactId>provider-gochain</artifactId>
 
     <parent>
-        <groupId>network.arkane</groupId>
+        <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
         <version>0.12.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>network.arkane</groupId>
+            <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-api</artifactId>
         </dependency>
         <dependency>
@@ -27,7 +27,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>network.arkane</groupId>
+            <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-api</artifactId>
             <scope>test</scope>
             <type>test-jar</type>
