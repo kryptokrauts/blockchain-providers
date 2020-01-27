@@ -322,6 +322,13 @@
                     <commitDevelopmentVersionAtStart>true</commitDevelopmentVersionAtStart>
                     <versionDigitToIncrement>1</versionDigitToIncrement>
                     <useSnapshotInHotfix>true</useSnapshotInHotfix>
+
+                    <gitFlowConfig>
+                        <featureBranchPrefix>feature-</featureBranchPrefix>
+                        <releaseBranchPrefix>release-</releaseBranchPrefix>
+                        <hotfixBranchPrefix>hotfix-</hotfixBranchPrefix>
+                        <supportBranchPrefix>support-</supportBranchPrefix>
+                    </gitFlowConfig>
                 </configuration>
             </plugin>
             <plugin>
