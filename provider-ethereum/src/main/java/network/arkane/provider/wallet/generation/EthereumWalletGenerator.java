@@ -12,13 +12,14 @@ import org.web3j.crypto.WalletFile;
 public class EthereumWalletGenerator implements WalletGenerator<EthereumSecretKey> {
 
     @Override
-    public GeneratedWallet generateWallet(final String password, final EthereumSecretKey secret) {
+    public GeneratedWallet generateWallet(final String password,
+                                          final EthereumSecretKey secret) {
         if (StringUtils.isEmpty(password)) {
             throw new IllegalArgumentException("Password should not be empty");
         }
 
         try {
-            final WalletFile theWallet = Wallet.createStandard(password, ((EthereumSecretKey) secret).getKeyPair());
+            final WalletFile theWallet = Wallet.createStandard(password, secret.getKeyPair());
             return GeneratedEthereumWallet
                     .builder()
                     .walletFile(theWallet)

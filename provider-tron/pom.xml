@@ -8,7 +8,7 @@
     <parent>
         <groupId>network.arkane</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.8.4</version>
+        <version>0.11.1</version>
     </parent>
 
     <dependencies>
@@ -34,6 +34,14 @@
                 <exclusion>
                     <groupId>org.springframework</groupId>
                     <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>sqlite-jdbc</artifactId>
+                    <groupId>org.xerial</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>aspectjtools</artifactId>
+                    <groupId>org.aspectj</groupId>
                 </exclusion>
             </exclusions>
         </dependency>

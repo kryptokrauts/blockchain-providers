@@ -1,51 +1,112 @@
 package network.arkane.provider.tron.sign;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.sign.Signer;
-import network.arkane.provider.sign.domain.Signable;
-import network.arkane.provider.wallet.domain.SecretKey;
-import org.tron.common.crypto.ECKey;
-import org.tron.common.utils.ByteArray;
-import org.tron.common.utils.Sha256Hash;
+import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.sign.domain.Signature;
+import network.arkane.provider.sign.domain.TransactionSignature;
+import network.arkane.provider.tron.block.BlockGateway;
+import network.arkane.provider.tron.grpc.GrpcClient;
+import network.arkane.provider.tron.secret.generation.TronSecretKey;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
+import org.tron.protos.Contract;
 import org.tron.protos.Protocol;
 
+@Component
 @Slf4j
-abstract class TronTransactionSigner<T extends Signable, KEY extends SecretKey> implements Signer<T, KEY> {
+public class TronTransactionSigner extends AbstractTronTransactionSigner<TronTransactionSignable, TronSecretKey> {
 
+    private BlockGateway blockGateway;
 
-    @SneakyThrows
-    static byte[] signTransaction2Byte(byte[] transactionBytes, byte[] privateKey) {
-        final ECKey ecKey = ECKey.fromPrivate(privateKey);
-        final Protocol.Transaction transaction = Protocol.Transaction.parseFrom(transactionBytes);
-        final byte[] rawdata = transaction.getRawData().toByteArray();
-        final byte[] hash = Sha256Hash.hash(rawdata);
-        final byte[] sign = ecKey.sign(hash).toByteArray();
-        log.debug("Done signing for tron");
-        return transaction.toBuilder().addSignature(ByteString.copyFrom(sign)).build().toByteArray();
+    public TronTransactionSigner(BlockGateway blockGateway) {
+        this.blockGateway = blockGateway;
     }
 
-    static Protocol.Transaction setReference(Protocol.Transaction transaction, Protocol.Block newestBlock) {
-        long blockHeight = newestBlock.getBlockHeader().getRawData().getNumber();
-        byte[] blockHash = getBlockHash(newestBlock).getBytes();
-        byte[] refBlockNum = ByteArray.fromLong(blockHeight);
-        Protocol.Transaction.raw rawData = transaction.getRawData().toBuilder()
-                                                      .setRefBlockHash(ByteString.copyFrom(ByteArray.subArray(blockHash, 8, 16)))
-                                                      .setRefBlockBytes(ByteString.copyFrom(ByteArray.subArray(refBlockNum, 6, 8)))
-                                                      .build();
-        return transaction.toBuilder().setRawData(rawData).build();
+    @Override
+    public Signature createSignature(final TronTransactionSignable signable,
+                                     final TronSecretKey key) {
+        log.info("Creating signature for: {}", signable);
+        Protocol.Transaction transaction;
+        if (StringUtils.isNotBlank(signable.getData()) && signable.getData().replaceFirst("0x", "").length() > 0) {
+            transaction = createContractExecution(key.getKeyPair().getAddress(), GrpcClient.decodeFromBase58Check(signable.getTo()), signable.getAmount().longValue(), signable.getData());
+        } else {
+            transaction = createTransaction(key.getKeyPair().getAddress(), GrpcClient.decodeFromBase58Check(signable.getTo()), signable.getAmount().longValue());
+        }
+
+        final byte[] signature = signTransaction2Byte(transaction.toByteArray(), key.getKeyPair().getPrivKeyBytes());
+        log.info("Done creating signature: {}", Hex.encodeHexString(signature));
+        return TransactionSignature.signTransactionBuilder()
+                                   .signedTransaction(Hex.encodeHexString(signature))
+                                   .build();
     }
 
-    private static Sha256Hash getBlockHash(Protocol.Block block) {
-        return Sha256Hash.of(block.getBlockHeader().getRawData().toByteArray());
+    public Protocol.Transaction createTransaction(byte[] from, byte[] to, long amount) {
+        final Protocol.Transaction.Builder transactionBuilder = Protocol.Transaction.newBuilder();
+        final Protocol.Block newestBlock = blockGateway.getBlock(-1);
+
+        Protocol.Transaction.Contract.Builder contractBuilder = Protocol.Transaction.Contract.newBuilder();
+        Contract.TransferContract.Builder transferContractBuilder = Contract.TransferContract
+                .newBuilder();
+        transferContractBuilder.setAmount(amount);
+        ByteString bsTo = ByteString.copyFrom(to);
+        ByteString bsOwner = ByteString.copyFrom(from);
+        transferContractBuilder.setToAddress(bsTo);
+        transferContractBuilder.setOwnerAddress(bsOwner);
+        try {
+            Any any = Any.pack(transferContractBuilder.build());
+            contractBuilder.setParameter(any);
+        } catch (Exception e) {
+            log.error("An error occurred trying to create a TRON-signature");
+            throw ArkaneException.arkaneException()
+                                 .cause(e)
+                                 .message("An error occurred trying to create a TRON-signature")
+                                 .errorCode("tron.signature.error")
+                                 .build();
+        }
+        contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TransferContract);
+        transactionBuilder.getRawDataBuilder().addContract(contractBuilder)
+                          .setTimestamp(getCurrentTime())
+                          .setFeeLimit(100000000)
+                          .setExpiration(getExpiration(newestBlock));
+        final Protocol.Transaction transaction = transactionBuilder.build();
+        return setReference(transaction, newestBlock);
     }
 
-    long getCurrentTime() {
-        return System.currentTimeMillis();
-    }
+    public Protocol.Transaction createContractExecution(byte[] from, byte[] to, long amount, String data) {
+        final Protocol.Transaction.Builder transactionBuilder = Protocol.Transaction.newBuilder();
+        final Protocol.Block newestBlock = blockGateway.getBlock(-1);
+        if (data.startsWith("0x")) {
+            data = data.substring(2);
+        }
 
-    long getExpiration(Protocol.Block newestBlock) {
-        return newestBlock.getBlockHeader().getRawData().getTimestamp() + 10 * 60 * 60 * 1000;
+        Protocol.Transaction.Contract.Builder contractBuilder = Protocol.Transaction.Contract.newBuilder();
+        Contract.TriggerSmartContract.Builder triggerContractBuilder = Contract.TriggerSmartContract.newBuilder();
+        triggerContractBuilder.setCallValue(amount);
+        triggerContractBuilder.setData(ByteString.copyFrom(org.bouncycastle.util.encoders.Hex.decode(data)));
+        ByteString bsTo = ByteString.copyFrom(to);
+        ByteString bsOwner = ByteString.copyFrom(from);
+        triggerContractBuilder.setContractAddress(bsTo);
+        triggerContractBuilder.setOwnerAddress(bsOwner);
+        try {
+            Any any = Any.pack(triggerContractBuilder.build());
+            contractBuilder.setParameter(any);
+        } catch (Exception e) {
+            log.error("An error occurred trying to create a TRON-signature (Contract execution)");
+            throw ArkaneException.arkaneException()
+                                 .cause(e)
+                                 .message("An error occurred trying to create a TRON-signature (Contract execution)")
+                                 .errorCode("tron.signature.error")
+                                 .build();
+        }
+        contractBuilder.setType(Protocol.Transaction.Contract.ContractType.TriggerSmartContract);
+        transactionBuilder.getRawDataBuilder().addContract(contractBuilder)
+                          .setTimestamp(getCurrentTime())
+                          .setFeeLimit(100000000)
+                          .setExpiration(getExpiration(newestBlock));
+        final Protocol.Transaction transaction = transactionBuilder.build();
+        return setReference(transaction, newestBlock);
     }
 }

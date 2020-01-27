@@ -7,6 +7,8 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
 import java.math.BigInteger;
+import java.util.Collections;
+import java.util.Map;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -21,7 +23,7 @@ class EthereumTransactionInfoServiceIntegrationTest {
         web3j = Web3j.build(new HttpService("https://ethereum.arkane.network"));
         ethereumWeb3JGateway = new EthereumWeb3JGateway(web3j, "0x40a38911e470fC088bEEb1a9480c2d69C847BCeC");
         Thread.sleep(100);
-        ethereumTransactionInfoService = new EthereumTransactionInfoService(ethereumWeb3JGateway);
+        ethereumTransactionInfoService = new EthereumTransactionInfoService(ethereumWeb3JGateway.web3());
     }
 
     @Test
@@ -64,5 +66,14 @@ class EthereumTransactionInfoServiceIntegrationTest {
         assertThat(transaction.getLogs().get(0).getTopics()).containsExactly("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
                                                                              "0x000000000000000000000000ef985560bda2a9ae4ed92fc7f8ef7b5279e5d3fa",
                                                                              "0x000000000000000000000000a33fa70ff75ad1235947563d16fb98ccb1d2df95");
+    }
+
+    @Test
+    void getFromOtherEndpoint() {
+        Map<String, Object> parameters = Collections.singletonMap("endpoint", "https://rinkeby.arkane.network");
+
+        EthereumTxInfo transaction = ethereumTransactionInfoService.getTransaction("0x3ea246bb6c7cfb8d3899addeddf4135ad0d716b041b7018b8d1b39951ee54c66", parameters);
+
+        assertThat(transaction.getFrom()).isEqualTo("0x080959e98c5afc1709f9e4d716ac11be2a850b73");
     }
 }

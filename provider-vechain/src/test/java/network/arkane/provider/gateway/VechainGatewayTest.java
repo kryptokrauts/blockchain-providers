@@ -18,7 +18,7 @@ class VechainGatewayTest {
     @BeforeEach
     void setUp() {
         NodeProvider nodeProvider = NodeProvider.getNodeProvider();
-        nodeProvider.setProvider("https://thor-test.arkane.network");
+        nodeProvider.setProvider("https://vechain-test.arkane.network");
         nodeProvider.setTimeout(10000);
         DeltaBalancesContractClient deltaBalancesContractClient = new DeltaBalancesContractClient("0xd8a100bccb8cb27ad7ef64d24e30949497e486aa");
         vechainGateway = new VechainGateway(deltaBalancesContractClient);

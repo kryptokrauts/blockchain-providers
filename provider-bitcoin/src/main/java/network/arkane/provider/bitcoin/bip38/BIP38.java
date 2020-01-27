@@ -29,9 +29,9 @@ import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.DumpedPrivateKey;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
-import org.bouncycastle.asn1.sec.SECNamedCurves;
-import org.bouncycastle.asn1.x9.X9ECParameters;
-import org.bouncycastle.math.ec.ECPoint;
+import org.spongycastle.asn1.sec.SECNamedCurves;
+import org.spongycastle.asn1.x9.X9ECParameters;
+import org.spongycastle.math.ec.ECPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
@@ -137,7 +137,12 @@ public class BIP38 {
      * @return a string with the encoded confirmation.
      * @throws GeneralSecurityException
      */
-    private String confirm(byte flagByte, byte[] addressHash, byte[] ownerEntropy, byte[] factorB, byte[] derivedHalf1, byte[] derivedHalf2)
+    private String confirm(byte flagByte,
+                           byte[] addressHash,
+                           byte[] ownerEntropy,
+                           byte[] factorB,
+                           byte[] derivedHalf1,
+                           byte[] derivedHalf2)
             throws GeneralSecurityException {
         byte[] pointB = CURVE.getG().multiply(new BigInteger(1, factorB)).getEncoded();
         byte pointBPrefix = (byte) (pointB[0] ^ (derivedHalf2[31] & 1));
@@ -164,7 +169,8 @@ public class BIP38 {
      * @param generatedKey
      * @return
      */
-    public boolean verify(String passphrase, GeneratedKey generatedKey)
+    public boolean verify(String passphrase,
+                          GeneratedKey generatedKey)
             throws UnsupportedEncodingException, GeneralSecurityException {
         DumpedPrivateKey dk = new DumpedPrivateKey(params, decrypt(passphrase, generatedKey.key));
         ECKey key = dk.getKey();
@@ -184,7 +190,9 @@ public class BIP38 {
      * @throws java.io.UnsupportedEncodingException
      * @throws java.security.GeneralSecurityException
      */
-    public static String intermediatePassphrase(String passphrase, int lot, int sequence)
+    public static String intermediatePassphrase(String passphrase,
+                                                int lot,
+                                                int sequence)
             throws UnsupportedEncodingException, GeneralSecurityException {
 
         SecureRandom sr = new SecureRandom();
@@ -233,7 +241,8 @@ public class BIP38 {
      * @throws UnsupportedEncodingException
      */
     @SneakyThrows
-    public String decrypt(String passphrase, String encryptedKey) {
+    public String decrypt(String passphrase,
+                          String encryptedKey) {
         byte[] encryptedKeyBytes = Base58.decodeChecked(encryptedKey);
         String result;
         byte ec = encryptedKeyBytes[1];
@@ -259,7 +268,8 @@ public class BIP38 {
      * @throws UnsupportedEncodingException
      * @throws GeneralSecurityException
      */
-    public String decryptEC(String passphrase, byte[] encryptedKey) throws UnsupportedEncodingException, GeneralSecurityException {
+    public String decryptEC(String passphrase,
+                            byte[] encryptedKey) throws UnsupportedEncodingException, GeneralSecurityException {
 
         byte flagByte = encryptedKey[2];
         byte[] passFactor;
@@ -324,7 +334,9 @@ public class BIP38 {
      * @throws UnsupportedEncodingException
      */
     @SneakyThrows
-    public String encryptNoEC(String passphrase, String encodedPrivateKey, boolean isCompressed) {
+    public String encryptNoEC(String passphrase,
+                              String encodedPrivateKey,
+                              boolean isCompressed) {
 
         DumpedPrivateKey dk = new DumpedPrivateKey(params, encodedPrivateKey);
 
@@ -364,7 +376,8 @@ public class BIP38 {
      * @throws UnsupportedEncodingException
      * @throws GeneralSecurityException
      */
-    public String decryptNoEC(String passphrase, byte[] encryptedKey) throws UnsupportedEncodingException, GeneralSecurityException {
+    public String decryptNoEC(String passphrase,
+                              byte[] encryptedKey) throws UnsupportedEncodingException, GeneralSecurityException {
 
         byte[] addressHash = Arrays.copyOfRange(encryptedKey, 3, 7);
         byte[] scryptKey = SCrypt.scrypt(passphrase.getBytes("UTF8"), addressHash, 16384, 8, 8, 64);

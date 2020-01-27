@@ -39,11 +39,12 @@ class EthereumRawSignerTest {
         String message = input;
         final Sign.SignatureData signatureData = Sign.signMessage(message.getBytes(StandardCharsets.UTF_8), aPair, false);
 
-        HexSignature result = signer.createSignature(EthereumRawSignable.builder().data(input).prefix(false).hash(false).build(), EthereumSecretKey.builder().keyPair(aPair).build());
+        HexSignature result = signer.createSignature(EthereumRawSignable.builder().data(input).prefix(false).hash(false).build(),
+                                                     EthereumSecretKey.builder().keyPair(aPair).build());
 
         assertThat(Numeric.toHexString(signatureData.getR())).isEqualTo(result.getR());
         assertThat(Numeric.toHexString(signatureData.getS())).isEqualTo(result.getS());
-        assertThat("0x" + Integer.toHexString(signatureData.getV())).isEqualTo(result.getV());
+        assertThat(Numeric.toHexString(signatureData.getV())).isEqualTo(result.getV());
     }
 
     @Test
@@ -52,14 +53,13 @@ class EthereumRawSignerTest {
         ECKeyPair aPair = ECKeyPair.create(privateKeyInBT);
 
         final String input = "Some data";
-        String message = input;
-        final Sign.SignatureData signatureData = Sign.signMessage(message.getBytes(StandardCharsets.UTF_8), aPair);
+        final Sign.SignatureData signatureData = Sign.signMessage(input.getBytes(StandardCharsets.UTF_8), aPair);
 
         HexSignature result = signer.createSignature(EthereumRawSignable.builder().data(input).prefix(false).build(), EthereumSecretKey.builder().keyPair(aPair).build());
 
         assertThat(Numeric.toHexString(signatureData.getR())).isEqualTo(result.getR());
         assertThat(Numeric.toHexString(signatureData.getS())).isEqualTo(result.getS());
-        assertThat("0x" + Integer.toHexString(signatureData.getV())).isEqualTo(result.getV());
+        assertThat(Numeric.toHexString(signatureData.getV())).isEqualTo(result.getV());
     }
 
     @Test
@@ -71,7 +71,7 @@ class EthereumRawSignerTest {
         String message = "Some data";
 
         final Sign.SignatureData signatureData = Sign.signPrefixedMessage(message.getBytes(StandardCharsets.UTF_8), aPair);
-        assertThat(Integer.toHexString(signatureData.getV())).isEqualTo("1c");
+        assertThat(Numeric.toHexString(signatureData.getV())).isEqualTo("0x1c");
         assertThat(Numeric.toHexString(signatureData.getR())).isEqualTo("0xb91467e570a6466aa9e9876cbcd013baba02900b8979d43fe208a4a4f339f5fd");
         assertThat(Numeric.toHexString(signatureData.getS())).isEqualTo("0x6007e74cd82e037b800186422fc2da167c747ef045e5d18a5f5d4300f8e1a029");
 

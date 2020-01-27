@@ -1,5 +1,6 @@
 package network.arkane.provider.opensea;
 
+import com.google.common.collect.Iterables;
 import feign.Logger;
 import feign.Request;
 import feign.RequestInterceptor;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -16,10 +18,12 @@ public class OpenSeaClientConfiguration {
 
     private static final String API_KEY_KEY = "X-API-KEY";
 
-    private final String apiToken;
+    private Iterator<String> apiTokens;
 
-    public OpenSeaClientConfiguration(@Value("${opensea.api-token:}") final String apiToken) {
-        this.apiToken = apiToken;
+    public OpenSeaClientConfiguration(@Value("${opensea.api-tokens:}") final String apiTokens) {
+        if (StringUtils.isNotBlank(apiTokens)) {
+            this.apiTokens = Iterables.cycle(apiTokens.split(",")).iterator();
+        }
     }
 
     @Bean
@@ -29,15 +33,15 @@ public class OpenSeaClientConfiguration {
 
     @Bean
     public Request.Options options() {
-        return new Request.Options(2000, 3000);
+        return new Request.Options(10000, 30000);
     }
 
     @Bean
     public RequestInterceptor apiTokenInterceptor() {
         return requestTemplate -> {
             requestTemplate.header("User-Agent", "curl/7.54.0");
-            if (StringUtils.isNotBlank(apiToken) && !requestTemplate.headers().containsKey(API_KEY_KEY)) {
-                requestTemplate.header(API_KEY_KEY, apiToken);
+            if (apiTokens != null && !requestTemplate.headers().containsKey(API_KEY_KEY)) {
+                requestTemplate.header(API_KEY_KEY, apiTokens.next());
             }
         };
     }
