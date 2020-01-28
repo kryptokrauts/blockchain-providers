@@ -64,7 +64,7 @@ public class EthereumWeb3AutoConfiguration {
 
     private static void configureLogging(OkHttpClient.Builder builder) {
         if (log.isDebugEnabled()) {
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(log::error);
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(log::debug);
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(logging);
         }
