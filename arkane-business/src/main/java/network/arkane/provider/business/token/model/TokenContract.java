@@ -3,6 +3,7 @@ package network.arkane.provider.business.token.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import network.arkane.provider.chain.SecretType;
 
 import java.util.Date;
 
@@ -20,6 +21,7 @@ public class TokenContract {
     private String name;
     private String transactionHash;
     private String owner;
+    private SecretType secretType;
 
     @Builder
     public TokenContract(final Long id,
@@ -31,7 +33,8 @@ public class TokenContract {
                          final String applicationId,
                          final String name,
                          final String transactionHash,
-                         final String owner) {
+                         final String owner,
+                         final SecretType secretType) {
         this.id = id;
         this.address = address;
         this.confirmed = confirmed;
@@ -42,5 +45,6 @@ public class TokenContract {
         this.name = name;
         this.transactionHash = transactionHash;
         this.owner = owner;
+        this.secretType = secretType;
     }
 }

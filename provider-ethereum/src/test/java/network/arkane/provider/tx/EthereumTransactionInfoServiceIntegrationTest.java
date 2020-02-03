@@ -2,6 +2,7 @@ package network.arkane.provider.tx;
 
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
@@ -69,6 +70,7 @@ class EthereumTransactionInfoServiceIntegrationTest {
     }
 
     @Test
+    @Disabled
     void getFromOtherEndpoint() {
         Map<String, Object> parameters = Collections.singletonMap("endpoint", "https://rinkeby.arkane.network");
 
