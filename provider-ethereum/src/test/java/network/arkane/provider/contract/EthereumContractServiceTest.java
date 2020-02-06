@@ -19,7 +19,7 @@ class EthereumContractServiceTest {
 
     @BeforeEach
     void setUp() {
-        ethereumContractService = new EthereumContractService(new EthereumWeb3JGateway(Web3j.build(new HttpService("https://parity.arkane.network")),
+        ethereumContractService = new EthereumContractService(new EthereumWeb3JGateway(Web3j.build(new HttpService("https://rinkeby.arkane.network")),
                                                                                        "0x06012c8cf97bead5deae237070f9587f8e7a266d"));
     }
 
@@ -28,7 +28,10 @@ class EthereumContractServiceTest {
         List<String> result = ethereumContractService.callFunction(ContractCall.builder()
                                                                                .contractAddress("0x06012c8cf97bead5deae237070f9587f8e7a266d")
                                                                                .functionName("isPregnant")
-                                                                               .inputs(Collections.singletonList(ContractCallParam.builder().type("uint256").value("1698495").build()))
+                                                                               .inputs(Collections.singletonList(ContractCallParam.builder()
+                                                                                                                                  .type("uint256")
+                                                                                                                                  .value("1698495")
+                                                                                                                                  .build()))
                                                                                .outputs(Collections.singletonList(ContractCallResultParam.builder().type("bool").build()))
                                                                                .build());
 
