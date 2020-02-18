@@ -11,7 +11,7 @@ class NeoBalanceGatewayIntegrationTest {
 
     @Test
     void getBalance() {
-        NeoBalanceGateway balanceGateway = new NeoBalanceGateway(new NeoW3JGateway(new NeoW3JConfiguration().neoNeow3j("http://seed1.ngd.network:20332")), null);
+        NeoBalanceGateway balanceGateway = new NeoBalanceGateway(new NeoW3JGateway(new NeoW3JConfiguration().neoNeow3j("http://seed2.ngd.network:10332")), null);
         Balance result = balanceGateway.getBalance("AKJrLM5QCdr8opd1JZhYWnHZrBJbz6rbXv");
 
         assertThat(result).isNotNull();
