@@ -28,12 +28,11 @@ public class NeoAssetTransferSigner implements Signer<NeoAssetTransferSignable, 
         Account account = Account.fromECKeyPair(key.getKey()).build();
         updateAccountAssetBalances(account);
 
-        final ContractTransaction transaction = new AssetTransfer.Builder(neow3j)
-                .toAddress(signable.getTo())
-                .account(account)
-                .amount(signable.getAmount().toString())
-                .asset(signable.getAssetId())
-                .build().sign().getTransaction();
+        final ContractTransaction transaction = new AssetTransfer.Builder(neow3j).toAddress(signable.getTo())
+                                                                                 .account(account)
+                                                                                 .amount(signable.getAmount().toString())
+                                                                                 .asset(signable.getAssetId())
+                                                                                 .build().sign().getTransaction();
 
         String rawTx = Numeric.toHexStringNoPrefix(transaction.toArray());
         return TransactionSignature.signTransactionBuilder().signedTransaction(rawTx).build();

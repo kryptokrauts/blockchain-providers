@@ -27,7 +27,7 @@ class NeoTransactionGatewayIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        NeoW3JGateway neow3j = new NeoW3JGateway(Neow3j.build(new HttpService("http://seed2.ngd.network:10332")));
+        NeoW3JGateway neow3j = new NeoW3JGateway(Neow3j.build(new HttpService("http://neo-testnet.arkane.network")));
         neoAssetTransferSigner = new NeoAssetTransferSigner(neow3j.web3());
         neoTransactionGateway = new NeoTransactionGateway(neow3j);
     }
