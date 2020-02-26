@@ -29,8 +29,7 @@ class EthereumBalanceGatewayIntegrationTest {
         ethereumWeb3JGateway = new EthereumWeb3JGateway(web3j, "0x40a38911e470fC088bEEb1a9480c2d69C847BCeC");
         Thread.sleep(100);
         tokenDiscoveryService = mock(TokenDiscoveryService.class);
-        ethereumBalanceGateway = new EthereumBalanceGateway(ethereumWeb3JGateway,
-                                                            tokenDiscoveryService);
+        ethereumBalanceGateway = new EthereumBalanceGateway(tokenDiscoveryService, new EthereumNativeBalanceStrategy(ethereumWeb3JGateway, tokenDiscoveryService));
     }
 
     @Test
