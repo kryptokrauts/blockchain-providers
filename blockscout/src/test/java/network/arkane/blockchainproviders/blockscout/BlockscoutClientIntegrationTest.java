@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import network.arkane.blockchainproviders.blockscout.dto.BlockscoutToken;
 import network.arkane.provider.token.TokenInfo;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.List;
 
+@Disabled
 class BlockscoutClientIntegrationTest {
 
     private BlockscoutClient client;
