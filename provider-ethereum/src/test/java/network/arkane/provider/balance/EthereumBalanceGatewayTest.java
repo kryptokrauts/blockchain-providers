@@ -36,7 +36,7 @@ class EthereumBalanceGatewayTest {
         when(ethereumWeb3JGateway.getTokenBalance(any(String.class), any(String.class))).thenReturn(BigInteger.valueOf(1000000000000000000L));
         tokenDiscoveryService = mock(TokenDiscoveryService.class);
 
-        balanceGateway = new EthereumBalanceGateway(ethereumWeb3JGateway, tokenDiscoveryService);
+        balanceGateway = new EthereumBalanceGateway(ethereumWeb3JGateway, tokenDiscoveryService, ethereumBalanceStrategy);
     }
 
     @Test

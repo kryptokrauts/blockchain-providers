@@ -7,7 +7,6 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import org.springframework.stereotype.Component;
@@ -15,21 +14,19 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class EthereumBalanceGateway extends BalanceGateway {
 
-    private EthereumWeb3JGateway ethereumWeb3JGateway;
     private final TokenDiscoveryService tokenDiscoveryService;
+    private final EthereumBalanceStrategy ethereumBalanceStrategy;
 
-    public EthereumBalanceGateway(final EthereumWeb3JGateway ethereumWeb3JGateway,
-                                  final TokenDiscoveryService tokenDiscoveryService) {
-        this.ethereumWeb3JGateway = ethereumWeb3JGateway;
+    public EthereumBalanceGateway(final TokenDiscoveryService tokenDiscoveryService,
+                                  EthereumBalanceStrategy ethereumBalanceStrategy) {
         this.tokenDiscoveryService = tokenDiscoveryService;
+        this.ethereumBalanceStrategy = ethereumBalanceStrategy;
     }
 
     @Override
@@ -41,7 +38,8 @@ public class EthereumBalanceGateway extends BalanceGateway {
     @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "ethereum-node")
     public Balance getBalance(final String account) {
         try {
-            final BigInteger balance = ethereumWeb3JGateway.getBalance(account).getBalance();
+            final BigInteger balance = ethereumBalanceStrategy.getBalance(account);
+
             return Balance.builder()
                           .available(true)
                           .rawBalance(balance.toString())
@@ -68,8 +66,9 @@ public class EthereumBalanceGateway extends BalanceGateway {
         return getTokenBalance(walletAddress, tokenInfo);
     }
 
-    private TokenBalance getTokenBalance(final String walletAddress, final TokenInfo tokenInfo) {
-        final BigInteger tokenBalance = ethereumWeb3JGateway.getTokenBalance(walletAddress, tokenInfo.getAddress());
+    private TokenBalance getTokenBalance(final String walletAddress,
+                                         final TokenInfo tokenInfo) {
+        final BigInteger tokenBalance = ethereumBalanceStrategy.getTokenBalance(walletAddress, tokenInfo.getAddress());
         return TokenBalance.builder()
                            .tokenAddress(tokenInfo.getAddress())
                            .rawBalance(tokenBalance.toString())
@@ -84,31 +83,13 @@ public class EthereumBalanceGateway extends BalanceGateway {
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.ETHEREUM));
+        return ethereumBalanceStrategy.getTokenBalances(walletAddress);
     }
 
-    private List<TokenBalance> getTokenBalances(final String walletAddress, final List<TokenInfo> tokenInfo) {
-        final List<BigInteger> balances = ethereumWeb3JGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(TokenInfo::getAddress).collect(Collectors.toList()));
-        final List<TokenBalance> results = new ArrayList<>();
-        for (int i = 0; i < balances.size(); i++) {
-            final TokenInfo token = tokenInfo.get(i);
-            results.add(TokenBalance.builder()
-                                    .tokenAddress(token.getAddress())
-                                    .rawBalance(balances.get(i).toString())
-                                    .balance(calculateBalance(balances.get(i), token))
-                                    .decimals(token.getDecimals())
-                                    .symbol(token.getSymbol())
-                                    .type(token.getType())
-                                    .transferable(token.isTransferable())
-                                    .logo(token.getLogo())
-                                    .build());
-        }
-        return results;
-    }
-
-    private double calculateBalance(final BigInteger tokenBalance, final TokenInfo tokenInfo) {
+    private double calculateBalance(final BigInteger tokenBalance,
+                                    final TokenInfo tokenInfo) {
         final BigDecimal rawBalance = new BigDecimal(tokenBalance);
         final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
-        return rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN).doubleValue();
+        return rawBalance.divide(divider, tokenInfo.getDecimals(), RoundingMode.HALF_DOWN).doubleValue();
     }
 }

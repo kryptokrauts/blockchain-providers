@@ -41,6 +41,10 @@
         </dependency>
         <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
+            <artifactId>blockscout</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>opensea</artifactId>
             <scope>test</scope>
             <type>test-jar</type>
