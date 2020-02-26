@@ -43,7 +43,7 @@ public class MaticNativeBalanceStrategy implements MaticBalanceStrategy {
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.ETHEREUM));
+        return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.MATIC));
     }
 
     private List<TokenBalance> getTokenBalances(final String walletAddress,

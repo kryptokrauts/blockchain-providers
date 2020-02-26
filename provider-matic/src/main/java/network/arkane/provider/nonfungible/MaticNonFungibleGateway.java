@@ -1,7 +1,6 @@
 package network.arkane.provider.nonfungible;
 
 import lombok.SneakyThrows;
-import network.arkane.provider.balance.MaticBlockscoutDiscoveryService;
 import network.arkane.provider.business.token.BusinessNonFungibleGateway;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
@@ -13,13 +12,9 @@ import java.util.List;
 @Service
 public class MaticNonFungibleGateway implements NonFungibleGateway {
 
-    public static final String CONTRACT_TYPE = "ERC-721";
-    private MaticBlockscoutDiscoveryService maticBlockscoutDiscoveryService;
     private BusinessNonFungibleGateway businessNonFungibleGateway;
 
-    public MaticNonFungibleGateway(final MaticBlockscoutDiscoveryService maticBlockscoutDiscoveryService,
-                                   BusinessNonFungibleGateway businessNonFungibleGateway) {
-        this.maticBlockscoutDiscoveryService = maticBlockscoutDiscoveryService;
+    public MaticNonFungibleGateway(BusinessNonFungibleGateway businessNonFungibleGateway) {
         this.businessNonFungibleGateway = businessNonFungibleGateway;
     }
 
