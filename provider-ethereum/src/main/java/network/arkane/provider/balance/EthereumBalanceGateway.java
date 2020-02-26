@@ -109,6 +109,6 @@ public class EthereumBalanceGateway extends BalanceGateway {
     private double calculateBalance(final BigInteger tokenBalance, final TokenInfo tokenInfo) {
         final BigDecimal rawBalance = new BigDecimal(tokenBalance);
         final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
-        return rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN).doubleValue();
+        return rawBalance.divide(divider, tokenInfo.getDecimals(), RoundingMode.HALF_DOWN).doubleValue();
     }
 }
