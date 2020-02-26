@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@ConditionalOnProperty
+@ConditionalOnProperty(value = "blockscout.ethereum.url")
 public class EthereumBlockscoutBalanceStrategy implements EthereumBalanceStrategy {
 
     private BlockscoutClient ethereumBlockscoutClient;
