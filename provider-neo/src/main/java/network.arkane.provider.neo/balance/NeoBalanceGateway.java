@@ -66,7 +66,7 @@ public class NeoBalanceGateway extends BalanceGateway {
                           .balance(PrecisionUtil.toDecimal(neoBalance, 0))
                           .gasBalance(PrecisionUtil.toDecimal(gasBalance, 8))
                           .symbol(NEOAsset.NAME)
-                          .gasSymbol(GASAsset.NAME)
+                          .gasSymbol("GAS")
                           .decimals(8)
                           .build();
         } catch (final Exception ex) {
