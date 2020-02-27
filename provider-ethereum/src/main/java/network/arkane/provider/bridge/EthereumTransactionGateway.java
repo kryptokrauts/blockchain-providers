@@ -53,6 +53,7 @@ public class EthereumTransactionGateway implements TransactionGateway {
                     log.error("Got error from ethereum chain: {}", send.getError().getMessage());
                     throw arkaneException()
                             .errorCode("transaction.submit.ethereum-error")
+                            .message(send.getError().getMessage())
                             .build();
                 }
             } else {
