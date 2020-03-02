@@ -2,6 +2,7 @@ package network.arkane.provider.nonfungible;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.SneakyThrows;
 import network.arkane.provider.contract.ContractCall;
 import network.arkane.provider.contract.ContractCallParam;
@@ -78,15 +79,66 @@ public class MetaDataParser {
             metaDataBuilder.type(metaData.get("type").asText());
         }
 
-        JsonNode properties = null;
-        if (metaData.has("properties")) {
-            properties = metaData.get("properties");
-        } else if (metaData.has("attributes")) {
-            properties = metaData.get("properties");
+        ObjectNode properties = createPropertiesRootNode(metaData);
+
+        if (metaData.has("imageUrl")) {
+            properties.put("image", metaData.get("imageUrl").asText());
         }
+
+        if (metaData.has("url")) {
+            properties.put("url", metaData.get("url").asText());
+        }
+
+        addTokenTypeFieldsToProperties(metaData, properties);
 
         metaDataBuilder.properties(properties);
 
         return metaDataBuilder.build();
+    }
+
+    private void addTokenTypeFieldsToProperties(JsonNode metaData,
+                                                ObjectNode properties) {
+        if (metaData.has("tokenType")) {
+            JsonNode tokenType = metaData.get("tokenType");
+            properties.put("name", tokenType.get("name").asText(""));
+            properties.put("description", tokenType.get("description").asText(""));
+            properties.put("backgroundColor", tokenType.get("backgroundColor").asText(""));
+            if (tokenType.hasNonNull("image")) {
+                properties.put("image", tokenType.get("image").asText(""));
+            }
+        }
+    }
+
+    private ObjectNode createPropertiesRootNode(JsonNode metaData) {
+        ObjectNode properties = null;
+        if (hasStandardProperties(metaData)) {
+            properties = (ObjectNode) metaData.get("properties");
+        } else if (hasAttributesAsProperties(metaData)) {
+            properties = (ObjectNode) metaData.get("properties");
+        } else if (isBusinessToken(metaData)) {
+            if (metaData.get("tokenType").get("properties").isContainerNode()) {
+                properties = (ObjectNode) metaData.get("tokenType").get("properties");
+            } else {
+                properties = objectMapper.createObjectNode();
+                if (!metaData.get("tokenType").get("properties").isNull()) {
+                    properties.set("properties", metaData.get("tokenType").get("properties"));
+                }
+            }
+        } else {
+            properties = objectMapper.createObjectNode();
+        }
+        return properties;
+    }
+
+    private boolean isBusinessToken(JsonNode metaData) {
+        return metaData.has("tokenType");
+    }
+
+    private boolean hasAttributesAsProperties(JsonNode metaData) {
+        return metaData.has("attributes");
+    }
+
+    private boolean hasStandardProperties(JsonNode metaData) {
+        return metaData.has("properties");
     }
 }
