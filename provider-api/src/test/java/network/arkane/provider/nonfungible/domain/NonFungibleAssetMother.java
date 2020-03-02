@@ -43,7 +43,6 @@ public class NonFungibleAssetMother {
                                .imagePreviewUrl("https://cryptoassault.io/units/unit_21.png")
                                .imageThumbnailUrl("https://cryptoassault.io/units/unit_21.png")
                                .url("https://cryptoassault.io/unit/?id=4420")
-                               .owner("0x0239769a1adf4def9f07da824b80b9c4fcb59593")
                                .contract(NonFungibleContract.builder()
                                                             .address("0x31af195db332bc9203d758c74df5a5c5e597cdb7")
                                                             .description(
