@@ -2,12 +2,14 @@ package network.arkane.provider.token;
 
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.gateway.MaticWeb3JGateway;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.Optional;
 
 @Component
+@ConditionalOnMissingBean(BlockscoutMaticTokenDiscoveryService.class)
 public class NativeMaticTokenDiscoveryService implements NativeTokenDiscoveryService {
 
     private MaticWeb3JGateway maticWeb3JGateway;
