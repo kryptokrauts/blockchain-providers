@@ -77,19 +77,6 @@ public class MaticWeb3JGateway {
         }
     }
 
-    public List<BigInteger> getTokenBalances(final String owner,
-                                             final List<String> tokenAddress) {
-        try {
-            return deltaBalances.tokenBalances(owner, tokenAddress);
-        } catch (final Exception ex) {
-            log.error(String.format("Problem trying to get the token balances of %s", owner), ex);
-            throw ArkaneException.arkaneException()
-                                 .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the token balances of %s (Matic)", owner))
-                                 .build();
-        }
-    }
-
     public BigInteger getTokenBalance(final String owner,
                                       final String tokenAddress) {
         try {
