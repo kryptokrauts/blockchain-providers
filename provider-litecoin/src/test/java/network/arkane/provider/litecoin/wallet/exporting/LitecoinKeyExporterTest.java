@@ -10,16 +10,13 @@ import network.arkane.provider.litecoin.secret.generation.LitecoinSecretGenerato
 import network.arkane.provider.litecoin.secret.generation.LitecoinSecretKey;
 import network.arkane.provider.litecoin.wallet.generation.GeneratedLitecoinWallet;
 import network.arkane.provider.litecoin.wallet.generation.LitecoinWalletGenerator;
-import network.arkane.provider.wallet.generation.GeneratedWallet;
 import org.apache.commons.codec.binary.Base64;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.BIP38PrivateKey;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.spongycastle.util.encoders.Hex;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -72,10 +69,10 @@ class LitecoinKeyExporterTest {
         LitecoinWalletGenerator litecoinWalletGenerator = new LitecoinWalletGenerator(new LitecoinEnv(Network.LITECOIN, new LitecoinParams()));
         final GeneratedLitecoinWallet wallet = (GeneratedLitecoinWallet) litecoinWalletGenerator.generateWallet("password", new LitecoinSecretGenerator().generate());
 
-        assertThatThrownBy(
-                () -> litecoinKeyExporter.reconstructKey(new String(Base64.decodeBase64(wallet.secretAsBase64())), "wrong-password")
-        ).hasMessage("Unable to create export format from secret key")
-                .hasFieldOrPropertyWithValue("errorCode", "litecoin.export-error")
-                .isInstanceOf(ArkaneException.class);
+        assertThatThrownBy(() -> litecoinKeyExporter.reconstructKey(new String(Base64.decodeBase64(wallet.secretAsBase64())), "wrong-password"))
+                .isEqualToComparingFieldByField(ArkaneException.arkaneException()
+                                                               .message("Unable to create export format from secret key")
+                                                               .errorCode("export.litecoin")
+                                                               .build());
     }
 }
