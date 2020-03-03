@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 @Service
 public class MaticNonFungibleGateway implements NonFungibleGateway {
 
-    private BlockscoutClient blockscoutClient;
+    private BlockscoutClient maticBlockscoutClient;
     private MetaDataParser metadataParser;
 
-    public MaticNonFungibleGateway(BlockscoutClient blockscoutClient,
+    public MaticNonFungibleGateway(BlockscoutClient maticBlockscoutClient,
                                    MetaDataParser metadataParser) {
-        this.blockscoutClient = blockscoutClient;
+        this.maticBlockscoutClient = maticBlockscoutClient;
         this.metadataParser = metadataParser;
     }
 
@@ -39,15 +39,15 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                                                    final String... contractAddresses) {
         Set<String> contracts = contractAddresses == null ? new HashSet<>() : Arrays.stream(contractAddresses).map(String::toLowerCase).collect(Collectors.toSet());
 
-        return blockscoutClient.getTokenBalances(walletAddress)
-                               .stream()
-                               .filter(t -> t.getType().equalsIgnoreCase("ERC-721") || t.getType().equalsIgnoreCase("ERC-1155"))
-                               .filter(x -> contractAddresses.length == 0 || contracts.contains(x.getContractAddress().toLowerCase()))
-                               .map(t -> t.getType().equalsIgnoreCase("ERC-721")
-                                         ? mapERC721(walletAddress, (ERC721BlockscoutToken) t)
-                                         : mapERC1155(walletAddress, (ERC1155BlockscoutToken) t))
-                               .flatMap(Collection::stream)
-                               .collect(Collectors.toList());
+        return maticBlockscoutClient.getTokenBalances(walletAddress)
+                                    .stream()
+                                    .filter(t -> t.getType().equalsIgnoreCase("ERC-721") || t.getType().equalsIgnoreCase("ERC-1155"))
+                                    .filter(x -> contractAddresses.length == 0 || contracts.contains(x.getContractAddress().toLowerCase()))
+                                    .map(t -> t.getType().equalsIgnoreCase("ERC-721")
+                                              ? mapERC721(walletAddress, (ERC721BlockscoutToken) t)
+                                              : mapERC1155(walletAddress, (ERC1155BlockscoutToken) t))
+                                    .flatMap(Collection::stream)
+                                    .collect(Collectors.toList());
 
     }
 
@@ -127,15 +127,15 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
 
     @Override
     public NonFungibleContract getNonFungibleContract(final String contractAddress) {
-        return blockscoutClient.getTokenInfo(contractAddress)
-                               .map(token -> NonFungibleContract.builder()
-                                                                .type(token.getType())
-                                                                .address(contractAddress)
-                                                                .type(token.getType())
-                                                                .name(token.getName())
-                                                                .symbol(token.getSymbol())
-                                                                .build())
-                               .orElse(null);
+        return maticBlockscoutClient.getTokenInfo(contractAddress)
+                                    .map(token -> NonFungibleContract.builder()
+                                                                     .type(token.getType())
+                                                                     .address(contractAddress)
+                                                                     .type(token.getType())
+                                                                     .name(token.getName())
+                                                                     .symbol(token.getSymbol())
+                                                                     .build())
+                                    .orElse(null);
     }
 
 }
