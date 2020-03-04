@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
@@ -47,7 +48,10 @@ class VechainTransactionGatewayTest {
         transferResult.setId("transferId");
         when(vechainGateway.sendRawTransaction(transactionSignature.getSignedTransaction())).thenThrow(new RuntimeException("error signing"));
 
-        assertThatThrownBy(() -> vechainTransactionGateway.submit(transactionSignature, Optional.empty())).hasMessage(
-                "problem trying to submit transaction to vechain: error signing");
+        assertThatThrownBy(() -> vechainTransactionGateway.submit(transactionSignature, Optional.empty()))
+                .isEqualToComparingFieldByField(arkaneException()
+                                                        .errorCode("transaction.submit.internal-error")
+                                                        .message("problem trying to submit transaction to vechain: error signing")
+                                                        .build());
     }
 }

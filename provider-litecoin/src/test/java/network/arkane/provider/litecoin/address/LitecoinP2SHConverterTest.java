@@ -52,12 +52,11 @@ class LitecoinP2SHConverterTest {
     @Test
     void senderAddressIsNotAcceptableVersion() {
         assertThatThrownBy(() ->
-                converter.convert("1DSfKJ8rPEGW1HkvEnNCozwXB4itn2a4Bh")
+                                   converter.convert("1DSfKJ8rPEGW1HkvEnNCozwXB4itn2a4Bh")
 
-        )
-                .hasMessageStartingWith("Version code of address did not match acceptable versions for network")
-                .hasFieldOrPropertyWithValue("errorCode", "litecoin.address-wrong-network")
-                .isInstanceOf(ArkaneException.class);
+                          ).isEqualToComparingFieldByField(ArkaneException.arkaneException()
+                                                                          .message("Version code of address did not match acceptable versions for network: 0 not in [48, 5, 50]")
+                                                                          .errorCode("litecoin.address-wrong-network")
+                                                                          .build());
     }
-
 }

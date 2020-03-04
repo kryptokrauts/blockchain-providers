@@ -63,4 +63,9 @@ public class ArkaneException extends RuntimeException {
     public boolean hasErrorCode() {
         return errorCode != null;
     }
+
+    @Override
+    public String getMessage() {
+        return this.getTraceCode() + " - " + super.getMessage();
+    }
 }
