@@ -31,7 +31,6 @@ public class OpenSeaAssetToNonFungibleAssetMapper {
                                .imagePreviewUrl(openSeaAsset.getImagePreviewUrl())
                                .imageThumbnailUrl(openSeaAsset.getImageThumbnailUrl())
                                .url(openSeaAsset.getExternalLink())
-                               .owner(openSeaAsset.getOwner() != null ? openSeaAsset.getOwner().getAddress() : null)
                                .contract(contractMapper.map(openSeaAsset.getAssetContract()))
                                .build();
     }

@@ -32,12 +32,21 @@ public class TokenDiscoveryService {
     }
 
     @Cacheable(value = "tokenInfo")
-    public Optional<TokenInfo> getTokenInfo(final SecretType chain, final String tokenAddress) {
+    public Optional<TokenInfo> getTokenInfo(final SecretType chain,
+                                            final String tokenAddress) {
         final Optional<TokenInfo> tokenInfo = Optional.ofNullable(githubTokenDiscoveryService.getTokens().get(chain)).map(t -> t.get(tokenAddress));
-        return tokenInfo.isPresent() ? tokenInfo : fetchFromChain(chain, tokenAddress);
+        return tokenInfo.isPresent() ? tokenInfo : fetchFromExternalService(chain, tokenAddress);
     }
 
-    private Optional<TokenInfo> fetchFromChain(SecretType chain, String tokenAddress) {
+    @Cacheable(value = "tokenInfo-logo")
+    public Optional<String> getTokenLogo(final SecretType chain,
+                                         final String tokenAddress) {
+        return Optional.ofNullable(githubTokenDiscoveryService.getTokens().get(chain))
+                       .map(t -> t.get(tokenAddress)).map(TokenInfo::getLogo);
+    }
+
+    private Optional<TokenInfo> fetchFromExternalService(SecretType chain,
+                                                         String tokenAddress) {
         try {
             return tokenDiscoveryServices.get(chain).getTokenInfo(tokenAddress);
         } catch (Exception e) {
