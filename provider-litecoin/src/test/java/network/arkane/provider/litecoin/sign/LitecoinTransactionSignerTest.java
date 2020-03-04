@@ -8,16 +8,22 @@ import network.arkane.provider.litecoin.bitcoinj.LitecoinParams;
 import network.arkane.provider.litecoin.secret.generation.LitecoinSecretKey;
 import network.arkane.provider.sign.domain.TransactionSignature;
 import org.apache.commons.codec.DecoderException;
-import org.bitcoinj.core.*;
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionInput;
+import org.bitcoinj.core.TransactionOutPoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 class LitecoinTransactionSignerTest {
@@ -36,7 +42,9 @@ class LitecoinTransactionSignerTest {
         litecoinSecretKey = new LitecoinSecretKey(ECKey.fromPrivate(Hex.decode("9d2e1932224ce4e814167da2cebd59882b6d1cc05c6eacf499bf7101e7abd5e9")));
     }
 
-    private TransactionInput createTransactionInput(Transaction result, String txId, int amount) throws DecoderException {
+    private TransactionInput createTransactionInput(Transaction result,
+                                                    String txId,
+                                                    int amount) throws DecoderException {
         return new TransactionInput(
                 new LitecoinParams(),
                 result,
@@ -60,7 +68,8 @@ class LitecoinTransactionSignerTest {
         TransactionSignature result = (TransactionSignature) signer.createSignature(signable, litecoinSecretKey);
 
         assertThat(result.getSignedTransaction())
-                .isEqualTo("01000000022b657d9f83eb75b20ea052e7a5f5c74a4677abbd9f9dc06ab10f1a97163ccf8e010000006b483045022100b94ffeb486336245004ad6e2ec429acf7de26681d9900d001c084b5a149c088c02201cc6a24d2ff8036fc69190f73ce021255fe43db873b74d4d095ea093b01ad2cd8121021d9299de22292257903eb27d4d2a566d0cfccbeec2e91d91a51636e64896996cffffffff2b657d9f83eb75b20ea052e7a5f5c74a4677abbd9f9dc06ab10f1a97163ccf8e010000006b483045022100b94ffeb486336245004ad6e2ec429acf7de26681d9900d001c084b5a149c088c02201cc6a24d2ff8036fc69190f73ce021255fe43db873b74d4d095ea093b01ad2cd8121021d9299de22292257903eb27d4d2a566d0cfccbeec2e91d91a51636e64896996cffffffff01d2040000000000001976a9141cfd04442f72b613c9d2f6ac89d340441dcf955b88ac00000000");
+                .isEqualTo(
+                        "01000000022b657d9f83eb75b20ea052e7a5f5c74a4677abbd9f9dc06ab10f1a97163ccf8e010000006b483045022100b94ffeb486336245004ad6e2ec429acf7de26681d9900d001c084b5a149c088c02201cc6a24d2ff8036fc69190f73ce021255fe43db873b74d4d095ea093b01ad2cd8121021d9299de22292257903eb27d4d2a566d0cfccbeec2e91d91a51636e64896996cffffffff2b657d9f83eb75b20ea052e7a5f5c74a4677abbd9f9dc06ab10f1a97163ccf8e010000006b483045022100b94ffeb486336245004ad6e2ec429acf7de26681d9900d001c084b5a149c088c02201cc6a24d2ff8036fc69190f73ce021255fe43db873b74d4d095ea093b01ad2cd8121021d9299de22292257903eb27d4d2a566d0cfccbeec2e91d91a51636e64896996cffffffff01d2040000000000001976a9141cfd04442f72b613c9d2f6ac89d340441dcf955b88ac00000000");
     }
 
     @Test
@@ -70,9 +79,10 @@ class LitecoinTransactionSignerTest {
                     .thenThrow(new ArkaneException("An error", "error-code"));
 
             signer.createSignature(signable, litecoinSecretKey);
-        }).isInstanceOf(ArkaneException.class)
-                .hasFieldOrPropertyWithValue("errorCode", "error-code")
-                .hasMessage("An error");
+        }).isEqualToComparingFieldByField(ArkaneException.arkaneException()
+                                                         .message("An error")
+                                                         .errorCode("error-code")
+                                                         .build());
     }
 
     @Test
@@ -82,8 +92,9 @@ class LitecoinTransactionSignerTest {
                     .thenThrow(new RuntimeException("An error"));
 
             signer.createSignature(signable, litecoinSecretKey);
-        }).isInstanceOf(ArkaneException.class)
-                .hasFieldOrPropertyWithValue("errorCode", "litecoin.signing-error")
-                .hasMessage("An error occurred trying to sign the litecoin transaction: An error");
+        }).isEqualToComparingFieldByField(ArkaneException.arkaneException()
+                                                         .message("An error occurred trying to sign the litecoin transaction: An error")
+                                                         .errorCode("litecoin.signing-error")
+                                                         .build());
     }
 }
