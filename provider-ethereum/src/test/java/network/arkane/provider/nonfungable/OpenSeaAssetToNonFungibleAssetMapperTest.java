@@ -43,7 +43,7 @@ class OpenSeaAssetToNonFungibleAssetMapperTest {
     void map_noOwner() {
         final Asset asset = AssetMother.aCryptoAssaultAssetBuilder().owner(null).build();
         final NonFungibleContract contract = mock(NonFungibleContract.class);
-        final NonFungibleAsset expected = NonFungibleAssetMother.aCryptoAssaultNonFungibleBuilder().contract(contract).owner(null).build();
+        final NonFungibleAsset expected = NonFungibleAssetMother.aCryptoAssaultNonFungibleBuilder().contract(contract).build();
 
         when(contractMapper.map(asset.getAssetContract())).thenReturn(contract);
 
@@ -58,7 +58,7 @@ class OpenSeaAssetToNonFungibleAssetMapperTest {
         final Asset asset2 = AssetMother.aCryptoAssaultAssetBuilder().owner(null).build();
         final NonFungibleContract contract = mock(NonFungibleContract.class);
         final NonFungibleAsset expected1 = NonFungibleAssetMother.aCryptoAssaultNonFungibleBuilder().contract(contract).build();
-        final NonFungibleAsset expected2 = NonFungibleAssetMother.aCryptoAssaultNonFungibleBuilder().contract(contract).owner(null).build();
+        final NonFungibleAsset expected2 = NonFungibleAssetMother.aCryptoAssaultNonFungibleBuilder().contract(contract).build();
 
         when(contractMapper.map(asset1.getAssetContract())).thenReturn(contract);
         when(contractMapper.map(asset2.getAssetContract())).thenReturn(contract);

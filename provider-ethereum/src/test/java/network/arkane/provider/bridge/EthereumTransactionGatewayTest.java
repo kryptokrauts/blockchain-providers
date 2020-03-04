@@ -79,9 +79,10 @@ class EthereumTransactionGatewayTest {
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
 
         assertThatThrownBy(() -> ethereumTransactionGateway.submit(signTransactionResponse, Optional.empty()))
-                .isInstanceOf(ArkaneException.class)
-                .hasMessage("A problem occurred trying to submit the transaction to the Ethereum network")
-                .hasFieldOrPropertyWithValue("errorCode", "web3j.transaction.submit.internal-error");
+                .isEqualToComparingFieldByField(ArkaneException.arkaneException()
+                                                               .message("A problem occurred trying to submit the transaction to the Ethereum network")
+                                                               .errorCode("web3j.transaction.submit.internal-error")
+                                                               .build());
     }
 
     @SneakyThrows
@@ -98,8 +99,9 @@ class EthereumTransactionGatewayTest {
         when(web3j.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction()))).thenReturn(request);
 
         assertThatThrownBy(() -> ethereumTransactionGateway.submit(signTransactionResponse, Optional.empty()))
-                .isInstanceOf(ArkaneException.class)
-                .hasMessage("The account that initiated the transfer does not have enough energy")
-                .hasFieldOrPropertyWithValue("errorCode", "transaction.insufficient-funds");
+                .isEqualToComparingFieldByField(ArkaneException.arkaneException()
+                                                             .message("The account that initiated the transfer does not have enough energy")
+                                                             .errorCode("transaction.insufficient-funds")
+                                                             .build());
     }
 }

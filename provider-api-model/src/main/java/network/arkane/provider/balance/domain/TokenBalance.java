@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 public class TokenBalance {
     private String tokenAddress;
     private String rawBalance;
-    private double balance;
-    private int decimals;
+    private Double balance;
+    private Integer decimals;
     private String symbol;
     private String logo;
     private String type;
@@ -20,8 +20,8 @@ public class TokenBalance {
     @Builder
     public TokenBalance(String tokenAddress,
                         final String rawBalance,
-                        final double balance,
-                        final int decimals,
+                        final Double balance,
+                        final Integer decimals,
                         final String symbol,
                         final String logo,
                         final String type,

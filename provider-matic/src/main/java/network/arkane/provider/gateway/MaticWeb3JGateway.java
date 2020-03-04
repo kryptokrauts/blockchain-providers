@@ -1,7 +1,6 @@
 package network.arkane.provider.gateway;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.contract.DeltaBalances;
 import network.arkane.provider.contract.ERC1155Token;
 import network.arkane.provider.contract.HumanStandardToken;
 import network.arkane.provider.exceptions.ArkaneException;
@@ -30,7 +29,6 @@ public class MaticWeb3JGateway {
     private static final BigInteger DEFAULT_GAS_LIMIT_FAILED = new BigInteger("200000");
     private final EnsResolver ensResolver;
     private final Web3j web3j;
-    private final DeltaBalances deltaBalances;
 
     public MaticWeb3JGateway(final @Qualifier("maticWeb3j") Web3j maticWeb3j,
                              final String deltaBalancesAddress) {
@@ -39,7 +37,6 @@ public class MaticWeb3JGateway {
         }
         this.web3j = maticWeb3j;
         ensResolver = new EnsResolver(this.web3j);
-        deltaBalances = new DeltaBalances(deltaBalancesAddress, web3j);
     }
 
     public Web3j web3() {
@@ -74,19 +71,6 @@ public class MaticWeb3JGateway {
             return Optional.ofNullable(ensResolver.resolve(ensName));
         } catch (Exception e) {
             return Optional.empty();
-        }
-    }
-
-    public List<BigInteger> getTokenBalances(final String owner,
-                                             final List<String> tokenAddress) {
-        try {
-            return deltaBalances.tokenBalances(owner, tokenAddress);
-        } catch (final Exception ex) {
-            log.error(String.format("Problem trying to get the token balances of %s", owner), ex);
-            throw ArkaneException.arkaneException()
-                                 .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the token balances of %s (Matic)", owner))
-                                 .build();
         }
     }
 

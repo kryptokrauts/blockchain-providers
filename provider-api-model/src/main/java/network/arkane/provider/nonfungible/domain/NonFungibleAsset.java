@@ -8,7 +8,6 @@ public class NonFungibleAsset {
 
     private String id;
     private String tokenId;
-    private String owner;
     private String name;
     private String description;
     private String url;
@@ -20,7 +19,6 @@ public class NonFungibleAsset {
 
     @Builder
     public NonFungibleAsset(final String tokenId,
-                            final String owner,
                             final String name,
                             final String description,
                             final String url,
@@ -31,7 +29,6 @@ public class NonFungibleAsset {
                             final NonFungibleContract contract) {
         this.id = tokenId;
         this.tokenId = tokenId;
-        this.owner = owner;
         this.name = name;
         this.description = description;
         this.url = url;

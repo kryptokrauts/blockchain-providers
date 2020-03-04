@@ -29,6 +29,7 @@
         <module>provider-evm</module>
         <module>provider-neo</module>
         <module>provider-matic</module>
+        <module>blockscout</module>
         <module>blockcypher</module>
         <module>opensea</module>
         <module>arkane-business</module>
@@ -77,6 +78,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.vaadin.external.google</groupId>
+                    <artifactId>android-json</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -129,6 +136,11 @@
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>provider-evm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane.blockchain-providers</groupId>
+                <artifactId>blockscout</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
