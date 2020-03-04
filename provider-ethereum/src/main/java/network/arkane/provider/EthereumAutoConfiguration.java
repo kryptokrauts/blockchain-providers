@@ -1,6 +1,5 @@
 package network.arkane.provider;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
 import network.arkane.provider.opensea.OpenSeaClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +18,8 @@ public class EthereumAutoConfiguration {
 
     @Bean(name = "ethereumBlockscoutClient")
     @ConditionalOnExpression("T(org.apache.commons.lang3.StringUtils).isNotBlank('${blockscout.ethereum.url:}')")
-    public BlockscoutClient ethereumBlockscoutClient(@Value("${blockscout.ethereum.url}") String baseUrl,
-                                                     ObjectMapper objectMapper) {
-        return new BlockscoutClient(baseUrl, objectMapper);
+    public BlockscoutClient ethereumBlockscoutClient(@Value("${blockscout.ethereum.url}") String baseUrl) {
+        return new BlockscoutClient(baseUrl);
     }
 
 }

@@ -1,6 +1,5 @@
 package network.arkane.blockchainproviders.blockscout;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import network.arkane.blockchainproviders.blockscout.dto.BlockscoutToken;
 import network.arkane.provider.token.TokenInfo;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,7 @@ class BlockscoutClientIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        client = new BlockscoutClient("https://blockscout.com/eth/mainnet/api", new ObjectMapper());
+        client = new BlockscoutClient("https://blockscout.com/eth/mainnet/api");
     }
 
     @Test

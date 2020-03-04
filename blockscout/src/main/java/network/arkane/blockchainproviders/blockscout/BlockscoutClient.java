@@ -1,6 +1,7 @@
 package network.arkane.blockchainproviders.blockscout;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -21,8 +22,9 @@ public class BlockscoutClient {
     private RestTemplate restTemplate;
     private ObjectReader blockscoutTokenReader;
 
-    public BlockscoutClient(String baseUrl,
-                            ObjectMapper objectMapper) {
+    public BlockscoutClient(String baseUrl) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         blockscoutTokenReader = objectMapper.readerFor(new TypeReference<List<BlockscoutToken>>() {});
         DefaultUriBuilderFactory defaultUriTemplateHandler = new DefaultUriBuilderFactory(baseUrl);
         restTemplate = new RestTemplateBuilder().uriTemplateHandler(defaultUriTemplateHandler)
