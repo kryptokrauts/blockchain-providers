@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@ConditionalOnExpression("!T(org.springframework.util.StringUtils).isEmpty('${blockscout.ethereum.url:}')")
+@ConditionalOnExpression("T(org.apache.commons.lang3.StringUtils).isNotBlank('${blockscout.ethereum.url:}')")
 public class EthereumBlockscoutBalanceStrategy implements EthereumBalanceStrategy {
 
     private BlockscoutClient ethereumBlockscoutClient;

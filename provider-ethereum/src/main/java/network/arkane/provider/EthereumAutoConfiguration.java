@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
 public class EthereumAutoConfiguration {
 
     @Bean(name = "ethereumBlockscoutClient")
-    @ConditionalOnExpression("!T(org.springframework.util.StringUtils).isEmpty('${blockscout.ethereum.url:}')")
+    @ConditionalOnExpression("T(org.apache.commons.lang3.StringUtils).isNotBlank('${blockscout.ethereum.url:}')")
     public BlockscoutClient ethereumBlockscoutClient(@Value("${blockscout.ethereum.url}") String baseUrl,
                                                      ObjectMapper objectMapper) {
         return new BlockscoutClient(baseUrl, objectMapper);
