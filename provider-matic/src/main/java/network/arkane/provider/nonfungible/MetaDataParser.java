@@ -1,5 +1,6 @@
 package network.arkane.provider.nonfungible;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,9 +24,9 @@ public class MetaDataParser {
     private ObjectMapper objectMapper;
     private MaticContractService maticContractService;
 
-    public MetaDataParser(ObjectMapper objectMapper,
-                          MaticContractService maticContractService) {
-        this.objectMapper = objectMapper;
+    public MetaDataParser(final MaticContractService maticContractService) {
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.maticContractService = maticContractService;
     }
 
