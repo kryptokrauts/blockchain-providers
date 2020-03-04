@@ -6,7 +6,7 @@ import network.arkane.blockchainproviders.blockscout.dto.ERC20BlockscoutToken;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.token.TokenDiscoveryService;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "blockscout.ethereum.url")
+@ConditionalOnExpression("!T(org.springframework.util.StringUtils).isEmpty('${blockscout.ethereum.url:}')")
 public class EthereumBlockscoutBalanceStrategy implements EthereumBalanceStrategy {
 
     private BlockscoutClient ethereumBlockscoutClient;

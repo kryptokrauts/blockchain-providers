@@ -5,7 +5,7 @@ import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
 import network.arkane.provider.opensea.OpenSeaClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
 public class EthereumAutoConfiguration {
 
     @Bean(name = "ethereumBlockscoutClient")
-    @ConditionalOnProperty(value = "blockscout.ethereum.url")
+    @ConditionalOnExpression("!T(org.springframework.util.StringUtils).isEmpty('${blockscout.ethereum.url:}')")
     public BlockscoutClient ethereumBlockscoutClient(@Value("${blockscout.ethereum.url}") String baseUrl,
                                                      ObjectMapper objectMapper) {
         return new BlockscoutClient(baseUrl, objectMapper);
