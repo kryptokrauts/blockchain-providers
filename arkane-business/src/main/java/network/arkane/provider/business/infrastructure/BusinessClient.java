@@ -11,6 +11,7 @@ import java.util.List;
 
 @FeignClient(url = "${feign.client.business.scheme}://${feign.client.business.host}",
              name = "business-client",
+             decode404 = true,
              configuration = BusinessClientConfiguration.class)
 public interface BusinessClient {
 
