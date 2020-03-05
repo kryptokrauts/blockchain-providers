@@ -66,10 +66,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
         NonFungibleContract contract = createContract(token);
         return token.getTokens()
                     .stream()
-                    .map(x -> NonFungibleAsset.builder()
-                                              .contract(contract)
-                                              .tokenId(x.getTokenId().toString())
-                                              .build()
+                    .map(x -> getNonFungibleAsset(x.getTokenId().toString(), contract)
                         )
                     .collect(Collectors.toList());
 
