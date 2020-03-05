@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
 import network.arkane.blockchainproviders.blockscout.dto.ERC1155BlockscoutToken;
 import network.arkane.blockchainproviders.blockscout.dto.ERC721BlockscoutToken;
+import network.arkane.provider.business.token.BusinessNonFungibleGateway;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
@@ -21,11 +22,14 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
 
     private BlockscoutClient maticBlockscoutClient;
     private MetaDataParser metadataParser;
+    private BusinessNonFungibleGateway businessNonFungibleGateway;
 
     public MaticNonFungibleGateway(BlockscoutClient maticBlockscoutClient,
-                                   MetaDataParser metadataParser) {
+                                   MetaDataParser metadataParser,
+                                   BusinessNonFungibleGateway businessNonFungibleGateway) {
         this.maticBlockscoutClient = maticBlockscoutClient;
         this.metadataParser = metadataParser;
+        this.businessNonFungibleGateway = businessNonFungibleGateway;
     }
 
     @Override
@@ -56,17 +60,24 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
         NonFungibleContract contract = createContract(token);
         return token.getTokens()
                     .stream()
-                    .map(x -> getNonFungibleAsset(x.getTokenId().toString(), contract))
+                    .map(x -> getNonFungibleAsset(x.getTokenId().toString(), contract, token))
                     .collect(Collectors.toList());
 
     }
 
     private List<NonFungibleAsset> mapERC1155(final String walletAddress,
                                               ERC1155BlockscoutToken token) {
+
         NonFungibleContract contract = createContract(token);
         return token.getTokens()
                     .stream()
-                    .map(x -> getNonFungibleAsset(x.getTokenId().toString(), contract)
+                    .map(x -> {
+                             if (businessNonFungibleGateway.getNonFungibleContract(SecretType.MATIC, token.getContractAddress()) != null) {
+                                 return businessNonFungibleGateway.getNonFungible(SecretType.MATIC, token.getContractAddress(), x.getTokenId().toString());
+                             } else {
+                                 return getNonFungibleAsset(x.getTokenId().toString(), contract);
+                             }
+                         }
                         )
                     .collect(Collectors.toList());
 
@@ -104,6 +115,29 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
     }
 
     private NonFungibleAsset getNonFungibleAsset(String tokenId,
+                                                 NonFungibleContract contract,
+                                                 ERC721BlockscoutToken token) {
+        NonFungibleMetaData metaData = metadataParser.parseMetaData(tokenId, contract);
+        if (metaData != null) {
+            return NonFungibleAsset.builder()
+                                   .name(metaData.getName())
+                                   .imageUrl(metaData.getImage())
+                                   .imagePreviewUrl(metaData.getImage())
+                                   .imageThumbnailUrl(metaData.getImage())
+                                   .tokenId(tokenId)
+                                   .contract(contract)
+                                   .description(metaData.getDescription())
+                                   .url(metaData.getProperty("url"))
+                                   .build();
+        }
+        return NonFungibleAsset.builder()
+                               .name(token.getName())
+                               .tokenId(tokenId)
+                               .contract(contract)
+                               .build();
+    }
+
+    private NonFungibleAsset getNonFungibleAsset(String tokenId,
                                                  NonFungibleContract contract) {
         NonFungibleMetaData metaData = metadataParser.parseMetaData(tokenId, contract);
         if (metaData != null) {
@@ -118,7 +152,10 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                                    .url(metaData.getProperty("url"))
                                    .build();
         }
-        return null;
+        return NonFungibleAsset.builder()
+                               .tokenId(tokenId)
+                               .contract(contract)
+                               .build();
     }
 
 

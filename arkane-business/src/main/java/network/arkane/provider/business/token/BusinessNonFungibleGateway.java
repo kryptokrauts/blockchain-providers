@@ -5,6 +5,7 @@ import network.arkane.provider.business.token.model.TokenDto;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -47,6 +48,7 @@ public class BusinessNonFungibleGateway {
                                                              .build()).collect(Collectors.toList());
     }
 
+    @Cacheable("business-non-fungible")
     public NonFungibleAsset getNonFungible(final SecretType secretType,
                                            final String contractAddress,
                                            final String tokenId) {
@@ -67,6 +69,7 @@ public class BusinessNonFungibleGateway {
                                .build();
     }
 
+    @Cacheable("business-non-fungible-contract")
     public NonFungibleContract getNonFungibleContract(final SecretType secretType,
                                                       final String contractAddress) {
         final TokenContract contract = businessTokenGateway.getContract(contractAddress);
