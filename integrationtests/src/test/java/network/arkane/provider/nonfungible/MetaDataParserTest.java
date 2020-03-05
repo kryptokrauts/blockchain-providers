@@ -19,7 +19,7 @@ class MetaDataParserTest {
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        parser = new MetaDataParser(objectMapper, mock(MaticContractService.class));
+        parser = new MetaDataParser(mock(MaticContractService.class));
     }
 
     @Test
