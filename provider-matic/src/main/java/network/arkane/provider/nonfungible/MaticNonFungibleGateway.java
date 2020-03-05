@@ -42,7 +42,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
         return maticBlockscoutClient.getTokenBalances(walletAddress)
                                     .stream()
                                     .filter(t -> t.getType().equalsIgnoreCase("ERC-721") || t.getType().equalsIgnoreCase("ERC-1155"))
-                                    .filter(x -> contractAddresses.length == 0 || contracts.contains(x.getContractAddress().toLowerCase()))
+                                    .filter(x -> contractAddresses == null || contractAddresses.length == 0 || contracts.contains(x.getContractAddress().toLowerCase()))
                                     .map(t -> t.getType().equalsIgnoreCase("ERC-721")
                                               ? mapERC721(walletAddress, (ERC721BlockscoutToken) t)
                                               : mapERC1155(walletAddress, (ERC1155BlockscoutToken) t))
