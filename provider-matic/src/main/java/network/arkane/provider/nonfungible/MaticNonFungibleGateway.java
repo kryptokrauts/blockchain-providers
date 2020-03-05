@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,10 +59,12 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
     private List<NonFungibleAsset> mapERC721(final String walletAddress,
                                              ERC721BlockscoutToken token) {
         NonFungibleContract contract = createContract(token);
-        return token.getTokens()
-                    .stream()
-                    .map(x -> getNonFungibleAsset(x.getTokenId().toString(), contract, token))
-                    .collect(Collectors.toList());
+        return token.getTokens() == null
+               ? Collections.emptyList()
+               : token.getTokens()
+                      .stream()
+                      .map(x -> getNonFungibleAsset(x.getTokenId().toString(), contract, token))
+                      .collect(Collectors.toList());
 
     }
 
@@ -69,17 +72,23 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                                               ERC1155BlockscoutToken token) {
 
         NonFungibleContract contract = createContract(token);
-        return token.getTokens()
-                    .stream()
-                    .map(x -> {
-                             if (businessNonFungibleGateway.getNonFungibleContract(SecretType.MATIC, token.getContractAddress()) != null) {
-                                 return businessNonFungibleGateway.getNonFungible(SecretType.MATIC, token.getContractAddress(), x.getTokenId().toString());
-                             } else {
-                                 return getNonFungibleAsset(x.getTokenId().toString(), contract);
-                             }
-                         }
-                        )
-                    .collect(Collectors.toList());
+        return token.getTokens() == null
+               ? Collections.emptyList()
+               : token.getTokens()
+                      .stream()
+                      .map(x -> {
+                               if (businessNonFungibleGateway.getNonFungibleContract(SecretType.MATIC,
+                                                                                     token.getContractAddress())
+                                   != null) {
+                                   return businessNonFungibleGateway.getNonFungible(SecretType.MATIC,
+                                                                                    token.getContractAddress(),
+                                                                                    x.getTokenId().toString());
+                               } else {
+                                   return getNonFungibleAsset(x.getTokenId().toString(), contract);
+                               }
+                           }
+                          )
+                      .collect(Collectors.toList());
 
     }
 
