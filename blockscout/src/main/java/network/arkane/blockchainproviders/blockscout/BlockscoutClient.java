@@ -7,9 +7,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.SneakyThrows;
 import network.arkane.blockchainproviders.blockscout.dto.BlockscoutToken;
+import network.arkane.blockchainproviders.blockscout.dto.BlockscoutTokenBalance;
+import network.arkane.blockchainproviders.blockscout.dto.ERC1155BlockscoutToken;
+import network.arkane.blockchainproviders.blockscout.dto.ERC20BlockscoutToken;
+import network.arkane.blockchainproviders.blockscout.dto.ERC721BlockscoutToken;
 import network.arkane.provider.token.TokenInfo;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
@@ -42,13 +45,37 @@ public class BlockscoutClient {
 
     public BigInteger getTokenBalance(final String walletAddress,
                                       final String tokenAddress) {
-        JsonNode response = restTemplate.getForObject("?module=account&action=tokenbalance&contractaddress={contractAddressHash}&address={addressHash}",
-                                                      JsonNode.class,
-                                                      tokenAddress,
-                                                      walletAddress);
-        String result = response.get("result").asText("0");
-        return new BigInteger(StringUtils.isEmpty(result) ? "0" : result);
+        //        JsonNode response = restTemplate.getForObject("?module=account&action=tokenbalance&contractaddress={contractAddressHash}&address={addressHash}",
+        //                                                      JsonNode.class,
+        //                                                      tokenAddress,
+        //                                                      walletAddress);
+        //        String result = response.get("result").asText("0");
+        //        return new BigInteger(StringUtils.isEmpty(result) ? "0" : result);
 
+        return getTokenBalances(walletAddress)
+                .stream()
+                .filter(x -> x.getContractAddress().equalsIgnoreCase(tokenAddress))
+                .map(this::getTokenCount)
+                .findFirst().orElse(BigInteger.ZERO);
+
+    }
+
+    private BigInteger getTokenCount(BlockscoutToken token) {
+        if (token.getType().equalsIgnoreCase("ERC-20")) {
+            ERC20BlockscoutToken erc20Token = (ERC20BlockscoutToken) token;
+            return erc20Token.getBalance();
+        } else if (token.getType().equalsIgnoreCase("ERC-721")) {
+            ERC721BlockscoutToken erc721Token = (ERC721BlockscoutToken) token;
+            return erc721Token.getTokens() == null
+                   ? BigInteger.ZERO
+                   : erc721Token.getTokens().stream().map(BlockscoutTokenBalance::getBalance).reduce(BigInteger.ZERO, BigInteger::add);
+        } else if (token.getType().equalsIgnoreCase("ERC-1155")) {
+            ERC1155BlockscoutToken erc1155Token = (ERC1155BlockscoutToken) token;
+            return erc1155Token.getTokens() == null
+                   ? BigInteger.ZERO
+                   : erc1155Token.getTokens().stream().map(BlockscoutTokenBalance::getBalance).reduce(BigInteger.ZERO, BigInteger::add);
+        }
+        return BigInteger.ZERO;
     }
 
     @SneakyThrows
