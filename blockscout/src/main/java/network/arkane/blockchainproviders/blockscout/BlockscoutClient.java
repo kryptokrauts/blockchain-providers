@@ -9,6 +9,7 @@ import lombok.SneakyThrows;
 import network.arkane.blockchainproviders.blockscout.dto.BlockscoutToken;
 import network.arkane.provider.token.TokenInfo;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
@@ -45,7 +46,8 @@ public class BlockscoutClient {
                                                       JsonNode.class,
                                                       tokenAddress,
                                                       walletAddress);
-        return new BigInteger(response.get("result").asText("0"));
+        String result = response.get("result").asText("0");
+        return new BigInteger(StringUtils.isEmpty(result) ? "0" : result);
 
     }
 
