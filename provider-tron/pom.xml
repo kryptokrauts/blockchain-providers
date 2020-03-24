@@ -8,7 +8,7 @@
     <parent>
         <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.13.0</version>
+        <version>0.14.0</version>
     </parent>
 
     <dependencies>
@@ -44,11 +44,6 @@
                     <groupId>org.aspectj</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
