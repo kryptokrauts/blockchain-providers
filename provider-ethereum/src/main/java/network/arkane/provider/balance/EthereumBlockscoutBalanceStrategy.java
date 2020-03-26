@@ -50,7 +50,7 @@ public class EthereumBlockscoutBalanceStrategy implements EthereumBalanceStrateg
                                                              .tokenAddress(x.getContractAddress())
                                                              .rawBalance(x.getBalance().toString())
                                                              .balance(calculateBalance(x.getBalance(), x.getDecimals()))
-                                                             .decimals(x.getDecimals())
+                                                             .decimals(x.getDecimals() == null ? 0 : x.getDecimals())
                                                              .symbol(x.getSymbol())
                                                              .type(x.getType())
                                                              .transferable(true)
@@ -63,7 +63,7 @@ public class EthereumBlockscoutBalanceStrategy implements EthereumBalanceStrateg
     private Double calculateBalance(final BigInteger tokenBalance,
                                     Integer decimals) {
         if (decimals == null) {
-            return null;
+            decimals = 0;
         }
         final BigDecimal rawBalance = new BigDecimal(tokenBalance);
         final BigDecimal divider = BigDecimal.valueOf(10).pow(decimals);
