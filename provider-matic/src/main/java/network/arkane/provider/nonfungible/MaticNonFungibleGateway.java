@@ -1,6 +1,7 @@
 package network.arkane.provider.nonfungible;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
 import network.arkane.blockchainproviders.blockscout.dto.ERC1155BlockscoutToken;
 import network.arkane.blockchainproviders.blockscout.dto.ERC721BlockscoutToken;
@@ -19,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class MaticNonFungibleGateway implements NonFungibleGateway {
 
     private BlockscoutClient maticBlockscoutClient;
@@ -77,9 +79,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                : token.getTokens()
                       .stream()
                       .map(x -> {
-                               if (businessNonFungibleGateway.getNonFungibleContract(SecretType.MATIC,
-                                                                                     token.getContractAddress())
-                                   != null) {
+                               if (isBusinessToken(token)) {
                                    return businessNonFungibleGateway.getNonFungible(SecretType.MATIC,
                                                                                     token.getContractAddress(),
                                                                                     x.getTokenId().toString());
@@ -90,6 +90,15 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                           )
                       .collect(Collectors.toList());
 
+    }
+
+    private boolean isBusinessToken(ERC1155BlockscoutToken token) {
+        try {
+            return businessNonFungibleGateway.getNonFungibleContract(SecretType.MATIC, token.getContractAddress()) != null;
+        } catch (Exception e) {
+            log.error("Error getting business contract", e);
+            return false;
+        }
     }
 
     private NonFungibleContract createContract(ERC721BlockscoutToken token) {

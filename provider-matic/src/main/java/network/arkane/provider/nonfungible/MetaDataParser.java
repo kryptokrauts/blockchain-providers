@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.contract.ContractCall;
 import network.arkane.provider.contract.ContractCallParam;
 import network.arkane.provider.contract.ContractCallResultParam;
@@ -14,11 +15,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @Component
+@Slf4j
 public class MetaDataParser {
 
     private ObjectMapper objectMapper;
@@ -35,19 +38,24 @@ public class MetaDataParser {
     @SneakyThrows
     public NonFungibleMetaData parseMetaData(String tokenId,
                                              NonFungibleContract contract) {
-        ContractCall metadataCall = contract.getType().equalsIgnoreCase("ERC-721")
-                                    ? createErc721OwnerCall(contract, tokenId)
-                                    : createErc1155OwnerCall(contract, tokenId);
+        try {
+            ContractCall metadataCall = contract.getType().equalsIgnoreCase("ERC-721")
+                                        ? createErc721UriCall(contract, tokenId)
+                                        : createErc1155UriCall(contract, tokenId);
 
-        List<String> metaDataCallResult = maticContractService.callFunction(metadataCall);
-        if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
-            return parseMetaData(objectMapper.readValue(metaDataCallResult.get(0), JsonNode.class));
+            List<String> metaDataCallResult = maticContractService.callFunction(metadataCall);
+            if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
+                return parseMetaData(objectMapper.readValue(new URL(metaDataCallResult.get(0)), JsonNode.class));
+            }
+        } catch (Exception e) {
+            log.error("Error getting metadata for nonfungible", e);
+            return null;
         }
         return null;
     }
 
-    private ContractCall createErc721OwnerCall(NonFungibleContract contract,
-                                               String tokenId) {
+    private ContractCall createErc721UriCall(NonFungibleContract contract,
+                                             String tokenId) {
         return ContractCall.builder()
                            .contractAddress(contract.getAddress())
                            .functionName("tokenURI")
@@ -56,8 +64,8 @@ public class MetaDataParser {
                            .build();
     }
 
-    private ContractCall createErc1155OwnerCall(NonFungibleContract contract,
-                                                String tokenId) {
+    private ContractCall createErc1155UriCall(NonFungibleContract contract,
+                                              String tokenId) {
         return ContractCall.builder()
                            .contractAddress(contract.getAddress())
                            .functionName("uri")
