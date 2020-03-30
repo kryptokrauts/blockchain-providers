@@ -1,6 +1,5 @@
 package network.arkane.provider.balance;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
@@ -35,7 +34,7 @@ public class EthereumBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "ethereum-node")
+//    @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "ethereum-node")
     public Balance getBalance(final String account) {
         try {
             final BigInteger balance = ethereumBalanceStrategy.getBalance(account);
@@ -52,6 +51,7 @@ public class EthereumBalanceGateway extends BalanceGateway {
                           .decimals(18)
                           .build();
         } catch (final Exception ex) {
+            log.error("Error getting balance for account", ex);
             throw ArkaneException.arkaneException()
                                  .message(String.format("Unable to get the balance for the specified account (%s)", account))
                                  .errorCode("web3.internal-error")
