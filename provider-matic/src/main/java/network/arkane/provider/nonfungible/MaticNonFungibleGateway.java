@@ -173,6 +173,8 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
         return NonFungibleAsset.builder()
                                .tokenId(tokenId)
                                .contract(contract)
+                               .name(tokenId)
+                               .description(contract.getAddress())
                                .build();
     }
 

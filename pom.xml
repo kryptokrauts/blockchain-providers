@@ -5,7 +5,7 @@
 
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane.blockchain-providers</groupId>
-    <version>0.15.0</version>
+    <version>0.16.0</version>
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
@@ -51,7 +51,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <blake2b.version>1.0.0</blake2b.version>
         <unirest-java.version>1.4.9</unirest-java.version>
         <web3j.version>4.5.8</web3j.version>
