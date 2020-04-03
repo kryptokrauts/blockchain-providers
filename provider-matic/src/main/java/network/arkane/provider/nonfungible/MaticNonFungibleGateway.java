@@ -115,6 +115,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
         return NonFungibleContract.builder()
                                   .type("ERC-1155")
                                   .address(token.getContractAddress())
+                                  .name(token.getContractAddress())
                                   .type(token.getType())
                                   .build();
     }
