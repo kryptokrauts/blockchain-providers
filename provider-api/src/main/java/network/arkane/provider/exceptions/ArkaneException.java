@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.UUID;
+
 public class ArkaneException extends RuntimeException {
 
     @Getter
@@ -34,7 +36,7 @@ public class ArkaneException extends RuntimeException {
             return CurrentTraceContext.Default.inheritable().get().traceIdString();
         } catch (final Exception ex) {
             ex.printStackTrace();
-            return null;
+            return UUID.randomUUID().toString();
         }
     }
 
