@@ -42,11 +42,11 @@ public class MaticBlockscoutBalanceStrategy implements MaticBalanceStrategy {
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
         return maticBlockscoutClient.getTokenBalances(walletAddress)
                                     .stream()
-                                    .filter(x -> x.getType().equalsIgnoreCase("erc-20"))
+                                    .filter(x -> "erc-20".equalsIgnoreCase(x.getType()))
                                     .map(x -> (ERC20BlockscoutToken) x)
                                     .map(x -> TokenBalance.builder()
                                                           .tokenAddress(x.getContractAddress())
-                                                          .rawBalance(x.getBalance().toString())
+                                                          .rawBalance(x.getBalance() == null ? "0" : x.getBalance().toString())
                                                           .balance(calculateBalance(x.getBalance(), x.getDecimals()))
                                                           .decimals(x.getDecimals())
                                                           .symbol(x.getSymbol())
@@ -60,8 +60,8 @@ public class MaticBlockscoutBalanceStrategy implements MaticBalanceStrategy {
 
     private Double calculateBalance(final BigInteger tokenBalance,
                                     Integer decimals) {
-        if (decimals == null) {
-            return null;
+        if (decimals == null || tokenBalance == null) {
+            return (double) 0;
         }
         final BigDecimal rawBalance = new BigDecimal(tokenBalance);
         final BigDecimal divider = BigDecimal.valueOf(10).pow(decimals);
