@@ -1,5 +1,4 @@
 package network.arkane.provider.bitcoin.sign;
-
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.bitcoin.BitcoinEnv;
 import network.arkane.provider.bitcoin.secret.generation.BitcoinSecretKey;
@@ -42,9 +41,10 @@ public class BitcoinTransactionSigner implements Signer<BitcoinTransactionSignab
                                                                            .signedTransaction(Hex.encodeHexString(tx.bitcoinSerialize()))
                                                                            .build();
         } catch (final ArkaneException ex) {
-            log.error(ex.getMessage());
+            log.error(ex.getMessage(), ex);
             throw ex;
         } catch (final Exception ex) {
+            log.error("Error creating bitcoin tx: {}", signable.toString());
             log.error(ex.getMessage());
             throw ArkaneException.arkaneException()
                                  .errorCode("bitcoin.signing-error")

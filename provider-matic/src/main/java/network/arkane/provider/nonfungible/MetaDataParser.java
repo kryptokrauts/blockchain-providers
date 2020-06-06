@@ -78,29 +78,32 @@ public class MetaDataParser {
     @SneakyThrows
     public NonFungibleMetaData parseMetaData(JsonNode metaData) {
         NonFungibleMetaData.NonFungibleMetaDataBuilder metaDataBuilder = NonFungibleMetaData.builder();
-        if (metaData.has("title")) {
-            metaDataBuilder.title(metaData.get("title").asText());
+
+        ObjectNode tokenMetaData = createPropertiesRootNode(metaData);
+
+        if (metaData.hasNonNull("imageUrl")) {
+            tokenMetaData.put("image", metaData.get("imageUrl").asText());
         }
-        if (metaData.has("type")) {
-            metaDataBuilder.type(metaData.get("type").asText());
+        if (metaData.hasNonNull("image")) {
+            tokenMetaData.put("image", metaData.get("image").asText());
         }
-        if (metaData.has("type")) {
-            metaDataBuilder.type(metaData.get("type").asText());
+        if (metaData.hasNonNull("name")) {
+            tokenMetaData.put("name", metaData.get("name").asText());
+        }
+        if (metaData.hasNonNull("background_color")) {
+            tokenMetaData.put("backgroundColor", metaData.get("background_color").asText());
+        }
+        if (metaData.hasNonNull("backgroundColor")) {
+            tokenMetaData.put("backgroundColor", metaData.get("backgroundColor").asText());
         }
 
-        ObjectNode properties = createPropertiesRootNode(metaData);
-
-        if (metaData.has("imageUrl")) {
-            properties.put("image", metaData.get("imageUrl").asText());
+        if (metaData.hasNonNull("url")) {
+            tokenMetaData.put("url", metaData.get("url").asText());
         }
 
-        if (metaData.has("url")) {
-            properties.put("url", metaData.get("url").asText());
-        }
+        addTokenTypeFieldsToProperties(metaData, tokenMetaData);
 
-        addTokenTypeFieldsToProperties(metaData, properties);
-
-        metaDataBuilder.properties(properties);
+        metaDataBuilder.properties(tokenMetaData);
 
         return metaDataBuilder.build();
     }
@@ -123,7 +126,7 @@ public class MetaDataParser {
         if (hasStandardProperties(metaData)) {
             properties = (ObjectNode) metaData.get("properties");
         } else if (hasAttributesAsProperties(metaData)) {
-            properties = (ObjectNode) metaData.get("properties");
+            properties = (ObjectNode) metaData.get("attributes");
         } else if (isBusinessToken(metaData)) {
             if (metaData.get("tokenType").get("properties").isContainerNode()) {
                 properties = (ObjectNode) metaData.get("tokenType").get("properties");

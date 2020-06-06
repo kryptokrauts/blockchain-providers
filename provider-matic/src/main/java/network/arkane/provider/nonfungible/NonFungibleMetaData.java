@@ -13,8 +13,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class NonFungibleMetaData {
-    private String title;
-    private String type;
+    private String name;
+    private String description;
+    private String image;
     private JsonNode properties;
 
     public String getProperty(String propertyName) {
