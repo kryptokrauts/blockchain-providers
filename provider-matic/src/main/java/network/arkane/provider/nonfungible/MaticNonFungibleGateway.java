@@ -51,15 +51,14 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                                     .filter(t -> t.getType().equalsIgnoreCase("ERC-721") || t.getType().equalsIgnoreCase("ERC-1155"))
                                     .filter(x -> contractAddresses == null || contractAddresses.length == 0 || contracts.contains(x.getContractAddress().toLowerCase()))
                                     .map(t -> t.getType().equalsIgnoreCase("ERC-721")
-                                              ? mapERC721(walletAddress, (ERC721BlockscoutToken) t)
-                                              : mapERC1155(walletAddress, (ERC1155BlockscoutToken) t))
+                                              ? mapERC721((ERC721BlockscoutToken) t)
+                                              : mapERC1155((ERC1155BlockscoutToken) t))
                                     .flatMap(Collection::stream)
                                     .collect(Collectors.toList());
 
     }
 
-    private List<NonFungibleAsset> mapERC721(final String walletAddress,
-                                             ERC721BlockscoutToken token) {
+    private List<NonFungibleAsset> mapERC721(ERC721BlockscoutToken token) {
         NonFungibleContract contract = createContract(token);
         return token.getTokens() == null
                ? Collections.emptyList()
@@ -70,8 +69,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
 
     }
 
-    private List<NonFungibleAsset> mapERC1155(final String walletAddress,
-                                              ERC1155BlockscoutToken token) {
+    private List<NonFungibleAsset> mapERC1155(ERC1155BlockscoutToken token) {
 
         NonFungibleContract contract = createContract(token);
         return token.getTokens() == null
@@ -79,7 +77,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                : token.getTokens()
                       .stream()
                       .map(x -> {
-                               if (isBusinessToken(token)) {
+                               if (isBusinessToken(token.getContractAddress())) {
                                    return businessNonFungibleGateway.getNonFungible(SecretType.MATIC,
                                                                                     token.getContractAddress(),
                                                                                     x.getTokenId().toString());
@@ -92,9 +90,9 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
 
     }
 
-    private boolean isBusinessToken(ERC1155BlockscoutToken token) {
+    private boolean isBusinessToken(String contractAddress) {
         try {
-            return businessNonFungibleGateway.getNonFungibleContract(SecretType.MATIC, token.getContractAddress()) != null;
+            return businessNonFungibleGateway.getNonFungibleContract(SecretType.MATIC, contractAddress) != null;
         } catch (Exception e) {
             log.error("Error getting business contract", e);
             return false;
@@ -115,6 +113,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
         return NonFungibleContract.builder()
                                   .type("ERC-1155")
                                   .address(token.getContractAddress())
+                                  .name(token.getContractAddress())
                                   .type(token.getType())
                                   .build();
     }
@@ -126,6 +125,11 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
 
         NonFungibleContract contract = getNonFungibleContract(contractAddress);
         if (contract != null) {
+            if (isBusinessToken(contract.getAddress())) {
+                return businessNonFungibleGateway.getNonFungible(SecretType.MATIC,
+                                                                 contract.getAddress(),
+                                                                 tokenId);
+            }
             return getNonFungibleAsset(tokenId, contract);
         }
         return null;
