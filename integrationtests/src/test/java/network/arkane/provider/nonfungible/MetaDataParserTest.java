@@ -41,8 +41,6 @@ class MetaDataParserTest {
         assertThat(result.getProperties().toString()).isEqualToIgnoringCase("{\"name\":\"cryptopups\",\"description\":\"cryptopuppies\",\"image\":\"https://via.placeholder"
                                                                             + ".com/150\"}");
 
-        assertThat(result.getTitle()).isEqualTo("Asset Metadata");
-        assertThat(result.getType()).isEqualTo("object");
         assertThat(result.getName()).isEqualTo("cryptopups");
         assertThat(result.getDescription()).isEqualTo("cryptopuppies");
         assertThat(result.getImage()).isEqualTo("https://via.placeholder.com/150");
@@ -73,8 +71,6 @@ class MetaDataParserTest {
                                                                             + ".com/150\",\"properties\":{\"arrayProperty\":[\"a\",\"b\",\"c\"],\"anotherProperty\":\"aa\","
                                                                             + "\"yaProperty\":3}}");
 
-        assertThat(result.getTitle()).isEqualTo("Asset Metadata");
-        assertThat(result.getType()).isEqualTo("object");
         assertThat(result.getName()).isEqualTo("cryptopups");
         assertThat(result.getDescription()).isEqualTo("cryptopuppies");
         assertThat(result.getImage()).isEqualTo("https://via.placeholder.com/150");
@@ -113,17 +109,15 @@ class MetaDataParserTest {
 
         assertThat(result.getProperties().toString()).isEqualToIgnoringCase("{\"properties\":\"\",\"image\":\"https://upload.wikimedia"
                                                                             + ".org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29"
-                                                                            + ".jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg\",\"name\":\"Lockheed AC-130\","
-                                                                            + "\"description\":\"The Lockheed AC-130 gunship is a heavily armed, long-endurance, ground-attack "
-                                                                            + "variant of the C-130 Hercules transport, fixed-wing aircraft. It carries a wide array of ground "
-                                                                            + "attack weapons that are integrated with sophisticated sensors, navigation, and fire-control "
-                                                                            + "systems. Unlike other modern military fixed-wing aircraft, the AC-130 relies on visual targeting. "
-                                                                            + "Because its large profile and low operating altitudes of approximately 7,000 feet (2,100 m) make "
-                                                                            + "it an easy target, its close air support missions are usually flown at night.\","
-                                                                            + "\"backgroundColor\":\"#c8e2eb\"}");
+                                                                            + ".jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg\",\"backgroundColor\":\"#c8e2eb\","
+                                                                            + "\"name\":\"Lockheed AC-130\",\"description\":\"The Lockheed AC-130 gunship is a heavily armed, "
+                                                                            + "long-endurance, ground-attack variant of the C-130 Hercules transport, fixed-wing aircraft. It "
+                                                                            + "carries a wide array of ground attack weapons that are integrated with sophisticated sensors, "
+                                                                            + "navigation, and fire-control systems. Unlike other modern military fixed-wing aircraft, the AC-130"
+                                                                            + " relies on visual targeting. Because its large profile and low operating altitudes of "
+                                                                            + "approximately 7,000 feet (2,100 m) make it an easy target, its close air support missions are "
+                                                                            + "usually flown at night.\"}");
 
-        assertThat(result.getTitle()).isNull();
-        assertThat(result.getType()).isNull();
         assertThat(result.getName()).isEqualTo("Lockheed AC-130");
         assertThat(result.getDescription()).isEqualTo(
                 "The Lockheed AC-130 gunship is a heavily armed, long-endurance, ground-attack variant of the C-130 Hercules transport, fixed-wing aircraft. It carries a wide "
