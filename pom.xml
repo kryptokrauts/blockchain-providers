@@ -71,6 +71,7 @@
         <guava.version>27.0.1-jre</guava.version>
         <arkane-common.version>0.0.1-SNAPSHOT</arkane-common.version>
         <spring-cloud-sleuth.version>2.1.6.RELEASE</spring-cloud-sleuth.version>
+        <okhttp3.version>4.7.2</okhttp3.version>
     </properties>
 
     <dependencies>
@@ -127,16 +128,26 @@
                 <version>${spring-cloud-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.squareup.okhttp3</groupId>
+                        <artifactId>okhttp</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.squareup.okhttp3</groupId>
+                        <artifactId>logging-interceptor</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
-                <version>4.7.2</version>
+                <version>${okhttp3.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>logging-interceptor</artifactId>
-                <version>4.7.2</version>
+                <version>${okhttp3.version}</version>
             </dependency>
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
