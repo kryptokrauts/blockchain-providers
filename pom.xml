@@ -54,7 +54,7 @@
         <java.version>11</java.version>
         <blake2b.version>1.0.0</blake2b.version>
         <unirest-java.version>1.4.9</unirest-java.version>
-        <web3j.version>4.5.8</web3j.version>
+        <web3j.version>4.6.0</web3j.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <commons-codec.version>1.11</commons-codec.version>
         <jackson.version>2.9.8</jackson.version>
