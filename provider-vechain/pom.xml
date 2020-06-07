@@ -18,10 +18,6 @@
         </dependency>
         <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
-            <artifactId>provider-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-evm</artifactId>
         </dependency>
         <dependency>
@@ -47,9 +43,29 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane.blockchain-providers</groupId>
+            <artifactId>provider-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>okhttp</artifactId>
+                    <groupId>com.squareup.okhttp3</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-api</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>okhttp</artifactId>
+                    <groupId>com.squareup.okhttp3</groupId>
+                </exclusion>
+            </exclusions>
             <type>test-jar</type>
         </dependency>
     </dependencies>
