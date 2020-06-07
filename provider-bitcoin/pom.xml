@@ -38,6 +38,16 @@
             <groupId>org.bitcoinj</groupId>
             <artifactId>bitcoinj-core</artifactId>
             <version>${bitcoinj.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>okio</artifactId>
+                    <groupId>com.squareup.okio</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <artifactId>okio</artifactId>
+            <groupId>com.squareup.okio</groupId>
         </dependency>
         <dependency>
             <groupId>com.github.briandilley.jsonrpc4j</groupId>

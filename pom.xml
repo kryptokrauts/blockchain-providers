@@ -137,6 +137,10 @@
                         <groupId>com.squareup.okhttp3</groupId>
                         <artifactId>logging-interceptor</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.squareup.okio</groupId>
+                        <artifactId>okio</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -148,6 +152,11 @@
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>logging-interceptor</artifactId>
                 <version>${okhttp3.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>okio</artifactId>
+                <groupId>com.squareup.okio</groupId>
+                <version>2.6.0</version>
             </dependency>
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
