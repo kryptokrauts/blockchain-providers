@@ -43,6 +43,21 @@
                     <artifactId>okio</artifactId>
                     <groupId>com.squareup.okio</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.squareup.okhttp</groupId>
+                    <artifactId>okhttp</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>2.7.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>okio</artifactId>
+                    <groupId>com.squareup.okio</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
