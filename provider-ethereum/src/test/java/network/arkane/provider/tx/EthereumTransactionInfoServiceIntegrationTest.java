@@ -28,21 +28,13 @@ class EthereumTransactionInfoServiceIntegrationTest {
     }
 
     @Test
+    @Disabled
     void getFailed() {
-        EthereumTxInfo transaction = ethereumTransactionInfoService.getTransaction("0x67ec3acc5274a88c50d1e79e9b9d4c2c3d5e0e3ba3cc33b32d65f3fdb3b5a258");
+        EthereumTxInfo transaction = ethereumTransactionInfoService.getTransaction("0xc5178498b5c226d9f7e2f5086f72bf0e4f4d87e097c4e517f1bec128580fd537");
 
-        assertThat(transaction.getFrom()).isEqualTo("0xfbd28a75d7593cc9b934878673a1bfc13831ae6f");
-        assertThat(transaction.getTo()).isEqualTo("0xc6725ae749677f21e4d8f85f41cfb6de49b9db29");
-        assertThat(transaction.getGas()).isEqualTo(new BigInteger("667749"));
-        assertThat(transaction.getGasUsed()).isEqualTo(new BigInteger("441825"));
-        assertThat(transaction.getGasPrice()).isEqualTo(new BigInteger("5000000000"));
-        assertThat(transaction.getLogs()).isEmpty();
-        assertThat(transaction.getHash()).isEqualTo("0x67ec3acc5274a88c50d1e79e9b9d4c2c3d5e0e3ba3cc33b32d65f3fdb3b5a258");
+        assertThat(transaction.getFrom()).isEqualTo("0xc892a4dc36ffd6244d29f0cec1dd222eb92cfb71");
         assertThat(transaction.getStatus()).isEqualTo(TxStatus.FAILED);
         assertThat(transaction.getConfirmations()).isNotZero();
-        assertThat(transaction.getBlockHash()).isEqualTo("0xa120e48f33f960b1c3c2e6c5a1c1326e73064596005c76889d846854520bcfe0");
-        assertThat(transaction.getBlockNumber()).isEqualTo(new BigInteger("5602146"));
-
     }
 
     @Test
