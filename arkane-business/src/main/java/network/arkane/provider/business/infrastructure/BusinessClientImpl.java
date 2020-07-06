@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import network.arkane.provider.business.token.model.TokenContract;
 import network.arkane.provider.business.token.model.TokenDto;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+@Component
 public class BusinessClientImpl implements BusinessClient {
 
     private RestTemplate restTemplate;
