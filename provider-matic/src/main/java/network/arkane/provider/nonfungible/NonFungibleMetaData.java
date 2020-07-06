@@ -8,14 +8,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Builder
 @Data
 public class NonFungibleMetaData {
-    private String name;
-    private String description;
-    private String image;
     private JsonNode properties;
 
     public String getProperty(String propertyName) {
@@ -39,6 +38,10 @@ public class NonFungibleMetaData {
 
     public String getImage() {
         return getProperty("image");
+    }
+
+    public Optional<Long> getTokenTypeId() {
+        return Optional.ofNullable(getProperty("tokenTypeId")).map(Long::parseLong);
     }
 
     public void setName(String name) {

@@ -142,7 +142,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
     private NonFungibleAsset getNonFungibleAsset(String tokenId,
                                                  NonFungibleContract contract,
                                                  ERC721BlockscoutToken token) {
-        NonFungibleMetaData metaData = metadataParser.parseMetaData(tokenId, contract);
+        NonFungibleMetaData metaData = metadataParser.parseMetaData(tokenId, contract.getType(), contract.getAddress());
         if (metaData != null) {
             return NonFungibleAsset.builder()
                                    .name(metaData.getName())
@@ -164,7 +164,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
 
     private NonFungibleAsset getNonFungibleAsset(String tokenId,
                                                  NonFungibleContract contract) {
-        NonFungibleMetaData metaData = metadataParser.parseMetaData(tokenId, contract);
+        NonFungibleMetaData metaData = metadataParser.parseMetaData(tokenId, contract.getType(), contract.getAddress());
         if (metaData != null) {
             return NonFungibleAsset.builder()
                                    .name(metaData.getName())
