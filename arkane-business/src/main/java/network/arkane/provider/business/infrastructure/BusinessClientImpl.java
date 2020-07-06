@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import network.arkane.provider.business.token.model.TokenContract;
 import network.arkane.provider.business.token.model.TokenDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -22,10 +23,11 @@ public class BusinessClientImpl implements BusinessClient {
 
     private RestTemplate restTemplate;
 
-    public BusinessClientImpl(String baseUrl) {
+    public BusinessClientImpl(@Value("${feign.client.business.scheme}") String businessScheme,
+                              @Value("${feign.client.business.host}") String businessHost) {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        DefaultUriBuilderFactory defaultUriTemplateHandler = new DefaultUriBuilderFactory(baseUrl);
+        DefaultUriBuilderFactory defaultUriTemplateHandler = new DefaultUriBuilderFactory(businessScheme + "://" + businessHost);
         restTemplate = new RestTemplateBuilder().uriTemplateHandler(defaultUriTemplateHandler)
                                                 .defaultMessageConverters()
                                                 .setConnectTimeout(Duration.ofSeconds(2))

@@ -16,7 +16,7 @@ class MaticInventoryServiceIntegrationTest {
     void setUp() {
 
         inventoryService = new MaticInventoryService(new BlockscoutClient("https://explorer-testnet2-matic.arkane.network/api"),
-                                                     new BusinessTokenGateway(new BusinessClientImpl("https://api-business-qa.arkane.network/")));
+                                                     new BusinessTokenGateway(new BusinessClientImpl("https", "api-business-qa.arkane.network")));
     }
 
     @Test
