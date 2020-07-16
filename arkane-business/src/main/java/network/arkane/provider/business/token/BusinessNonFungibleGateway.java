@@ -5,6 +5,7 @@ import network.arkane.provider.business.token.model.TokenDto;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +28,10 @@ public class BusinessNonFungibleGateway {
                                                    final String... contractAddresses) {
         return businessTokenGateway.getTokensForAddress(walletId)
                                    .stream()
+                                   .filter(x -> x != null && x.getTokenType() != null)
                                    .filter(x -> x.getTokenType().isNf())
                                    .map(x -> NonFungibleAsset.builder()
-                                                             .tokenId(x.getContractTokenId().toString())
+                                                             .tokenId(StringUtils.defaultIfEmpty(x.getContractTokenId().toString(), null))
                                                              .contract(
                                                                      NonFungibleContract.builder()
                                                                                         .name(x.getTokenType().getTokenContract().getName())
