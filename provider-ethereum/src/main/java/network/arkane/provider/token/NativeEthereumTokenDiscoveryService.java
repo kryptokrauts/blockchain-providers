@@ -2,14 +2,12 @@ package network.arkane.provider.token;
 
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.Optional;
 
 @Component
-@ConditionalOnMissingBean(BlockscoutEthereumTokenDiscoveryService.class)
 public class NativeEthereumTokenDiscoveryService implements NativeTokenDiscoveryService {
 
     private EthereumWeb3JGateway ethereumWeb3JGateway;
