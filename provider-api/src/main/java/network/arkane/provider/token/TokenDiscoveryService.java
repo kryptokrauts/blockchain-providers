@@ -31,7 +31,7 @@ public class TokenDiscoveryService {
         return new ArrayList<>(tokens.values());
     }
 
-    @Cacheable(value = "tokenInfo", unless = "#result.isEmpty()")
+    @Cacheable(value = "tokenInfo", unless = "#result == null")
     public Optional<TokenInfo> getTokenInfo(final SecretType chain,
                                             final String tokenAddress) {
         final Optional<TokenInfo> tokenInfo = Optional.ofNullable(githubTokenDiscoveryService.getTokens().get(chain)).map(t -> t.get(tokenAddress));
