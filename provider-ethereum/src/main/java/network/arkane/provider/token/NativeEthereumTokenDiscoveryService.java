@@ -29,6 +29,7 @@ public class NativeEthereumTokenDiscoveryService implements NativeTokenDiscovery
                                         .decimals(decimals.intValue())
                                         .symbol(symbol)
                                         .type("ERC20")
+                                        .transferable(true)
                                         .build());
         } else {
             return Optional.empty();
