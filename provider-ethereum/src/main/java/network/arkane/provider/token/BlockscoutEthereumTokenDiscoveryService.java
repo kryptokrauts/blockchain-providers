@@ -2,11 +2,13 @@ package network.arkane.provider.token;
 
 import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
 import network.arkane.provider.chain.SecretType;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-//@Component("blockscoutEthereumTokenDiscoveryService")
-//@ConditionalOnBean(name = "ethereumBlockscoutClient")
+@Component("blockscoutEthereumTokenDiscoveryService")
+@ConditionalOnExpression("T(org.apache.commons.lang3.StringUtils).isNotBlank('${blockscout.ethereum.url:}')")
 public class BlockscoutEthereumTokenDiscoveryService implements NativeTokenDiscoveryService {
 
     private BlockscoutClient ethereumBlockscoutClient;
