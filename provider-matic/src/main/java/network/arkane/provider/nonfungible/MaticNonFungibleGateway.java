@@ -11,6 +11,7 @@ import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,9 +49,9 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
 
         return maticBlockscoutClient.getTokenBalances(walletAddress)
                                     .stream()
-                                    .filter(t -> t.getType().equalsIgnoreCase("ERC-721") || t.getType().equalsIgnoreCase("ERC-1155"))
+                                    .filter(t -> t.getType().endsWith("721") || t.getType().endsWith("1155"))
                                     .filter(x -> contractAddresses == null || contractAddresses.length == 0 || contracts.contains(x.getContractAddress().toLowerCase()))
-                                    .map(t -> t.getType().equalsIgnoreCase("ERC-721")
+                                    .map(t -> t.getType().endsWith("721")
                                               ? mapERC721((ERC721BlockscoutToken) t)
                                               : mapERC1155((ERC1155BlockscoutToken) t))
                                     .flatMap(Collection::stream)
@@ -64,6 +65,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                ? Collections.emptyList()
                : token.getTokens()
                       .stream()
+                      .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
                       .map(x -> getNonFungibleAsset(x.getTokenId().toString(), contract, token))
                       .collect(Collectors.toList());
 
@@ -76,6 +78,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                ? Collections.emptyList()
                : token.getTokens()
                       .stream()
+                      .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
                       .map(x -> {
                                if (isBusinessToken(token.getContractAddress())) {
                                    return businessNonFungibleGateway.getNonFungible(SecretType.MATIC,
@@ -139,7 +142,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
     private NonFungibleAsset getNonFungibleAsset(String tokenId,
                                                  NonFungibleContract contract,
                                                  ERC721BlockscoutToken token) {
-        NonFungibleMetaData metaData = metadataParser.parseMetaData(tokenId, contract);
+        NonFungibleMetaData metaData = metadataParser.parseMetaData(tokenId, contract.getType(), contract.getAddress());
         if (metaData != null) {
             return NonFungibleAsset.builder()
                                    .name(metaData.getName())
@@ -161,7 +164,7 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
 
     private NonFungibleAsset getNonFungibleAsset(String tokenId,
                                                  NonFungibleContract contract) {
-        NonFungibleMetaData metaData = metadataParser.parseMetaData(tokenId, contract);
+        NonFungibleMetaData metaData = metadataParser.parseMetaData(tokenId, contract.getType(), contract.getAddress());
         if (metaData != null) {
             return NonFungibleAsset.builder()
                                    .name(metaData.getName())

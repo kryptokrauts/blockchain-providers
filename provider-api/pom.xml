@@ -8,7 +8,7 @@
     <parent>
         <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.19.0</version>
+        <version>0.20.0</version>
     </parent>
 
     <dependencies>
@@ -33,6 +33,24 @@
         <dependency>
             <groupId>org.web3j</groupId>
             <artifactId>core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>kotlin-stdlib</artifactId>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>logging-interceptor</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

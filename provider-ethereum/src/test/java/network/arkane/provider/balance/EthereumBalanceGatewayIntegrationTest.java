@@ -3,6 +3,8 @@ package network.arkane.provider.balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
+import network.arkane.provider.token.GithubTokenDiscoveryService;
+import network.arkane.provider.token.NativeEthereumTokenDiscoveryService;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
@@ -22,14 +26,18 @@ class EthereumBalanceGatewayIntegrationTest {
     private EthereumWeb3JGateway ethereumWeb3JGateway;
     private EthereumBalanceGateway ethereumBalanceGateway;
     private TokenDiscoveryService tokenDiscoveryService;
+    private GithubTokenDiscoveryService githubTokenDiscoveryService;
 
     @BeforeEach
     void setUp() throws InterruptedException {
-        web3j = Web3j.build(new HttpService("https://ethereum.arkane.network"));
+        web3j = Web3j.build(new HttpService("https://kovan.arkane.network"));
         ethereumWeb3JGateway = new EthereumWeb3JGateway(web3j, "0x40a38911e470fC088bEEb1a9480c2d69C847BCeC");
         Thread.sleep(100);
         tokenDiscoveryService = mock(TokenDiscoveryService.class);
-        ethereumBalanceGateway = new EthereumBalanceGateway(tokenDiscoveryService, new EthereumNativeBalanceStrategy(ethereumWeb3JGateway, tokenDiscoveryService));
+        githubTokenDiscoveryService = mock(GithubTokenDiscoveryService.class);
+        ethereumBalanceGateway = new EthereumBalanceGateway(new TokenDiscoveryService(githubTokenDiscoveryService,
+                                                                                      Collections.singletonList(new NativeEthereumTokenDiscoveryService(ethereumWeb3JGateway))),
+                                                            new EthereumNativeBalanceStrategy(ethereumWeb3JGateway, tokenDiscoveryService));
     }
 
     @Test
@@ -43,6 +51,15 @@ class EthereumBalanceGatewayIntegrationTest {
                                                                                                                     .transferable(true)
                                                                                                                     .type("ERC20")
                                                                                                                     .build()));
+
+        TokenBalance result = ethereumBalanceGateway.getTokenBalance("0xd4245b14ea0a885dbea5aa678dd5aba62505e36c", tokenAddress);
+        System.out.println(result);
+    }
+
+    @Test
+    void getWeenus() {
+        String tokenAddress = "0xaFF4481D10270F50f203E0763e2597776068CBc5";
+        when(githubTokenDiscoveryService.getTokens()).thenReturn(new HashMap<>());
 
         TokenBalance result = ethereumBalanceGateway.getTokenBalance("0xd4245b14ea0a885dbea5aa678dd5aba62505e36c", tokenAddress);
         System.out.println(result);

@@ -1,5 +1,6 @@
 package network.arkane.provider.aeternity.sign;
 
+import com.kryptokrauts.aeternity.sdk.domain.StringResultWrapper;
 import com.kryptokrauts.aeternity.sdk.domain.secret.impl.BaseKeyPair;
 import com.kryptokrauts.aeternity.sdk.exception.TransactionCreateException;
 import com.kryptokrauts.aeternity.sdk.service.aeternity.impl.AeternityService;
@@ -39,12 +40,12 @@ public class AeternitySpendTransactionSigner implements
         // the fee is optional because the SDK can calculate it automatically
         .fee(signable.getFee())
         .build();
-    String unsignedTx = aeternityService.transactions
+    StringResultWrapper unsignedTx = aeternityService.transactions
         .blockingCreateUnsignedTransaction(spendTransactionModel);
     BaseKeyPair baseKeyPair = EncodingUtils.createBaseKeyPair(key.getKeyPair());
     try {
       String signedTx = aeternityService.transactions
-          .signTransaction(unsignedTx, baseKeyPair.getPrivateKey());
+          .signTransaction(unsignedTx.getResult(), baseKeyPair.getPrivateKey());
       return TransactionSignature.signTransactionBuilder().signedTransaction(signedTx).build();
     } catch (TransactionCreateException e) {
       log.error("Unable to sign transaction: {}", e.getMessage());

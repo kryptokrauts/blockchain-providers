@@ -18,4 +18,8 @@ public class BlockscoutTokenBalance {
     private BigInteger tokenId;
     private Boolean fungible;
     private BigInteger balance;
+
+    public Long getBalanceAsLong() {
+        return balance == null ? 0 : balance.longValue();
+    }
 }

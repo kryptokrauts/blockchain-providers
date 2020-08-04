@@ -10,7 +10,6 @@ import network.arkane.provider.contract.ContractCall;
 import network.arkane.provider.contract.ContractCallParam;
 import network.arkane.provider.contract.ContractCallResultParam;
 import network.arkane.provider.contract.MaticContractService;
-import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -37,11 +36,12 @@ public class MetaDataParser {
     @Cacheable(value = "non-fungibles-meta-data", key = "{#contract.address, #tokenId}")
     @SneakyThrows
     public NonFungibleMetaData parseMetaData(String tokenId,
-                                             NonFungibleContract contract) {
+                                             String contractType,
+                                             String contractAddress) {
         try {
-            ContractCall metadataCall = contract.getType().equalsIgnoreCase("ERC-721")
-                                        ? createErc721UriCall(contract, tokenId)
-                                        : createErc1155UriCall(contract, tokenId);
+            ContractCall metadataCall = "ERC-721".equalsIgnoreCase(contractType)
+                                        ? createErc721UriCall(contractAddress, tokenId)
+                                        : createErc1155UriCall(contractAddress, tokenId);
 
             List<String> metaDataCallResult = maticContractService.callFunction(metadataCall);
             if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
@@ -54,20 +54,20 @@ public class MetaDataParser {
         return null;
     }
 
-    private ContractCall createErc721UriCall(NonFungibleContract contract,
+    private ContractCall createErc721UriCall(String contractAddress,
                                              String tokenId) {
         return ContractCall.builder()
-                           .contractAddress(contract.getAddress())
+                           .contractAddress(contractAddress)
                            .functionName("tokenURI")
                            .inputs(Arrays.asList(ContractCallParam.builder().type("uint256").value(tokenId).build()))
                            .outputs(Collections.singletonList(ContractCallResultParam.builder().type("string").build()))
                            .build();
     }
 
-    private ContractCall createErc1155UriCall(NonFungibleContract contract,
+    private ContractCall createErc1155UriCall(String contractAddress,
                                               String tokenId) {
         return ContractCall.builder()
-                           .contractAddress(contract.getAddress())
+                           .contractAddress(contractAddress)
                            .functionName("uri")
                            .inputs(Arrays.asList(ContractCallParam.builder().type("uint256").value(tokenId).build()))
                            .outputs(Collections.singletonList(ContractCallResultParam.builder().type("string").build()))
@@ -89,6 +89,9 @@ public class MetaDataParser {
         }
         if (metaData.hasNonNull("name")) {
             tokenMetaData.put("name", metaData.get("name").asText());
+        }
+        if (metaData.hasNonNull("tokenTypeId")) {
+            tokenMetaData.put("tokenTypeId", metaData.get("tokenTypeId").asText());
         }
         if (metaData.hasNonNull("background_color")) {
             tokenMetaData.put("backgroundColor", metaData.get("background_color").asText());
@@ -112,6 +115,7 @@ public class MetaDataParser {
                                                 ObjectNode properties) {
         if (metaData.has("tokenType")) {
             JsonNode tokenType = metaData.get("tokenType");
+            properties.put("tokenTypeId", tokenType.get("id").asText(""));
             properties.put("name", tokenType.get("name").asText(""));
             properties.put("description", tokenType.get("description").asText(""));
             properties.put("backgroundColor", tokenType.get("backgroundColor").asText(""));
