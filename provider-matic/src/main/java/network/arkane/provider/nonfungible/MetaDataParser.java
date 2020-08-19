@@ -33,7 +33,7 @@ public class MetaDataParser {
     }
 
 
-    @Cacheable(value = "non-fungibles-meta-data", key = "{#contract.address, #tokenId}")
+    @Cacheable(value = "non-fungibles-meta-data", key = "{#contractAddress, #tokenId}")
     @SneakyThrows
     public NonFungibleMetaData parseMetaData(String tokenId,
                                              String contractType,
