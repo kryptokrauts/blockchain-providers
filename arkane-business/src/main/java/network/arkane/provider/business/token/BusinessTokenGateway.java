@@ -23,12 +23,12 @@ public class BusinessTokenGateway {
         return businessClient.getTokensForAddress(address);
     }
 
-    @Cacheable("business-contract")
+    @Cacheable(value = "business-contract", unless = "#result == null")
     public TokenContract getContract(final String contractAddress) {
         return businessClient.getContract(contractAddress);
     }
 
-    @Cacheable("business-token")
+    @Cacheable(value = "business-token", unless = "#result == null")
     public TokenDto getToken(final String contractAddress,
                              final BigInteger tokenId) {
         return businessClient.getToken(contractAddress, tokenId);
