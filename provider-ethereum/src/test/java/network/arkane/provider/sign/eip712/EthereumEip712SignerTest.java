@@ -1,10 +1,11 @@
-package org.web3j.crypto;
+package network.arkane.provider.sign.eip712;
 
 import network.arkane.provider.secret.generation.EthereumSecretKey;
 import network.arkane.provider.sign.EthereumEip712Signable;
 import network.arkane.provider.sign.domain.HexSignature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.web3j.crypto.ECKeyPair;
 
 import java.math.BigInteger;
 
@@ -20,7 +21,7 @@ class EthereumEip712SignerTest {
     }
 
     @Test
-    void testSignEip712DataMetamaskValidated() {
+    void testEip712SignatureSameResultAsMetaMask() {
         EthereumEip712Signable signable = EthereumEip712Signable.builder()
                                                                 .data(""
                                                                       + "{"
@@ -64,6 +65,8 @@ class EthereumEip712SignerTest {
 
         BigInteger privateKeyInBT = new BigInteger("4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318", 16);
         ECKeyPair aPair = ECKeyPair.create(privateKeyInBT);
+
+        System.out.println(signable.getData());
 
         HexSignature result = ethereumEip712Signer.createSignature(signable, EthereumSecretKey.builder().keyPair(aPair).build());
 

@@ -1,4 +1,4 @@
-package org.web3j.crypto;
+package network.arkane.provider.sign.eip712;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.secret.generation.EthereumSecretKey;
@@ -6,6 +6,7 @@ import network.arkane.provider.sign.EthereumEip712Signable;
 import network.arkane.provider.sign.Signer;
 import network.arkane.provider.sign.domain.HexSignature;
 import org.springframework.stereotype.Component;
+import org.web3j.crypto.Sign;
 
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 
@@ -19,7 +20,7 @@ public class EthereumEip712Signer implements Signer<EthereumEip712Signable, Ethe
                                         EthereumSecretKey key) {
 
         try {
-            StructuredDataEncoder encoder = new ArkaneStructuredDataEncoder(signable.getData().toString());
+            StructuredDataEncoder encoder = new StructuredDataEncoder(signable.getData().toString());
             byte[] message = encoder.hashStructuredData();
             Sign.SignatureData signatureData = Sign.signMessage(message, key.getKeyPair(), false);
             return HexSignature.builder()
