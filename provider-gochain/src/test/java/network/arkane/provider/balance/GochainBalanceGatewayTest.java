@@ -8,7 +8,6 @@ import network.arkane.provider.gateway.GochainWeb3JGateway;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import network.arkane.provider.token.TokenInfoMother;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.web3j.protocol.core.methods.response.EthGetBalance;

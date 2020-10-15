@@ -1,8 +1,9 @@
 package network.arkane.provider.wallet.exporting;
 
 import network.arkane.provider.JSONUtil;
-import network.arkane.provider.secret.generation.EthereumSecretKey;
-import network.arkane.provider.wallet.decryption.EthereumWalletDecryptor;
+import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.secret.generation.EvmSecretKey;
+import network.arkane.provider.wallet.decryption.EvmWalletDecryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.ECKeyPair;
@@ -17,18 +18,18 @@ import static org.mockito.Mockito.mock;
 class EthereumKeystoreExporterTest {
 
     private EthereumKeystoreExporter ethereumKeystoreExporter;
-    private EthereumWalletDecryptor decyptor;
+    private EvmWalletDecryptor decyptor;
 
 
     @BeforeEach
     void setUp() {
-        decyptor = mock(EthereumWalletDecryptor.class);
+        decyptor = mock(EvmWalletDecryptor.class);
         this.ethereumKeystoreExporter = new EthereumKeystoreExporter(decyptor);
     }
 
     @Test
     void exports() {
-        final String export = ethereumKeystoreExporter.export(EthereumSecretKey.builder().keyPair(ECKeyPair.create(BigInteger.ZERO)).build(), "test");
+        final String export = ethereumKeystoreExporter.export(EvmSecretKey.builder().type(SecretType.ETHEREUM).keyPair(ECKeyPair.create(BigInteger.ZERO)).build(), "test");
 
         final WalletFile exportedWallet = JSONUtil.fromJson(export, WalletFile.class);
         assertThat(exportedWallet.getAddress()).isEqualTo("3f17f1962b36e491b30a40b2405849e597ba5fb5");
@@ -36,8 +37,8 @@ class EthereumKeystoreExporterTest {
 
     @Test
     void exportButException() {
-        assertThatThrownBy(() -> ethereumKeystoreExporter.export(EthereumSecretKey.builder()
-                                                                                  .keyPair(null)
-                                                                                  .build(), "test")).hasMessageContaining("An error occurred while trying to export the key");
+        assertThatThrownBy(() -> ethereumKeystoreExporter.export(EvmSecretKey.builder().type(SecretType.ETHEREUM)
+                                                                             .keyPair(null)
+                                                                             .build(), "test")).hasMessageContaining("An error occurred while trying to export the key");
     }
 }

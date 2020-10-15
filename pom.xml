@@ -29,6 +29,7 @@
         <module>provider-evm</module>
         <module>provider-neo</module>
         <module>provider-matic</module>
+        <module>provider-bsc</module>
         <module>blockscout</module>
         <module>blockcypher</module>
         <module>opensea</module>
@@ -239,6 +240,11 @@
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>provider-gochain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane.blockchain-providers</groupId>
+                <artifactId>provider-bsc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
