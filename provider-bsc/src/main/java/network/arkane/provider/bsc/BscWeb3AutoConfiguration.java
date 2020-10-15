@@ -47,7 +47,7 @@ public class BscWeb3AutoConfiguration {
     }
 
     @Bean
-    public BscWeb3JGateway ethereumWeb3JGateway(final BscWeb3JGatewayFactory bscWeb3JGatewayFactory) {
+    public BscWeb3JGateway bscWeb3JGateway(final BscWeb3JGatewayFactory bscWeb3JGatewayFactory) {
         return bscWeb3JGatewayFactory.getInstance();
     }
 }

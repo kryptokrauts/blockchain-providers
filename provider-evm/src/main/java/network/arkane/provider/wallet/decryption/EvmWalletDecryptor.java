@@ -2,9 +2,11 @@ package network.arkane.provider.wallet.decryption;
 
 import network.arkane.provider.secret.generation.EvmSecretKey;
 import network.arkane.provider.wallet.generation.GeneratedEvmWallet;
+import org.springframework.stereotype.Component;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
 
+@Component
 public class EvmWalletDecryptor implements WalletDecryptor<GeneratedEvmWallet, EvmSecretKey> {
 
     @Override

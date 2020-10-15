@@ -36,6 +36,10 @@
         </dependency>
         <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
+            <artifactId>provider-bsc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-neo</artifactId>
         </dependency>
         <dependency>

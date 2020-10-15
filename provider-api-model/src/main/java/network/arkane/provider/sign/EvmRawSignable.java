@@ -21,4 +21,9 @@ public class EvmRawSignable implements Signable {
         this.hash = hash;
     }
 
+    public static class EvmRawSignableBuilder {
+        private boolean prefix = true;
+        private boolean hash = true;
+    }
+
 }
