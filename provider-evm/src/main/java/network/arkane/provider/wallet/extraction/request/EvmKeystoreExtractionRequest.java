@@ -9,6 +9,9 @@ public class EvmKeystoreExtractionRequest extends ExtractionRequest {
     private String keystore;
     private String password;
 
+    EvmKeystoreExtractionRequest() {
+    }
+
     public EvmKeystoreExtractionRequest(
             SecretType secretType,
             final String keystore,

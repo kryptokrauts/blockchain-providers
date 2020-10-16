@@ -1,5 +1,6 @@
 package network.arkane.provider.secret.generation;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import network.arkane.provider.wallet.domain.SecretKey;
 import org.web3j.crypto.ECKeyPair;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EvmSecretKey implements SecretKey {
 
     private SecretType type;

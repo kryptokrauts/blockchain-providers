@@ -7,6 +7,8 @@ import network.arkane.provider.chain.SecretType;
 public class EvmPrivateKeyExtractionRequest extends ExtractionRequest {
     private String privateKey;
 
+    EvmPrivateKeyExtractionRequest() {
+    }
 
     public EvmPrivateKeyExtractionRequest(SecretType secretType,
                                           final String privateKey) {

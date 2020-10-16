@@ -13,6 +13,9 @@ public abstract class ExtractionRequest {
     @JsonIgnore
     private SecretType secretType;
 
+    ExtractionRequest() {
+    }
+
     public ExtractionRequest(SecretType secretType) {
         this.secretType = secretType;
     }
