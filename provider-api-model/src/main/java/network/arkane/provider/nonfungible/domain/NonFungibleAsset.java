@@ -3,6 +3,8 @@ package network.arkane.provider.nonfungible.domain;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class NonFungibleAsset {
 
@@ -16,6 +18,7 @@ public class NonFungibleAsset {
     private String imagePreviewUrl;
     private String imageThumbnailUrl;
     private NonFungibleContract contract;
+    private List<Trait> attributes;
 
     @Builder
     public NonFungibleAsset(final String tokenId,
@@ -26,7 +29,8 @@ public class NonFungibleAsset {
                             final String imageUrl,
                             final String imagePreviewUrl,
                             final String imageThumbnailUrl,
-                            final NonFungibleContract contract) {
+                            final NonFungibleContract contract,
+                            final List<Trait> attributes) {
         this.id = tokenId;
         this.tokenId = tokenId;
         this.name = name;
@@ -37,5 +41,6 @@ public class NonFungibleAsset {
         this.imagePreviewUrl = imagePreviewUrl;
         this.imageThumbnailUrl = imageThumbnailUrl;
         this.contract = contract;
+        this.attributes = attributes;
     }
 }

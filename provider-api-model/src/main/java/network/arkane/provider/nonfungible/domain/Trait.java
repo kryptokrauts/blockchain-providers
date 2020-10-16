@@ -1,4 +1,4 @@
-package network.arkane.provider.opensea.domain;
+package network.arkane.provider.nonfungible.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

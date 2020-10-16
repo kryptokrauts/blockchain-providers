@@ -2,6 +2,7 @@ package network.arkane.provider.opensea;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.BlockProvidersIT;
+import network.arkane.provider.opensea.domain.Asset;
 import network.arkane.provider.opensea.domain.AssetContract;
 import network.arkane.provider.opensea.domain.Assets;
 import org.junit.jupiter.api.Test;
@@ -54,5 +55,14 @@ class OpenSeaClientIT {
         final AssetContract result = client.getContract(contractAddress);
 
         assertThat(result.getAddress()).isEqualTo(contractAddress);
+    }
+
+    @Test
+    void getAsset() {
+        final String contractAddress = "0x5d00d312e171be5342067c09bae883f9bcb2003b";
+        final String tokenId = "43285";
+        final Asset result = client.getAsset(contractAddress, tokenId);
+
+        assertThat(result).isNotNull();
     }
 }
