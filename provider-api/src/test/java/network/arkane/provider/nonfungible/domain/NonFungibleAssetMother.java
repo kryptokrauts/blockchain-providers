@@ -1,5 +1,7 @@
 package network.arkane.provider.nonfungible.domain;
 
+import java.util.Collections;
+
 public class NonFungibleAssetMother {
 
     public static NonFungibleAsset.NonFungibleAssetBuilder aGodsUnchainedNonFungibleBuilder() {
@@ -12,6 +14,7 @@ public class NonFungibleAssetMother {
                                .imageUrl("https://images.godsunchained.com/cards/250/143.png")
                                .imagePreviewUrl("https://images.godsunchained.com/cards/250/143.png")
                                .imageThumbnailUrl("https://images.godsunchained.com/cards/250/143.png")
+                               .attributes(Collections.emptyList())
                                .contract(NonFungibleContract.builder()
                                                        .name("Gods Unchained")
                                                        .description("Gods Unchained is a free-to-play, turn-based competitive trading"
@@ -38,11 +41,13 @@ public class NonFungibleAssetMother {
                                .tokenId("4420")
                                .name("Common Predator MQ-28 #4420")
                                .backgroundColor("FBFBFB")
-                               .description("Strong against helis & tanks\\n\\nWeak against mechs & jeeps\\n\\nFlies over water, mountains, and ground units\\n\\nLow mining rate\\n")
+                               .description(
+                                       "Strong against helis & tanks\\n\\nWeak against mechs & jeeps\\n\\nFlies over water, mountains, and ground units\\n\\nLow mining rate\\n")
                                .imageUrl("https://cryptoassault.io/units/unit_21.png")
                                .imagePreviewUrl("https://cryptoassault.io/units/unit_21.png")
                                .imageThumbnailUrl("https://cryptoassault.io/units/unit_21.png")
                                .url("https://cryptoassault.io/unit/?id=4420")
+                               .attributes(Collections.emptyList())
                                .contract(NonFungibleContract.builder()
                                                             .address("0x31af195db332bc9203d758c74df5a5c5e597cdb7")
                                                             .description(
