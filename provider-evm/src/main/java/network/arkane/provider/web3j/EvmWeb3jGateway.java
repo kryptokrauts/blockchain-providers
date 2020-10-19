@@ -78,7 +78,7 @@ public abstract class EvmWeb3jGateway {
                                             BigInteger value,
                                             String data) {
         try {
-            BigInteger blockGasLimit = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock().getGasLimit();
+            BigInteger blockGasLimit = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock().getGasLimit().min(BigInteger.ONE);
 
             Transaction transaction = Transaction.createFunctionCallTransaction(
                     from,
