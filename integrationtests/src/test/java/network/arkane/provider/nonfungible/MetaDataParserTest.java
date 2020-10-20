@@ -127,4 +127,31 @@ class MetaDataParserTest {
         assertThat(result.getImage()).isEqualTo(
                 "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29.jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg");
     }
+
+    @Test
+    void parseSerra() throws IOException {
+        String metaData = "\n"
+                          + " {\n"
+                          + " \t\"name\": \"Base Set Crate\",\n"
+                          + " \t\"description\": \"Contains the 90 free Base Set Cards in higher Qualities.\",\n"
+                          + " \t\"image\": \"http://metadata.synergyofserra.com/images/340282366920938463463374607431768211456.png\",\n"
+                          + " \t\"external_url\": \"https://synergyofserra.com/shop\",\n"
+                          + " \t\"background_color\": \"000000\",\n"
+                          + " \t\"animation_url\": \"http://metadata.synergyofserra.com/videos/340282366920938463463374607431768211456.webm\"\n"
+                          + " }";
+
+        NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metaData, JsonNode.class));
+
+        assertThat(result).isNotNull();
+
+        assertThat(result.getName()).isEqualTo("Base Set Crate");
+        assertThat(result.getDescription()).isEqualTo(
+                "Contains the 90 free Base Set Cards in higher Qualities.");
+        assertThat(result.getImage()).isEqualTo(
+                "http://metadata.synergyofserra.com/images/340282366920938463463374607431768211456.png");
+        assertThat(result.getAnimationUrl().get()).isEqualTo(
+                "http://metadata.synergyofserra.com/videos/340282366920938463463374607431768211456.webm");
+        assertThat(result.getExternalUrl().get()).isEqualTo(
+                "https://synergyofserra.com/shop");
+    }
 }

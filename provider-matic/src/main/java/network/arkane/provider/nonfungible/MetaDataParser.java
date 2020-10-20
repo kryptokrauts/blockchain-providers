@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -87,28 +88,60 @@ public class MetaDataParser {
         if (metaData.hasNonNull("image")) {
             tokenMetaData.put("image", metaData.get("image").asText());
         }
+        if (metaData.hasNonNull("description")) {
+            tokenMetaData.put("description", metaData.get("description").asText());
+        }
         if (metaData.hasNonNull("name")) {
             tokenMetaData.put("name", metaData.get("name").asText());
         }
         if (metaData.hasNonNull("tokenTypeId")) {
             tokenMetaData.put("tokenTypeId", metaData.get("tokenTypeId").asText());
         }
-        if (metaData.hasNonNull("background_color")) {
-            tokenMetaData.put("backgroundColor", metaData.get("background_color").asText());
-        }
-        if (metaData.hasNonNull("backgroundColor")) {
-            tokenMetaData.put("backgroundColor", metaData.get("backgroundColor").asText());
-        }
-
-        if (metaData.hasNonNull("url")) {
-            tokenMetaData.put("url", metaData.get("url").asText());
-        }
+        parseBackground(metaData, tokenMetaData);
+        parseAnimation(metaData, tokenMetaData);
+        parseExternalUrl(metaData, tokenMetaData);
 
         addTokenTypeFieldsToProperties(metaData, tokenMetaData);
 
         metaDataBuilder.properties(tokenMetaData);
 
         return metaDataBuilder.build();
+    }
+
+    private Optional<String> parseProperty(JsonNode metaData,
+                                           String... possibleProperties) {
+        return Arrays.stream(possibleProperties)
+                     .filter(metaData::hasNonNull)
+                     .map(prop -> metaData.get(prop).asText())
+                     .findFirst();
+    }
+
+    private void parseExternalUrl(JsonNode metaData,
+                                  ObjectNode tokenMetaData) {
+        parseProperty(metaData, "externalUrl", "external_url", "url")
+                .ifPresent(val -> {
+                    tokenMetaData.put("externalUrl", val);
+                    tokenMetaData.put("external_url", val);
+                    tokenMetaData.put("url", val);
+                });
+    }
+
+    private void parseAnimation(JsonNode metaData,
+                                ObjectNode tokenMetaData) {
+        parseProperty(metaData, "animationUrl", "animation_url")
+                .ifPresent(val -> {
+                    tokenMetaData.put("animationUrl", val);
+                    tokenMetaData.put("animation_url", val);
+                });
+    }
+
+    private void parseBackground(JsonNode metaData,
+                                 ObjectNode tokenMetaData) {
+        parseProperty(metaData, "backgroundColor", "background_color")
+                .ifPresent(val -> {
+                    tokenMetaData.put("backgroundColor", val);
+                    tokenMetaData.put("background_color", val);
+                });
     }
 
     private void addTokenTypeFieldsToProperties(JsonNode metaData,
@@ -119,6 +152,11 @@ public class MetaDataParser {
             properties.put("name", tokenType.get("name").asText(""));
             properties.put("description", tokenType.get("description").asText(""));
             properties.put("backgroundColor", tokenType.get("backgroundColor").asText(""));
+            properties.put("background_color", tokenType.get("backgroundColor").asText(""));
+            properties.put("animationUrl", tokenType.get("animationUrl").asText(""));
+            properties.put("animation_url", tokenType.get("animationUrl").asText(""));
+            properties.put("externalUrl", tokenType.get("externalUrl").asText(""));
+            properties.put("external_url", tokenType.get("externalUrl").asText(""));
             if (tokenType.hasNonNull("image")) {
                 properties.put("image", tokenType.get("image").asText(""));
             }
