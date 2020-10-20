@@ -152,11 +152,6 @@ public class MetaDataParser {
             properties.put("name", tokenType.get("name").asText(""));
             properties.put("description", tokenType.get("description").asText(""));
             properties.put("backgroundColor", tokenType.get("backgroundColor").asText(""));
-            properties.put("background_color", tokenType.get("backgroundColor").asText(""));
-            properties.put("animationUrl", tokenType.get("animationUrl").asText(""));
-            properties.put("animation_url", tokenType.get("animationUrl").asText(""));
-            properties.put("externalUrl", tokenType.get("externalUrl").asText(""));
-            properties.put("external_url", tokenType.get("externalUrl").asText(""));
             if (tokenType.hasNonNull("image")) {
                 properties.put("image", tokenType.get("image").asText(""));
             }
