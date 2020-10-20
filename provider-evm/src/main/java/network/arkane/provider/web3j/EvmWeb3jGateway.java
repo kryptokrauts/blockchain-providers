@@ -2,6 +2,7 @@ package network.arkane.provider.web3j;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.contract.DeltaBalances;
+import network.arkane.provider.contract.ERC1155Token;
 import network.arkane.provider.contract.HumanStandardToken;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.gas.EvmEstimateGasResult;
@@ -170,6 +171,16 @@ public abstract class EvmWeb3jGateway {
                                  .message(String.format("Problem trying to get the decimals for token %s ()", tokenAddress))
                                  .build();
         }
+    }
+
+    public List<BigInteger> getERC1155Balances(final String tokenAddress,
+                                               final String userAddress,
+                                               final List<BigInteger> tokenIds) {
+        return getERC1155(tokenAddress).balanceOfBatch(userAddress, tokenIds);
+    }
+
+    private ERC1155Token getERC1155(final String tokenAddress) {
+        return new ERC1155Token(tokenAddress, web3j);
     }
 
     private HumanStandardToken getERC20(final String token) {
