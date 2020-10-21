@@ -1,7 +1,9 @@
 package network.arkane.provider.nonfungable;
 
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
+import network.arkane.provider.nonfungible.domain.Trait;
 import network.arkane.provider.opensea.domain.Asset;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -32,6 +34,16 @@ public class OpenSeaAssetToNonFungibleAssetMapper {
                                .imageThumbnailUrl(openSeaAsset.getImageThumbnailUrl())
                                .url(openSeaAsset.getExternalLink())
                                .contract(contractMapper.map(openSeaAsset.getAssetContract()))
+                               .attributes(CollectionUtils.emptyIfNull(openSeaAsset.getTraits())
+                                                          .stream()
+                                                          .map(trait -> Trait.builder()
+                                                                             .displayType(trait.getDisplayType())
+                                                                             .traitCount(trait.getTraitCount())
+                                                                             .traitType(trait.getTraitType())
+                                                                             .value(trait.getValue())
+                                                                             .build()
+                                                              ).collect(Collectors.toList())
+                                          )
                                .build();
     }
 

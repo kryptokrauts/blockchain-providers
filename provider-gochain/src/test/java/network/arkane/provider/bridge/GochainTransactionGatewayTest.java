@@ -1,38 +1,44 @@
 package network.arkane.provider.bridge;
 
+import lombok.SneakyThrows;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.gateway.GochainWeb3JGateway;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignatureMother;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class GochainTransactionGatewayTest {
     private GochainTransactionGateway gochainTransactionGateway;
 
-    private GochainWeb3JGateway web3JGateway;
+    private Web3j web3j;
 
     @BeforeEach
-    public void setUp() {
-        web3JGateway = mock(GochainWeb3JGateway.class);
-        gochainTransactionGateway = new GochainTransactionGateway(web3JGateway);
+    void setUp() {
+        web3j = mock(Web3j.class);
+        gochainTransactionGateway = new GochainTransactionGateway(web3j);
     }
 
     @Test
-    public void sendingTransactionCreatesTxHash() {
+    @SneakyThrows
+    void sendingTransactionCreatesTxHash() {
         final String expectedHash = "txHash";
 
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
@@ -40,8 +46,10 @@ class GochainTransactionGatewayTest {
         when(ethSendTransaction.hasError()).thenReturn(false);
 
         when(ethSendTransaction.getTransactionHash()).thenReturn(expectedHash);
-        when(web3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
-                .thenReturn(ethSendTransaction);
+        final Request<?, EthSendTransaction> request = mock(Request.class);
+        when(request.send()).thenReturn(ethSendTransaction);
+
+        doReturn(request).when(web3j).ethSendRawTransaction(signTransactionResponse.getSignedTransaction());
 
         final Signature response = gochainTransactionGateway.submit(signTransactionResponse, Optional.empty());
         assertThat(response).isInstanceOf(SubmittedAndSignedTransactionSignature.class);
@@ -49,36 +57,51 @@ class GochainTransactionGatewayTest {
     }
 
     @Test
-    public void sendingTransactionThrowsEvent() {
+    @SneakyThrows
+    void sendingTransactionThrowsEvent() {
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
         final EthSendTransaction ethSendTransaction = mock(EthSendTransaction.class);
         when(ethSendTransaction.hasError()).thenReturn(false);
 
         when(ethSendTransaction.getTransactionHash()).thenReturn("txHash");
-        when(web3JGateway.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction())))
-                .thenReturn(ethSendTransaction);
+        final Request<?, EthSendTransaction> request = mock(Request.class);
+        when(request.send()).thenReturn(ethSendTransaction);
+
+        doReturn(request).when(web3j).ethSendRawTransaction(signTransactionResponse.getSignedTransaction());
 
         gochainTransactionGateway.submit(signTransactionResponse, Optional.empty());
     }
 
     @Test
     void problemDuringTransactionCreation() {
-        when(web3JGateway.ethSendRawTransaction(any(String.class)))
+        when(web3j.ethSendRawTransaction(any(String.class)))
                 .thenThrow(IllegalArgumentException.class);
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
-        assertThrows(ArkaneException.class,
-                     () -> gochainTransactionGateway.submit(signTransactionResponse, Optional.empty()));
+
+        assertThatThrownBy(() -> gochainTransactionGateway.submit(signTransactionResponse, Optional.empty()))
+                .isEqualToComparingFieldByField(ArkaneException.arkaneException()
+                                                               .message("A problem occurred trying to submit the transaction to the Ethereum network")
+                                                               .errorCode("web3j.transaction.submit.internal-error")
+                                                               .build());
     }
 
-    @Test
-    void insufficientFunds() {
-        EthSendTransaction sendTransaction = mock(EthSendTransaction.class);
+    @SneakyThrows
+    @ParameterizedTest
+    @ValueSource(strings = {"insufficient funds for gas * price + value", "Insufficient funds, not enough things in wallet"})
+    void insufficientFunds(final String errorMessage) {
+        final EthSendTransaction sendTransaction = mock(EthSendTransaction.class);
         when(sendTransaction.hasError()).thenReturn(true);
-        when(sendTransaction.getError()).thenReturn(new Response.Error(500, "Insufficient funds, not enough things in wallet"));
-        when(web3JGateway.ethSendRawTransaction(any(String.class)))
-                .thenReturn(sendTransaction);
-
+        when(sendTransaction.getError()).thenReturn(new Response.Error(500, errorMessage));
         final TransactionSignature signTransactionResponse = TransactionSignatureMother.aSignTransactionResponse();
-        assertThrows(ArkaneException.class, () -> gochainTransactionGateway.submit(signTransactionResponse, Optional.empty()), "The account that initiated the transfer does not have enough energy");
+        final Request request = mock(Request.class);
+
+        when(request.send()).thenReturn(sendTransaction);
+        when(web3j.ethSendRawTransaction(eq(signTransactionResponse.getSignedTransaction()))).thenReturn(request);
+
+        assertThatThrownBy(() -> gochainTransactionGateway.submit(signTransactionResponse, Optional.empty()))
+                .isEqualToComparingFieldByField(ArkaneException.arkaneException()
+                                                               .message("The account that initiated the transfer does not have enough energy")
+                                                               .errorCode("transaction.insufficient-funds")
+                                                               .build());
     }
 }

@@ -15,10 +15,10 @@ public class Trait {
     private BigInteger traitCount;
 
     @Builder
-    public Trait(@JsonProperty("trait-type") final String traitType,
+    public Trait(@JsonProperty("trait_type") final String traitType,
                  @JsonProperty("value") final String value,
-                 @JsonProperty("display-type") final String displayType,
-                 @JsonProperty("trait-count") final BigInteger traitCount) {
+                 @JsonProperty("display_type") final String displayType,
+                 @JsonProperty("trait_count") final BigInteger traitCount) {
         this.traitType = traitType;
         this.value = value;
         this.displayType = displayType;

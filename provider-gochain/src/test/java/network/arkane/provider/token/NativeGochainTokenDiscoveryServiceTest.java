@@ -85,6 +85,6 @@ class NativeGochainTokenDiscoveryServiceTest {
         Assertions.assertThat(result.get().getName()).isEqualTo(tokenName);
         Assertions.assertThat(result.get().getSymbol()).isEqualTo(tokenSymbol);
         Assertions.assertThat(result.get().getDecimals()).isEqualTo(tokenDecimals);
-        Assertions.assertThat(result.get().getType()).isEqualTo("ERC20");
+        Assertions.assertThat(result.get().getType()).isEqualTo("GO20");
     }
 }

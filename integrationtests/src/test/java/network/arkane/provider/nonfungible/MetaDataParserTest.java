@@ -110,13 +110,13 @@ class MetaDataParserTest {
         assertThat(result.getProperties().toString()).isEqualToIgnoringCase("{\"properties\":\"\",\"image\":\"https://upload.wikimedia"
                                                                             + ".org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29"
                                                                             + ".jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg\",\"backgroundColor\":\"#c8e2eb\","
-                                                                            + "\"tokenTypeId\":\"29\",\"name\":\"Lockheed AC-130\",\"description\":\"The Lockheed AC-130 gunship "
-                                                                            + "is a heavily armed, long-endurance, ground-attack variant of the C-130 Hercules transport, "
-                                                                            + "fixed-wing aircraft. It carries a wide array of ground attack weapons that are integrated with "
-                                                                            + "sophisticated sensors, navigation, and fire-control systems. Unlike other modern military "
-                                                                            + "fixed-wing aircraft, the AC-130 relies on visual targeting. Because its large profile and low "
-                                                                            + "operating altitudes of approximately 7,000 feet (2,100 m) make it an easy target, its close air "
-                                                                            + "support missions are usually flown at night.\"}");
+                                                                            + "\"background_color\":\"#c8e2eb\",\"tokenTypeId\":\"29\",\"name\":\"Lockheed AC-130\","
+                                                                            + "\"description\":\"The Lockheed AC-130 gunship is a heavily armed, long-endurance, ground-attack "
+                                                                            + "variant of the C-130 Hercules transport, fixed-wing aircraft. It carries a wide array of ground "
+                                                                            + "attack weapons that are integrated with sophisticated sensors, navigation, and fire-control "
+                                                                            + "systems. Unlike other modern military fixed-wing aircraft, the AC-130 relies on visual targeting. "
+                                                                            + "Because its large profile and low operating altitudes of approximately 7,000 feet (2,100 m) make "
+                                                                            + "it an easy target, its close air support missions are usually flown at night.\"}");
 
         assertThat(result.getName()).isEqualTo("Lockheed AC-130");
         assertThat(result.getDescription()).isEqualTo(
@@ -126,5 +126,32 @@ class MetaDataParserTest {
                 + "target, its close air support missions are usually flown at night.");
         assertThat(result.getImage()).isEqualTo(
                 "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29.jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg");
+    }
+
+    @Test
+    void parseSerra() throws IOException {
+        String metaData = "\n"
+                          + " {\n"
+                          + " \t\"name\": \"Base Set Crate\",\n"
+                          + " \t\"description\": \"Contains the 90 free Base Set Cards in higher Qualities.\",\n"
+                          + " \t\"image\": \"http://metadata.synergyofserra.com/images/340282366920938463463374607431768211456.png\",\n"
+                          + " \t\"external_url\": \"https://synergyofserra.com/shop\",\n"
+                          + " \t\"background_color\": \"000000\",\n"
+                          + " \t\"animation_url\": \"http://metadata.synergyofserra.com/videos/340282366920938463463374607431768211456.webm\"\n"
+                          + " }";
+
+        NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metaData, JsonNode.class));
+
+        assertThat(result).isNotNull();
+
+        assertThat(result.getName()).isEqualTo("Base Set Crate");
+        assertThat(result.getDescription()).isEqualTo(
+                "Contains the 90 free Base Set Cards in higher Qualities.");
+        assertThat(result.getImage()).isEqualTo(
+                "http://metadata.synergyofserra.com/images/340282366920938463463374607431768211456.png");
+        assertThat(result.getAnimationUrl().get()).isEqualTo(
+                "http://metadata.synergyofserra.com/videos/340282366920938463463374607431768211456.webm");
+        assertThat(result.getExternalUrl().get()).isEqualTo(
+                "https://synergyofserra.com/shop");
     }
 }

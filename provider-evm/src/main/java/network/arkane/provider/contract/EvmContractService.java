@@ -1,8 +1,13 @@
 package network.arkane.provider.contract;
 
+import network.arkane.provider.web3j.EvmWeb3jGateway;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.RemoteCall;
+import org.web3j.protocol.core.methods.request.Transaction;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -10,6 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class EvmContractService implements ContractService {
+
+    private EvmWeb3jGateway evmWeb3jGateway;
+
+    public EvmContractService(EvmWeb3jGateway evmWeb3jGateway) {
+        this.evmWeb3jGateway = evmWeb3jGateway;
+    }
 
     public List<String> callFunction(ContractCall contractCall) {
         Function f = createFunction(contractCall);
@@ -20,7 +31,6 @@ public abstract class EvmContractService implements ContractService {
         }
 
     }
-
     private List<String> executeContractCall(ContractCall contractCall, Function f) throws Exception {
 
 
@@ -41,11 +51,28 @@ public abstract class EvmContractService implements ContractService {
                             contractCall.getOutputs().stream().map(o -> AbiTypeReferences.getType(o.getType())).collect(Collectors.toList()));
     }
 
-    private <T extends Type> RemoteCall<T> executeRemoteCallSingleValueReturn(Function function, ContractCall contractCall) {
+    private <T extends Type> RemoteCall<T> executeRemoteCallSingleValueReturn(Function function,
+                                                                              ContractCall contractCall) {
         return new RemoteCall<>(() -> executeCallSingleValueReturn(function, contractCall));
     }
 
-    abstract List<Type> executeContractCall(String from, String to, Function function);
+    public List<Type> executeContractCall(String from,
+                                          String to,
+                                          Function function) {
+        String data = FunctionEncoder.encode(function);
+        org.web3j.protocol.core.methods.response.EthCall ethCall = null;
+        try {
+            ethCall = evmWeb3jGateway.web3().ethCall(
+                    Transaction.createEthCallTransaction(from, to, data),
+                    DefaultBlockParameterName.LATEST).send();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        String value = ethCall.getValue();
+        return FunctionReturnDecoder.decode(value, function.getOutputParameters());
+    }
 
 
     private String getCaller(ContractCall contractCall) {
@@ -55,7 +82,8 @@ public abstract class EvmContractService implements ContractService {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Type> T executeCallSingleValueReturn(Function function, ContractCall contractCall) throws IOException {
+    private <T extends Type> T executeCallSingleValueReturn(Function function,
+                                                            ContractCall contractCall) throws IOException {
         List<Type> values = executeContractCall(getCaller(contractCall), contractCall.getContractAddress(), function);
         if (!values.isEmpty()) {
             return (T) values.get(0);

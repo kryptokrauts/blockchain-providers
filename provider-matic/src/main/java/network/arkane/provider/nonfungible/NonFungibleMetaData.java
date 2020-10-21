@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
@@ -38,6 +40,30 @@ public class NonFungibleMetaData {
 
     public String getImage() {
         return getProperty("image");
+    }
+
+    public Optional<String> getBackgroundColor() {
+        return Stream.of(
+                getProperty("backgroundColor"),
+                getProperty("background_color")
+                        ).filter(StringUtils::isNotBlank)
+                     .findFirst();
+    }
+
+    public Optional<String> getAnimationUrl() {
+        return Stream.of(
+                getProperty("animationUrl"),
+                getProperty("animation_url")
+                        ).filter(StringUtils::isNotBlank)
+                     .findFirst();
+    }
+
+    public Optional<String> getExternalUrl() {
+        return Stream.of(
+                getProperty("externalUrl"),
+                getProperty("external_url")
+                        ).filter(StringUtils::isNotBlank)
+                     .findFirst();
     }
 
     public Optional<Long> getTokenTypeId() {

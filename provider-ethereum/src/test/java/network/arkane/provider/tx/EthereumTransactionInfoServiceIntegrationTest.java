@@ -30,7 +30,7 @@ class EthereumTransactionInfoServiceIntegrationTest {
     @Test
     @Disabled
     void getFailed() {
-        EthereumTxInfo transaction = ethereumTransactionInfoService.getTransaction("0xc5178498b5c226d9f7e2f5086f72bf0e4f4d87e097c4e517f1bec128580fd537");
+        EvmTxInfo transaction = ethereumTransactionInfoService.getTransaction("0xc5178498b5c226d9f7e2f5086f72bf0e4f4d87e097c4e517f1bec128580fd537");
 
         assertThat(transaction.getFrom()).isEqualTo("0xc892a4dc36ffd6244d29f0cec1dd222eb92cfb71");
         assertThat(transaction.getStatus()).isEqualTo(TxStatus.FAILED);
@@ -39,7 +39,7 @@ class EthereumTransactionInfoServiceIntegrationTest {
 
     @Test
     void getSuccessWithLogs() {
-        EthereumTxInfo transaction = ethereumTransactionInfoService.getTransaction("0xffb9f36e41023537595cf62f5ca1846c25f893c3c2d3d7c2806d75c43ff1483e");
+        EvmTxInfo transaction = ethereumTransactionInfoService.getTransaction("0xffb9f36e41023537595cf62f5ca1846c25f893c3c2d3d7c2806d75c43ff1483e");
 
         assertThat(transaction.getFrom()).isEqualTo("0xef985560bda2a9ae4ed92fc7f8ef7b5279e5d3fa");
         assertThat(transaction.getTo()).isEqualTo("0x174bfa6600bf90c885c7c01c7031389ed1461ab9");
@@ -66,7 +66,7 @@ class EthereumTransactionInfoServiceIntegrationTest {
     void getFromOtherEndpoint() {
         Map<String, Object> parameters = Collections.singletonMap("endpoint", "https://rinkeby.arkane.network");
 
-        EthereumTxInfo transaction = ethereumTransactionInfoService.getTransaction("0x3ea246bb6c7cfb8d3899addeddf4135ad0d716b041b7018b8d1b39951ee54c66", parameters);
+        EvmTxInfo transaction = ethereumTransactionInfoService.getTransaction("0x3ea246bb6c7cfb8d3899addeddf4135ad0d716b041b7018b8d1b39951ee54c66", parameters);
 
         assertThat(transaction.getFrom()).isEqualTo("0x080959e98c5afc1709f9e4d716ac11be2a850b73");
     }

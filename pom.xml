@@ -5,7 +5,7 @@
 
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane.blockchain-providers</groupId>
-    <version>0.21.0</version>
+    <version>0.23.0</version>
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
@@ -29,6 +29,7 @@
         <module>provider-evm</module>
         <module>provider-neo</module>
         <module>provider-matic</module>
+        <module>provider-bsc</module>
         <module>blockscout</module>
         <module>blockcypher</module>
         <module>opensea</module>
@@ -57,6 +58,7 @@
         <web3j.version>4.6.0</web3j.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <commons-codec.version>1.11</commons-codec.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
         <jackson.version>2.9.8</jackson.version>
         <lombok.version>1.18.0</lombok.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -243,6 +245,11 @@
             </dependency>
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
+                <artifactId>provider-bsc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>provider-litecoin</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -317,6 +324,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons-collections4.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>

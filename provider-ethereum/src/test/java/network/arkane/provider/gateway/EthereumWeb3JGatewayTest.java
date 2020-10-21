@@ -1,6 +1,6 @@
 package network.arkane.provider.gateway;
 
-import network.arkane.provider.gas.EthereumEstimateGasResult;
+import network.arkane.provider.gas.EvmEstimateGasResult;
 import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -49,20 +49,20 @@ class EthereumWeb3JGatewayTest {
 
     @Test
     void estimateGas() {
-        EthereumEstimateGasResult result = ethereumWeb3JGateway.estimateGas("0x0011c2119bffee8d0c1a9e99ca9ebd8264812dcb",
-                                                                            "0x4df47b4969b2911c966506e3592c41389493953b",
-                                                                            BigInteger.ZERO,
-                                                                            "0xa9059cbb00000000000000000000000065edadd2a809e3d7cb0e4c28e5a9e1d0339765860000000000000000000000000000000000000000000003a23ed6ba6c67200000");
+        EvmEstimateGasResult result = ethereumWeb3JGateway.estimateGas("0x0011c2119bffee8d0c1a9e99ca9ebd8264812dcb",
+                                                                       "0x4df47b4969b2911c966506e3592c41389493953b",
+                                                                       BigInteger.ZERO,
+                                                                       "0xa9059cbb00000000000000000000000065edadd2a809e3d7cb0e4c28e5a9e1d0339765860000000000000000000000000000000000000000000003a23ed6ba6c67200000");
         assertThat(result.getGasLimit()).isCloseTo(new BigInteger("100000"), Percentage.withPercentage(20));
         assertThat(result.isReverted()).isFalse();
     }
 
     @Test
     void estimateGasReverts() {
-        EthereumEstimateGasResult result = ethereumWeb3JGateway.estimateGas("0x9ca4e34ad23a3b177bd0d6e48149efd0852a7752",
-                                                                            "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
-                                                                            BigInteger.ZERO,
-                                                                            "0xa9059cbb000000000000000000000000107af532e6f828da6fe79699123c9a5ea0123d160000000000000000000000000000000000000000000000000de0b9f291777780");
+        EvmEstimateGasResult result = ethereumWeb3JGateway.estimateGas("0x9ca4e34ad23a3b177bd0d6e48149efd0852a7752",
+                                                                       "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+                                                                       BigInteger.ZERO,
+                                                                       "0xa9059cbb000000000000000000000000107af532e6f828da6fe79699123c9a5ea0123d160000000000000000000000000000000000000000000000000de0b9f291777780");
         assertThat(result.getGasLimit()).isEqualTo(new BigInteger("200000"));
         assertThat(result.isReverted()).isTrue();
     }

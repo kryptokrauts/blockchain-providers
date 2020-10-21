@@ -21,11 +21,13 @@ public class VechainContractService extends EvmContractService implements Contra
     private VechainGateway vechainGateway;
 
     public VechainContractService(VechainGateway vechainGateway) {
-        this.vechainGateway = vechainGateway;
+        super(null);
     }
 
     @Override
-    List<Type> executeContractCall(String from, String to, Function function) {
+    public List<Type> executeContractCall(String from,
+                                          String to,
+                                          Function function) {
         String data = FunctionEncoder.encode(function);
         network.arkane.provider.core.model.blockchain.ContractCall contractCall = new network.arkane.provider.core.model.blockchain.ContractCall();
         contractCall.setCaller(from);

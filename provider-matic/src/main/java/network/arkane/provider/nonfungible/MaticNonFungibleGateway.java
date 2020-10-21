@@ -152,7 +152,8 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                                    .tokenId(tokenId)
                                    .contract(contract)
                                    .description(metaData.getDescription())
-                                   .url(metaData.getProperty("url"))
+                                   .url(metaData.getExternalUrl().orElse(null))
+                                   .animationUrl(metaData.getAnimationUrl().orElse(null))
                                    .build();
         }
         return NonFungibleAsset.builder()
@@ -174,7 +175,8 @@ public class MaticNonFungibleGateway implements NonFungibleGateway {
                                    .tokenId(tokenId)
                                    .contract(contract)
                                    .description(metaData.getDescription())
-                                   .url(metaData.getProperty("url"))
+                                   .url(metaData.getExternalUrl().orElse(null))
+                                   .animationUrl(metaData.getAnimationUrl().orElse(null))
                                    .build();
         }
         return NonFungibleAsset.builder()
