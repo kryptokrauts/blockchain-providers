@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.http.HttpService;
 
 import java.math.BigInteger;
@@ -18,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Disabled("Disabled Test Because it fails during build for unknown reason")
 class EthereumWeb3JGatewayTest {
 
-    private static final String DELTA_BALANCES_ADDRESS = "0x0";
+    private static final String DELTA_BALANCES_ADDRESS = "0x40a38911e470fC088bEEb1a9480c2d69C847BCeC";
     private EthereumWeb3JGateway ethereumWeb3JGateway;
     private Web3j web3j;
 
@@ -77,5 +78,12 @@ class EthereumWeb3JGatewayTest {
     @Test
     void getName() {
         ethereumWeb3JGateway.getEnsName("0xdecaf9cd2367cdbb726e904cd6397edfcae6068d");
+    }
+
+    @Test
+    void ethGasPrice() {
+        EthGasPrice result = ethereumWeb3JGateway.ethGasPrice();
+
+        assertThat(result).isNotNull();
     }
 }

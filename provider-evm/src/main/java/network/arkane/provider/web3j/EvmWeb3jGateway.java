@@ -10,6 +10,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthEstimateGas;
+import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
@@ -132,6 +133,21 @@ public abstract class EvmWeb3jGateway {
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.transaction.submit.internal-error")
                                  .message("A problem occurred trying to submit the transaction to the network")
+                                 .cause(ex)
+                                 .build();
+        }
+    }
+
+    public EthGasPrice ethGasPrice() {
+        try {
+            return web3()
+                    .ethGasPrice()
+                    .send();
+        } catch (final Exception ex) {
+            log.error("Problem trying get eth gas price: {}", ex.getMessage());
+            throw ArkaneException.arkaneException()
+                                 .errorCode("web3j.eth.gasprice.internal-error")
+                                 .message("Problem trying get eth gas price")
                                  .cause(ex)
                                  .build();
         }
