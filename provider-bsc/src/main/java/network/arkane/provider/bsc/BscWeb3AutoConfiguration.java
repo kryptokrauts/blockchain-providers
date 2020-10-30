@@ -1,6 +1,7 @@
 package network.arkane.provider.bsc;
 
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
 import network.arkane.provider.bsc.gateway.BscWeb3JGateway;
 import network.arkane.provider.bsc.gateway.BscWeb3JGatewayFactory;
 import okhttp3.OkHttpClient;
@@ -44,6 +45,11 @@ public class BscWeb3AutoConfiguration {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(logging);
         }
+    }
+
+    @Bean(name = "bscBlockscoutClient")
+    public BlockscoutClient maticBlockscoutClient(@Value("${blockscout.bsc.url}") String baseUrl) {
+        return new BlockscoutClient(baseUrl);
     }
 
     @Bean

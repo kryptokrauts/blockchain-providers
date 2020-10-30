@@ -6,13 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.contract.ContractCall;
 import network.arkane.provider.contract.ContractCallParam;
 import network.arkane.provider.contract.ContractCallResultParam;
-import network.arkane.provider.contract.MaticContractService;
+import network.arkane.provider.contract.EvmContractService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -20,33 +21,45 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Component
 @Slf4j
 public class MetaDataParser {
 
     private ObjectMapper objectMapper;
-    private MaticContractService maticContractService;
+    private EvmContractService contractService;
+    private CacheManager cacheManager;
 
-    public MetaDataParser(final MaticContractService maticContractService) {
+    public MetaDataParser(final EvmContractService contractService,
+                          final CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        this.maticContractService = maticContractService;
+        this.contractService = contractService;
     }
 
 
-    @Cacheable(value = "non-fungibles-meta-data", key = "{#contractAddress, #tokenId}")
     @SneakyThrows
-    public NonFungibleMetaData parseMetaData(String tokenId,
+    public NonFungibleMetaData parseMetaData(SecretType secretType,
+                                             String tokenId,
                                              String contractType,
                                              String contractAddress) {
+
+        String cacheKey = secretType + "-" + tokenId + "-" + contractType + "-" + contractAddress;
+        Cache cache = cacheManager.getCache("non-fungibles-meta-data");
+        NonFungibleMetaData cachedResult = cache.get(cacheKey, NonFungibleMetaData.class);
+        if (cachedResult != null) {
+            return cachedResult;
+        }
+
         try {
             ContractCall metadataCall = "ERC-721".equalsIgnoreCase(contractType)
                                         ? createErc721UriCall(contractAddress, tokenId)
                                         : createErc1155UriCall(contractAddress, tokenId);
 
-            List<String> metaDataCallResult = maticContractService.callFunction(metadataCall);
+            List<String> metaDataCallResult = contractService.callFunction(metadataCall);
             if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
-                return parseMetaData(objectMapper.readValue(new URL(metaDataCallResult.get(0)), JsonNode.class));
+                NonFungibleMetaData result = parseMetaData(objectMapper.readValue(new URL(metaDataCallResult.get(0)), JsonNode.class));
+                cache.put(cacheKey, result);
+                return result;
             }
         } catch (Exception e) {
             log.error("Error getting metadata for nonfungible", e);
