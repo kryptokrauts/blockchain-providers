@@ -5,12 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import network.arkane.provider.contract.EvmContractService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.cache.CacheManager;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
 class MetaDataParserTest {
@@ -21,8 +20,7 @@ class MetaDataParserTest {
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        CacheManager cacheM = mock(CacheManager.class, RETURNS_DEEP_STUBS);
-        parser = new MetaDataParser(mock(EvmContractService.class), cacheM);
+        parser = new MetaDataParser(mock(EvmContractService.class), Optional.empty());
     }
 
     @Test

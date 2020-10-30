@@ -26,10 +26,10 @@ public class MetaDataParser {
 
     private ObjectMapper objectMapper;
     private EvmContractService contractService;
-    private CacheManager cacheManager;
+    private Optional<CacheManager> cacheManager;
 
     public MetaDataParser(final EvmContractService contractService,
-                          final CacheManager cacheManager) {
+                          final Optional<CacheManager> cacheManager) {
         this.cacheManager = cacheManager;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -44,11 +44,14 @@ public class MetaDataParser {
                                              String contractAddress) {
 
         String cacheKey = secretType + "-" + tokenId + "-" + contractType + "-" + contractAddress;
-        Cache cache = cacheManager.getCache("non-fungibles-meta-data");
-        NonFungibleMetaData cachedResult = cache.get(cacheKey, NonFungibleMetaData.class);
-        if (cachedResult != null) {
-            return cachedResult;
+        if (this.cacheManager.isPresent()) {
+            Cache cache = cacheManager.get().getCache("non-fungibles-meta-data");
+            NonFungibleMetaData cachedResult = cache.get(cacheKey, NonFungibleMetaData.class);
+            if (cachedResult != null) {
+                return cachedResult;
+            }
         }
+
 
         try {
             ContractCall metadataCall = "ERC-721".equalsIgnoreCase(contractType)
@@ -58,7 +61,10 @@ public class MetaDataParser {
             List<String> metaDataCallResult = contractService.callFunction(metadataCall);
             if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
                 NonFungibleMetaData result = parseMetaData(objectMapper.readValue(new URL(metaDataCallResult.get(0)), JsonNode.class));
-                cache.put(cacheKey, result);
+                if (this.cacheManager.isPresent()) {
+                    Cache cache = cacheManager.get().getCache("non-fungibles-meta-data");
+                    cache.put(cacheKey, result);
+                }
                 return result;
             }
         } catch (Exception e) {

@@ -9,6 +9,8 @@ import network.arkane.provider.nonfungible.BlockscoutNonFungibleGateway;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class BscNonFungibleGateway extends BlockscoutNonFungibleGateway {
@@ -16,7 +18,7 @@ public class BscNonFungibleGateway extends BlockscoutNonFungibleGateway {
     public BscNonFungibleGateway(BlockscoutClient bscBlockscoutClient,
                                  BscContractService bscContractService,
                                  BusinessNonFungibleGateway businessNonFungibleGateway,
-                                 CacheManager cacheManager) {
+                                 Optional<CacheManager> cacheManager) {
         super(bscBlockscoutClient, bscContractService, businessNonFungibleGateway, cacheManager);
     }
 

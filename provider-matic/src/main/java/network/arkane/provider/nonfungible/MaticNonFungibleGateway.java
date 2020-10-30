@@ -8,6 +8,8 @@ import network.arkane.provider.contract.MaticContractService;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class MaticNonFungibleGateway extends BlockscoutNonFungibleGateway {
@@ -15,7 +17,7 @@ public class MaticNonFungibleGateway extends BlockscoutNonFungibleGateway {
     public MaticNonFungibleGateway(BlockscoutClient maticBlockscoutClient,
                                    MaticContractService maticContractService,
                                    BusinessNonFungibleGateway businessNonFungibleGateway,
-                                   CacheManager cacheManager) {
+                                   Optional<CacheManager> cacheManager) {
         super(maticBlockscoutClient, maticContractService, businessNonFungibleGateway, cacheManager);
     }
 
