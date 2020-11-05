@@ -12,8 +12,6 @@ import java.util.Map;
 )
 public class NftContractDescriptionProperties {
     private Map<SecretType, String> paths;
-    private String owner;
-    private String repo;
 
     public Map<SecretType, String> getPaths() {
         return paths;
@@ -23,19 +21,4 @@ public class NftContractDescriptionProperties {
         this.paths = paths;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    public String getRepo() {
-        return repo;
-    }
-
-    public void setRepo(String repo) {
-        this.repo = repo;
-    }
 }
