@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Configuration
 @ConfigurationProperties(
-        prefix = "network.arkane.item.description.github"
+        prefix = "network.arkane.nft.contract.description.github"
 )
 public class NftContractDescriptionProperties {
     private Map<SecretType, String> paths;
