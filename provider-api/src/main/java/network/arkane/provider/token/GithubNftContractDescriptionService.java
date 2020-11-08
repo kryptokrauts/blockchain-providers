@@ -44,7 +44,7 @@ public class GithubNftContractDescriptionService {
     private List<NonFungibleContract> getTokens(String url,
                                                 String chainPath) {
         try {
-            return objectMapper.readValue(new URI(url).toURL(), new TypeReference<List<TokenInfo>>() {});
+            return objectMapper.readValue(new URI(url).toURL(), new TypeReference<List<NonFungibleContract>>() {});
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
