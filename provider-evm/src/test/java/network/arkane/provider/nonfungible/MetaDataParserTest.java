@@ -2,11 +2,12 @@ package network.arkane.provider.nonfungible;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import network.arkane.provider.contract.MaticContractService;
+import network.arkane.provider.contract.EvmContractService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -19,7 +20,7 @@ class MetaDataParserTest {
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        parser = new MetaDataParser(mock(MaticContractService.class));
+        parser = new MetaDataParser(mock(EvmContractService.class), Optional.empty());
     }
 
     @Test
