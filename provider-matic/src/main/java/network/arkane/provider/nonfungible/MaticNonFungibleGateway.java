@@ -1,8 +1,7 @@
 package network.arkane.provider.nonfungible;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
-import network.arkane.provider.business.token.BusinessNonFungibleGateway;
+import network.arkane.blockchainproviders.azrael.AzraelClient;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.contract.MaticContractService;
 import org.springframework.cache.CacheManager;
@@ -12,13 +11,12 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class MaticNonFungibleGateway extends BlockscoutNonFungibleGateway {
+public class MaticNonFungibleGateway extends AzraelNonFungibleGateway {
 
-    public MaticNonFungibleGateway(BlockscoutClient maticBlockscoutClient,
+    public MaticNonFungibleGateway(AzraelClient maticAzraelClient,
                                    MaticContractService maticContractService,
-                                   BusinessNonFungibleGateway businessNonFungibleGateway,
                                    Optional<CacheManager> cacheManager) {
-        super(maticBlockscoutClient, maticContractService, businessNonFungibleGateway, cacheManager);
+        super(maticAzraelClient, maticContractService, cacheManager);
     }
 
     @Override

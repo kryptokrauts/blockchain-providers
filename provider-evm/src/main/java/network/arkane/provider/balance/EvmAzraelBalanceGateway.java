@@ -3,7 +3,7 @@ package network.arkane.provider.balance;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.blockchainproviders.azrael.AzraelClient;
 import network.arkane.blockchainproviders.azrael.dto.ContractType;
-import network.arkane.blockchainproviders.azrael.dto.erc20.Erc20TokenBalance;
+import network.arkane.blockchainproviders.azrael.dto.token.erc20.Erc20TokenBalance;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.token.TokenDiscoveryService;

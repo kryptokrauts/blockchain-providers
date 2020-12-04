@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import network.arkane.blockchainproviders.azrael.dto.ContractType;
 import network.arkane.blockchainproviders.azrael.dto.TokenBalance;
+import network.arkane.blockchainproviders.azrael.dto.contract.ContractDto;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
@@ -36,6 +38,10 @@ public class AzraelClient {
                                                 .setConnectTimeout(Duration.ofSeconds(5))
                                                 .setReadTimeout(Duration.ofSeconds(30))
                                                 .build();
+    }
+
+    public Optional<ContractDto> getContract(String address) {
+        return Optional.ofNullable(restTemplate.getForObject(baseUrl + "/contracts/{address}", ContractDto.class, address));
     }
 
     public List<TokenBalance> getTokens(String address) {

@@ -1,4 +1,4 @@
-package network.arkane.blockchainproviders.azrael.dto.erc721;
+package network.arkane.blockchainproviders.azrael.dto.token.erc721;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

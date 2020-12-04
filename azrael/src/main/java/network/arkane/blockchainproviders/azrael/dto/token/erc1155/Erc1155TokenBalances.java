@@ -1,4 +1,4 @@
-package network.arkane.blockchainproviders.azrael.dto.erc1155;
+package network.arkane.blockchainproviders.azrael.dto.token.erc1155;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,13 +16,19 @@ import java.util.List;
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Erc1155TokenBalances extends TokenBalance {
+    private String name;
+    private String symbol;
     private List<Erc1155TokenBalance> tokens;
 
     @Builder
     public Erc1155TokenBalances(ContractType type,
                                 String address,
+                                String name,
+                                String symbol,
                                 List<Erc1155TokenBalance> tokens) {
         super(type, address);
+        this.name = name;
+        this.symbol = symbol;
         this.tokens = tokens;
     }
 }
