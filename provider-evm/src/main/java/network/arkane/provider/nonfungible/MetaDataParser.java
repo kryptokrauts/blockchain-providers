@@ -54,7 +54,7 @@ public class MetaDataParser {
 
 
         try {
-            ContractCall metadataCall = "ERC-721".equalsIgnoreCase(contractType)
+            ContractCall metadataCall = contractType.endsWith("721")
                                         ? createErc721UriCall(contractAddress, tokenId)
                                         : createErc1155UriCall(contractAddress, tokenId);
 
