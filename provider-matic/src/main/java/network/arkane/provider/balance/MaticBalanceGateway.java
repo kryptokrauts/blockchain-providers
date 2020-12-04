@@ -6,26 +6,18 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.token.TokenDiscoveryService;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.List;
 
 @Slf4j
 @Component
 public class MaticBalanceGateway extends BalanceGateway {
 
-    public static final String ERC_20 = "ERC-20";
     private MaticBalanceStrategy maticBalanceStrategy;
-    private final TokenDiscoveryService tokenDiscoveryService;
 
-    public MaticBalanceGateway(final MaticBalanceStrategy maticBalanceStrategy,
-                               final TokenDiscoveryService tokenDiscoveryService) {
+    public MaticBalanceGateway(final MaticBalanceStrategy maticBalanceStrategy) {
         this.maticBalanceStrategy = maticBalanceStrategy;
-        this.tokenDiscoveryService = tokenDiscoveryService;
     }
 
     @Override
@@ -59,10 +51,4 @@ public class MaticBalanceGateway extends BalanceGateway {
     }
 
 
-    private double calculateBalance(final BigInteger tokenBalance,
-                                    final int decimals) {
-        final BigDecimal rawBalance = new BigDecimal(tokenBalance);
-        final BigDecimal divider = BigDecimal.valueOf(10).pow(decimals);
-        return rawBalance.divide(divider, decimals, RoundingMode.HALF_DOWN).doubleValue();
-    }
 }
