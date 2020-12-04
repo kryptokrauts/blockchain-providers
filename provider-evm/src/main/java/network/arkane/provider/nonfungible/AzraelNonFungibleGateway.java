@@ -89,7 +89,8 @@ public abstract class AzraelNonFungibleGateway implements NonFungibleGateway {
     private NonFungibleContract createContract(Erc1155TokenBalances token) {
         return NonFungibleContract.builder()
                                   .address(token.getAddress())
-                                  .name(token.getAddress())
+                                  .name(token.getName())
+                                  .symbol(token.getSymbol())
                                   .type(token.getType().name())
                                   .build();
     }
