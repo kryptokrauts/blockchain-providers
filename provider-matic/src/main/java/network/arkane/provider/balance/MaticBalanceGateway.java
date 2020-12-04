@@ -2,13 +2,11 @@ package network.arkane.provider.balance;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.token.TokenDiscoveryService;
-import network.arkane.provider.token.TokenInfo;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -39,18 +37,7 @@ public class MaticBalanceGateway extends BalanceGateway {
     @HystrixCommand(fallbackMethod = "unavailableBalance", commandKey = "matic-node")
     public Balance getBalance(final String account) {
         try {
-            final BigInteger balance = maticBalanceStrategy.getBalance(account);
-            return Balance.builder()
-                          .available(true)
-                          .rawBalance(balance.toString())
-                          .rawGasBalance(balance.toString())
-                          .secretType(SecretType.MATIC)
-                          .gasBalance(PrecisionUtil.toDecimal(balance, 18))
-                          .balance(PrecisionUtil.toDecimal(balance, 18))
-                          .symbol("MATIC")
-                          .gasSymbol("MATIC")
-                          .decimals(18)
-                          .build();
+            return maticBalanceStrategy.getBalance(account);
         } catch (final Exception ex) {
             throw ArkaneException.arkaneException()
                                  .message(String.format("Unable to get the balance for the specified account (%s)", account))
@@ -62,24 +49,9 @@ public class MaticBalanceGateway extends BalanceGateway {
     @Override
     public TokenBalance getTokenBalance(final String walletAddress,
                                         final String tokenAddress) {
-        final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(SecretType.MATIC, tokenAddress).orElseThrow(IllegalArgumentException::new);
-        return getTokenBalance(walletAddress, tokenInfo);
+        return maticBalanceStrategy.getTokenBalance(walletAddress, tokenAddress);
     }
 
-    private TokenBalance getTokenBalance(final String walletAddress,
-                                         final TokenInfo tokenInfo) {
-        final BigInteger tokenBalance = maticBalanceStrategy.getTokenBalance(walletAddress, tokenInfo.getAddress());
-        return TokenBalance.builder()
-                           .tokenAddress(tokenInfo.getAddress())
-                           .rawBalance(tokenBalance.toString())
-                           .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
-                           .decimals(tokenInfo.getDecimals())
-                           .symbol(tokenInfo.getSymbol())
-                           .logo(tokenInfo.getLogo())
-                           .type(tokenInfo.getType())
-                           .transferable(tokenInfo.isTransferable())
-                           .build();
-    }
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {

@@ -30,6 +30,7 @@
         <module>provider-neo</module>
         <module>provider-matic</module>
         <module>provider-bsc</module>
+        <module>azrael</module>
         <module>blockscout</module>
         <module>blockcypher</module>
         <module>opensea</module>
@@ -211,6 +212,11 @@
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>arkane-business</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane.blockchain-providers</groupId>
+                <artifactId>azrael</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

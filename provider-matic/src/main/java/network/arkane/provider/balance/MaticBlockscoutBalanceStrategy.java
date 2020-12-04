@@ -3,9 +3,13 @@ package network.arkane.provider.balance;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
 import network.arkane.blockchainproviders.blockscout.dto.ERC20BlockscoutToken;
+import network.arkane.provider.PrecisionUtil;
+import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.token.TokenDiscoveryService;
+import network.arkane.provider.token.TokenInfo;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "matic.balance.strategy", havingValue = "blockscout")
 public class MaticBlockscoutBalanceStrategy implements MaticBalanceStrategy {
 
     private BlockscoutClient maticBlockscoutClient;
@@ -28,14 +33,41 @@ public class MaticBlockscoutBalanceStrategy implements MaticBalanceStrategy {
     }
 
     @Override
-    public BigInteger getBalance(String account) {
-        return maticBlockscoutClient.getBalance(account);
+    public Balance getBalance(String account) {
+        BigInteger bal = maticBlockscoutClient.getBalance(account);
+        return Balance.builder()
+                      .available(true)
+                      .rawBalance(bal.toString())
+                      .rawGasBalance(bal.toString())
+                      .secretType(SecretType.MATIC)
+                      .gasBalance(PrecisionUtil.toDecimal(bal, 18))
+                      .balance(PrecisionUtil.toDecimal(bal, 18))
+                      .symbol("MATIC")
+                      .gasSymbol("MATIC")
+                      .decimals(18)
+                      .build();
     }
 
     @Override
-    public BigInteger getTokenBalance(String owner,
-                                      String tokenAddress) {
-        return maticBlockscoutClient.getTokenBalance(owner, tokenAddress);
+    public TokenBalance getTokenBalance(String address,
+                                        String tokenAddress) {
+        final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(SecretType.MATIC, tokenAddress).orElseThrow(IllegalArgumentException::new);
+        return getTokenBalance(address, tokenInfo);
+    }
+
+    private TokenBalance getTokenBalance(final String walletAddress,
+                                         final TokenInfo tokenInfo) {
+        final BigInteger tokenBalance = maticBlockscoutClient.getTokenBalance(walletAddress, tokenInfo.getAddress());
+        return TokenBalance.builder()
+                           .tokenAddress(tokenInfo.getAddress())
+                           .rawBalance(tokenBalance.toString())
+                           .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
+                           .decimals(tokenInfo.getDecimals())
+                           .symbol(tokenInfo.getSymbol())
+                           .logo(tokenInfo.getLogo())
+                           .type(tokenInfo.getType())
+                           .transferable(tokenInfo.isTransferable())
+                           .build();
     }
 
     @Override
