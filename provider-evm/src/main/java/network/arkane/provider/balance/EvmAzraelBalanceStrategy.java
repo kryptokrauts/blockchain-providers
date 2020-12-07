@@ -9,7 +9,7 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.token.TokenDiscoveryService;
+import network.arkane.provider.token.TokenDiscoveryProperties;
 import network.arkane.provider.web3j.EvmWeb3jGateway;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,20 +21,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class EvmAzraelBalanceGateway {
+public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
 
     private final EvmWeb3jGateway web3JGateway;
     private final AzraelClient azraelClient;
     private final String logoUrlPrefix;
 
 
-    public EvmAzraelBalanceGateway(final EvmWeb3jGateway web3JGateway,
-                                   final TokenDiscoveryService tokenDiscoveryService,
-                                   final AzraelClient azraelClient,
-                                   String logoUrlPrefix) {
+    public EvmAzraelBalanceStrategy(final EvmWeb3jGateway web3JGateway,
+                                    final AzraelClient azraelClient,
+                                    TokenDiscoveryProperties tokenDiscoveryProperties) {
         this.web3JGateway = web3JGateway;
         this.azraelClient = azraelClient;
-        this.logoUrlPrefix = logoUrlPrefix;
+        this.logoUrlPrefix = "https://img.arkane.network" + tokenDiscoveryProperties.getPaths().get(type()) + "/logos/";
     }
 
     public abstract SecretType type();

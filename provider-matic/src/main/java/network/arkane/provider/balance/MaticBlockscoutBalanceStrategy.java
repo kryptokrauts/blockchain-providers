@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "matic.balance.strategy", havingValue = "blockscout")
-public class MaticBlockscoutBalanceStrategy implements MaticBalanceStrategy {
+public class MaticBlockscoutBalanceStrategy implements EvmBalanceStrategy {
 
     private BlockscoutClient maticBlockscoutClient;
     private TokenDiscoveryService tokenDiscoveryService;
@@ -88,6 +88,11 @@ public class MaticBlockscoutBalanceStrategy implements MaticBalanceStrategy {
                                                                                      .orElse(null))
                                                           .build())
                                     .collect(Collectors.toList());
+    }
+
+    @Override
+    public SecretType type() {
+        return SecretType.MATIC;
     }
 
     private Double calculateBalance(final BigInteger tokenBalance,

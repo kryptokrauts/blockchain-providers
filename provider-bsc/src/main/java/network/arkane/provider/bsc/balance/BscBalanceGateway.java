@@ -1,25 +1,24 @@
 package network.arkane.provider.bsc.balance;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.balance.EvmNativeBalanceGateway;
-import network.arkane.provider.bsc.gateway.BscWeb3JGateway;
+import network.arkane.provider.balance.EvmBalanceGateway;
+import network.arkane.provider.balance.EvmBalanceStrategy;
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.token.TokenDiscoveryService;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Slf4j
 @Component
-public class BscBalanceGateway extends EvmNativeBalanceGateway {
+public class BscBalanceGateway extends EvmBalanceGateway {
 
-    public BscBalanceGateway(final BscWeb3JGateway web3JGateway,
-                             final TokenDiscoveryService tokenDiscoveryService) {
-        super(web3JGateway, tokenDiscoveryService);
+    public BscBalanceGateway(final List<EvmBalanceStrategy> balanceStrategies) {
+        super(balanceStrategies);
     }
 
     @Override
     public SecretType type() {
         return SecretType.BSC;
     }
-
 
 }

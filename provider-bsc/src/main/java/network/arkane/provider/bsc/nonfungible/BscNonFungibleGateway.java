@@ -1,11 +1,10 @@
 package network.arkane.provider.bsc.nonfungible;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
+import network.arkane.blockchainproviders.azrael.AzraelClient;
 import network.arkane.provider.bsc.contract.BscContractService;
-import network.arkane.provider.business.token.BusinessNonFungibleGateway;
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.nonfungible.BlockscoutNonFungibleGateway;
+import network.arkane.provider.nonfungible.AzraelNonFungibleGateway;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
@@ -13,18 +12,17 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class BscNonFungibleGateway extends BlockscoutNonFungibleGateway {
+public class BscNonFungibleGateway extends AzraelNonFungibleGateway {
 
-    public BscNonFungibleGateway(BlockscoutClient bscBlockscoutClient,
+    public BscNonFungibleGateway(AzraelClient bscAzraelClient,
                                  BscContractService bscContractService,
-                                 BusinessNonFungibleGateway businessNonFungibleGateway,
                                  Optional<CacheManager> cacheManager) {
-        super(bscBlockscoutClient, bscContractService, businessNonFungibleGateway, cacheManager);
+        super(bscAzraelClient, bscContractService, cacheManager);
     }
 
     @Override
     public SecretType getSecretType() {
-        return SecretType.BSC;
+        return SecretType.MATIC;
     }
 
 
