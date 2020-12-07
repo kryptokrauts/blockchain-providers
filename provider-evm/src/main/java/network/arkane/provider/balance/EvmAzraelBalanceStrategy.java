@@ -33,7 +33,7 @@ public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
                                     TokenDiscoveryProperties tokenDiscoveryProperties) {
         this.web3JGateway = web3JGateway;
         this.azraelClient = azraelClient;
-        this.logoUrlPrefix = "https://img.arkane.network" + tokenDiscoveryProperties.getPaths().get(type()) + "/logos/";
+        this.logoUrlPrefix = "https://img.arkane.network/" + tokenDiscoveryProperties.getPaths().get(type()) + "/logos/";
     }
 
     public abstract SecretType type();
@@ -90,7 +90,7 @@ public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
 
     @NotNull
     private String getLogo(Erc20TokenBalance b) {
-        return this.logoUrlPrefix.endsWith("/") ? this.logoUrlPrefix + b.getAddress() : this.logoUrlPrefix + "/" + b.getAddress();
+        return this.logoUrlPrefix.endsWith("/") ? this.logoUrlPrefix + b.getAddress() : this.logoUrlPrefix + "/" + b.getAddress() + ".png";
     }
 
     protected double calculateBalance(final BigInteger tokenBalance,
