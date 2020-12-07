@@ -17,7 +17,7 @@ public class MaticBalanceGateway extends EvmBalanceGateway {
 
     @Override
     public SecretType type() {
-        return SecretType.BSC;
+        return SecretType.MATIC;
     }
 
 }

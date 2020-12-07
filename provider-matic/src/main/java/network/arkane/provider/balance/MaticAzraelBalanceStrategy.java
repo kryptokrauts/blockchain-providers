@@ -15,9 +15,9 @@ public class MaticAzraelBalanceStrategy extends EvmAzraelBalanceStrategy {
 
 
     public MaticAzraelBalanceStrategy(MaticWeb3JGateway web3JGateway,
-                                      AzraelClient bscAzraelClient,
+                                      AzraelClient maticAzraelClient,
                                       TokenDiscoveryProperties tokenDiscoveryProperties) {
-        super(web3JGateway, bscAzraelClient, tokenDiscoveryProperties);
+        super(web3JGateway, maticAzraelClient, tokenDiscoveryProperties);
     }
 
     @Override
