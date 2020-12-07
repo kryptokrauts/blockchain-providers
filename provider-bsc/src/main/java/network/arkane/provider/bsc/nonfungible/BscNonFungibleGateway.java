@@ -22,7 +22,7 @@ public class BscNonFungibleGateway extends AzraelNonFungibleGateway {
 
     @Override
     public SecretType getSecretType() {
-        return SecretType.MATIC;
+        return SecretType.BSC;
     }
 
 
