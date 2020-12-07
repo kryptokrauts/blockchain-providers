@@ -90,7 +90,7 @@ public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
 
     @NotNull
     private String getLogo(Erc20TokenBalance b) {
-        return this.logoUrlPrefix.endsWith("/") ? this.logoUrlPrefix + b.getAddress() : this.logoUrlPrefix + "/" + b.getAddress() + ".png";
+        return (this.logoUrlPrefix.endsWith("/") ? this.logoUrlPrefix + b.getAddress() : this.logoUrlPrefix + "/" + b.getAddress()) + ".png";
     }
 
     protected double calculateBalance(final BigInteger tokenBalance,
