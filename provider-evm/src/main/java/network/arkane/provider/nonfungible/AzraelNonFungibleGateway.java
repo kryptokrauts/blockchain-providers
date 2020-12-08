@@ -12,6 +12,7 @@ import network.arkane.provider.infrastructure.Threading;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import org.springframework.cache.CacheManager;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -43,6 +44,7 @@ public abstract class AzraelNonFungibleGateway implements NonFungibleGateway {
                                                    final String... contractAddresses) {
         Set<String> contracts = contractAddresses == null ? new HashSet<>() : Arrays.stream(contractAddresses).map(String::toLowerCase).collect(Collectors.toSet());
         List<TokenBalance> tokens = azraelClient.getTokens(walletAddress, Arrays.asList(ContractType.ERC_721, ContractType.ERC_1155));
+        if (CollectionUtils.isEmpty(tokens)) return Collections.emptyList();
         return Threading.runInNewThreadPool(
                 Integer.min(tokens.size(), 25),
                 () -> tokens
