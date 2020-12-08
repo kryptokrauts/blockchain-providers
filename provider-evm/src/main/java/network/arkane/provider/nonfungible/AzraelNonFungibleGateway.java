@@ -4,9 +4,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.blockchainproviders.azrael.AzraelClient;
 import network.arkane.blockchainproviders.azrael.dto.ContractType;
+import network.arkane.blockchainproviders.azrael.dto.TokenBalance;
 import network.arkane.blockchainproviders.azrael.dto.token.erc1155.Erc1155TokenBalances;
 import network.arkane.blockchainproviders.azrael.dto.token.erc721.Erc721TokenBalances;
 import network.arkane.provider.contract.EvmContractService;
+import network.arkane.provider.infrastructure.Threading;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import org.springframework.cache.CacheManager;
@@ -40,16 +42,19 @@ public abstract class AzraelNonFungibleGateway implements NonFungibleGateway {
     public List<NonFungibleAsset> listNonFungibles(final String walletAddress,
                                                    final String... contractAddresses) {
         Set<String> contracts = contractAddresses == null ? new HashSet<>() : Arrays.stream(contractAddresses).map(String::toLowerCase).collect(Collectors.toSet());
-
-        return azraelClient.getTokens(walletAddress, Arrays.asList(ContractType.ERC_721, ContractType.ERC_1155))
-                           .stream()
-                           .filter(x -> contractAddresses == null || contractAddresses.length == 0 || contracts.contains(x.getAddress().toLowerCase()))
-                           .map(t -> t.getType() == ContractType.ERC_721
-                                     ? mapERC721((Erc721TokenBalances) t)
-                                     : mapERC1155((Erc1155TokenBalances) t))
-                           .flatMap(Collection::stream)
-                           .collect(Collectors.toList());
-
+        List<TokenBalance> tokens = azraelClient.getTokens(walletAddress, Arrays.asList(ContractType.ERC_721, ContractType.ERC_1155));
+        return Threading.runInNewThreadPool(
+                Integer.min(tokens.size(), 25),
+                () -> tokens
+                        .stream()
+                        .filter(x -> contractAddresses == null || contractAddresses.length == 0 || contracts.contains(x.getAddress().toLowerCase()))
+                        .parallel()
+                        .map(t -> t.getType() == ContractType.ERC_721
+                                  ? mapERC721((Erc721TokenBalances) t)
+                                  : mapERC1155((Erc1155TokenBalances) t))
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList())
+                                           );
     }
 
     private List<NonFungibleAsset> mapERC721(Erc721TokenBalances token) {
