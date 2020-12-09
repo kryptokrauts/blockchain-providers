@@ -1,23 +1,19 @@
 package network.arkane.provider.bsc.nonfungible;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.blockchainproviders.azrael.AzraelClient;
-import network.arkane.provider.bsc.contract.BscContractService;
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.nonfungible.AzraelNonFungibleGateway;
-import org.springframework.cache.CacheManager;
+import network.arkane.provider.nonfungible.EvmNonFungibleGateway;
+import network.arkane.provider.nonfungible.EvmNonFungibleStrategy;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @Slf4j
-public class BscNonFungibleGateway extends AzraelNonFungibleGateway {
+public class BscNonFungibleGateway extends EvmNonFungibleGateway {
 
-    public BscNonFungibleGateway(AzraelClient bscAzraelClient,
-                                 BscContractService bscContractService,
-                                 Optional<CacheManager> cacheManager) {
-        super(bscAzraelClient, bscContractService, cacheManager);
+    public BscNonFungibleGateway(List<EvmNonFungibleStrategy> evmNonFungibleStrategies) {
+        super(evmNonFungibleStrategies);
     }
 
     @Override

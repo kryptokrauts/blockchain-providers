@@ -1,8 +1,7 @@
-package network.arkane.provider.nonfungable;
+package network.arkane.provider.opensea;
 
-import network.arkane.provider.gateway.EthereumWeb3JGateway;
+import network.arkane.provider.web3j.EvmWeb3jGateway;
 import org.bouncycastle.util.encoders.Hex;
-import org.springframework.stereotype.Component;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.TypeReference;
@@ -16,16 +15,15 @@ import org.web3j.protocol.core.methods.request.Transaction;
 import java.util.Collections;
 import java.util.List;
 
-@Component
 public class NonFungibleContractTypeMapper {
 
     public static final String ERC_1155_SIGNATURE = "d9b67a26";
     public static final String ERC_1155 = "ERC_1155";
     public static final String ERC_721 = "ERC_721";
-    private EthereumWeb3JGateway ethereumWeb3JGateway;
+    private EvmWeb3jGateway evmWeb3jGateway;
 
-    public NonFungibleContractTypeMapper(EthereumWeb3JGateway ethereumWeb3JGateway) {
-        this.ethereumWeb3JGateway = ethereumWeb3JGateway;
+    public NonFungibleContractTypeMapper(EvmWeb3jGateway evmWeb3jGateway) {
+        this.evmWeb3jGateway = evmWeb3jGateway;
     }
 
     public String getType(String address) {
@@ -46,7 +44,7 @@ public class NonFungibleContractTypeMapper {
         String data = FunctionEncoder.encode(function);
         org.web3j.protocol.core.methods.response.EthCall ethCall = null;
         try {
-            ethCall = ethereumWeb3JGateway.web3().ethCall(
+            ethCall = evmWeb3jGateway.web3().ethCall(
                     Transaction.createEthCallTransaction("0x0000000000000000000000000000000000000000", address, data),
                     DefaultBlockParameterName.LATEST).send();
             String value = ethCall.getValue();

@@ -20,19 +20,19 @@ class MaticNonFungibleGatewayIntegrationTest {
 
 
     private MaticWeb3JGateway maticWeb3JGateway;
-    private MaticNonFungibleGateway gateway;
+    private MaticAzraelNonFungibleStrategy strategy;
 
     @BeforeEach
     void setUp() {
         maticWeb3JGateway = new MaticWeb3JGateway(Web3j.build(new HttpService("https://matic-mumbai.arkane.network/")),
                                                   "0x40a38911e470fC088bEEb1a9480c2d69C847BCeC");
 
-        gateway = new MaticNonFungibleGateway(new AzraelClient("https://matic-azrael-qa.arkane.network/"), new MaticContractService(maticWeb3JGateway), Optional.empty());
+        strategy = new MaticAzraelNonFungibleStrategy(new AzraelClient("https://matic-azrael-qa.arkane.network/"), new MaticContractService(maticWeb3JGateway), Optional.empty());
     }
 
     @Test
     void getSome() {
-        List<NonFungibleAsset> nonFungibleAssets = gateway.listNonFungibles("0x9c978F4cfa1FE13406BCC05baf26a35716F881Dd");
+        List<NonFungibleAsset> nonFungibleAssets = strategy.listNonFungibles("0x9c978F4cfa1FE13406BCC05baf26a35716F881Dd");
 
         assertThat(nonFungibleAssets).isNotNull();
     }

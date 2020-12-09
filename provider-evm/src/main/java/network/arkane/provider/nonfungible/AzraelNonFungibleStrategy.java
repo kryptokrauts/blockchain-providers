@@ -25,15 +25,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class AzraelNonFungibleGateway implements NonFungibleGateway {
+public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrategy {
 
-    private AzraelClient azraelClient;
-    private MetaDataParser metadataParser;
+    private final AzraelClient azraelClient;
+    private final MetaDataParser metadataParser;
 
 
-    public AzraelNonFungibleGateway(AzraelClient azraelClient,
-                                    EvmContractService contractService,
-                                    Optional<CacheManager> cacheManager) {
+    public AzraelNonFungibleStrategy(AzraelClient azraelClient,
+                                     EvmContractService contractService,
+                                     Optional<CacheManager> cacheManager) {
         this.azraelClient = azraelClient;
         this.metadataParser = new MetaDataParser(contractService, cacheManager);
     }

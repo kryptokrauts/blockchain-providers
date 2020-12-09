@@ -1,8 +1,10 @@
-package network.arkane.provider.nonfungable;
+package network.arkane.provider.nonfungible.opensea;
 
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleAssetMother;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
+import network.arkane.provider.opensea.OpenSeaAssetToNonFungibleAssetMapper;
+import network.arkane.provider.opensea.OpenSeaContractToNonFungibleContractMapper;
 import network.arkane.provider.opensea.domain.Asset;
 import network.arkane.provider.opensea.domain.AssetMother;
 import org.junit.jupiter.api.BeforeEach;

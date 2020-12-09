@@ -22,17 +22,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class BlockscoutNonFungibleGateway implements NonFungibleGateway {
+public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGateway {
 
     private BlockscoutClient blockscoutClient;
     private MetaDataParser metadataParser;
     private BusinessNonFungibleGateway businessNonFungibleGateway;
 
 
-    public BlockscoutNonFungibleGateway(BlockscoutClient blockscoutClient,
-                                        EvmContractService contractService,
-                                        BusinessNonFungibleGateway businessNonFungibleGateway,
-                                        Optional<CacheManager> cacheManager) {
+    public BlockscoutNonFungibleStrategy(BlockscoutClient blockscoutClient,
+                                         EvmContractService contractService,
+                                         BusinessNonFungibleGateway businessNonFungibleGateway,
+                                         Optional<CacheManager> cacheManager) {
         this.blockscoutClient = blockscoutClient;
         this.metadataParser = new MetaDataParser(contractService, cacheManager);
         this.businessNonFungibleGateway = businessNonFungibleGateway;
