@@ -59,7 +59,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                            );
     }
 
-    private List<NonFungibleAsset> mapERC721(Erc721TokenBalances token) {
+    protected List<NonFungibleAsset> mapERC721(Erc721TokenBalances token) {
         NonFungibleContract contract = createContract(token);
         return token.getTokens() == null
                ? Collections.emptyList()
@@ -71,8 +71,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
 
     }
 
-    private List<NonFungibleAsset> mapERC1155(Erc1155TokenBalances token) {
-
+    protected List<NonFungibleAsset> mapERC1155(Erc1155TokenBalances token) {
         NonFungibleContract contract = createContract(token);
         return token.getTokens() == null
                ? Collections.emptyList()
