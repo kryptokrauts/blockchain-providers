@@ -8,11 +8,13 @@ import network.arkane.provider.contract.EthereumContractService;
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import network.arkane.provider.nonfungible.AzraelNonFungibleStrategy;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
+import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import network.arkane.provider.opensea.NonFungibleContractTypeMapper;
 import network.arkane.provider.opensea.OpenSeaAssetToNonFungibleAssetMapper;
 import network.arkane.provider.opensea.OpenSeaContractToNonFungibleContractMapper;
 import network.arkane.provider.opensea.OpenSeaGateway;
 import network.arkane.provider.opensea.domain.Asset;
+import network.arkane.provider.opensea.domain.AssetContract;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
@@ -66,5 +68,18 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
                         return mapper.map(asset);
                     })
                     .collect(Collectors.toList());
+    }
+
+    @Override
+    public NonFungibleAsset getNonFungible(String contractAddress,
+                                           String tokenId) {
+        Asset asset = ethereumOpenSeaGateway.getAsset(contractAddress, tokenId);
+        return mapper.map(asset);
+    }
+
+    @Override
+    public NonFungibleContract getNonFungibleContract(String contractAddress) {
+        AssetContract asset = ethereumOpenSeaGateway.getContract(contractAddress);
+        return contractMapper.map(asset);
     }
 }
