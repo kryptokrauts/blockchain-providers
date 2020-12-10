@@ -12,12 +12,14 @@ import network.arkane.provider.opensea.NonFungibleContractTypeMapper;
 import network.arkane.provider.opensea.OpenSeaAssetToNonFungibleAssetMapper;
 import network.arkane.provider.opensea.OpenSeaContractToNonFungibleContractMapper;
 import network.arkane.provider.opensea.OpenSeaGateway;
+import network.arkane.provider.opensea.domain.Asset;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 @Component
@@ -47,18 +49,22 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
     }
 
     @Override
-    protected List<NonFungibleAsset> mapERC721(Erc721TokenBalances token) {
+    protected List<Callable<NonFungibleAsset>> mapERC721(Erc721TokenBalances token) {
         return token.getTokens().stream()
-                    .map(t -> ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString()))
-                    .map(mapper::map)
+                    .map(t -> (Callable<NonFungibleAsset>) () -> {
+                        Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
+                        return mapper.map(asset);
+                    })
                     .collect(Collectors.toList());
     }
 
     @Override
-    protected List<NonFungibleAsset> mapERC1155(Erc1155TokenBalances token) {
+    protected List<Callable<NonFungibleAsset>> mapERC1155(Erc1155TokenBalances token) {
         return token.getTokens().stream()
-                    .map(t -> ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString()))
-                    .map(mapper::map)
+                    .map(t -> (Callable<NonFungibleAsset>) () -> {
+                        Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
+                        return mapper.map(asset);
+                    })
                     .collect(Collectors.toList());
     }
 }

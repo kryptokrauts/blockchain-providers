@@ -8,7 +8,6 @@ import network.arkane.blockchainproviders.azrael.dto.TokenBalance;
 import network.arkane.blockchainproviders.azrael.dto.token.erc1155.Erc1155TokenBalances;
 import network.arkane.blockchainproviders.azrael.dto.token.erc721.Erc721TokenBalances;
 import network.arkane.provider.contract.EvmContractService;
-import network.arkane.provider.infrastructure.Threading;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import org.springframework.cache.CacheManager;
@@ -22,6 +21,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -45,40 +48,46 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
         Set<String> contracts = contractAddresses == null ? new HashSet<>() : Arrays.stream(contractAddresses).map(String::toLowerCase).collect(Collectors.toSet());
         List<TokenBalance> tokens = azraelClient.getTokens(walletAddress, Arrays.asList(ContractType.ERC_721, ContractType.ERC_1155));
         if (CollectionUtils.isEmpty(tokens)) return Collections.emptyList();
-        return Threading.runInNewThreadPool(
-                Integer.min(tokens.size(), 25),
-                () -> tokens
-                        .stream()
-                        .filter(x -> contractAddresses == null || contractAddresses.length == 0 || contracts.contains(x.getAddress().toLowerCase()))
-                        .parallel()
-                        .map(t -> t.getType() == ContractType.ERC_721
-                                  ? mapERC721((Erc721TokenBalances) t)
-                                  : mapERC1155((Erc1155TokenBalances) t))
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList())
-                                           );
+
+        List<Callable<NonFungibleAsset>> calls = tokens
+                .stream()
+                .filter(x -> contractAddresses == null || contractAddresses.length == 0 || contracts.contains(x.getAddress().toLowerCase()))
+                .map(t -> t.getType() == ContractType.ERC_721
+                          ? mapERC721((Erc721TokenBalances) t)
+                          : mapERC1155((Erc1155TokenBalances) t))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+        ExecutorService executorService = Executors.newFixedThreadPool(Integer.min(calls.size(), 25));
+        return executorService.invokeAll(calls).stream().map(x -> {
+            try {
+                return x.get();
+            } catch (InterruptedException | ExecutionException e) {
+                return null;
+            }
+        }).collect(Collectors.toList());
     }
 
-    protected List<NonFungibleAsset> mapERC721(Erc721TokenBalances token) {
+    protected List<Callable<NonFungibleAsset>> mapERC721(Erc721TokenBalances token) {
         NonFungibleContract contract = createContract(token);
         return token.getTokens() == null
                ? Collections.emptyList()
                : token.getTokens()
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
-                      .map(x -> getNonFungibleAsset(x.getTokenId().toString(), contract, token))
+                      .map(x -> (Callable<NonFungibleAsset>) () -> getNonFungibleAsset(x.getTokenId().toString(), contract, token))
                       .collect(Collectors.toList());
 
     }
 
-    protected List<NonFungibleAsset> mapERC1155(Erc1155TokenBalances token) {
+    protected List<Callable<NonFungibleAsset>> mapERC1155(Erc1155TokenBalances token) {
         NonFungibleContract contract = createContract(token);
         return token.getTokens() == null
                ? Collections.emptyList()
                : token.getTokens()
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
-                      .map(x -> getNonFungibleAsset(x.getTokenId().toString(), contract))
+                      .map(x -> (Callable<NonFungibleAsset>) () -> getNonFungibleAsset(x.getTokenId().toString(), contract))
                       .collect(Collectors.toList());
 
     }
