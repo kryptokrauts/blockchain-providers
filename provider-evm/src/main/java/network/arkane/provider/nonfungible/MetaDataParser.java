@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,6 +53,7 @@ public class MetaDataParser {
             }
         }
 
+        NonFungibleMetaData result = null;
 
         try {
             ContractCall metadataCall = contractType.endsWith("721")
@@ -60,18 +62,30 @@ public class MetaDataParser {
 
             List<String> metaDataCallResult = contractService.callFunction(metadataCall);
             if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
-                NonFungibleMetaData result = parseMetaData(objectMapper.readValue(new URL(metaDataCallResult.get(0)), JsonNode.class));
-                if (this.cacheManager.isPresent()) {
-                    Cache cache = cacheManager.get().getCache("non-fungibles-meta-data");
-                    cache.put(cacheKey, result);
+                if (isHttp(metaDataCallResult)) {
+                    try {
+                        result = parseMetaData(objectMapper.readValue(new URL(metaDataCallResult.get(0)), JsonNode.class));
+                    } catch (IOException e) {
+                        if (e.getMessage().contains("500") && e.getMessage().contains("api.opensea.io")) {
+                            String url = metaDataCallResult.get(0);
+                            url = url.replace("https://api.opensea.io/", "https://rinkeby-api.opensea.io/");
+                            result = parseMetaData(objectMapper.readValue(new URL(url), JsonNode.class));
+                        }
+                    }
                 }
-                return result;
             }
         } catch (Exception e) {
             log.error("Error getting metadata for nonfungible", e);
-            return null;
         }
-        return null;
+        if (this.cacheManager.isPresent()) {
+            Cache cache = cacheManager.get().getCache("non-fungibles-meta-data");
+            cache.put(cacheKey, result);
+        }
+        return result;
+    }
+
+    private boolean isHttp(List<String> metaDataCallResult) {
+        return metaDataCallResult.get(0).startsWith("http");
     }
 
     private ContractCall createErc721UriCall(String contractAddress,
