@@ -130,6 +130,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
+                                   .attributes(metaData.getAttributes())
                                    .build();
         }
         return NonFungibleAsset.builder()
@@ -153,6 +154,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
+                                   .attributes(metaData.getAttributes())
                                    .build();
         }
         return NonFungibleAsset.builder()
