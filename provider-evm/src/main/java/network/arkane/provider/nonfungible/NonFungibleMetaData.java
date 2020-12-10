@@ -1,14 +1,20 @@
 package network.arkane.provider.nonfungible;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import network.arkane.provider.nonfungible.domain.Trait;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -17,17 +23,18 @@ import java.util.stream.Stream;
 @Builder
 @Data
 public class NonFungibleMetaData {
-    private JsonNode properties;
+    private JsonNode json;
+    private ObjectMapper objectMapper;
 
     public String getProperty(String propertyName) {
-        return properties.has(propertyName)
-               ? (properties.get(propertyName).isContainerNode() ? properties.get(propertyName).toString() : properties.get(propertyName).asText())
+        return json.has(propertyName)
+               ? (json.get(propertyName).isContainerNode() ? json.get(propertyName).toString() : json.get(propertyName).asText())
                : null;
     }
 
     public void setProperty(String propertyName,
                             String value) {
-        ((ObjectNode) properties).put(propertyName, value);
+        ((ObjectNode) json).put(propertyName, value);
     }
 
     public String getName() {
@@ -38,8 +45,14 @@ public class NonFungibleMetaData {
         return getProperty("description");
     }
 
-    public String getImage() {
-        return getProperty("image");
+    public Optional<String> getImage() {
+        return Stream.of(
+                getProperty("image"),
+                getProperty("image_data"),
+                getProperty("imageUrl"),
+                getProperty("image_url")
+                        ).filter(StringUtils::isNotBlank)
+                     .findFirst();
     }
 
     public Optional<String> getBackgroundColor() {
@@ -61,18 +74,40 @@ public class NonFungibleMetaData {
     public Optional<String> getExternalUrl() {
         return Stream.of(
                 getProperty("externalUrl"),
+                getProperty("url"),
                 getProperty("external_url")
                         ).filter(StringUtils::isNotBlank)
                      .findFirst();
     }
 
-    public Optional<Long> getTokenTypeId() {
-        return Optional.ofNullable(getProperty("tokenTypeId")).map(Long::parseLong);
+    public List<Trait> getAttributes() {
+        return Stream.of(
+                parseAttributes("attributes"),
+                parseAttributes("properties")
+                        )
+                     .filter(Optional::isPresent)
+                     .map(Optional::get)
+                     .findFirst()
+                     .orElse(Collections.emptyList());
     }
 
-    public void setName(String name) {
-        setProperty("name", name);
-        ;
+    public Optional<List<Trait>> parseAttributes(String propertyName) {
+        if (!json.has(propertyName)) return Optional.empty();
+
+        String propValue = getProperty(propertyName);
+
+        try {
+            if (json.get(propertyName).isArray()) {
+                List<Trait> traits = objectMapper.readValue(propValue, new TypeReference<List<Trait>>() {});
+                return Optional.of(traits);
+            } else {
+                Trait trait = objectMapper.readValue(propValue, Trait.class);
+                return Optional.of(Collections.singletonList(trait));
+            }
+
+        } catch (IOException e) {
+            return Optional.empty();
+        }
     }
 
     public void setDescription(String description) {
