@@ -11,11 +11,14 @@ import network.arkane.provider.contract.ContractCallParam;
 import network.arkane.provider.contract.ContractCallResultParam;
 import network.arkane.provider.contract.EvmContractService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.URL;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +27,7 @@ import java.util.Optional;
 @Slf4j
 public class MetaDataParser {
 
+    private final RestTemplate restTemplate;
     private ObjectMapper objectMapper;
     private EvmContractService contractService;
     private Optional<CacheManager> cacheManager;
@@ -34,6 +38,10 @@ public class MetaDataParser {
         this.cacheManager = cacheManager;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.restTemplate = new RestTemplateBuilder()
+                .setConnectTimeout(Duration.of(250, ChronoUnit.MILLIS))
+                .setReadTimeout(Duration.of(2, ChronoUnit.SECONDS))
+                .build();
         this.contractService = contractService;
     }
 
@@ -64,7 +72,7 @@ public class MetaDataParser {
             if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
                 if (isHttp(metaDataCallResult)) {
                     try {
-                        result = parseMetaData(objectMapper.readValue(new URL(metaDataCallResult.get(0)), JsonNode.class));
+                        result = parseMetaData(objectMapper.readValue(restTemplate.getForObject(metaDataCallResult.get(0), String.class), JsonNode.class));
                     } catch (IOException e) {
                         if (e.getMessage().contains("500") && e.getMessage().contains("api.opensea.io")) {
                             String url = metaDataCallResult.get(0);
@@ -72,7 +80,7 @@ public class MetaDataParser {
                             if (!url.contains("format=json")) {
                                 url = url + "?format=json";
                             }
-                            result = parseMetaData(objectMapper.readValue(new URL(url), JsonNode.class));
+                            result = parseMetaData(objectMapper.readValue(restTemplate.getForObject(metaDataCallResult.get(0), String.class), JsonNode.class));
                         }
                     }
                 }
