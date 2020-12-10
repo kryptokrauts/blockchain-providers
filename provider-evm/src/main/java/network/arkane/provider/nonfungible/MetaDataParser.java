@@ -69,6 +69,9 @@ public class MetaDataParser {
                         if (e.getMessage().contains("500") && e.getMessage().contains("api.opensea.io")) {
                             String url = metaDataCallResult.get(0);
                             url = url.replace("https://api.opensea.io/", "https://rinkeby-api.opensea.io/");
+                            if (!url.contains("format=json")) {
+                                url = url + "?format=json";
+                            }
                             result = parseMetaData(objectMapper.readValue(new URL(url), JsonNode.class));
                         }
                     }
