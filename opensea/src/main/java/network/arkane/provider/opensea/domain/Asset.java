@@ -1,18 +1,21 @@
 package network.arkane.provider.opensea.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Asset {
 
     private String tokenId;
     private String imageUrl;
-    private final String imagePreviewUrl;
-    private final String imageThumbnailUrl;
+    private String imagePreviewUrl;
+    private String imageThumbnailUrl;
     private String backgroundColor;
     private String name;
     private String description;

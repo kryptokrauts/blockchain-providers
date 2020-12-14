@@ -5,6 +5,7 @@ import network.arkane.provider.opensea.domain.Asset;
 import network.arkane.provider.opensea.domain.AssetContract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,10 +31,12 @@ public class OpenSeaGateway {
         return executeWithRateLimiter(() -> this.openSeaClient.listAssets(owner, resolveContractAddresses(contractAddresses)).getAssets());
     }
 
+    @Cacheable("opensea-asset")
     public Asset getAsset(final String contractAddress, final String tokenId) {
         return executeWithRateLimiter(() -> this.openSeaClient.getAsset(contractAddress, tokenId));
     }
 
+    @Cacheable("opensea-contract")
     public AssetContract getContract(final String contractAddress) {
         return executeWithRateLimiter(() -> this.openSeaClient.getContract(contractAddress));
     }
