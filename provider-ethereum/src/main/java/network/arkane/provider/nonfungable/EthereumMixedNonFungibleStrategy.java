@@ -15,6 +15,7 @@ import network.arkane.provider.opensea.OpenSeaContractToNonFungibleContractMappe
 import network.arkane.provider.opensea.OpenSeaGateway;
 import network.arkane.provider.opensea.domain.Asset;
 import network.arkane.provider.opensea.domain.AssetContract;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
 
 
     private final OpenSeaContractToNonFungibleContractMapper contractMapper;
-    private OpenSeaGateway ethereumOpenSeaGateway;
+    private final OpenSeaGateway ethereumOpenSeaGateway;
     private final OpenSeaAssetToNonFungibleAssetMapper mapper;
 
     public EthereumMixedNonFungibleStrategy(
@@ -54,18 +55,25 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
     protected List<Callable<NonFungibleAsset>> mapERC721(Erc721TokenBalances token) {
         return token.getTokens().stream()
                     .map(t -> (Callable<NonFungibleAsset>) () -> {
-                        Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
-                        return mapper.map(asset);
+                        if (StringUtils.isBlank(t.getMetadata())) {
+                            Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
+                            return mapper.map(asset);
+                        }
+                        return super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
                     })
                     .collect(Collectors.toList());
     }
 
     @Override
     protected List<Callable<NonFungibleAsset>> mapERC1155(Erc1155TokenBalances token) {
-        return token.getTokens().stream()
+        return token.getTokens()
+                    .stream()
                     .map(t -> (Callable<NonFungibleAsset>) () -> {
-                        Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
-                        return mapper.map(asset);
+                        if (StringUtils.isBlank(t.getMetadata())) {
+                            Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
+                            return mapper.map(asset);
+                        }
+                        return super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
                     })
                     .collect(Collectors.toList());
     }

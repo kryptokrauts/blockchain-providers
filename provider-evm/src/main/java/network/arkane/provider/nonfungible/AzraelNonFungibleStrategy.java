@@ -93,7 +93,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
 
     }
 
-    private NonFungibleContract createContract(Erc721TokenBalances token) {
+    protected NonFungibleContract createContract(Erc721TokenBalances token) {
         return NonFungibleContract.builder()
                                   .address(token.getAddress())
                                   .type(token.getType().name())
@@ -102,7 +102,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                   .build();
     }
 
-    private NonFungibleContract createContract(Erc1155TokenBalances token) {
+    protected NonFungibleContract createContract(Erc1155TokenBalances token) {
         return NonFungibleContract.builder()
                                   .address(token.getAddress())
                                   .name(token.getName())
@@ -124,9 +124,9 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
 
     }
 
-    private NonFungibleAsset getNonFungibleAsset(String tokenId,
-                                                 NonFungibleContract contract,
-                                                 String strMetaData) {
+    protected NonFungibleAsset getNonFungibleAsset(String tokenId,
+                                                   NonFungibleContract contract,
+                                                   String strMetaData) {
         if (StringUtils.isNotBlank(strMetaData)) {
             NonFungibleMetaData metaData = metadataParser.parseMetaData(getSecretType(), tokenId, contract.getType(), contract.getAddress(), strMetaData);
             return NonFungibleAsset.builder()
