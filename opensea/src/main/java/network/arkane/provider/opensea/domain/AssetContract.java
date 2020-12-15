@@ -1,18 +1,21 @@
 package network.arkane.provider.opensea.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AssetContract {
 
-    private final String address;
-    private final String name;
-    private final String symbol;
-    private final String imageUrl;
-    private final String description;
-    private final String externalLink;
+    private String address;
+    private String name;
+    private String symbol;
+    private String imageUrl;
+    private String description;
+    private String externalLink;
 
     @Builder
     public AssetContract(@JsonProperty("address") final String address,

@@ -8,7 +8,7 @@
     <parent>
         <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.24.0</version>
+        <version>0.25.0</version>
     </parent>
 
     <dependencies>
@@ -36,16 +36,6 @@
         <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-api</artifactId>
-            <scope>test</scope>
-            <type>test-jar</type>
-        </dependency>
-        <dependency>
-            <groupId>network.arkane.blockchain-providers</groupId>
-            <artifactId>opensea</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>network.arkane.blockchain-providers</groupId>
-            <artifactId>opensea</artifactId>
             <scope>test</scope>
             <type>test-jar</type>
         </dependency>

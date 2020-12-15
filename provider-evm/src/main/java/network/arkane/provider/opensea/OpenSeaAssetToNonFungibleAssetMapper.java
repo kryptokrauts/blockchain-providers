@@ -1,16 +1,14 @@
-package network.arkane.provider.nonfungable;
+package network.arkane.provider.opensea;
 
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.Trait;
 import network.arkane.provider.opensea.domain.Asset;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 public class OpenSeaAssetToNonFungibleAssetMapper {
 
     private final OpenSeaContractToNonFungibleContractMapper contractMapper;

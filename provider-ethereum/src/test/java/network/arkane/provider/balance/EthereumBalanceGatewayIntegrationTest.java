@@ -4,7 +4,6 @@ import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import network.arkane.provider.token.GithubTokenDiscoveryService;
-import network.arkane.provider.token.NativeEthereumTokenDiscoveryService;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +26,7 @@ class EthereumBalanceGatewayIntegrationTest {
     private EthereumBalanceGateway ethereumBalanceGateway;
     private TokenDiscoveryService tokenDiscoveryService;
     private GithubTokenDiscoveryService githubTokenDiscoveryService;
+    private EthereumNativeBalanceStrategy ethereumNativeBalanceStrategy;
 
     @BeforeEach
     void setUp() throws InterruptedException {
@@ -35,9 +35,8 @@ class EthereumBalanceGatewayIntegrationTest {
         Thread.sleep(100);
         tokenDiscoveryService = mock(TokenDiscoveryService.class);
         githubTokenDiscoveryService = mock(GithubTokenDiscoveryService.class);
-        ethereumBalanceGateway = new EthereumBalanceGateway(new TokenDiscoveryService(githubTokenDiscoveryService,
-                                                                                      Collections.singletonList(new NativeEthereumTokenDiscoveryService(ethereumWeb3JGateway))),
-                                                            new EthereumNativeBalanceStrategy(ethereumWeb3JGateway, tokenDiscoveryService));
+        ethereumNativeBalanceStrategy = new EthereumNativeBalanceStrategy(ethereumWeb3JGateway, tokenDiscoveryService);
+        ethereumBalanceGateway = new EthereumBalanceGateway(Collections.singletonList(ethereumNativeBalanceStrategy));
     }
 
     @Test

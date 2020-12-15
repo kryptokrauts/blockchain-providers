@@ -1,6 +1,7 @@
 package network.arkane.provider.nonfungable;
 
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import network.arkane.provider.opensea.OpenSeaGateway;
@@ -13,28 +14,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class EthereumNonFungibleGatewayTest {
 
-    private EthereumNonFungibleGateway ethereumNonFungibleGateway;
+    private EthereumOpenSeaNonFungibleStrategy openseaStrategy;
     private OpenSeaGateway openSeaGateway;
-    private OpenSeaAssetToNonFungibleAssetMapper mapper;
-    private OpenSeaContractToNonFungibleContractMapper contractMapper;
 
     @BeforeEach
     void setUp() {
         openSeaGateway = mock(OpenSeaGateway.class);
-        mapper = mock(OpenSeaAssetToNonFungibleAssetMapper.class);
-        contractMapper = mock(OpenSeaContractToNonFungibleContractMapper.class);
-        ethereumNonFungibleGateway = new EthereumNonFungibleGateway(openSeaGateway, mapper, contractMapper);
+        EthereumWeb3JGateway ethereumWeb3JGateway = mock(EthereumWeb3JGateway.class);
+        openseaStrategy = new EthereumOpenSeaNonFungibleStrategy(ethereumWeb3JGateway, openSeaGateway);
     }
 
     @Test
     void getSecretType() {
-        assertThat(ethereumNonFungibleGateway.getSecretType()).isEqualTo(SecretType.ETHEREUM);
+        assertThat(openseaStrategy.getSecretType()).isEqualTo(SecretType.ETHEREUM);
     }
 
     @Test
@@ -44,11 +41,10 @@ class EthereumNonFungibleGatewayTest {
         final ArrayList<NonFungibleAsset> expected = new ArrayList<>();
 
         when(openSeaGateway.listAssets(walletId)).thenReturn(openSeaTokens);
-        when(mapper.mapToList(same(openSeaTokens))).thenReturn(expected);
 
-        final List<NonFungibleAsset> result = ethereumNonFungibleGateway.listNonFungibles(walletId);
+        final List<NonFungibleAsset> result = openseaStrategy.listNonFungibles(walletId);
 
-        assertThat(result).isSameAs(expected);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -60,11 +56,10 @@ class EthereumNonFungibleGatewayTest {
         final String contractAddress2 = "afdsgd";
 
         when(openSeaGateway.listAssets(walletId, contractAddress1, contractAddress2)).thenReturn(openSeaTokens);
-        when(mapper.mapToList(same(openSeaTokens))).thenReturn(expected);
 
-        final List<NonFungibleAsset> result = ethereumNonFungibleGateway.listNonFungibles(walletId, contractAddress1, contractAddress2);
+        final List<NonFungibleAsset> result = openseaStrategy.listNonFungibles(walletId, contractAddress1, contractAddress2);
 
-        assertThat(result).isSameAs(expected);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -72,27 +67,25 @@ class EthereumNonFungibleGatewayTest {
         final String contractAddress = "afdsgd";
         final String tokenId = "131";
         final Asset openSeaToken = Asset.builder().build();
-        final NonFungibleAsset expected = NonFungibleAsset.builder().build();
+        final NonFungibleAsset expected = NonFungibleAsset.builder().attributes(new ArrayList<>()).build();
 
         when(openSeaGateway.getAsset(contractAddress, tokenId)).thenReturn(openSeaToken);
-        when(mapper.map(same(openSeaToken))).thenReturn(expected);
 
-        final NonFungibleAsset result = ethereumNonFungibleGateway.getNonFungible(contractAddress, tokenId);
+        final NonFungibleAsset result = openseaStrategy.getNonFungible(contractAddress, tokenId);
 
-        assertThat(result).isSameAs(expected);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
     void getNonFungibleContract() {
         final String contractAddress = "42d91cf8-c41a-4285-8aa8-fdf3082882eb";
-        final AssetContract assetContract = mock(AssetContract.class);
-        final NonFungibleContract nonFungibleContract = mock(NonFungibleContract.class);
+        final AssetContract assetContract = new AssetContract(null, null, null, null, null, null);
+        final NonFungibleContract nonFungibleContract = new NonFungibleContract(null, null, null, null, null, null, null, "ERC_721");
 
         when(openSeaGateway.getContract(contractAddress)).thenReturn(assetContract);
-        when(contractMapper.map(assetContract)).thenReturn(nonFungibleContract);
 
-        final NonFungibleContract result = ethereumNonFungibleGateway.getNonFungibleContract(contractAddress);
+        final NonFungibleContract result = openseaStrategy.getNonFungibleContract(contractAddress);
 
-        assertThat(result).isSameAs(nonFungibleContract);
+        assertThat(result).isEqualTo(nonFungibleContract);
     }
 }

@@ -1,6 +1,7 @@
 package network.arkane.provider.bsc;
 
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.blockchainproviders.azrael.AzraelClient;
 import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
 import network.arkane.provider.bsc.gateway.BscWeb3JGateway;
 import network.arkane.provider.bsc.gateway.BscWeb3JGatewayFactory;
@@ -48,7 +49,7 @@ public class BscWeb3AutoConfiguration {
     }
 
     @Bean(name = "bscBlockscoutClient")
-    public BlockscoutClient maticBlockscoutClient(@Value("${blockscout.bsc.url}") String baseUrl) {
+    public BlockscoutClient bscBlockscoutClient(@Value("${blockscout.bsc.url}") String baseUrl) {
         return new BlockscoutClient(baseUrl);
     }
 
@@ -56,4 +57,10 @@ public class BscWeb3AutoConfiguration {
     public BscWeb3JGateway bscWeb3JGateway(final BscWeb3JGatewayFactory bscWeb3JGatewayFactory) {
         return bscWeb3JGatewayFactory.getInstance();
     }
+
+    @Bean(name = "bscAzraelClient")
+    public AzraelClient bscAzraelClient(@Value("${azrael.bsc.url}") String baseUrl) {
+        return new AzraelClient(baseUrl);
+    }
+
 }

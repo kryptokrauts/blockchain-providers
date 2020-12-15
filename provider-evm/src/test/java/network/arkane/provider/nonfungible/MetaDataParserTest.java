@@ -24,109 +24,55 @@ class MetaDataParserTest {
     }
 
     @Test
-    void parsesErc721() throws IOException {
-        String metadata = "{"
-                          + "    \"title\": \"Asset Metadata\","
-                          + "    \"type\": \"object\","
-                          + "    \"properties\": {"
-                          + "        \"name\": \"cryptopups\","
-                          + "        \"description\": \"cryptopuppies\","
-                          + "        \"image\": \"https://via.placeholder.com/150" + "\""
-                          + "    }"
-                          + "}";
-
-        NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metadata, JsonNode.class));
-
-        assertThat(result).isNotNull();
-
-        assertThat(result.getProperties().toString()).isEqualToIgnoringCase("{\"name\":\"cryptopups\",\"description\":\"cryptopuppies\",\"image\":\"https://via.placeholder"
-                                                                            + ".com/150\"}");
-
-        assertThat(result.getName()).isEqualTo("cryptopups");
-        assertThat(result.getDescription()).isEqualTo("cryptopuppies");
-        assertThat(result.getImage()).isEqualTo("https://via.placeholder.com/150");
-    }
-
-    @Test
-    void parsesErc1155() throws IOException {
-        String metadata = "{"
-                          + "    \"title\": \"Asset Metadata\","
-                          + "    \"type\": \"object\","
-                          + "    \"properties\": {"
-                          + "        \"name\": \"cryptopups\","
-                          + "        \"description\": \"cryptopuppies\","
-                          + "        \"image\": \"https://via.placeholder.com/150\","
-                          + "        \"properties\": {"
-                          + "            \"arrayProperty\" : [\"a\", \"b\", \"c\"],"
-                          + "            \"anotherProperty\": \"aa\","
-                          + "            \"yaProperty\": 3"
-                          + "        }"
-                          + "    }"
-                          + "}";
-
-        NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metadata, JsonNode.class));
-
-        assertThat(result).isNotNull();
-
-        assertThat(result.getProperties().toString()).isEqualToIgnoringCase("{\"name\":\"cryptopups\",\"description\":\"cryptopuppies\",\"image\":\"https://via.placeholder"
-                                                                            + ".com/150\",\"properties\":{\"arrayProperty\":[\"a\",\"b\",\"c\"],\"anotherProperty\":\"aa\","
-                                                                            + "\"yaProperty\":3}}");
-
-        assertThat(result.getName()).isEqualTo("cryptopups");
-        assertThat(result.getDescription()).isEqualTo("cryptopuppies");
-        assertThat(result.getImage()).isEqualTo("https://via.placeholder.com/150");
-    }
-
-    @Test
     void parsesBusinessItems() throws IOException {
-        String metadata = ""
-                          + "{\"secretType\":\"VECHAIN\",\"contractAddress\":\"0xf9f9435af4bf735b8a02d01ca558a532505902fa\","
-                          + "\"contractTokenId\":57896044618658097711785492504343953930378098368950605117825912685706015145988,\"tokenType\":{\"id\":29,\"name\":\"Lockheed "
-                          + "AC-130\",\"description\":\"The Lockheed AC-130 gunship is a heavily armed, long-endurance, ground-attack variant of the C-130 Hercules transport, "
-                          + "fixed-wing aircraft. It carries a wide array of ground attack weapons that are integrated with sophisticated sensors, navigation, and fire-control "
-                          + "systems. Unlike other modern military fixed-wing aircraft, the AC-130 relies on visual targeting. Because its large profile and low operating "
-                          + "altitudes of approximately 7,000 feet (2,100 m) make it an easy target, its close air support missions are usually flown at night.\",\"nf\":true,"
-                          + "\"decimals\":0,\"contractTypeId\":57896044618658097711785492504343953930378098368950605117825912685706015145984,"
-                          + "\"transactionHash\":\"0x5d7ecdbae848a66f76ccffb248ea563008573be046ed722f70e68bab95639851\",\"confirmed\":true,\"mineDate\":\"2020-01-27T15:15:00"
-                          + ".000+0000\",\"transactionDate\":\"2020-01-27T15:14:49.377+0000\",\"tokenContract\":{\"id\":9,"
-                          + "\"address\":\"0xf9f9435af4bf735b8a02d01ca558a532505902fa\",\"confirmed\":true,\"deployDate\":\"2019-11-12T08:55:46.090+0000\","
-                          + "\"mineDate\":\"2019-11-12T08:55:50.000+0000\",\"description\":\"The Warplanes Game\",\"applicationId\":\"1f64ded9-2a05-4824-b682-661023359357\","
-                          + "\"name\":\"Warplanes\",\"transactionHash\":\"0xb73fcd3062f24a0c3fb3d33314ed44afff1f923daa51724cc03676251d3fe405\","
-                          + "\"owner\":\"31d391a2-1a9a-4f87-9ab7-16cbb80563b6\",\"secretType\":\"VECHAIN\"},\"properties\":\"\",\"backgroundColor\":\"#c8e2eb\","
-                          + "\"image\":\"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29"
-                          + ".jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg\",\"imageThumbnail\":\"https://upload.wikimedia"
-                          + ".org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29.jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg\","
-                          + "\"imagePreview\":\"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29"
-                          + ".jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg\"},\"amount\":1,\"imageUrl\":\"https://upload.wikimedia"
-                          + ".org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29.jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg\","
-                          + "\"imagePreviewUrl\":\"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29"
-                          + ".jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg\",\"imageThumbnailUrl\":\"https://upload.wikimedia"
-                          + ".org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29.jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg\","
-                          + "\"backgroundColor\":\"#c8e2eb\"}";
+        String metadata = "{\n"
+                          + "            \"name\": \"Silkie\",\n"
+                          + "            \"description\": \"The Silkie (sometimes spelled Silky) is a breed of chicken named for its atypically fluffy plumage, which is said to "
+                          + "feel like silk and satin. The breed has several other unusual qualities, such as black skin and bones, blue earlobes, and five toes on each foot, "
+                          + "whereas most chickens only have four. They are often exhibited in poultry shows, and appear in various colors. In addition to their distinctive "
+                          + "physical characteristics, Silkies are well known for their calm, friendly temperament. It is among the most docile of poultry. Hens are also "
+                          + "exceptionally broody, and care for young well. Though they are fair layers themselves, laying only about three eggs a week, they are commonly used "
+                          + "to hatch eggs from other breeds and bird species due to their broody nature. Silkie chickens are very easy to keep as pets. They are suitable for "
+                          + "children, but like any pet, should be handled with care.\",\n"
+                          + "            \"image\": \"https://upload.wikimedia.org/wikipedia/commons/3/36/A_fuzzy_baby_chicken_and_its_mom.jpg\",\n"
+                          + "            \"properties\": {\n"
+                          + "                \"trait_type\": \"Cuteness\",\n"
+                          + "                \"value\": \"SuperrrrrCute\",\n"
+                          + "                \"tokenTypeId\": 140\n"
+                          + "            },\n"
+                          + "            \"attributes\": {\n"
+                          + "                \"trait_type\": \"Cuteness\",\n"
+                          + "                \"value\": \"SuperrrrrCute\",\n"
+                          + "                \"tokenTypeId\": 140\n"
+                          + "            },\n"
+                          + "            \"imagePreview\": \"https://upload.wikimedia.org/wikipedia/commons/3/36/A_fuzzy_baby_chicken_and_its_mom.jpg\",\n"
+                          + "            \"url\": \"https://metadata-qa.arkane.network/api/apps/05a51091-54b8-43aa-9c12-142e2b3d9c04/contracts/62/token-types/140/metadata\",\n"
+                          + "            \"imageThumbnail\": \"https://upload.wikimedia.org/wikipedia/commons/3/36/A_fuzzy_baby_chicken_and_its_mom.jpg\",\n"
+                          + "            \"backgroundColor\": \"#111111\",\n"
+                          + "            \"externalUrl\": \"https://metadata-qa.arkane"
+                          + ".network/api/apps/05a51091-54b8-43aa-9c12-142e2b3d9c04/contracts/62/token-types/140/metadata\",\n"
+                          + "            \"tokenTypeId\": 140,\n"
+                          + "            \"background_color\": \"#111111\",\n"
+                          + "            \"external_url\": \"https://metadata-qa.arkane"
+                          + ".network/api/apps/05a51091-54b8-43aa-9c12-142e2b3d9c04/contracts/62/token-types/140/metadata\"\n"
+                          + "        }\n"
+                          + "    }";
 
         NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metadata, JsonNode.class));
 
         assertThat(result).isNotNull();
 
-        assertThat(result.getProperties().toString()).isEqualToIgnoringCase("{\"properties\":\"\",\"image\":\"https://upload.wikimedia"
-                                                                            + ".org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29"
-                                                                            + ".jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg\",\"backgroundColor\":\"#c8e2eb\","
-                                                                            + "\"background_color\":\"#c8e2eb\",\"tokenTypeId\":\"29\",\"name\":\"Lockheed AC-130\","
-                                                                            + "\"description\":\"The Lockheed AC-130 gunship is a heavily armed, long-endurance, ground-attack "
-                                                                            + "variant of the C-130 Hercules transport, fixed-wing aircraft. It carries a wide array of ground "
-                                                                            + "attack weapons that are integrated with sophisticated sensors, navigation, and fire-control "
-                                                                            + "systems. Unlike other modern military fixed-wing aircraft, the AC-130 relies on visual targeting. "
-                                                                            + "Because its large profile and low operating altitudes of approximately 7,000 feet (2,100 m) make "
-                                                                            + "it an easy target, its close air support missions are usually flown at night.\"}");
-
-        assertThat(result.getName()).isEqualTo("Lockheed AC-130");
+        assertThat(result.getName()).isEqualTo("Silkie");
         assertThat(result.getDescription()).isEqualTo(
-                "The Lockheed AC-130 gunship is a heavily armed, long-endurance, ground-attack variant of the C-130 Hercules transport, fixed-wing aircraft. It carries a wide "
-                + "array of ground attack weapons that are integrated with sophisticated sensors, navigation, and fire-control systems. Unlike other modern military fixed-wing "
-                + "aircraft, the AC-130 relies on visual targeting. Because its large profile and low operating altitudes of approximately 7,000 feet (2,100 m) make it an easy "
-                + "target, its close air support missions are usually flown at night.");
-        assertThat(result.getImage()).isEqualTo(
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/AC-130_Spectre_Spooky_%282152191923%29.jpg/600px-AC-130_Spectre_Spooky_%282152191923%29.jpg");
+                "The Silkie (sometimes spelled Silky) is a breed of chicken named for its atypically fluffy plumage, which is said to feel like silk and satin. The breed has "
+                + "several other unusual qualities, such as black skin and bones, blue earlobes, and five toes on each foot, whereas most chickens only have four. They are often"
+                + " exhibited in poultry shows, and appear in various colors. In addition to their distinctive physical characteristics, Silkies are well known for their calm, "
+                + "friendly temperament. It is among the most docile of poultry. Hens are also exceptionally broody, and care for young well. Though they are fair layers "
+                + "themselves, laying only about three eggs a week, they are commonly used to hatch eggs from other breeds and bird species due to their broody nature. Silkie "
+                + "chickens are very easy to keep as pets. They are suitable for children, but like any pet, should be handled with care.");
+        assertThat(result.getImage().get()).isEqualTo(
+                "https://upload.wikimedia.org/wikipedia/commons/3/36/A_fuzzy_baby_chicken_and_its_mom.jpg");
+        assertThat(result.getAttributes().toString()).isEqualTo("[Trait(traitType=Cuteness, value=SuperrrrrCute, displayType=null, traitCount=null, maxValue=null)]");
     }
 
     @Test
@@ -143,16 +89,38 @@ class MetaDataParserTest {
 
         NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metaData, JsonNode.class));
 
+
         assertThat(result).isNotNull();
 
         assertThat(result.getName()).isEqualTo("Base Set Crate");
         assertThat(result.getDescription()).isEqualTo(
                 "Contains the 90 free Base Set Cards in higher Qualities.");
-        assertThat(result.getImage()).isEqualTo(
+        assertThat(result.getImage().get()).isEqualTo(
                 "http://metadata.synergyofserra.com/images/340282366920938463463374607431768211456.png");
         assertThat(result.getAnimationUrl().get()).isEqualTo(
                 "http://metadata.synergyofserra.com/videos/340282366920938463463374607431768211456.webm");
         assertThat(result.getExternalUrl().get()).isEqualTo(
                 "https://synergyofserra.com/shop");
+    }
+
+    @Test
+    void parseLand() throws IOException {
+        String metaData = "\n"
+                          + "{\"name\":\"LAND (-122, 43)\",\"description\":\"A LAND is a digital piece of real estate in The Sandbox metaverse that players can buy to build "
+                          + "experiences on top of. Once you own a LAND, you will be able to populate it with Games and Assets. Each LAND is a unique (non-fungible) token lying "
+                          + "on the public Ethereum blockchain (ERC-721).\",\"image\":\"https://www.sandbox.game/img/18_Land/land.png\",\"properties\":[{\"trait_type\":\"Land "
+                          + "X\",\"value\":82,\"max_value\":408,\"display_type\":\"number\"},{\"trait_type\":\"Land Y\",\"value\":247,\"max_value\":408,"
+                          + "\"display_type\":\"number\"}],\"external_url\":\"https://www.sandbox.game/en/lands/0ef9f207-50d4-40c1-ad47-33046138f741/\"}";
+
+        NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metaData, JsonNode.class));
+
+        assertThat(result.getName()).isEqualTo("LAND (-122, 43)");
+        assertThat(result.getDescription()).isEqualTo(
+                "A LAND is a digital piece of real estate in The Sandbox metaverse that players can buy to build experiences on top of. Once you own a LAND, you will be able to "
+                + "populate it with Games and Assets. Each LAND is a unique (non-fungible) token lying on the public Ethereum blockchain (ERC-721).");
+        assertThat(result.getExternalUrl().get()).isEqualTo("https://www.sandbox.game/en/lands/0ef9f207-50d4-40c1-ad47-33046138f741/");
+        assertThat(result.getImage().get()).isEqualTo("https://www.sandbox.game/img/18_Land/land.png");
+        assertThat(result.getAttributes().toString()).isEqualTo("[Trait(traitType=Land X, value=82, displayType=number, traitCount=null, maxValue=408), "
+                                                                + "Trait(traitType=Land Y, value=247, displayType=number, traitCount=null, maxValue=408)]");
     }
 }

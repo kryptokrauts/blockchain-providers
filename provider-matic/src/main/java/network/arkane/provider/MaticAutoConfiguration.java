@@ -1,5 +1,6 @@
 package network.arkane.provider;
 
+import network.arkane.blockchainproviders.azrael.AzraelClient;
 import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
 import network.arkane.provider.opensea.OpenSeaClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,12 @@ import org.springframework.context.annotation.Configuration;
 public class MaticAutoConfiguration {
 
     @Bean(name = "maticBlockscoutClient")
-    public BlockscoutClient maticBlockscoutClient(@Value("${blockscout.matic.url}") String baseUrl) {
+    public BlockscoutClient maticBlockscoutClient(@Value("${blockscout.matic.url:}") String baseUrl) {
         return new BlockscoutClient(baseUrl);
+    }
+
+    @Bean(name = "maticAzraelClient")
+    public AzraelClient maticAzraelClient(@Value("${azrael.matic.url:}") String baseUrl) {
+        return new AzraelClient(baseUrl);
     }
 }

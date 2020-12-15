@@ -1,24 +1,18 @@
 package network.arkane.provider.nonfungible;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
-import network.arkane.provider.business.token.BusinessNonFungibleGateway;
 import network.arkane.provider.chain.SecretType;
-import network.arkane.provider.contract.MaticContractService;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
-@Service
+
 @Slf4j
-public class MaticNonFungibleGateway extends BlockscoutNonFungibleGateway {
+@Service
+public class MaticNonFungibleGateway extends EvmNonFungibleGateway {
 
-    public MaticNonFungibleGateway(BlockscoutClient maticBlockscoutClient,
-                                   MaticContractService maticContractService,
-                                   BusinessNonFungibleGateway businessNonFungibleGateway,
-                                   Optional<CacheManager> cacheManager) {
-        super(maticBlockscoutClient, maticContractService, businessNonFungibleGateway, cacheManager);
+    public MaticNonFungibleGateway(List<EvmNonFungibleStrategy> evmNonFungibleStrategies) {
+        super(evmNonFungibleStrategies);
     }
 
     @Override

@@ -65,7 +65,7 @@ public abstract class EvmNativeBalanceGateway extends BalanceGateway {
         return TokenBalance.builder()
                            .tokenAddress(tokenInfo.getAddress())
                            .rawBalance(tokenBalance.toString())
-                           .balance(calculateBalance(tokenBalance, tokenInfo))
+                           .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
                            .decimals(tokenInfo.getDecimals())
                            .symbol(tokenInfo.getSymbol())
                            .logo(tokenInfo.getLogo())
@@ -88,7 +88,7 @@ public abstract class EvmNativeBalanceGateway extends BalanceGateway {
             results.add(TokenBalance.builder()
                                     .tokenAddress(token.getAddress())
                                     .rawBalance(balances.get(i).toString())
-                                    .balance(calculateBalance(balances.get(i), token))
+                                    .balance(calculateBalance(balances.get(i), token.getDecimals()))
                                     .decimals(token.getDecimals())
                                     .symbol(token.getSymbol())
                                     .type(token.getType())
@@ -99,10 +99,10 @@ public abstract class EvmNativeBalanceGateway extends BalanceGateway {
         return results;
     }
 
-    private double calculateBalance(final BigInteger tokenBalance,
-                                    final TokenInfo tokenInfo) {
+    protected double calculateBalance(final BigInteger tokenBalance,
+                                      Integer decimals) {
         final BigDecimal rawBalance = new BigDecimal(tokenBalance);
-        final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
+        final BigDecimal divider = BigDecimal.valueOf(10).pow(decimals);
         return rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN).doubleValue();
     }
 }
