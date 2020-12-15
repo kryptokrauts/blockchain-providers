@@ -74,8 +74,8 @@ public class NonFungibleMetaData {
     public Optional<String> getExternalUrl() {
         return Stream.of(
                 getProperty("externalUrl"),
-                getProperty("url"),
-                getProperty("external_url")
+                getProperty("external_url"),
+                getProperty("url")
                         ).filter(StringUtils::isNotBlank)
                      .findFirst();
     }
