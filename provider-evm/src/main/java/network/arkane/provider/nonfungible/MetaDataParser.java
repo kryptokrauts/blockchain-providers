@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Slf4j
 public class MetaDataParser {
@@ -52,6 +53,37 @@ public class MetaDataParser {
                                              String contractType,
                                              String contractAddress) {
 
+        return parseMetaData(secretType, tokenId, contractType, contractAddress, () -> {
+            ContractCall metadataCall = contractType.endsWith("721")
+                                        ? createErc721UriCall(contractAddress, tokenId)
+                                        : createErc1155UriCall(contractAddress, tokenId);
+
+            List<String> metaDataCallResult = contractService.callFunction(metadataCall);
+            if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
+                if (isHttp(metaDataCallResult)) {
+                    return restTemplate.getForObject(metaDataCallResult.get(0), String.class);
+                }
+            }
+            return "";
+        });
+    }
+
+    @SneakyThrows
+    public NonFungibleMetaData parseMetaData(SecretType secretType,
+                                             String tokenId,
+                                             String contractType,
+                                             String contractAddress,
+                                             String metaData) {
+
+        return parseMetaData(secretType, tokenId, contractType, contractAddress, () -> metaData);
+    }
+
+    @SneakyThrows
+    private NonFungibleMetaData parseMetaData(SecretType secretType,
+                                              String tokenId,
+                                              String contractType,
+                                              String contractAddress,
+                                              Supplier<String> metaDataSupplier) {
         String cacheKey = secretType + "-" + tokenId + "-" + contractType + "-" + contractAddress;
         if (this.cacheManager.isPresent()) {
             Cache cache = cacheManager.get().getCache("non-fungibles-meta-data");
@@ -62,32 +94,12 @@ public class MetaDataParser {
         }
 
         NonFungibleMetaData result = null;
-
         try {
-            ContractCall metadataCall = contractType.endsWith("721")
-                                        ? createErc721UriCall(contractAddress, tokenId)
-                                        : createErc1155UriCall(contractAddress, tokenId);
-
-            List<String> metaDataCallResult = contractService.callFunction(metadataCall);
-            if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
-                if (isHttp(metaDataCallResult)) {
-                    try {
-                        result = parseMetaData(objectMapper.readValue(restTemplate.getForObject(metaDataCallResult.get(0), String.class), JsonNode.class));
-                    } catch (IOException e) {
-                        if (e.getMessage().contains("500") && e.getMessage().contains("api.opensea.io")) {
-                            String url = metaDataCallResult.get(0);
-                            url = url.replace("https://api.opensea.io/", "https://rinkeby-api.opensea.io/");
-                            if (!url.contains("format=json")) {
-                                url = url + "?format=json";
-                            }
-                            result = parseMetaData(objectMapper.readValue(restTemplate.getForObject(metaDataCallResult.get(0), String.class), JsonNode.class));
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error getting metadata for nonfungible", e);
+            result = parseMetaData(objectMapper.readValue(metaDataSupplier.get(), JsonNode.class));
+        } catch (IOException e) {
+            log.error("Error parsing metadata for nonfungible", e);
         }
+
         if (this.cacheManager.isPresent()) {
             Cache cache = cacheManager.get().getCache("non-fungibles-meta-data");
             cache.put(cacheKey, result);

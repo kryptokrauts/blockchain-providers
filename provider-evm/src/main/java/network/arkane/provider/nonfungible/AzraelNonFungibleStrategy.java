@@ -10,6 +10,7 @@ import network.arkane.blockchainproviders.azrael.dto.token.erc721.Erc721TokenBal
 import network.arkane.provider.contract.EvmContractService;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.util.CollectionUtils;
 
@@ -75,7 +76,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                : token.getTokens()
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
-                      .map(x -> (Callable<NonFungibleAsset>) () -> getNonFungibleAsset(x.getTokenId().toString(), contract, token))
+                      .map(tb -> (Callable<NonFungibleAsset>) () -> getNonFungibleAsset(tb.getTokenId().toString(), contract, tb.getMetadata()))
                       .collect(Collectors.toList());
 
     }
@@ -87,7 +88,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                : token.getTokens()
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
-                      .map(x -> (Callable<NonFungibleAsset>) () -> getNonFungibleAsset(x.getTokenId().toString(), contract))
+                      .map(tb -> (Callable<NonFungibleAsset>) () -> getNonFungibleAsset(tb.getTokenId().toString(), contract, tb.getMetadata()))
                       .collect(Collectors.toList());
 
     }
@@ -125,9 +126,9 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
 
     private NonFungibleAsset getNonFungibleAsset(String tokenId,
                                                  NonFungibleContract contract,
-                                                 Erc721TokenBalances token) {
-        NonFungibleMetaData metaData = metadataParser.parseMetaData(getSecretType(), tokenId, contract.getType(), contract.getAddress());
-        if (metaData != null) {
+                                                 String strMetaData) {
+        if (StringUtils.isNotBlank(strMetaData)) {
+            NonFungibleMetaData metaData = metadataParser.parseMetaData(getSecretType(), tokenId, contract.getType(), contract.getAddress(), strMetaData);
             return NonFungibleAsset.builder()
                                    .name(metaData.getName())
                                    .imageUrl(metaData.getImage().orElse(null))
@@ -142,9 +143,10 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .build();
         }
         return NonFungibleAsset.builder()
-                               .name(token.getName())
                                .tokenId(tokenId)
                                .contract(contract)
+                               .name(tokenId)
+                               .description(contract.getAddress())
                                .build();
     }
 
