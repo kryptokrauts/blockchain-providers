@@ -13,6 +13,7 @@ import network.arkane.provider.nonfungible.domain.Trait;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -101,8 +102,11 @@ public class NonFungibleMetaData {
                 List<Trait> traits = objectMapper.readValue(propValue, new TypeReference<List<Trait>>() {});
                 return Optional.of(traits);
             } else {
-                Trait trait = objectMapper.readValue(propValue, Trait.class);
-                return Optional.of(Collections.singletonList(trait));
+                List<Trait> traits = new ArrayList<>();
+                json.get(propertyName).fields().forEachRemaining(entry -> {
+                    traits.add(Trait.builder().traitType(entry.getKey()).value(entry.getValue().toString()).build());
+                });
+                return Optional.of(traits);
             }
 
         } catch (IOException e) {
