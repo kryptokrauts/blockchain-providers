@@ -90,4 +90,11 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
         AssetContract asset = ethereumOpenSeaGateway.getContract(contractAddress);
         return contractMapper.map(asset);
     }
+
+    @Override
+    protected NonFungibleAsset getNonFungibleAsset(String tokenId,
+                                                   NonFungibleContract contract,
+                                                   String strMetaData) {
+        return getNonFungible(contract.getAddress(), tokenId);
+    }
 }
