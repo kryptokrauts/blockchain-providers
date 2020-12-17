@@ -72,7 +72,6 @@ class MetaDataParserTest {
                 + "chickens are very easy to keep as pets. They are suitable for children, but like any pet, should be handled with care.");
         assertThat(result.getImage().get()).isEqualTo(
                 "https://upload.wikimedia.org/wikipedia/commons/3/36/A_fuzzy_baby_chicken_and_its_mom.jpg");
-        assertThat(result.getAttributes().toString()).isEqualTo("[Trait(traitType=Cuteness, value=SuperrrrrCute, displayType=null, traitCount=null, maxValue=null)]");
     }
 
     @Test
@@ -122,5 +121,26 @@ class MetaDataParserTest {
         assertThat(result.getImage().get()).isEqualTo("https://www.sandbox.game/img/18_Land/land.png");
         assertThat(result.getAttributes().toString()).isEqualTo("[Trait(traitType=Land X, value=82, displayType=number, traitCount=null, maxValue=408), "
                                                                 + "Trait(traitType=Land Y, value=247, displayType=number, traitCount=null, maxValue=408)]");
+    }
+
+    @Test
+    void metadataAsSeperateProperties() throws IOException {
+        String metaData = "\n"
+                          + "{\"name\":\"Gingerbread Man\",\"description\":\"Gingerbread man is one of the most popular Christmas treat. They are soft in the centers, crisp on "
+                          + "the edges, perfectly spiced, molasses and brown sugar-sweetened holiday goodness. Whenever we think of Christmas cookies, gingerbread man come to "
+                          + "mind first. Their spice, their molasses flavor, their SMILES, and their charm are obviously irresistible. Gingerbread man, you have our hearts. Need"
+                          + " some help when you begin baking? Here is our favorite recipe: https://arkane.network/blog \",\"image\":\"https://raw.githubusercontent"
+                          + ".com/ArkaneNetwork/content-management/master/marketing/xmas-2020/Gingerbread.jpg\",\"properties\":{\"Flour\":\"3 cups\",\"Baking powder\":\"3 "
+                          + "teaspoons\",\"Gingerbread spices\":\"2 tablespoons\",\"Unsalted butter\":\"6 tablespoons\",\"Eggs\":\"1\",\"Molasses\":\"1 cup\","
+                          + "\"tokenTypeId\":3598},\"attributes\":{\"Flour\":\"3 cups\",\"Baking powder\":\"3 teaspoons\",\"Gingerbread spices\":\"2 tablespoons\",\"Unsalted "
+                          + "butter\":\"6 tablespoons\",\"Eggs\":\"1\",\"Molasses\":\"1 cup\",\"tokenTypeId\":3598},\"imagePreview\":\"https://raw.githubusercontent"
+                          + ".com/ArkaneNetwork/content-management/master/marketing/xmas-2020/Gingerbread.jpg\",\"url\":\"https://arkane.network/blog\","
+                          + "\"imageThumbnail\":\"https://raw.githubusercontent.com/ArkaneNetwork/content-management/master/marketing/xmas-2020/Gingerbread.jpg\","
+                          + "\"backgroundColor\":\"#d9d9d9\",\"externalUrl\":\"https://arkane.network/blog\",\"tokenTypeId\":3598,\"background_color\":\"#d9d9d9\","
+                          + "\"external_url\":\"https://arkane.network/blog\"}";
+
+        NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metaData, JsonNode.class));
+
+        assertThat(result.getAttributes()).hasSize(7);
     }
 }

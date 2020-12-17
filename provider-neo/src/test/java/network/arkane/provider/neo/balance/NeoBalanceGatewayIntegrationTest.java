@@ -3,10 +3,12 @@ package network.arkane.provider.neo.balance;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.neo.NeoW3JConfiguration;
 import network.arkane.provider.neo.gateway.NeoW3JGateway;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+@Disabled
 class NeoBalanceGatewayIntegrationTest {
 
     @Test
