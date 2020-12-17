@@ -16,6 +16,10 @@ public class EvmKeystoreExtractor implements SecretExtractor<EvmKeystoreExtracti
     public SecretKey extract(final EvmKeystoreExtractionRequest importWalletRequest) {
         try {
             final WalletFile walletFile = JSONUtil.fromJson(importWalletRequest.getKeystore(), WalletFile.class);
+            if (walletFile.getCrypto().getKdfparams() instanceof WalletFile.ScryptKdfParams) {
+                WalletFile.ScryptKdfParams kdfparams = (WalletFile.ScryptKdfParams) walletFile.getCrypto().getKdfparams();
+                checkKdfParams(kdfparams);
+            }
             final ECKeyPair keypair = Wallet.decrypt(importWalletRequest.getPassword(), walletFile);
             return EvmSecretKey
                     .builder()
@@ -23,11 +27,24 @@ public class EvmKeystoreExtractor implements SecretExtractor<EvmKeystoreExtracti
                     .keyPair(keypair)
                     .build();
         } catch (final Exception ex) {
-            String msg = "Not a valid keystore file";
+            String msg = "Not a valid keystore file: " + ex.getMessage();
             if (ex.getMessage() != null && ex.getMessage().contains("Invalid password provided")) {
                 msg = "Wrong password provided for given keystore file";
             }
             throw new IllegalArgumentException(msg);
         }
     }
+
+    private void checkKdfParams(WalletFile.ScryptKdfParams kdfparams) {
+        if (kdfparams.getR() > 10) {
+            throw new RuntimeException("Invalid keystore file: lower R parameter");
+        }
+        if (kdfparams.getP() > 1) {
+            throw new RuntimeException("Invalid keystore file: lower P parameter");
+        }
+        if (kdfparams.getN() > 524288) {
+            throw new RuntimeException("Invalid keystore file: lower N parameter");
+        }
+    }
+
 }
