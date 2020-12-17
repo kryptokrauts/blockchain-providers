@@ -72,7 +72,6 @@ class MetaDataParserTest {
                 + "chickens are very easy to keep as pets. They are suitable for children, but like any pet, should be handled with care.");
         assertThat(result.getImage().get()).isEqualTo(
                 "https://upload.wikimedia.org/wikipedia/commons/3/36/A_fuzzy_baby_chicken_and_its_mom.jpg");
-        assertThat(result.getAttributes().toString()).isEqualTo("[Trait(traitType=Cuteness, value=SuperrrrrCute, displayType=null, traitCount=null, maxValue=null)]");
     }
 
     @Test
