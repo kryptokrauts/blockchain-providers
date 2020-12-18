@@ -40,6 +40,7 @@ public class VechainTransactionInfoService implements TransactionInfoService {
         CompletableFuture<Receipt> receiptFuture = CompletableFuture.supplyAsync(() -> vechainGateway.getTransactionReceipt(hash), executorService);
         CompletableFuture<Block> blockFuture = CompletableFuture.supplyAsync(() -> vechainGateway.getBlock(), executorService);
         Transaction transaction = transactionFuture.get();
+        executorService.shutdownNow();
         if (transaction == null) {
             return mapToUnfound(hash);
         } else {

@@ -60,13 +60,15 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                 .collect(Collectors.toList());
 
         ExecutorService executorService = Executors.newFixedThreadPool(Integer.min(calls.size(), 25));
-        return executorService.invokeAll(calls).stream().map(x -> {
+        List<NonFungibleAsset> result = executorService.invokeAll(calls).stream().map(x -> {
             try {
                 return x.get();
             } catch (InterruptedException | ExecutionException e) {
                 return null;
             }
         }).collect(Collectors.toList());
+        executorService.shutdownNow();
+        return result;
     }
 
     protected List<Callable<NonFungibleAsset>> mapERC721(Erc721TokenBalances token) {
