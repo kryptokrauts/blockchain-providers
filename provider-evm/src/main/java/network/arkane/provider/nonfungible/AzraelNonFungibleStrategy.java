@@ -59,7 +59,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
-        ExecutorService executorService = Executors.newFixedThreadPool(Integer.min(calls.size(), 25));
+        ExecutorService executorService = Executors.newFixedThreadPool(Integer.min(calls.size(), 10));
         List<NonFungibleAsset> result = executorService.invokeAll(calls).stream().map(x -> {
             try {
                 return x.get();
