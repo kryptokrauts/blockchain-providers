@@ -11,6 +11,7 @@ import network.arkane.provider.contract.EvmContractService;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.util.CollectionUtils;
 
@@ -26,13 +27,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrategy {
+public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrategy, DisposableBean {
 
     private final AzraelClient azraelClient;
     private final MetaDataParser metadataParser;
+    private final ExecutorService executorService;
 
 
     public AzraelNonFungibleStrategy(AzraelClient azraelClient,
@@ -40,6 +43,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                      Optional<CacheManager> cacheManager) {
         this.azraelClient = azraelClient;
         this.metadataParser = new MetaDataParser(contractService, cacheManager);
+        this.executorService = Executors.newFixedThreadPool(25);
     }
 
     @Override
@@ -59,7 +63,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
-        ExecutorService executorService = Executors.newFixedThreadPool(Integer.min(calls.size(), 10));
+
         List<NonFungibleAsset> result = executorService.invokeAll(calls).stream().map(x -> {
             try {
                 return x.get();
@@ -67,7 +71,6 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                 return null;
             }
         }).collect(Collectors.toList());
-        executorService.shutdownNow();
         return result;
     }
 
@@ -188,6 +191,18 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                                             .symbol(token.getSymbol())
                                                             .build())
                            .orElse(null);
+    }
+
+
+    public void destroy() {
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+        }
     }
 
 }
