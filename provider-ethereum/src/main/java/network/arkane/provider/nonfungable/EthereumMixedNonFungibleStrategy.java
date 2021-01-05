@@ -74,7 +74,10 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
                     .map(t -> (Callable<NonFungibleAsset>) () -> {
                         if (StringUtils.isBlank(t.getMetadata())) {
                             Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
-                            return mapper.map(asset);
+                            NonFungibleAsset result = mapper.map(asset);
+                            if (result != null && StringUtils.isNotBlank(result.getTokenId())) {
+                                return result;
+                            }
                         }
                         return super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
                     })
