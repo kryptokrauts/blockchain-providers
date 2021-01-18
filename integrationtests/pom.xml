@@ -10,7 +10,7 @@
     <parent>
         <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.25.6</version>
+        <version>0.25.7</version>
     </parent>
 
     <dependencies>
