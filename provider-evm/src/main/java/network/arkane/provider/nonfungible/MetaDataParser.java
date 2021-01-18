@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -47,7 +48,6 @@ public class MetaDataParser {
     }
 
 
-    @SneakyThrows
     public NonFungibleMetaData parseMetaData(SecretType secretType,
                                              String tokenId,
                                              String contractType,
@@ -61,7 +61,12 @@ public class MetaDataParser {
             List<String> metaDataCallResult = contractService.callFunction(metadataCall);
             if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
                 if (isHttp(metaDataCallResult)) {
-                    return restTemplate.getForObject(metaDataCallResult.get(0), String.class);
+                    try {
+                        return restTemplate.getForObject(metaDataCallResult.get(0), String.class);
+                    } catch (RestClientException e) {
+                        log.error("Error parsing metadata", e);
+                        return "";
+                    }
                 }
             }
             return "";
