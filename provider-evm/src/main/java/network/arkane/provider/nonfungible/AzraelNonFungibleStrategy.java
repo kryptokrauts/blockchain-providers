@@ -150,7 +150,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .imagePreviewUrl(metaData.getImage().orElse(null))
                                    .imageThumbnailUrl(metaData.getImage().orElse(null))
                                    .tokenId(tokenId)
-                                   .contract(contract)
+                                   .contract(metaData.getContract().orElse(contract))
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
