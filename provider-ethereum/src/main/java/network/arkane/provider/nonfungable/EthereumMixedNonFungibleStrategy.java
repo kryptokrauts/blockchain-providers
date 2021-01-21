@@ -20,6 +20,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -62,7 +63,7 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
                                 return result;
                             }
                         }
-                        return super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
+                        return super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata(), BigInteger.ONE);
                     })
                     .collect(Collectors.toList());
     }
@@ -79,7 +80,7 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
                                 return result;
                             }
                         }
-                        return super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
+                        return super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata(), BigInteger.ONE);
                     })
                     .collect(Collectors.toList());
     }
@@ -100,7 +101,8 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
     @Override
     protected NonFungibleAsset getNonFungibleAsset(String tokenId,
                                                    NonFungibleContract contract,
-                                                   String strMetaData) {
+                                                   String strMetaData,
+                                                   BigInteger balance) {
         return getNonFungible(contract.getAddress(), tokenId);
     }
 }

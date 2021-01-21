@@ -24,9 +24,9 @@ public abstract class OpenseaNonFungibleStrategy implements EvmNonFungibleStrate
     }
 
     @Override
-    public List<NonFungibleAsset> listNonFungibles(final String walletId,
+    public List<NonFungibleAsset> listNonFungibles(final String walletAddress,
                                                    final String... contractAddresses) {
-        return mapper.mapToList(openSeaGateway.listAssets(walletId, contractAddresses));
+        return mapper.mapToList(openSeaGateway.listAssets(walletAddress, contractAddresses));
     }
 
     @Override

@@ -82,6 +82,14 @@ public class NonFungibleMetaData {
                      .findFirst();
     }
 
+    public Boolean getFungible() {
+        return Stream.of(getProperty("fungible"))
+                     .filter(StringUtils::isNotBlank)
+                     .map(Boolean::parseBoolean)
+                     .findFirst()
+                     .orElse(false);
+    }
+
     public List<Trait> getAttributes() {
         return Stream.of(
                 parseAttributes("attributes"),

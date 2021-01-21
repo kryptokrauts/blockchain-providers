@@ -16,9 +16,9 @@ public abstract class EvmNonFungibleGateway implements NonFungibleGateway {
     }
 
     @Override
-    public List<NonFungibleAsset> listNonFungibles(String walletId,
+    public List<NonFungibleAsset> listNonFungibles(String walletAddress,
                                                    String... contractAddresses) {
-        return strategy.listNonFungibles(walletId, contractAddresses);
+        return strategy.listNonFungibles(walletAddress, contractAddresses);
     }
 
     @Override

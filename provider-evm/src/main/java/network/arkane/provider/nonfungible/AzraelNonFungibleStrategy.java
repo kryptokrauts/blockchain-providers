@@ -81,7 +81,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                : token.getTokens()
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
-                      .map(tb -> (Callable<NonFungibleAsset>) () -> getNonFungibleAsset(tb.getTokenId().toString(), contract, tb.getMetadata()))
+                      .map(tb -> (Callable<NonFungibleAsset>) () -> getNonFungibleAsset(tb.getTokenId().toString(), contract, tb.getMetadata(), BigInteger.ONE))
                       .collect(Collectors.toList());
 
     }
@@ -93,7 +93,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                : token.getTokens()
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
-                      .map(tb -> (Callable<NonFungibleAsset>) () -> getNonFungibleAsset(tb.getTokenId().toString(), contract, tb.getMetadata()))
+                      .map(tb -> (Callable<NonFungibleAsset>) () -> getNonFungibleAsset(tb.getTokenId().toString(), contract, tb.getMetadata(), tb.getBalance()))
                       .collect(Collectors.toList());
 
     }
@@ -131,7 +131,8 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
 
     protected NonFungibleAsset getNonFungibleAsset(String tokenId,
                                                    NonFungibleContract contract,
-                                                   String strMetaData) {
+                                                   String strMetaData,
+                                                   BigInteger balance) {
         if (StringUtils.isNotBlank(strMetaData)) {
             NonFungibleMetaData metaData = metadataParser.parseMetaData(getSecretType(), tokenId, contract.getType(), contract.getAddress(), strMetaData);
             return NonFungibleAsset.builder()
@@ -170,6 +171,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
                                    .attributes(metaData.getAttributes())
                                    .contract(metaData.getContract().orElse(contract))
+                                   .fungible(metaData.getFungible())
                                    .build();
         }
         return NonFungibleAsset.builder()

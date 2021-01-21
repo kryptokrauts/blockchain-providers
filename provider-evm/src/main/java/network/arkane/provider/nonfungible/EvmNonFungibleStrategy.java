@@ -9,7 +9,7 @@ import java.util.List;
 public interface EvmNonFungibleStrategy {
     SecretType getSecretType();
 
-    List<NonFungibleAsset> listNonFungibles(String walletId,
+    List<NonFungibleAsset> listNonFungibles(String walletAddress,
                                             String... contractAddresses);
 
     NonFungibleAsset getNonFungible(String contractAddress,
