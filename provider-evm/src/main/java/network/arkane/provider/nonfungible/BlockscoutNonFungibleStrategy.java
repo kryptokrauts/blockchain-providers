@@ -8,6 +8,7 @@ import network.arkane.blockchainproviders.blockscout.dto.ERC721BlockscoutToken;
 import network.arkane.provider.business.token.BusinessNonFungibleGateway;
 import network.arkane.provider.contract.EvmContractService;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
+import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import org.springframework.cache.CacheManager;
 
@@ -40,8 +41,8 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
 
     @Override
     @SneakyThrows
-    public List<NonFungibleAsset> listNonFungibles(final String walletAddress,
-                                                   final String... contractAddresses) {
+    public List<NonFungibleAssetBalance> listNonFungibles(final String walletAddress,
+                                                          final String... contractAddresses) {
         Set<String> contracts = contractAddresses == null ? new HashSet<>() : Arrays.stream(contractAddresses).map(String::toLowerCase).collect(Collectors.toSet());
 
         return blockscoutClient.getTokenBalances(walletAddress)
@@ -56,19 +57,19 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
 
     }
 
-    private List<NonFungibleAsset> mapERC721(ERC721BlockscoutToken token) {
+    private List<NonFungibleAssetBalance> mapERC721(ERC721BlockscoutToken token) {
         NonFungibleContract contract = createContract(token);
         return token.getTokens() == null
                ? Collections.emptyList()
                : token.getTokens()
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
-                      .map(x -> getNonFungibleAsset(x.getTokenId().toString(), contract, token))
+                      .map(x -> NonFungibleAssetBalance.builder().nonFungibleAsset(getNonFungibleAsset(x.getTokenId().toString(), contract, token)).balance(x.getBalance()).build())
                       .collect(Collectors.toList());
 
     }
 
-    private List<NonFungibleAsset> mapERC1155(ERC1155BlockscoutToken token) {
+    private List<NonFungibleAssetBalance> mapERC1155(ERC1155BlockscoutToken token) {
 
         NonFungibleContract contract = createContract(token);
         return token.getTokens() == null
@@ -78,11 +79,13 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
                       .map(x -> {
                                if (isBusinessToken(token.getContractAddress())) {
-                                   return businessNonFungibleGateway.getNonFungible(getSecretType(),
-                                                                                    token.getContractAddress(),
-                                                                                    x.getTokenId().toString());
+                                   NonFungibleAsset asset = businessNonFungibleGateway.getNonFungible(getSecretType(),
+                                                                                                      token.getContractAddress(),
+                                                                                                      x.getTokenId().toString());
+                                   return NonFungibleAssetBalance.builder().nonFungibleAsset(asset).balance(x.getBalance()).build();
                                } else {
-                                   return getNonFungibleAsset(x.getTokenId().toString(), contract);
+                                   NonFungibleAsset asset = getNonFungibleAsset(x.getTokenId().toString(), contract);
+                                   return NonFungibleAssetBalance.builder().nonFungibleAsset(asset).balance(x.getBalance()).build();
                                }
                            }
                           )

@@ -4,6 +4,7 @@ import network.arkane.blockchainproviders.blockscout.dto.BlockscoutTokenBalance;
 import network.arkane.provider.business.token.model.TokenDto;
 import network.arkane.provider.nonfungible.EvmNonFungibleGateway;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
+import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
@@ -22,7 +23,7 @@ public abstract class EvmInventoryService implements InventoryService {
 
     public Inventory getInventory(final String walletAddress,
                                   final String... contractAddresses) {
-        List<NonFungibleAsset> tokens = nonFungibleGateway.listNonFungibles(walletAddress, contractAddresses);
+        List<NonFungibleAssetBalance> tokens = nonFungibleGateway.listNonFungibles(walletAddress, contractAddresses);
 
         Map<String, Map<String, TokenTypeInventory>> tokenTypesByContract = groupTokens(tokens);
 
@@ -31,10 +32,11 @@ public abstract class EvmInventoryService implements InventoryService {
     }
 
     @NotNull
-    private Map<String, Map<String, TokenTypeInventory>> groupTokens(List<NonFungibleAsset> tokens) {
+    private Map<String, Map<String, TokenTypeInventory>> groupTokens(List<NonFungibleAssetBalance> tokens) {
         Map<String, Map<String, TokenTypeInventory>> tokenTypesByContract = new HashMap<>();
         tokens
-                .forEach(token -> {
+                .forEach(tokenBalance -> {
+                    NonFungibleAsset token = tokenBalance.getNonFungibleAsset();
                     if (token != null && token.getContract().getType() != null && token.getTokenId() != null) {
                         tokenTypesByContract.computeIfAbsent(token.getContract().getAddress(), s -> new HashMap<>());
                         Map<String, TokenTypeInventory> byType = tokenTypesByContract.get(token.getContract().getAddress());
@@ -50,7 +52,7 @@ public abstract class EvmInventoryService implements InventoryService {
                                                                       .build());
                         } else {
                             TokenTypeInventory tokenTypeInventory = byType.get(tokenTypeId);
-                            tokenTypeInventory.setBalance(tokenTypeInventory.getBalance().add(token.getBalance()));
+                            tokenTypeInventory.setBalance(tokenTypeInventory.getBalance().add(tokenBalance.getBalance()));
                             tokenTypeInventory.getTokenIds().add(token.getTokenId());
                         }
                     }

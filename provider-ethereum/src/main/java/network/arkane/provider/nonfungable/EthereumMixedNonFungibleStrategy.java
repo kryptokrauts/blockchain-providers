@@ -8,6 +8,7 @@ import network.arkane.provider.contract.EthereumContractService;
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import network.arkane.provider.nonfungible.AzraelNonFungibleStrategy;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
+import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import network.arkane.provider.opensea.NonFungibleContractTypeMapper;
 import network.arkane.provider.opensea.OpenSeaAssetToNonFungibleAssetMapper;
@@ -53,34 +54,36 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
     }
 
     @Override
-    protected List<Callable<NonFungibleAsset>> mapERC721(Erc721TokenBalances token) {
+    protected List<Callable<NonFungibleAssetBalance>> mapERC721(Erc721TokenBalances token) {
         return token.getTokens().stream()
-                    .map(t -> (Callable<NonFungibleAsset>) () -> {
+                    .map(t -> (Callable<NonFungibleAssetBalance>) () -> {
                         if (StringUtils.isBlank(t.getMetadata())) {
                             Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
                             NonFungibleAsset result = mapper.map(asset);
                             if (result != null && StringUtils.isNotBlank(result.getTokenId())) {
-                                return result;
+                                return NonFungibleAssetBalance.builder().nonFungibleAsset(result).balance(BigInteger.ONE).build();
                             }
                         }
-                        return super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata(), BigInteger.ONE);
+                        NonFungibleAsset asset = super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
+                        return NonFungibleAssetBalance.builder().nonFungibleAsset(asset).balance(BigInteger.ONE).build();
                     })
                     .collect(Collectors.toList());
     }
 
     @Override
-    protected List<Callable<NonFungibleAsset>> mapERC1155(Erc1155TokenBalances token) {
+    protected List<Callable<NonFungibleAssetBalance>> mapERC1155(Erc1155TokenBalances token) {
         return token.getTokens()
                     .stream()
-                    .map(t -> (Callable<NonFungibleAsset>) () -> {
+                    .map(t -> (Callable<NonFungibleAssetBalance>) () -> {
                         if (StringUtils.isBlank(t.getMetadata())) {
                             Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
                             NonFungibleAsset result = mapper.map(asset);
                             if (result != null && StringUtils.isNotBlank(result.getTokenId())) {
-                                return result;
+                                return NonFungibleAssetBalance.builder().nonFungibleAsset(result).balance(BigInteger.ONE).build();
                             }
                         }
-                        return super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata(), BigInteger.ONE);
+                        NonFungibleAsset asset = super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
+                        return NonFungibleAssetBalance.builder().nonFungibleAsset(asset).balance(BigInteger.ONE).build();
                     })
                     .collect(Collectors.toList());
     }
@@ -101,8 +104,7 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
     @Override
     protected NonFungibleAsset getNonFungibleAsset(String tokenId,
                                                    NonFungibleContract contract,
-                                                   String strMetaData,
-                                                   BigInteger balance) {
+                                                   String strMetaData) {
         return getNonFungible(contract.getAddress(), tokenId);
     }
 }

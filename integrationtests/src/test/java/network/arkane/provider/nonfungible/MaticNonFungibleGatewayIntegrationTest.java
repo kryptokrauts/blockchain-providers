@@ -3,7 +3,7 @@ package network.arkane.provider.nonfungible;
 import network.arkane.blockchainproviders.azrael.AzraelClient;
 import network.arkane.provider.contract.MaticContractService;
 import network.arkane.provider.gateway.MaticWeb3JGateway;
-import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
+import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class MaticNonFungibleGatewayIntegrationTest {
 
     @Test
     void getSome() {
-        List<NonFungibleAsset> nonFungibleAssets = strategy.listNonFungibles("0x9c978F4cfa1FE13406BCC05baf26a35716F881Dd");
+        List<NonFungibleAssetBalance> nonFungibleAssets = strategy.listNonFungibles("0x9c978F4cfa1FE13406BCC05baf26a35716F881Dd");
 
         assertThat(nonFungibleAssets).isNotNull();
     }

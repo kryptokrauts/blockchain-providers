@@ -20,7 +20,6 @@ public class NonFungibleAsset {
     private String imageThumbnailUrl;
     private String animationUrl;
     private Boolean fungible;
-    private BigInteger balance;
     private NonFungibleContract contract;
     private List<Trait> attributes;
 
@@ -50,7 +49,6 @@ public class NonFungibleAsset {
         this.animationUrl = animationUrl;
         this.contract = contract;
         this.attributes = attributes;
-        this.balance = balance == null ? BigInteger.ONE : balance;
         this.fungible = fungible != null && fungible;
     }
 }

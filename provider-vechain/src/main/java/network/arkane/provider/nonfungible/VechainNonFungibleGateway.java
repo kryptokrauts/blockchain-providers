@@ -3,10 +3,13 @@ package network.arkane.provider.nonfungible;
 import network.arkane.provider.business.token.BusinessNonFungibleGateway;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
+import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VechainNonFungibleGateway implements NonFungibleGateway {
@@ -23,9 +26,12 @@ public class VechainNonFungibleGateway implements NonFungibleGateway {
     }
 
     @Override
-    public List<NonFungibleAsset> listNonFungibles(final String walletId,
-                                                   final String... contractAddresses) {
-        return businessNonFungibleGateway.listNonFungibles(getSecretType(), walletId, contractAddresses);
+    public List<NonFungibleAssetBalance> listNonFungibles(final String walletId,
+                                                          final String... contractAddresses) {
+        return businessNonFungibleGateway.listNonFungibles(getSecretType(), walletId, contractAddresses)
+                                         .stream()
+                                         .map(asset -> NonFungibleAssetBalance.builder().nonFungibleAsset(asset).balance(BigInteger.ONE).build())
+                                         .collect(Collectors.toList());
     }
 
     @Override

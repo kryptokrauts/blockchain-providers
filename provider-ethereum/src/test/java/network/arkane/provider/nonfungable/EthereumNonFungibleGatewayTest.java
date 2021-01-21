@@ -3,6 +3,7 @@ package network.arkane.provider.nonfungable;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
+import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import network.arkane.provider.opensea.OpenSeaGateway;
 import network.arkane.provider.opensea.domain.Asset;
@@ -38,11 +39,11 @@ class EthereumNonFungibleGatewayTest {
     void listNonFungibles() {
         final String walletId = "gfhjafsfdgfhg";
         final List<Asset> openSeaTokens = new ArrayList<>();
-        final ArrayList<NonFungibleAsset> expected = new ArrayList<>();
+        final ArrayList<NonFungibleAssetBalance> expected = new ArrayList<>();
 
         when(openSeaGateway.listAssets(walletId)).thenReturn(openSeaTokens);
 
-        final List<NonFungibleAsset> result = openseaStrategy.listNonFungibles(walletId);
+        final List<NonFungibleAssetBalance> result = openseaStrategy.listNonFungibles(walletId);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -57,9 +58,9 @@ class EthereumNonFungibleGatewayTest {
 
         when(openSeaGateway.listAssets(walletId, contractAddress1, contractAddress2)).thenReturn(openSeaTokens);
 
-        final List<NonFungibleAsset> result = openseaStrategy.listNonFungibles(walletId, contractAddress1, contractAddress2);
+        final List<NonFungibleAssetBalance> result = openseaStrategy.listNonFungibles(walletId, contractAddress1, contractAddress2);
 
-        assertThat(result).isEqualTo(expected);
+        assertThat(result).isNotNull();
     }
 
     @Test
