@@ -150,7 +150,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .imagePreviewUrl(metaData.getImage().orElse(null))
                                    .imageThumbnailUrl(metaData.getImage().orElse(null))
                                    .tokenId(tokenId)
-                                   .contract(metaData.getContract().orElse(contract))
+                                   .contract(parseContract(contract, metaData))
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
@@ -163,6 +163,35 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                .name(tokenId)
                                .description(contract.getAddress())
                                .build();
+    }
+
+    private NonFungibleContract parseContract(NonFungibleContract contract,
+                                              NonFungibleMetaData metaData) {
+        NonFungibleContract result = contract.toBuilder().build();
+        metaData.getContract().ifPresent(c -> {
+            if (StringUtils.isNotBlank(c.getDescription())) {
+                result.setDescription(c.getDescription());
+            }
+            if (StringUtils.isNotBlank(c.getSymbol())) {
+                result.setSymbol(c.getSymbol());
+            }
+            if (StringUtils.isNotBlank(c.getName())) {
+                result.setName(c.getName());
+            }
+            if (StringUtils.isNotBlank(c.getType())) {
+                result.setType(c.getType());
+            }
+            if (StringUtils.isNotBlank(c.getMedia())) {
+                result.setMedia(c.getMedia());
+            }
+            if (StringUtils.isNotBlank(c.getImageUrl())) {
+                result.setImageUrl(c.getImageUrl());
+            }
+            if (StringUtils.isNotBlank(c.getUrl())) {
+                result.setUrl(c.getUrl());
+            }
+        });
+        return result;
     }
 
     private NonFungibleAsset getNonFungibleAsset(String tokenId,
@@ -179,7 +208,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
                                    .attributes(metaData.getAttributes())
-                                   .contract(metaData.getContract().orElse(contract))
+                                   .contract(parseContract(contract, metaData))
                                    .fungible(metaData.getFungible())
                                    .build();
         }
