@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import network.arkane.provider.nonfungible.domain.Trait;
 import org.apache.commons.lang3.StringUtils;
 
@@ -81,6 +82,14 @@ public class NonFungibleMetaData {
                      .findFirst();
     }
 
+    public Boolean getFungible() {
+        return Stream.of(getProperty("fungible"))
+                     .filter(StringUtils::isNotBlank)
+                     .map(Boolean::parseBoolean)
+                     .findFirst()
+                     .orElse(false);
+    }
+
     public List<Trait> getAttributes() {
         return Stream.of(
                 parseAttributes("attributes"),
@@ -90,6 +99,16 @@ public class NonFungibleMetaData {
                      .map(Optional::get)
                      .findFirst()
                      .orElse(Collections.emptyList());
+    }
+
+    public Optional<NonFungibleContract> getContract() {
+        return Stream.of(
+                parseContract("contract"),
+                parseContract("asset_contract"))
+                     .filter(Optional::isPresent)
+                     .map(Optional::get)
+                     .findFirst();
+
     }
 
     public Optional<List<Trait>> parseAttributes(String propertyName) {
@@ -110,6 +129,16 @@ public class NonFungibleMetaData {
             }
 
         } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<NonFungibleContract> parseContract(String propertyName) {
+        if (!json.has(propertyName)) return Optional.empty();
+        String propValue = getProperty(propertyName);
+        try {
+            return Optional.of(objectMapper.readValue(propValue, NonFungibleContract.class));
+        } catch (Exception e) {
             return Optional.empty();
         }
     }

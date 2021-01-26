@@ -2,6 +2,7 @@ package network.arkane.provider.nonfungible;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
+import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 
 import java.util.List;
@@ -16,9 +17,9 @@ public abstract class EvmNonFungibleGateway implements NonFungibleGateway {
     }
 
     @Override
-    public List<NonFungibleAsset> listNonFungibles(String walletId,
-                                                   String... contractAddresses) {
-        return strategy.listNonFungibles(walletId, contractAddresses);
+    public List<NonFungibleAssetBalance> listNonFungibles(String walletAddress,
+                                                          String... contractAddresses) {
+        return strategy.listNonFungibles(walletAddress, contractAddresses);
     }
 
     @Override

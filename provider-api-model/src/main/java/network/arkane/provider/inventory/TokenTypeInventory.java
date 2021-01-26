@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Builder
 public class TokenTypeInventory {
     private Boolean fungible;
-    private Long tokenTypeId;
-    private Long balance;
+    private String tokenTypeId;
+    private BigInteger balance;
     private List<String> tokenIds = new ArrayList<>();
 }
