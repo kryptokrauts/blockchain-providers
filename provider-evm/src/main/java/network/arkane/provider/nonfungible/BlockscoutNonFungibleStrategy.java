@@ -149,7 +149,7 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
                                    .imageUrl(metaData.getImage().orElse(null))
                                    .imagePreviewUrl(metaData.getImage().orElse(null))
                                    .imageThumbnailUrl(metaData.getImage().orElse(null))
-                                   .tokenId(tokenId)
+                                   .id(tokenId)
                                    .contract(contract)
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
@@ -158,7 +158,7 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
         }
         return NonFungibleAsset.builder()
                                .name(token.getName())
-                               .tokenId(tokenId)
+                               .id(tokenId)
                                .contract(contract)
                                .build();
     }
@@ -172,7 +172,7 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
                                    .imageUrl(metaData.getImage().orElse(null))
                                    .imagePreviewUrl(metaData.getImage().orElse(null))
                                    .imageThumbnailUrl(metaData.getImage().orElse(null))
-                                   .tokenId(tokenId)
+                                   .id(tokenId)
                                    .contract(contract)
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
@@ -180,7 +180,7 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
                                    .build();
         }
         return NonFungibleAsset.builder()
-                               .tokenId(tokenId)
+                               .id(tokenId)
                                .contract(contract)
                                .name(tokenId)
                                .description(contract.getAddress())

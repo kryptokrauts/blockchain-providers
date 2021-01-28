@@ -22,7 +22,7 @@ public class NonFungibleAsset {
     private List<Attribute> attributes;
 
     @Builder
-    public NonFungibleAsset(final String tokenId,
+    public NonFungibleAsset(final String id,
                             final String name,
                             final String description,
                             final String url,
@@ -34,7 +34,7 @@ public class NonFungibleAsset {
                             final Boolean fungible,
                             final NonFungibleContract contract,
                             final List<Attribute> attributes) {
-        this.id = tokenId;
+        this.id = id;
         this.name = name;
         this.description = description;
         this.url = url;

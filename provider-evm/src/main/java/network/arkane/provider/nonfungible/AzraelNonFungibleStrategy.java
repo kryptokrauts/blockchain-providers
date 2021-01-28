@@ -151,7 +151,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .imageUrl(metaData.getImage().orElse(null))
                                    .imagePreviewUrl(metaData.getImage().orElse(null))
                                    .imageThumbnailUrl(metaData.getImage().orElse(null))
-                                   .tokenId(tokenId)
+                                   .id(tokenId)
                                    .contract(parseContract(contract, metaData))
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
@@ -160,7 +160,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .build();
         }
         return NonFungibleAsset.builder()
-                               .tokenId(tokenId)
+                               .id(tokenId)
                                .contract(contract)
                                .name(tokenId)
                                .description(contract.getAddress())
@@ -205,7 +205,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .imageUrl(metaData.getImage().orElse(null))
                                    .imagePreviewUrl(metaData.getImage().orElse(null))
                                    .imageThumbnailUrl(metaData.getImage().orElse(null))
-                                   .tokenId(tokenId)
+                                   .id(tokenId)
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
@@ -215,7 +215,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .build();
         }
         return NonFungibleAsset.builder()
-                               .tokenId(tokenId)
+                               .id(tokenId)
                                .contract(contract)
                                .name(tokenId)
                                .description(contract.getAddress())
