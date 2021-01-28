@@ -8,6 +8,7 @@ import network.arkane.blockchainproviders.azrael.dto.TokenBalance;
 import network.arkane.blockchainproviders.azrael.dto.token.erc1155.Erc1155TokenBalances;
 import network.arkane.blockchainproviders.azrael.dto.token.erc721.Erc721TokenBalances;
 import network.arkane.provider.contract.EvmContractService;
+import network.arkane.provider.nonfungible.domain.Attribute;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
@@ -22,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -154,7 +156,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
-                                   .attributes(metaData.getAttributes())
+                                   .attributes(enrichAttributes(metaData))
                                    .build();
         }
         return NonFungibleAsset.builder()
@@ -207,7 +209,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
-                                   .attributes(metaData.getAttributes())
+                                   .attributes(enrichAttributes(metaData))
                                    .contract(parseContract(contract, metaData))
                                    .fungible(metaData.getFungible())
                                    .build();
@@ -218,6 +220,28 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                .name(tokenId)
                                .description(contract.getAddress())
                                .build();
+    }
+
+    private List<Attribute> enrichAttributes(NonFungibleMetaData metaData) {
+        return metaData.getAttributes()
+                       .stream()
+                       .filter(Objects::nonNull)
+                       .map(attribute -> {
+                           if (StringUtils.isNotBlank(attribute.getDisplayType())) {
+                               if ("number".equalsIgnoreCase(attribute.getDisplayType())) {
+                                   attribute.setType("stat");
+                               } else if ("boost_number".equalsIgnoreCase(attribute.getDisplayType())) {
+                                   attribute.setType("boost");
+                               } else if ("boost_percentage".equalsIgnoreCase(attribute.getDisplayType())) {
+                                   attribute.setType("boost");
+                               }
+                           }
+                           if (StringUtils.isBlank(attribute.getType())) {
+                               attribute.setType("property");
+                           }
+                           return attribute;
+                       })
+                       .collect(Collectors.toList());
     }
 
 

@@ -119,8 +119,9 @@ class MetaDataParserTest {
                 + "populate it with Games and Assets. Each LAND is a unique (non-fungible) token lying on the public Ethereum blockchain (ERC-721).");
         assertThat(result.getExternalUrl().get()).isEqualTo("https://www.sandbox.game/en/lands/0ef9f207-50d4-40c1-ad47-33046138f741/");
         assertThat(result.getImage().get()).isEqualTo("https://www.sandbox.game/img/18_Land/land.png");
-        assertThat(result.getAttributes().toString()).isEqualTo("[Trait(traitType=Land X, value=82, displayType=number, traitCount=null, maxValue=408), "
-                                                                + "Trait(traitType=Land Y, value=247, displayType=number, traitCount=null, maxValue=408)]");
+        assertThat(result.getAttributes().toString()).isEqualTo(
+                "[Attribute(type=null, name=Land X, value=82, displayType=number, traitCount=null, maxValue=408), Attribute(type=null, name=Land Y, value=247, "
+                + "displayType=number, traitCount=null, maxValue=408)]");
     }
 
     @Test
