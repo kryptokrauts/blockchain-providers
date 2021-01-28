@@ -9,7 +9,6 @@ import java.util.List;
 public class NonFungibleAsset {
 
     private String id;
-    private String tokenId;
     private String name;
     private String description;
     private String url;
@@ -36,7 +35,6 @@ public class NonFungibleAsset {
                             final NonFungibleContract contract,
                             final List<Attribute> attributes) {
         this.id = tokenId;
-        this.tokenId = tokenId;
         this.name = name;
         this.description = description;
         this.url = url;

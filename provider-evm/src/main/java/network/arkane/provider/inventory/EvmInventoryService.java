@@ -37,13 +37,13 @@ public abstract class EvmInventoryService implements InventoryService {
         tokens
                 .forEach(tokenBalance -> {
                     NonFungibleAsset token = tokenBalance.getNonFungibleAsset();
-                    if (token != null && token.getContract().getType() != null && token.getTokenId() != null) {
+                    if (token != null && token.getContract().getType() != null && token.getId() != null) {
                         tokenTypesByContract.computeIfAbsent(token.getContract().getAddress(), s -> new HashMap<>());
                         Map<String, TokenTypeInventory> byType = tokenTypesByContract.get(token.getContract().getAddress());
-                        String tokenTypeId = token.getTokenId();
+                        String tokenTypeId = token.getId();
                         if (!byType.containsKey(tokenTypeId)) {
                             List<String> tokenIds = new ArrayList<>();
-                            tokenIds.add(token.getTokenId());
+                            tokenIds.add(token.getId());
                             byType.put(tokenTypeId, TokenTypeInventory.builder()
                                                                       .fungible(token.getFungible())
                                                                       .balance(BigInteger.ONE)
@@ -53,7 +53,7 @@ public abstract class EvmInventoryService implements InventoryService {
                         } else {
                             TokenTypeInventory tokenTypeInventory = byType.get(tokenTypeId);
                             tokenTypeInventory.setBalance(tokenTypeInventory.getBalance().add(tokenBalance.getBalance()));
-                            tokenTypeInventory.getTokenIds().add(token.getTokenId());
+                            tokenTypeInventory.getTokenIds().add(token.getId());
                         }
                     }
                 });
