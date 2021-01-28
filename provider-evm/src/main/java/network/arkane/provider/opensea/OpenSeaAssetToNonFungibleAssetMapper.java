@@ -1,9 +1,11 @@
 package network.arkane.provider.opensea;
 
+import network.arkane.provider.nonfungible.domain.Attribute;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
-import network.arkane.provider.nonfungible.domain.Trait;
 import network.arkane.provider.opensea.domain.Asset;
+import network.arkane.provider.opensea.domain.Trait;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,15 +37,38 @@ public class OpenSeaAssetToNonFungibleAssetMapper {
                                .fungible(false)
                                .attributes(CollectionUtils.emptyIfNull(openSeaAsset.getTraits())
                                                           .stream()
-                                                          .map(trait -> Trait.builder()
-                                                                             .displayType(trait.getDisplayType())
-                                                                             .traitCount(trait.getTraitCount())
-                                                                             .traitType(trait.getTraitType())
-                                                                             .value(trait.getValue())
-                                                                             .build()
+                                                          .map(trait -> Attribute.builder()
+                                                                                 .displayType(trait.getDisplayType())
+                                                                                 .traitCount(trait.getTraitCount())
+                                                                                 .name(trait.getTraitType())
+                                                                                 .type(mapType(trait))
+                                                                                 .value(mapValue(trait))
+                                                                                 .maxValue(trait.getMaxValue())
+                                                                                 .build()
                                                               ).collect(Collectors.toList())
                                           )
                                .build();
+    }
+
+    private String mapValue(Trait trait) {
+        return StringUtils.isNotBlank(trait.getValue()) && "boost_percentage".equalsIgnoreCase(trait.getDisplayType())
+               ? trait.getValue() + "%"
+               : trait.getValue();
+    }
+
+    private String mapType(Trait trait) {
+        if (StringUtils.isNotBlank(trait.getDisplayType())) {
+            if ("data".equalsIgnoreCase(trait.getDisplayType())) {
+                return "property";
+            } else if ("number".equalsIgnoreCase(trait.getDisplayType())) {
+                return "stat";
+            } else if ("boost_number".equalsIgnoreCase(trait.getDisplayType())) {
+                return "boost";
+            } else if ("boost_percentage".equalsIgnoreCase(trait.getDisplayType())) {
+                return "boost";
+            }
+        }
+        return "property";
     }
 
     public List<NonFungibleAsset> mapToList(final Collection<? extends Asset> openSeaAssets) {
