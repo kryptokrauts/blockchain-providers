@@ -3,6 +3,7 @@ package network.arkane.provider.nonfungible.domain;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Data
@@ -18,6 +19,7 @@ public class NonFungibleAsset {
     private String imageThumbnailUrl;
     private String animationUrl;
     private Boolean fungible;
+    private BigInteger maxSupply;
     private NonFungibleContract contract;
     private List<Attribute> attributes;
 
@@ -32,6 +34,7 @@ public class NonFungibleAsset {
                             final String imageThumbnailUrl,
                             final String animationUrl,
                             final Boolean fungible,
+                            final BigInteger maxSupply,
                             final NonFungibleContract contract,
                             final List<Attribute> attributes) {
         this.id = id;
@@ -44,6 +47,7 @@ public class NonFungibleAsset {
         this.imageThumbnailUrl = imageThumbnailUrl;
         this.animationUrl = animationUrl;
         this.contract = contract;
+        this.maxSupply = maxSupply;
         this.attributes = attributes;
         this.fungible = fungible != null && fungible;
     }

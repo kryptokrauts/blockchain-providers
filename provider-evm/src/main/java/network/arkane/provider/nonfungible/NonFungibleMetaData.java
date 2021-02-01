@@ -82,6 +82,14 @@ public class NonFungibleMetaData {
                      .findFirst();
     }
 
+    public Optional<String> getMaxSupply() {
+        return Stream.of(
+                getProperty("maxSupply"),
+                getProperty("max_supply")
+                        ).filter(StringUtils::isNotBlank)
+                     .findFirst();
+    }
+
     public Boolean getFungible() {
         return Stream.of(getProperty("fungible"))
                      .filter(StringUtils::isNotBlank)
@@ -100,6 +108,7 @@ public class NonFungibleMetaData {
                      .findFirst()
                      .orElse(Collections.emptyList());
     }
+
 
     public Optional<NonFungibleContract> getContract() {
         return Stream.of(
