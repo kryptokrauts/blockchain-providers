@@ -3,6 +3,7 @@ package network.arkane.provider.nonfungable;
 import network.arkane.blockchainproviders.azrael.AzraelClient;
 import network.arkane.provider.contract.EthereumContractService;
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
+import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -34,6 +35,13 @@ class EthereumAzraelNonFungibleStrategyIntegrationTest {
     @Test
     void getInventory() {
         List<NonFungibleAssetBalance> result = strategy.listNonFungibles("0xA5dC4fb59eBCaf00100C00776b45c3E4b58c6B95");
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    void getNonfungibleAsset() {
+        NonFungibleAsset result = strategy.getNonFungible("0x8678d1561fb4fc5e6522186be137822c036429a9", "4");
 
         assertThat(result).isNotNull();
     }

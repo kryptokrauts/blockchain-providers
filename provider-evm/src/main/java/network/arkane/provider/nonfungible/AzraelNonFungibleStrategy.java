@@ -132,13 +132,9 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
     @SneakyThrows
     public NonFungibleAsset getNonFungible(final String contractAddress,
                                            final String tokenId) {
-
-        NonFungibleContract contract = getNonFungibleContract(contractAddress);
-        if (contract != null) {
-            return getNonFungibleAsset(tokenId, contract);
-        }
-        return null;
-
+        return azraelClient.getToken(contractAddress, tokenId)
+                           .map(t -> getNonFungibleAsset(tokenId, mapToContract(contractAddress, t.getContract()), t.getMetadata()))
+                           .orElse(null);
     }
 
     protected NonFungibleAsset getNonFungibleAsset(String tokenId,
@@ -249,13 +245,18 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
     @Override
     public NonFungibleContract getNonFungibleContract(final String contractAddress) {
         return azraelClient.getContract(contractAddress)
-                           .map(token -> NonFungibleContract.builder()
-                                                            .type(token.getContractType().name())
-                                                            .address(contractAddress)
-                                                            .name(token.getName())
-                                                            .symbol(token.getSymbol())
-                                                            .build())
+                           .map(token -> mapToContract(contractAddress, token))
                            .orElse(null);
+    }
+
+    private NonFungibleContract mapToContract(String contractAddress,
+                                              network.arkane.blockchainproviders.azrael.dto.contract.ContractDto token) {
+        return NonFungibleContract.builder()
+                                  .type(token.getContractType().name())
+                                  .address(contractAddress)
+                                  .name(token.getName())
+                                  .symbol(token.getSymbol())
+                                  .build();
     }
 
 
