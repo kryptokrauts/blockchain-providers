@@ -8,6 +8,7 @@ import network.arkane.blockchainproviders.azrael.dto.TokenBalance;
 import network.arkane.blockchainproviders.azrael.dto.token.erc1155.Erc1155TokenBalances;
 import network.arkane.blockchainproviders.azrael.dto.token.erc721.Erc721TokenBalances;
 import network.arkane.provider.contract.EvmContractService;
+import network.arkane.provider.nonfungible.domain.Attribute;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
@@ -22,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -130,13 +132,9 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
     @SneakyThrows
     public NonFungibleAsset getNonFungible(final String contractAddress,
                                            final String tokenId) {
-
-        NonFungibleContract contract = getNonFungibleContract(contractAddress);
-        if (contract != null) {
-            return getNonFungibleAsset(tokenId, contract);
-        }
-        return null;
-
+        return azraelClient.getToken(contractAddress, tokenId)
+                           .map(t -> getNonFungibleAsset(tokenId, mapToContract(contractAddress, t.getContract()), t.getMetadata()))
+                           .orElse(null);
     }
 
     protected NonFungibleAsset getNonFungibleAsset(String tokenId,
@@ -149,16 +147,17 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .imageUrl(metaData.getImage().orElse(null))
                                    .imagePreviewUrl(metaData.getImage().orElse(null))
                                    .imageThumbnailUrl(metaData.getImage().orElse(null))
-                                   .tokenId(tokenId)
+                                   .id(tokenId)
                                    .contract(parseContract(contract, metaData))
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
+                                   .maxSupply(metaData.getMaxSupply().map(BigInteger::new).orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
-                                   .attributes(metaData.getAttributes())
+                                   .attributes(enrichAttributes(metaData))
                                    .build();
         }
         return NonFungibleAsset.builder()
-                               .tokenId(tokenId)
+                               .id(tokenId)
                                .contract(contract)
                                .name(tokenId)
                                .description(contract.getAddress())
@@ -203,34 +202,61 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .imageUrl(metaData.getImage().orElse(null))
                                    .imagePreviewUrl(metaData.getImage().orElse(null))
                                    .imageThumbnailUrl(metaData.getImage().orElse(null))
-                                   .tokenId(tokenId)
+                                   .id(tokenId)
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
-                                   .attributes(metaData.getAttributes())
+                                   .attributes(enrichAttributes(metaData))
                                    .contract(parseContract(contract, metaData))
                                    .fungible(metaData.getFungible())
                                    .build();
         }
         return NonFungibleAsset.builder()
-                               .tokenId(tokenId)
+                               .id(tokenId)
                                .contract(contract)
                                .name(tokenId)
                                .description(contract.getAddress())
                                .build();
     }
 
+    private List<Attribute> enrichAttributes(NonFungibleMetaData metaData) {
+        return metaData.getAttributes()
+                       .stream()
+                       .filter(Objects::nonNull)
+                       .map(attribute -> {
+                           if (StringUtils.isNotBlank(attribute.getDisplayType())) {
+                               if ("number".equalsIgnoreCase(attribute.getDisplayType())) {
+                                   attribute.setType("stat");
+                               } else if ("boost_number".equalsIgnoreCase(attribute.getDisplayType())) {
+                                   attribute.setType("boost");
+                               } else if ("boost_percentage".equalsIgnoreCase(attribute.getDisplayType())) {
+                                   attribute.setType("boost");
+                               }
+                           }
+                           if (StringUtils.isBlank(attribute.getType())) {
+                               attribute.setType("property");
+                           }
+                           return attribute;
+                       })
+                       .collect(Collectors.toList());
+    }
+
 
     @Override
     public NonFungibleContract getNonFungibleContract(final String contractAddress) {
         return azraelClient.getContract(contractAddress)
-                           .map(token -> NonFungibleContract.builder()
-                                                            .type(token.getContractType().name())
-                                                            .address(contractAddress)
-                                                            .name(token.getName())
-                                                            .symbol(token.getSymbol())
-                                                            .build())
+                           .map(token -> mapToContract(contractAddress, token))
                            .orElse(null);
+    }
+
+    private NonFungibleContract mapToContract(String contractAddress,
+                                              network.arkane.blockchainproviders.azrael.dto.contract.ContractDto token) {
+        return NonFungibleContract.builder()
+                                  .type(token.getContractType().name())
+                                  .address(contractAddress)
+                                  .name(token.getName())
+                                  .symbol(token.getSymbol())
+                                  .build();
     }
 
 

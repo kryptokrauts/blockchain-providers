@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import network.arkane.provider.nonfungible.domain.Attribute;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
-import network.arkane.provider.nonfungible.domain.Trait;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -82,6 +82,14 @@ public class NonFungibleMetaData {
                      .findFirst();
     }
 
+    public Optional<String> getMaxSupply() {
+        return Stream.of(
+                getProperty("maxSupply"),
+                getProperty("max_supply")
+                        ).filter(StringUtils::isNotBlank)
+                     .findFirst();
+    }
+
     public Boolean getFungible() {
         return Stream.of(getProperty("fungible"))
                      .filter(StringUtils::isNotBlank)
@@ -90,7 +98,7 @@ public class NonFungibleMetaData {
                      .orElse(false);
     }
 
-    public List<Trait> getAttributes() {
+    public List<Attribute> getAttributes() {
         return Stream.of(
                 parseAttributes("attributes"),
                 parseAttributes("properties")
@@ -100,6 +108,7 @@ public class NonFungibleMetaData {
                      .findFirst()
                      .orElse(Collections.emptyList());
     }
+
 
     public Optional<NonFungibleContract> getContract() {
         return Stream.of(
@@ -111,21 +120,21 @@ public class NonFungibleMetaData {
 
     }
 
-    public Optional<List<Trait>> parseAttributes(String propertyName) {
+    public Optional<List<Attribute>> parseAttributes(String propertyName) {
         if (!json.has(propertyName)) return Optional.empty();
 
         String propValue = getProperty(propertyName);
 
         try {
             if (json.get(propertyName).isArray()) {
-                List<Trait> traits = objectMapper.readValue(propValue, new TypeReference<List<Trait>>() {});
-                return Optional.of(traits);
+                List<Attribute> attributes = objectMapper.readValue(propValue, new TypeReference<List<Attribute>>() {});
+                return Optional.of(attributes);
             } else {
-                List<Trait> traits = new ArrayList<>();
+                List<Attribute> attributes = new ArrayList<>();
                 json.get(propertyName).fields().forEachRemaining(entry -> {
-                    traits.add(Trait.builder().traitType(entry.getKey()).value(entry.getValue().toString()).build());
+                    attributes.add(Attribute.builder().type("property").name(entry.getKey()).value(entry.getValue().toString()).build());
                 });
-                return Optional.of(traits);
+                return Optional.of(attributes);
             }
 
         } catch (IOException e) {

@@ -10,7 +10,6 @@ import java.util.List;
 public class NonFungibleAsset {
 
     private String id;
-    private String tokenId;
     private String name;
     private String description;
     private String url;
@@ -20,11 +19,12 @@ public class NonFungibleAsset {
     private String imageThumbnailUrl;
     private String animationUrl;
     private Boolean fungible;
+    private BigInteger maxSupply;
     private NonFungibleContract contract;
-    private List<Trait> attributes;
+    private List<Attribute> attributes;
 
     @Builder
-    public NonFungibleAsset(final String tokenId,
+    public NonFungibleAsset(final String id,
                             final String name,
                             final String description,
                             final String url,
@@ -34,11 +34,10 @@ public class NonFungibleAsset {
                             final String imageThumbnailUrl,
                             final String animationUrl,
                             final Boolean fungible,
+                            final BigInteger maxSupply,
                             final NonFungibleContract contract,
-                            final BigInteger balance,
-                            final List<Trait> attributes) {
-        this.id = tokenId;
-        this.tokenId = tokenId;
+                            final List<Attribute> attributes) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.url = url;
@@ -48,6 +47,7 @@ public class NonFungibleAsset {
         this.imageThumbnailUrl = imageThumbnailUrl;
         this.animationUrl = animationUrl;
         this.contract = contract;
+        this.maxSupply = maxSupply;
         this.attributes = attributes;
         this.fungible = fungible != null && fungible;
     }

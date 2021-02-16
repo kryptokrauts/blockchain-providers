@@ -62,7 +62,7 @@ public class MetaDataParser {
             if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
                 if (isHttp(metaDataCallResult)) {
                     try {
-                        return restTemplate.getForObject(metaDataCallResult.get(0), String.class);
+                        return restTemplate.getForObject(metaDataCallResult.get(0), String.class, tokenId);
                     } catch (RestClientException e) {
                         log.error("Error parsing metadata", e);
                         return "";

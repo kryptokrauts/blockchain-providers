@@ -31,7 +31,7 @@ public class BusinessNonFungibleGateway {
                                    .filter(x -> x != null && x.getTokenType() != null)
                                    .filter(x -> x.getTokenType().isNf())
                                    .map(x -> NonFungibleAsset.builder()
-                                                             .tokenId(StringUtils.defaultIfEmpty(x.getContractTokenId().toString(), null))
+                                                             .id(StringUtils.defaultIfEmpty(x.getContractTokenId().toString(), null))
                                                              .contract(
                                                                      NonFungibleContract.builder()
                                                                                         .name(x.getTokenType().getTokenContract().getName())
@@ -59,7 +59,7 @@ public class BusinessNonFungibleGateway {
             return null;
         }
         return NonFungibleAsset.builder()
-                               .tokenId(tokenId)
+                               .id(tokenId)
                                .imagePreviewUrl(token.getImagePreviewUrl())
                                .contract(getNonFungibleContract(secretType, contractAddress))
                                .backgroundColor(token.getBackgroundColor())

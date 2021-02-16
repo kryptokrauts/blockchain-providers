@@ -60,7 +60,7 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
                         if (StringUtils.isBlank(t.getMetadata())) {
                             Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
                             NonFungibleAsset result = mapper.map(asset);
-                            if (result != null && StringUtils.isNotBlank(result.getTokenId())) {
+                            if (result != null && StringUtils.isNotBlank(result.getId())) {
                                 return NonFungibleAssetBalance.builder().nonFungibleAsset(result).balance(BigInteger.ONE).build();
                             }
                         }
@@ -78,7 +78,7 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
                         if (StringUtils.isBlank(t.getMetadata())) {
                             Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
                             NonFungibleAsset result = mapper.map(asset);
-                            if (result != null && StringUtils.isNotBlank(result.getTokenId())) {
+                            if (result != null && StringUtils.isNotBlank(result.getId())) {
                                 return NonFungibleAssetBalance.builder().nonFungibleAsset(result).balance(BigInteger.ONE).build();
                             }
                         }
