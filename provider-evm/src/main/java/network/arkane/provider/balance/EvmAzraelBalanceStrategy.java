@@ -3,6 +3,7 @@ package network.arkane.provider.balance;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.blockchainproviders.azrael.AzraelClient;
 import network.arkane.blockchainproviders.azrael.dto.ContractType;
+import network.arkane.blockchainproviders.azrael.dto.contract.Erc20ContractDto;
 import network.arkane.blockchainproviders.azrael.dto.token.erc20.Erc20TokenBalance;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
@@ -67,7 +68,24 @@ public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
                 .stream()
                 .filter(b -> b.getTokenAddress().equalsIgnoreCase(tokenAddress))
                 .findFirst()
-                .orElse(null);
+                .orElseGet(() -> getEmptyTokenBalance(tokenAddress));
+    }
+
+    private TokenBalance getEmptyTokenBalance(String tokenAddress) {
+        return azraelClient.getContract(tokenAddress)
+                           .filter(c -> c.getContractType() == ContractType.ERC_20)
+                           .map(c -> (Erc20ContractDto) c)
+                           .map(c -> TokenBalance.builder()
+                                                 .tokenAddress(c.getAddress())
+                                                 .rawBalance("0")
+                                                 .balance(0.0)
+                                                 .decimals(c.getDecimals())
+                                                 .symbol(c.getSymbol())
+                                                 .type("ERC_20")
+                                                 .logo(getLogo(c.getAddress()))
+                                                 .transferable(true)
+                                                 .build())
+                           .orElse(null);
     }
 
 
@@ -82,15 +100,15 @@ public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
                                                  .decimals(b.getDecimals())
                                                  .symbol(b.getSymbol())
                                                  .type("ERC_20")
-                                                 .logo(getLogo(b))
+                                                 .logo(getLogo(b.getAddress()))
                                                  .transferable(true)
                                                  .build())
                            .collect(Collectors.toList());
     }
 
     @NotNull
-    private String getLogo(Erc20TokenBalance b) {
-        return (this.logoUrlPrefix.endsWith("/") ? this.logoUrlPrefix + b.getAddress() : this.logoUrlPrefix + "/" + b.getAddress()) + ".png";
+    private String getLogo(String tokenAddress) {
+        return (this.logoUrlPrefix.endsWith("/") ? this.logoUrlPrefix + tokenAddress : this.logoUrlPrefix + "/" + tokenAddress) + ".png";
     }
 
     protected double calculateBalance(final BigInteger tokenBalance,
