@@ -19,7 +19,7 @@ public class EvmWalletGenerator implements WalletGenerator<EvmSecretKey> {
         }
 
         try {
-            final WalletFile theWallet = Wallet.createStandard(password, secret.getKeyPair());
+            final WalletFile theWallet = Wallet.create(password, secret.getKeyPair(), 131072, 1);
             return GeneratedEvmWallet
                     .builder()
                     .secretType(secret.getType())

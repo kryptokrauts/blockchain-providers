@@ -142,11 +142,12 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                                    String strMetaData) {
         if (StringUtils.isNotBlank(strMetaData)) {
             NonFungibleMetaData metaData = metadataParser.parseMetaData(getSecretType(), tokenId, contract.getType(), contract.getAddress(), strMetaData);
+            String imageUrl = metaData.getImage().map(i -> i.replaceAll(" ", "%20")).orElse(null);
             return NonFungibleAsset.builder()
                                    .name(metaData.getName())
-                                   .imageUrl(metaData.getImage().orElse(null))
-                                   .imagePreviewUrl(metaData.getImage().orElse(null))
-                                   .imageThumbnailUrl(metaData.getImage().orElse(null))
+                                   .imageUrl(imageUrl)
+                                   .imagePreviewUrl(imageUrl)
+                                   .imageThumbnailUrl(imageUrl)
                                    .id(tokenId)
                                    .contract(parseContract(contract, metaData))
                                    .description(metaData.getDescription())
@@ -191,32 +192,6 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
             }
         });
         return result;
-    }
-
-    private NonFungibleAsset getNonFungibleAsset(String tokenId,
-                                                 NonFungibleContract contract) {
-        NonFungibleMetaData metaData = metadataParser.parseMetaData(getSecretType(), tokenId, contract.getType(), contract.getAddress());
-        if (metaData != null) {
-            return NonFungibleAsset.builder()
-                                   .name(metaData.getName())
-                                   .imageUrl(metaData.getImage().orElse(null))
-                                   .imagePreviewUrl(metaData.getImage().orElse(null))
-                                   .imageThumbnailUrl(metaData.getImage().orElse(null))
-                                   .id(tokenId)
-                                   .description(metaData.getDescription())
-                                   .url(metaData.getExternalUrl().orElse(null))
-                                   .animationUrl(metaData.getAnimationUrl().orElse(null))
-                                   .attributes(enrichAttributes(metaData))
-                                   .contract(parseContract(contract, metaData))
-                                   .fungible(metaData.getFungible())
-                                   .build();
-        }
-        return NonFungibleAsset.builder()
-                               .id(tokenId)
-                               .contract(contract)
-                               .name(tokenId)
-                               .description(contract.getAddress())
-                               .build();
     }
 
     private List<Attribute> enrichAttributes(NonFungibleMetaData metaData) {
