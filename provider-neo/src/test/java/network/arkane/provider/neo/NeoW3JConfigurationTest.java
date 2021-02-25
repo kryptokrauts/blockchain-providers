@@ -2,12 +2,14 @@ package network.arkane.provider.neo;
 
 import io.neow3j.protocol.Neow3j;
 import io.neow3j.protocol.core.methods.response.NeoBlockCount;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 class NeoW3JConfigurationTest {
 
     @Test
