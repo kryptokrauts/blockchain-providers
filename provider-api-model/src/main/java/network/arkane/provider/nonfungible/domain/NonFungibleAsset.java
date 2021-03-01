@@ -17,7 +17,9 @@ public class NonFungibleAsset {
     private String imageUrl;
     private String imagePreviewUrl;
     private String imageThumbnailUrl;
+    @Deprecated
     private String animationUrl;
+    private List<TypeValue> animationUrls;
     private Boolean fungible;
     private BigInteger maxSupply;
     private NonFungibleContract contract;
@@ -33,6 +35,7 @@ public class NonFungibleAsset {
                             final String imagePreviewUrl,
                             final String imageThumbnailUrl,
                             final String animationUrl,
+                            final List<TypeValue> animationUrls,
                             final Boolean fungible,
                             final BigInteger maxSupply,
                             final NonFungibleContract contract,
@@ -46,6 +49,7 @@ public class NonFungibleAsset {
         this.imagePreviewUrl = imagePreviewUrl;
         this.imageThumbnailUrl = imageThumbnailUrl;
         this.animationUrl = animationUrl;
+        this.animationUrls = animationUrls;
         this.contract = contract;
         this.maxSupply = maxSupply;
         this.attributes = attributes;

@@ -9,8 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.nonfungible.domain.Attribute;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
+import network.arkane.provider.nonfungible.domain.TypeValue;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -24,6 +27,7 @@ import java.util.stream.Stream;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Builder
 @Data
+@Slf4j
 public class NonFungibleMetaData {
     private JsonNode json;
     private ObjectMapper objectMapper;
@@ -66,11 +70,30 @@ public class NonFungibleMetaData {
     }
 
     public Optional<String> getAnimationUrl() {
-        return Stream.of(
-                getProperty("animationUrl"),
-                getProperty("animation_url")
-                        ).filter(StringUtils::isNotBlank)
-                     .findFirst();
+        if (json.has("animationUrls")) {
+            List<TypeValue> animationUrls = getAnimationUrls();
+            return CollectionUtils.isEmpty(animationUrls)
+                   ? Optional.empty()
+                   : Optional.of(animationUrls.stream().filter(tv -> tv.getType().equalsIgnoreCase("unknown")).map(TypeValue::getValue).findFirst().orElse(String.valueOf(
+                           animationUrls.get(0).getValue())));
+        } else {
+            return Stream.of(
+                    getProperty("animationUrl"),
+                    getProperty("animation_url")
+                            ).filter(StringUtils::isNotBlank)
+                         .findFirst();
+        }
+    }
+
+    public List<TypeValue> getAnimationUrls() {
+        if (json.has("animationUrls")) {
+            try {
+                return objectMapper.readValue(getProperty("animationUrls"), new TypeReference<List<TypeValue>>() {});
+            } catch (IOException e) {
+                log.debug("Error when parsing animationUrls", e);
+            }
+        }
+        return Collections.emptyList();
     }
 
     public Optional<String> getExternalUrl() {
