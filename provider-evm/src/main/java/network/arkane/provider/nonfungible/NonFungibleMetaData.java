@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Builder
@@ -70,19 +73,11 @@ public class NonFungibleMetaData {
     }
 
     public Optional<String> getAnimationUrl() {
-        if (json.has("animationUrls")) {
-            List<TypeValue> animationUrls = getAnimationUrls();
-            return CollectionUtils.isEmpty(animationUrls)
-                   ? Optional.empty()
-                   : Optional.of(animationUrls.stream().filter(tv -> tv.getType().equalsIgnoreCase("unknown")).map(TypeValue::getValue).findFirst().orElse(String.valueOf(
-                           animationUrls.get(0).getValue())));
-        } else {
-            return Stream.of(
-                    getProperty("animationUrl"),
-                    getProperty("animation_url")
-                            ).filter(StringUtils::isNotBlank)
-                         .findFirst();
-        }
+        List<TypeValue> animationUrls = getAnimationUrls();
+        return CollectionUtils.isEmpty(animationUrls)
+               ? Optional.empty()
+               : Optional.of(animationUrls.stream().filter(tv -> tv.getType().equalsIgnoreCase("unknown")).map(TypeValue::getValue).findFirst().orElse(String.valueOf(
+                       animationUrls.get(0).getValue())));
     }
 
     public List<TypeValue> getAnimationUrls() {
@@ -92,8 +87,16 @@ public class NonFungibleMetaData {
             } catch (IOException e) {
                 log.debug("Error when parsing animationUrls", e);
             }
+        } else {
+            return Stream.of(
+                    getProperty("animationUrl"),
+                    getProperty("animation_url")
+                            ).filter(StringUtils::isNotBlank)
+                         .findFirst()
+                         .map(aUrl -> singletonList(TypeValue.builder().type("unknown").value(aUrl).build()))
+                         .orElseGet(Collections::emptyList);
         }
-        return Collections.emptyList();
+        return emptyList();
     }
 
     public Optional<String> getExternalUrl() {
@@ -129,7 +132,7 @@ public class NonFungibleMetaData {
                      .filter(Optional::isPresent)
                      .map(Optional::get)
                      .findFirst()
-                     .orElse(Collections.emptyList());
+                     .orElse(emptyList());
     }
 
 
