@@ -75,6 +75,20 @@ public abstract class EvmWeb3jGateway {
         }
     }
 
+    public BigInteger getApprovalBalance(final String owner,
+                                         final String spender,
+                                         final String tokenAddress) {
+        try {
+            return getERC20(tokenAddress).allowance(owner, spender).send();
+        } catch (final Exception ex) {
+            log.error(String.format("Problem trying to get the token balance of %s for token %s", owner, tokenAddress), ex);
+            throw ArkaneException.arkaneException()
+                                 .errorCode("web3j.internal-error")
+                                 .message(String.format("Problem trying to get the token balance of %s for token %s ()", owner, tokenAddress))
+                                 .build();
+        }
+    }
+
     public EvmEstimateGasResult estimateGas(final String from,
                                             final String to,
                                             BigInteger value,
