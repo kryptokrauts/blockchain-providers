@@ -1,6 +1,7 @@
 package network.arkane.provider.gateway;
 
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.web3j.EvmWeb3jGateway;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,6 +15,11 @@ import java.util.Optional;
 public class EthereumWeb3JGateway extends EvmWeb3jGateway {
 
     private final EnsResolver ensResolver;
+
+    @Override
+    public SecretType getSecretType() {
+        return SecretType.ETHEREUM;
+    }
 
     public EthereumWeb3JGateway(final Web3j ethereumWeb3j,
                                 final String deltaBalancesAddress) {
