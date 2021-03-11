@@ -154,6 +154,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .maxSupply(metaData.getMaxSupply().map(BigInteger::new).orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
+                                   .animationUrls(metaData.getAnimationUrls())
                                    .attributes(enrichAttributes(metaData))
                                    .build();
         }
@@ -181,7 +182,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
             if (StringUtils.isNotBlank(c.getType())) {
                 result.setType(c.getType());
             }
-            if (StringUtils.isNotBlank(c.getMedia())) {
+            if (c.getMedia() != null) {
                 result.setMedia(c.getMedia());
             }
             if (StringUtils.isNotBlank(c.getImageUrl())) {

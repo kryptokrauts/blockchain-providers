@@ -1,6 +1,7 @@
 package network.arkane.provider.gateway;
 
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.web3j.EvmWeb3jGateway;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,11 @@ import java.util.Optional;
 @Slf4j
 public class GochainWeb3JGateway extends EvmWeb3jGateway {
     private final EnsResolver ensResolver;
+
+    @Override
+    public SecretType getSecretType() {
+        return SecretType.GOCHAIN;
+    }
 
     public GochainWeb3JGateway(@Qualifier("gochainWeb3j") Web3j gochainWeb3j,
                                final @Value("${network.arkane.gochain.deltabalances.contract-address}") String deltaBalancesAddress) {

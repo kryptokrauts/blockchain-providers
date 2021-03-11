@@ -1,6 +1,7 @@
 package network.arkane.provider.nonfungible.domain;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,11 +19,11 @@ public class NonFungibleContract {
     private String description;
     private String address;
     private String symbol;
-    @JsonAlias("externalUrl")
+    @JsonAlias( {"externalUrl", "external_url"})
     private String url;
     @JsonAlias("image")
     private String imageUrl;
-    private String media;
+    private JsonNode media;
     private String type;
 
 }

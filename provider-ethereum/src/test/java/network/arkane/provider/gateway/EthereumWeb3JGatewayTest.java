@@ -76,6 +76,15 @@ class EthereumWeb3JGatewayTest {
     }
 
     @Test
+    void getApprovalBalance() {
+        BigInteger result = ethereumWeb3JGateway.getApprovalBalance("0xef1d6c35a3877ec20a72fe3a2df79cdbaee39148",
+                                                                    "0x4f9bebe3adc3c7f647c0023c60f91ac9dffa52d5",
+                                                                    "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984");
+
+        assertThat(result).isEqualTo(BigInteger.ZERO);
+    }
+
+    @Test
     void getName() {
         ethereumWeb3JGateway.getEnsName("0xdecaf9cd2367cdbb726e904cd6397edfcae6068d");
     }

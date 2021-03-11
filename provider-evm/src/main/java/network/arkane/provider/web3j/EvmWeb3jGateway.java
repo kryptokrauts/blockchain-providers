@@ -1,6 +1,7 @@
 package network.arkane.provider.web3j;
 
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.contract.DeltaBalances;
 import network.arkane.provider.contract.ERC1155Token;
 import network.arkane.provider.contract.HumanStandardToken;
@@ -26,6 +27,8 @@ public abstract class EvmWeb3jGateway {
     private static final BigInteger DEFAULT_GAS_LIMIT_FAILED = new BigInteger("200000");
     private Web3j web3j;
     private DeltaBalances deltaBalances;
+
+    public abstract SecretType getSecretType();
 
     public EvmWeb3jGateway(final Web3j web3j,
                            final String deltaBalancesAddress) {
@@ -66,6 +69,20 @@ public abstract class EvmWeb3jGateway {
                                       final String tokenAddress) {
         try {
             return getERC20(tokenAddress).balanceOf(owner).send();
+        } catch (final Exception ex) {
+            log.error(String.format("Problem trying to get the token balance of %s for token %s", owner, tokenAddress), ex);
+            throw ArkaneException.arkaneException()
+                                 .errorCode("web3j.internal-error")
+                                 .message(String.format("Problem trying to get the token balance of %s for token %s ()", owner, tokenAddress))
+                                 .build();
+        }
+    }
+
+    public BigInteger getApprovalBalance(final String owner,
+                                         final String spender,
+                                         final String tokenAddress) {
+        try {
+            return getERC20(tokenAddress).allowance(owner, spender).send();
         } catch (final Exception ex) {
             log.error(String.format("Problem trying to get the token balance of %s for token %s", owner, tokenAddress), ex);
             throw ArkaneException.arkaneException()
