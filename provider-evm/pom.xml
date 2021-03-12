@@ -27,6 +27,10 @@
         </dependency>
         <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
+            <artifactId>covalent</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>azrael</artifactId>
         </dependency>
         <dependency>

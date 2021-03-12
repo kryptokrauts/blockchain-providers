@@ -33,6 +33,7 @@
         <module>azrael</module>
         <module>blockscout</module>
         <module>blockcypher</module>
+        <module>covalent</module>
         <module>opensea</module>
         <module>arkane-business</module>
         <module>integrationtests</module>
@@ -212,6 +213,11 @@
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>arkane-business</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane.blockchain-providers</groupId>
+                <artifactId>covalent</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
