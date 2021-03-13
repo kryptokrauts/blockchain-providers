@@ -21,10 +21,10 @@ public class CovalentClient {
         DefaultUriBuilderFactory defaultUriTemplateHandler = new DefaultUriBuilderFactory(endpoint);
         restTemplate = new RestTemplateBuilder().defaultMessageConverters()
                                                 .uriTemplateHandler(defaultUriTemplateHandler)
-                                                .setConnectTimeout(Duration.ofSeconds(2))
+                                                .setConnectTimeout(Duration.ofSeconds(5))
                                                 .additionalInterceptors(new RestTemplateUserAgentInterceptor())
                                                 .additionalInterceptors(new BasicAuthenticationInterceptor(apiKey, ""))
-                                                .setReadTimeout(Duration.ofSeconds(30))
+                                                .setReadTimeout(Duration.ofSeconds(60))
                                                 .build();
     }
 
