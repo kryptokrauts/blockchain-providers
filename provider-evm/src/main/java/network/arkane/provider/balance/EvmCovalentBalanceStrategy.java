@@ -74,7 +74,10 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
                     .getData()
                     .getItems()
                     .stream()
-                    .filter(i -> !i.getTokenAddress().equalsIgnoreCase("0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"))
+                    .filter(i -> !(chainId.equalsIgnoreCase("1") && i.getTokenAddress().equalsIgnoreCase("0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")))
+                    .filter(i -> !(chainId.equalsIgnoreCase("56") && i.getSymbol().equalsIgnoreCase("BNB")))
+                    .filter(i -> !(chainId.equalsIgnoreCase("80001") && i.getTokenAddress().equalsIgnoreCase("0x0000000000000000000000000000000000001010")))
+                    .filter(i -> !(chainId.equalsIgnoreCase("137") && i.getTokenAddress().equalsIgnoreCase("0x0000000000000000000000000000000000001010")))
                     .map(i -> TokenBalance
                             .builder()
                             .tokenAddress(i.getTokenAddress())
