@@ -25,5 +25,6 @@ public class NonFungibleContract {
     private String imageUrl;
     private JsonNode media;
     private String type;
+    private boolean verified;
 
 }
