@@ -3,7 +3,6 @@ package network.arkane.provider.inventory;
 import network.arkane.blockchainproviders.blockscout.dto.BlockscoutTokenBalance;
 import network.arkane.provider.business.token.model.TokenDto;
 import network.arkane.provider.nonfungible.EvmNonFungibleGateway;
-import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,8 +34,7 @@ public abstract class EvmInventoryService implements InventoryService {
     private Map<String, Map<String, TokenTypeInventory>> groupTokens(List<NonFungibleAssetBalance> tokens) {
         Map<String, Map<String, TokenTypeInventory>> tokenTypesByContract = new HashMap<>();
         tokens
-                .forEach(tokenBalance -> {
-                    NonFungibleAsset token = tokenBalance.getNonFungibleAsset();
+                .forEach(token -> {
                     if (token != null && token.getContract().getType() != null && token.getId() != null) {
                         tokenTypesByContract.computeIfAbsent(token.getContract().getAddress(), s -> new HashMap<>());
                         Map<String, TokenTypeInventory> byType = tokenTypesByContract.get(token.getContract().getAddress());
@@ -52,7 +50,7 @@ public abstract class EvmInventoryService implements InventoryService {
                                                                       .build());
                         } else {
                             TokenTypeInventory tokenTypeInventory = byType.get(tokenTypeId);
-                            tokenTypeInventory.setBalance(tokenTypeInventory.getBalance().add(tokenBalance.getBalance()));
+                            tokenTypeInventory.setBalance(tokenTypeInventory.getBalance().add(token.getBalance()));
                             tokenTypeInventory.getTokenIds().add(token.getId());
                         }
                     }

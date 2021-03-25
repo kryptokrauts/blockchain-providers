@@ -31,7 +31,7 @@ public abstract class OpenseaNonFungibleStrategy implements EvmNonFungibleStrate
                                                           final String... contractAddresses) {
         return mapper.mapToList(openSeaGateway.listAssets(walletAddress, contractAddresses))
                      .stream()
-                     .map(asset -> NonFungibleAssetBalance.builder().nonFungibleAsset(asset).balance(BigInteger.ONE).build())
+                     .map(asset -> NonFungibleAssetBalance.from(asset, BigInteger.ONE))
                      .collect(Collectors.toList());
     }
 

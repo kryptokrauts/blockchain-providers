@@ -30,7 +30,7 @@ public class VechainNonFungibleGateway implements NonFungibleGateway {
                                                           final String... contractAddresses) {
         return businessNonFungibleGateway.listNonFungibles(getSecretType(), walletId, contractAddresses)
                                          .stream()
-                                         .map(asset -> NonFungibleAssetBalance.builder().nonFungibleAsset(asset).balance(BigInteger.ONE).build())
+                                         .map(asset -> NonFungibleAssetBalance.from(asset, BigInteger.ONE))
                                          .collect(Collectors.toList());
     }
 

@@ -19,7 +19,6 @@
     <modules>
         <module>provider-api</module>
         <module>provider-autoconfiguration</module>
-        <module>provider-aeternity</module>
         <module>provider-bitcoin</module>
         <module>provider-ethereum</module>
         <module>provider-gochain</module>
