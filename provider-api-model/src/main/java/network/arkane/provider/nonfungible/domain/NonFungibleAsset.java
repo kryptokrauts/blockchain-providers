@@ -55,4 +55,23 @@ public class NonFungibleAsset {
         this.attributes = attributes;
         this.fungible = fungible != null && fungible;
     }
+
+    public static NonFungibleAsset from(NonFungibleAssetBalance assetBalance) {
+        return NonFungibleAsset.builder()
+                               .id(assetBalance.getId())
+                               .name(assetBalance.getName())
+                               .description(assetBalance.getDescription())
+                               .url(assetBalance.getUrl())
+                               .backgroundColor(assetBalance.getBackgroundColor())
+                               .imageUrl(assetBalance.getImageUrl())
+                               .imagePreviewUrl(assetBalance.getImagePreviewUrl())
+                               .imageThumbnailUrl(assetBalance.getImageThumbnailUrl())
+                               .animationUrl(assetBalance.getAnimationUrl())
+                               .animationUrls(assetBalance.getAnimationUrls())
+                               .fungible(assetBalance.getFungible())
+                               .maxSupply(assetBalance.getMaxSupply())
+                               .contract(assetBalance.getContract())
+                               .attributes(assetBalance.getAttributes())
+                               .build();
+    }
 }
