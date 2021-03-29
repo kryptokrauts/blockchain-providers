@@ -29,7 +29,7 @@ public class NonFungibleAssetBalance {
     private List<Attribute> attributes;
     private BigInteger balance;
 
-    @Builder
+    @Builder(toBuilder = true)
     public NonFungibleAssetBalance(final String id,
                                    final String name,
                                    final String description,

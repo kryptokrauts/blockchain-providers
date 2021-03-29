@@ -25,7 +25,7 @@ public class NonFungibleAsset {
     private NonFungibleContract contract;
     private List<Attribute> attributes;
 
-    @Builder
+    @Builder(toBuilder = true)
     public NonFungibleAsset(final String id,
                             final String name,
                             final String description,
