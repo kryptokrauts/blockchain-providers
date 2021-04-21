@@ -18,6 +18,7 @@ import java.util.stream.Stream;
  */
 public enum SecretType {
     AETERNITY(Values.AETERNITY, "AE", "AE"),
+    AVAC(Values.AVAC, "AVAX", "AVAX"),
     BITCOIN(Values.BITCOIN, "BTC", "BTC"),
     BSC(Values.BSC, "BNB", "BNB"),
     ETHEREUM(Values.ETHEREUM, "ETH", "ETH"),
@@ -47,6 +48,7 @@ public enum SecretType {
 
     public static class Values {
         public static final String AETERNITY = "AETERNITY";
+        public static final String AVAC = "AVAC";
         public static final String BITCOIN = "BITCOIN";
         public static final String BSC = "BSC";
         public static final String ETHEREUM = "ETHEREUM";

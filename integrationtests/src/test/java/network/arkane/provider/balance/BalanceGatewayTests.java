@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = BlockProvidersIT.class)
+@SpringBootTest(classes = {BlockProvidersIT.class})
 @Slf4j
 public class BalanceGatewayTests {
 

@@ -20,6 +20,7 @@
         <module>provider-api</module>
         <module>provider-autoconfiguration</module>
         <module>provider-aeternity</module>
+        <module>provider-avac</module>
         <module>provider-bitcoin</module>
         <module>provider-ethereum</module>
         <module>provider-gochain</module>
@@ -258,6 +259,11 @@
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>provider-bsc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane.blockchain-providers</groupId>
+                <artifactId>provider-avac</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
