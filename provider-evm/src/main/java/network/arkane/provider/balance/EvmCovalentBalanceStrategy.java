@@ -2,6 +2,7 @@ package network.arkane.provider.balance;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.blockchainproviders.covalent.CovalentClient;
+import network.arkane.blockchainproviders.covalent.dto.CovalentItem;
 import network.arkane.blockchainproviders.covalent.dto.CovalentTokenBalanceResponse;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
@@ -74,10 +75,7 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
                     .getData()
                     .getItems()
                     .stream()
-                    .filter(i -> !(chainId.equalsIgnoreCase("1") && i.getTokenAddress().equalsIgnoreCase("0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")))
-                    .filter(i -> !(chainId.equalsIgnoreCase("56") && i.getSymbol().equalsIgnoreCase("BNB")))
-                    .filter(i -> !(chainId.equalsIgnoreCase("80001") && i.getTokenAddress().equalsIgnoreCase("0x0000000000000000000000000000000000001010")))
-                    .filter(i -> !(chainId.equalsIgnoreCase("137") && i.getTokenAddress().equalsIgnoreCase("0x0000000000000000000000000000000000001010")))
+                    .filter(i -> !isNativeToken(i))
                     .map(i -> TokenBalance
                             .builder()
                             .tokenAddress(i.getTokenAddress())
@@ -92,6 +90,23 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+
+    private boolean isNativeToken(CovalentItem item) {
+        switch (chainId) {
+            case "1":
+                return item.getTokenAddress().equalsIgnoreCase("0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            case "56":
+                return item.getSymbol().equalsIgnoreCase("BNB");
+            case "80001":
+            case "137":
+                return item.getTokenAddress().equalsIgnoreCase("0x0000000000000000000000000000000000001010");
+            case "43113":
+            case "43114":
+                return item.getTokenAddress().equalsIgnoreCase("0x9debca6ea3af87bf422cea9ac955618ceb56efb4");
+            default:
+                return false;
+        }
     }
 
     protected double calculateBalance(final BigInteger tokenBalance,
