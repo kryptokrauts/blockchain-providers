@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,5 +28,7 @@ public class NonFungibleContract {
     private JsonNode media;
     private String type;
     private boolean verified;
+    private boolean premium;
+    private List<String> categories;
 
 }
