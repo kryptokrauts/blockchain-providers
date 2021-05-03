@@ -30,6 +30,6 @@ public class CovalentClient {
 
     public CovalentTokenBalanceResponse getTokenBalances(String chainId,
                                                          String address) {
-        return restTemplate.getForObject("/{chainId}/address/{address}/balances_v2", CovalentTokenBalanceResponse.class, chainId, address);
+        return restTemplate.getForObject("/{chainId}/address/{address}/balances_v2/", CovalentTokenBalanceResponse.class, chainId, address);
     }
 }
