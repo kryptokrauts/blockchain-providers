@@ -2,6 +2,7 @@ package network.arkane.provider.sign;
 
 import network.arkane.provider.BytesUtils;
 import network.arkane.provider.Prefix;
+import network.arkane.provider.config.EvmProperties;
 import network.arkane.provider.secret.generation.EvmSecretKey;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
@@ -15,11 +16,18 @@ import org.web3j.crypto.TransactionEncoder;
 public class EvmTransactionSigner implements Signer<EvmTransactionSignable, EvmSecretKey> {
     private static final String DEFAULT_DATA = "0x";
 
+    private final EvmProperties properties;
+
+    public EvmTransactionSigner(EvmProperties properties) {
+        this.properties = properties;
+    }
+
     @Override
     public Signature createSignature(final EvmTransactionSignable signable,
                                      final EvmSecretKey key) {
         final org.web3j.crypto.RawTransaction rawTransaction = constructTransaction(signable);
-        byte[] encodedMessage = TransactionEncoder.signMessage(rawTransaction, Credentials.create(key.getKeyPair()));
+        Long chainId = properties.getChainIds().get(key.getType());
+        byte[] encodedMessage = TransactionEncoder.signMessage(rawTransaction, chainId, Credentials.create(key.getKeyPair()));
         final String prettify = BytesUtils.withHexPrefix(Hex.toHexString(encodedMessage), Prefix.ZeroLowerX);
         return TransactionSignature
                 .signTransactionBuilder()
