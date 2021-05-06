@@ -97,10 +97,7 @@ public class NonFungibleMetaData {
                              getProperty("animation_url"))
                          .filter(StringUtils::isNotBlank)
                          .findFirst()
-                         .map(aUrl -> singletonList(TypeValue.builder()
-                                                             .type("unknown")
-                                                             .value(aUrl)
-                                                             .build()))
+                         .map(aUrl -> singletonList(animationUrlParser.parse(aUrl)))
                          .orElseGet(Collections::emptyList);
         }
         return emptyList();
