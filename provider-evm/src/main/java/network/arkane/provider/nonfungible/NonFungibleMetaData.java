@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.provider.nonfungible.animationtype.AnimationUrlParser;
 import network.arkane.provider.nonfungible.domain.Attribute;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
 import network.arkane.provider.nonfungible.domain.TypeValue;
@@ -34,6 +35,7 @@ import static java.util.Collections.singletonList;
 public class NonFungibleMetaData {
     private JsonNode json;
     private ObjectMapper objectMapper;
+    private AnimationUrlParser animationUrlParser;
 
     public String getProperty(String propertyName) {
         return json.has(propertyName)
@@ -76,8 +78,11 @@ public class NonFungibleMetaData {
         List<TypeValue> animationUrls = getAnimationUrls();
         return CollectionUtils.isEmpty(animationUrls)
                ? Optional.empty()
-               : Optional.of(animationUrls.stream().filter(tv -> tv.getType().equalsIgnoreCase("unknown")).map(TypeValue::getValue).findFirst().orElse(String.valueOf(
-                       animationUrls.get(0).getValue())));
+               : Optional.of(animationUrls.stream()
+                                          .filter(tv -> tv.getType().equalsIgnoreCase("unknown"))
+                                          .map(TypeValue::getValue)
+                                          .findFirst()
+                                          .orElse(String.valueOf(animationUrls.get(0).getValue())));
     }
 
     public List<TypeValue> getAnimationUrls() {
@@ -88,12 +93,14 @@ public class NonFungibleMetaData {
                 log.debug("Error when parsing animationUrls", e);
             }
         } else {
-            return Stream.of(
-                    getProperty("animationUrl"),
-                    getProperty("animation_url")
-                            ).filter(StringUtils::isNotBlank)
+            return Stream.of(getProperty("animationUrl"),
+                             getProperty("animation_url"))
+                         .filter(StringUtils::isNotBlank)
                          .findFirst()
-                         .map(aUrl -> singletonList(TypeValue.builder().type("unknown").value(aUrl).build()))
+                         .map(aUrl -> singletonList(TypeValue.builder()
+                                                             .type("unknown")
+                                                             .value(aUrl)
+                                                             .build()))
                          .orElseGet(Collections::emptyList);
         }
         return emptyList();
