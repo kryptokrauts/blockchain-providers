@@ -17,8 +17,7 @@ public class EvmProperties {
         return chainIds;
     }
 
-    public void setPaths(Map<SecretType, Long> paths) {
+    public void setChainIds(Map<SecretType, Long> chainIds) {
         this.chainIds = chainIds;
     }
-
 }
