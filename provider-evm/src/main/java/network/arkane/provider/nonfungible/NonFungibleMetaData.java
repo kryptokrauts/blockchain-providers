@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.provider.nonfungible.animationtype.AnimationTypeComparator;
 import network.arkane.provider.nonfungible.animationtype.AnimationUrlParser;
 import network.arkane.provider.nonfungible.domain.Attribute;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
@@ -33,6 +34,8 @@ import static java.util.Collections.singletonList;
 @Data
 @Slf4j
 public class NonFungibleMetaData {
+    private static final AnimationTypeComparator ANIMATION_TYPE_COMPARATOR = new AnimationTypeComparator();
+
     private JsonNode json;
     private ObjectMapper objectMapper;
     private AnimationUrlParser animationUrlParser;
@@ -79,9 +82,8 @@ public class NonFungibleMetaData {
         return CollectionUtils.isEmpty(animationUrls)
                ? Optional.empty()
                : Optional.of(animationUrls.stream()
-                                          .filter(tv -> tv.getType().equalsIgnoreCase("unknown"))
+                                          .max(ANIMATION_TYPE_COMPARATOR)
                                           .map(TypeValue::getValue)
-                                          .findFirst()
                                           .orElse(String.valueOf(animationUrls.get(0).getValue())));
     }
 
