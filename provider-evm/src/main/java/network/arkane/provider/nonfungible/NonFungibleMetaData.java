@@ -82,7 +82,7 @@ public class NonFungibleMetaData {
         return CollectionUtils.isEmpty(animationUrls)
                ? Optional.empty()
                : Optional.of(animationUrls.stream()
-                                          .max(ANIMATION_TYPE_COMPARATOR)
+                                          .min(ANIMATION_TYPE_COMPARATOR)
                                           .map(TypeValue::getValue)
                                           .orElse(String.valueOf(animationUrls.get(0).getValue())));
     }

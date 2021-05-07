@@ -13,20 +13,26 @@ import static network.arkane.provider.nonfungible.animationtype.AnimationTypeByE
 
 public class AnimationTypeComparator implements Comparator<TypeValue> {
 
-    // Highest last
-    private final static List<String> TYPES_ORDER = Arrays.asList(IMAGE_TYPE, AUDIO_TYPE, THREE_D_TYPE, VIDEO_TYPE);
+    // Most important first
+    private final static List<String> TYPES_ORDER = Arrays.asList(VIDEO_TYPE, THREE_D_TYPE, AUDIO_TYPE, IMAGE_TYPE);
 
     @Override
     public int compare(final TypeValue tv1,
                        final TypeValue tv2) {
         if (tv1 == null && tv2 == null) return 0;
-        if (tv1 == null) return -1;
-        if (tv2 == null) return 1;
+        if (tv1 == null) return 1;
+        if (tv2 == null) return -1;
 
         if (tv1.getType() == null && tv2.getType() == null) return 0;
-        if (tv1.getType() == null) return -1;
-        if (tv2.getType() == null) return 1;
+        if (tv1.getType() == null) return 1;
+        if (tv2.getType() == null) return -1;
 
-        return Integer.compare(TYPES_ORDER.indexOf(tv1.getType()), TYPES_ORDER.indexOf(tv2.getType()));
+        final int i1 = TYPES_ORDER.indexOf(tv1.getType());
+        final int i2 = TYPES_ORDER.indexOf(tv2.getType());
+        if (i1 == i2) return 0;
+        if (i1 == -1) return 1;
+        if (i2 == -1) return -1;
+
+        return Integer.compare(i1, i2);
     }
 }
