@@ -10,6 +10,8 @@ import network.arkane.provider.contract.ContractCall;
 import network.arkane.provider.contract.ContractCallParam;
 import network.arkane.provider.contract.ContractCallResultParam;
 import network.arkane.provider.contract.EvmContractService;
+import network.arkane.provider.nonfungible.animationtype.AnimationUrlParser;
+import network.arkane.provider.nonfungible.animationtype.AnimationUrlParserFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.Cache;
@@ -33,11 +35,13 @@ public class MetaDataParser {
     private ObjectMapper objectMapper;
     private EvmContractService contractService;
     private Optional<CacheManager> cacheManager;
+    private final AnimationUrlParser animationUrlParser;
 
     public MetaDataParser(
             final EvmContractService contractService,
             final Optional<CacheManager> cacheManager) {
         this.cacheManager = cacheManager;
+        this.animationUrlParser = AnimationUrlParserFactory.create();
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.restTemplate = new RestTemplateBuilder()
@@ -138,7 +142,11 @@ public class MetaDataParser {
 
     @SneakyThrows
     public NonFungibleMetaData parseMetaData(JsonNode metaData) {
-        return NonFungibleMetaData.builder().json(metaData).objectMapper(objectMapper).build();
+        return NonFungibleMetaData.builder()
+                                  .json(metaData)
+                                  .objectMapper(objectMapper)
+                                  .animationUrlParser(animationUrlParser)
+                                  .build();
 
     }
 

@@ -61,11 +61,11 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
                             Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
                             NonFungibleAsset result = mapper.map(asset);
                             if (result != null && StringUtils.isNotBlank(result.getId())) {
-                                return NonFungibleAssetBalance.builder().nonFungibleAsset(result).balance(BigInteger.ONE).build();
+                                return NonFungibleAssetBalance.from(result, BigInteger.ONE);
                             }
                         }
                         NonFungibleAsset asset = super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
-                        return NonFungibleAssetBalance.builder().nonFungibleAsset(asset).balance(BigInteger.ONE).build();
+                        return NonFungibleAssetBalance.from(asset, BigInteger.ONE);
                     })
                     .collect(Collectors.toList());
     }
@@ -79,11 +79,11 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
                             Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
                             NonFungibleAsset result = mapper.map(asset);
                             if (result != null && StringUtils.isNotBlank(result.getId())) {
-                                return NonFungibleAssetBalance.builder().nonFungibleAsset(result).balance(BigInteger.ONE).build();
+                                return NonFungibleAssetBalance.from(result, BigInteger.ONE);
                             }
                         }
                         NonFungibleAsset asset = super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
-                        return NonFungibleAssetBalance.builder().nonFungibleAsset(asset).balance(BigInteger.ONE).build();
+                        return NonFungibleAssetBalance.from(asset, BigInteger.ONE);
                     })
                     .collect(Collectors.toList());
     }

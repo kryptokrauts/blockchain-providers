@@ -5,7 +5,7 @@
 
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane.blockchain-providers</groupId>
-    <version>0.31.2</version>
+    <version>0.32.0</version>
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,6 +20,7 @@
         <module>provider-api</module>
         <module>provider-autoconfiguration</module>
         <module>provider-aeternity</module>
+        <module>provider-avac</module>
         <module>provider-bitcoin</module>
         <module>provider-ethereum</module>
         <module>provider-gochain</module>
@@ -72,7 +73,7 @@
         <typetools.version>0.5.0</typetools.version>
         <bitcoinj.version>0.14.7</bitcoinj.version>
         <spring-cloud-dependencies.version>Greenwich.SR3</spring-cloud-dependencies.version>
-        <guava.version>27.0.1-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <arkane-common.version>0.0.1-SNAPSHOT</arkane-common.version>
         <spring-cloud-sleuth.version>2.1.6.RELEASE</spring-cloud-sleuth.version>
         <okhttp3.version>4.9.0</okhttp3.version>
@@ -258,6 +259,11 @@
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>provider-bsc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane.blockchain-providers</groupId>
+                <artifactId>provider-avac</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

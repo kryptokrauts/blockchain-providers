@@ -6,21 +6,24 @@ import network.arkane.blockchainproviders.azrael.dto.ContractType;
 import network.arkane.blockchainproviders.azrael.dto.TokenBalance;
 import network.arkane.blockchainproviders.azrael.dto.contract.ContractDto;
 import network.arkane.blockchainproviders.azrael.dto.contract.TokenDto;
+import okhttp3.ConnectionPool;
+import okhttp3.OkHttpClient;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Collections.emptyList;
 
@@ -36,8 +39,15 @@ public class AzraelClient {
         DefaultUriBuilderFactory defaultUriTemplateHandler = new DefaultUriBuilderFactory();
         restTemplate = new RestTemplateBuilder().uriTemplateHandler(defaultUriTemplateHandler)
                                                 .defaultMessageConverters()
-                                                .setConnectTimeout(Duration.ofSeconds(5))
-                                                .setReadTimeout(Duration.ofSeconds(30))
+                                                .requestFactory(() -> {
+                                                    OkHttpClient.Builder builder = new OkHttpClient.Builder();
+                                                    ConnectionPool okHttpConnectionPool = new ConnectionPool();
+                                                    builder.connectionPool(okHttpConnectionPool);
+                                                    builder.connectTimeout(10, TimeUnit.SECONDS);
+                                                    builder.readTimeout(60, TimeUnit.SECONDS);
+                                                    builder.retryOnConnectionFailure(true);
+                                                    return new OkHttp3ClientHttpRequestFactory(builder.build());
+                                                })
                                                 .build();
     }
 
