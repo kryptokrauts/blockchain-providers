@@ -8,6 +8,8 @@ import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.token.TokenDiscoveryService;
+import network.arkane.provider.token.TokenInfo;
 import network.arkane.provider.web3j.EvmWeb3jGateway;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -24,11 +26,14 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
     private final EvmWeb3jGateway web3JGateway;
     private final CovalentClient covalentClient;
     private final String chainId;
+    private final TokenDiscoveryService tokenDiscoveryService;
 
     public EvmCovalentBalanceStrategy(final EvmWeb3jGateway web3JGateway,
+                                      final TokenDiscoveryService tokenDiscoveryService,
                                       final CovalentClient covalentClient,
                                       final String chainId) {
         this.web3JGateway = web3JGateway;
+        this.tokenDiscoveryService = tokenDiscoveryService;
         this.covalentClient = covalentClient;
         this.chainId = chainId;
     }
@@ -60,10 +65,18 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
     @Override
     public TokenBalance getTokenBalance(final String walletAddress,
                                         final String tokenAddress) {
-        return getTokenBalances(walletAddress)
-                .stream()
-                .filter(tb -> tb.getTokenAddress().equalsIgnoreCase(tokenAddress))
-                .findFirst().orElse(null);
+        final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new);
+        final BigInteger tokenBalance = web3JGateway.getTokenBalance(walletAddress, tokenAddress);
+        return TokenBalance.builder()
+                           .tokenAddress(tokenInfo.getAddress())
+                           .rawBalance(tokenBalance.toString())
+                           .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
+                           .decimals(tokenInfo.getDecimals())
+                           .symbol(tokenInfo.getSymbol())
+                           .logo(tokenInfo.getLogo())
+                           .type(tokenInfo.getType())
+                           .transferable(tokenInfo.isTransferable())
+                           .build();
     }
 
 
