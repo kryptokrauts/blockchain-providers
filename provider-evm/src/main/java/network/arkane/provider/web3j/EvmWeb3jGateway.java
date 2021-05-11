@@ -19,7 +19,6 @@ import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 public abstract class EvmWeb3jGateway {
@@ -125,19 +124,16 @@ public abstract class EvmWeb3jGateway {
     }
 
     public BigInteger getNextNonce(String address) {
-        EthGetTransactionCount ethGetTransactionCount;
         try {
-            ethGetTransactionCount = web3j.ethGetTransactionCount(
-                    address, DefaultBlockParameterName.LATEST).sendAsync().get();
-        } catch (InterruptedException | ExecutionException e) {
+            EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send();
+            return ethGetTransactionCount.getTransactionCount();
+        } catch (IOException e) {
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.nonce.internal-error")
                                  .message("A problem occurred trying to get the next nonce")
                                  .cause(e)
                                  .build();
         }
-        return ethGetTransactionCount.getTransactionCount();
-
     }
 
     public EthSendTransaction ethSendRawTransaction(final String signedTransaction) {
