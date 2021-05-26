@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
@@ -35,6 +36,7 @@ import static java.util.Collections.singletonList;
 @Slf4j
 public class NonFungibleMetaData {
     private static final AnimationTypeComparator ANIMATION_TYPE_COMPARATOR = new AnimationTypeComparator();
+    private static final String TYPE_UNKNOWN = "unknown";
 
     private JsonNode json;
     private ObjectMapper objectMapper;
@@ -90,7 +92,12 @@ public class NonFungibleMetaData {
     public List<TypeValue> getAnimationUrls() {
         if (json.has("animationUrls")) {
             try {
-                return objectMapper.readValue(getProperty("animationUrls"), new TypeReference<List<TypeValue>>() {});
+                final List<TypeValue> animationUrls = objectMapper.readValue(getProperty("animationUrls"), new TypeReference<List<TypeValue>>() {});
+                return animationUrls.stream()
+                                    .map(tv -> tv.getType().equalsIgnoreCase(TYPE_UNKNOWN)
+                                               ? animationUrlParser.parse(tv.getValue())
+                                               : tv)
+                                    .collect(toList());
             } catch (IOException e) {
                 log.debug("Error when parsing animationUrls", e);
             }
