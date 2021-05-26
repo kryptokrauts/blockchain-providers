@@ -13,6 +13,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+@Disabled
 class EthereumTransactionInfoServiceIntegrationTest {
 
     private EthereumWeb3JGateway ethereumWeb3JGateway;
@@ -21,7 +22,7 @@ class EthereumTransactionInfoServiceIntegrationTest {
 
     @BeforeEach
     void setUp() throws InterruptedException {
-        web3j = Web3j.build(new HttpService("https://ethereum.arkane.network"));
+        web3j = Web3j.build(new HttpService("https://ethereum-node.arkane.network"));
         ethereumWeb3JGateway = new EthereumWeb3JGateway(web3j, "0x40a38911e470fC088bEEb1a9480c2d69C847BCeC");
         Thread.sleep(100);
         ethereumTransactionInfoService = new EthereumTransactionInfoService(ethereumWeb3JGateway.web3());
