@@ -41,10 +41,10 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
     @Override
     public Balance getBalance(final String account) {
         try {
-            return getNativeBalanceFromCovalent(account);
+            return getNativeBalanceFromNode(account);
         } catch (final Exception ex) {
             try {
-                return getNativeBalanceFromNode(account);
+                return getNativeBalanceFromCovalent(account);
             } catch (Exception ex2) {
                 throw ArkaneException.arkaneException()
                                      .message(String.format("Unable to get the balance for the specified account (%s)", account))
@@ -98,25 +98,25 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
     public TokenBalance getTokenBalance(final String walletAddress,
                                         final String tokenAddress) {
         try {
-            return getTokenBalances(walletAddress)
-                    .stream()
-                    .filter(tb -> tb.getTokenAddress().equalsIgnoreCase(tokenAddress))
-                    .findFirst().orElse(null);
+            final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new);
+            final BigInteger tokenBalance = web3JGateway.getTokenBalance(walletAddress, tokenAddress);
+            return TokenBalance.builder()
+                               .tokenAddress(tokenInfo.getAddress())
+                               .rawBalance(tokenBalance.toString())
+                               .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
+                               .decimals(tokenInfo.getDecimals())
+                               .symbol(tokenInfo.getSymbol())
+                               .logo(tokenInfo.getLogo())
+                               .type(tokenInfo.getType())
+                               .transferable(tokenInfo.isTransferable())
+                               .build();
         } catch (Exception e) {
             log.error("Error getting token balances from covalent", e);
             try {
-                final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new);
-                final BigInteger tokenBalance = web3JGateway.getTokenBalance(walletAddress, tokenAddress);
-                return TokenBalance.builder()
-                                   .tokenAddress(tokenInfo.getAddress())
-                                   .rawBalance(tokenBalance.toString())
-                                   .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
-                                   .decimals(tokenInfo.getDecimals())
-                                   .symbol(tokenInfo.getSymbol())
-                                   .logo(tokenInfo.getLogo())
-                                   .type(tokenInfo.getType())
-                                   .transferable(tokenInfo.isTransferable())
-                                   .build();
+                return getTokenBalances(walletAddress)
+                        .stream()
+                        .filter(tb -> tb.getTokenAddress().equalsIgnoreCase(tokenAddress))
+                        .findFirst().orElse(null);
             } catch (Exception e2) {
                 throw ArkaneException.arkaneException()
                                      .message(String.format("Unable to get the balance for the specified account (%s) and token (%s)", walletAddress, tokenAddress))
