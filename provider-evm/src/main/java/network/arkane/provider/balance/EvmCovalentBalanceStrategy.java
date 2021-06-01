@@ -41,42 +41,89 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
     @Override
     public Balance getBalance(final String account) {
         try {
-
-            final BigInteger balance = web3JGateway.getBalance(account).getBalance();
-            return Balance.builder()
-                          .available(true)
-                          .rawBalance(balance.toString())
-                          .rawGasBalance(balance.toString())
-                          .secretType(type())
-                          .gasBalance(PrecisionUtil.toDecimal(balance, 18))
-                          .balance(PrecisionUtil.toDecimal(balance, 18))
-                          .symbol(type().getSymbol())
-                          .gasSymbol(type().getGasSymbol())
-                          .decimals(18)
-                          .build();
+            return getNativeBalanceFromCovalent(account);
         } catch (final Exception ex) {
-            throw ArkaneException.arkaneException()
-                                 .message(String.format("Unable to get the balance for the specified account (%s)", account))
-                                 .errorCode("web3.internal-error")
-                                 .build();
+            try {
+                return getNativeBalanceFromNode(account);
+            } catch (Exception ex2) {
+                throw ArkaneException.arkaneException()
+                                     .message(String.format("Unable to get the balance for the specified account (%s)", account))
+                                     .errorCode("web3.internal-error")
+                                     .build();
+            }
         }
+    }
+
+    private Balance getNativeBalanceFromNode(String account) {
+        final BigInteger balance = web3JGateway.getBalance(account).getBalance();
+        return Balance.builder()
+                      .available(true)
+                      .rawBalance(balance.toString())
+                      .rawGasBalance(balance.toString())
+                      .secretType(type())
+                      .gasBalance(PrecisionUtil.toDecimal(balance, 18))
+                      .balance(PrecisionUtil.toDecimal(balance, 18))
+                      .symbol(type().getSymbol())
+                      .gasSymbol(type().getGasSymbol())
+                      .decimals(18)
+                      .build();
+    }
+
+    private Balance getNativeBalanceFromCovalent(String account) {
+        CovalentTokenBalanceResponse tokenBalances = covalentClient.getTokenBalances(chainId, account);
+        if (tokenBalances != null && tokenBalances.getData() != null && CollectionUtils.isNotEmpty(tokenBalances.getData().getItems())) {
+            return tokenBalances
+                    .getData()
+                    .getItems()
+                    .stream()
+                    .filter(this::isNativeToken)
+                    .findFirst()
+                    .map(i -> Balance.builder()
+                                     .available(true)
+                                     .rawBalance(i.getBalance().toString())
+                                     .rawGasBalance(i.getBalance().toString())
+                                     .secretType(type())
+                                     .gasBalance(PrecisionUtil.toDecimal(i.getBalance(), 18))
+                                     .balance(PrecisionUtil.toDecimal(i.getBalance(), 18))
+                                     .symbol(type().getSymbol())
+                                     .gasSymbol(type().getGasSymbol())
+                                     .decimals(18)
+                                     .build())
+                    .orElseThrow();
+        }
+        throw new RuntimeException("No native balance found");
     }
 
     @Override
     public TokenBalance getTokenBalance(final String walletAddress,
                                         final String tokenAddress) {
-        final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new);
-        final BigInteger tokenBalance = web3JGateway.getTokenBalance(walletAddress, tokenAddress);
-        return TokenBalance.builder()
-                           .tokenAddress(tokenInfo.getAddress())
-                           .rawBalance(tokenBalance.toString())
-                           .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
-                           .decimals(tokenInfo.getDecimals())
-                           .symbol(tokenInfo.getSymbol())
-                           .logo(tokenInfo.getLogo())
-                           .type(tokenInfo.getType())
-                           .transferable(tokenInfo.isTransferable())
-                           .build();
+        try {
+            return getTokenBalances(walletAddress)
+                    .stream()
+                    .filter(tb -> tb.getTokenAddress().equalsIgnoreCase(tokenAddress))
+                    .findFirst().orElse(null);
+        } catch (Exception e) {
+            log.error("Error getting token balances from covalent", e);
+            try {
+                final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new);
+                final BigInteger tokenBalance = web3JGateway.getTokenBalance(walletAddress, tokenAddress);
+                return TokenBalance.builder()
+                                   .tokenAddress(tokenInfo.getAddress())
+                                   .rawBalance(tokenBalance.toString())
+                                   .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
+                                   .decimals(tokenInfo.getDecimals())
+                                   .symbol(tokenInfo.getSymbol())
+                                   .logo(tokenInfo.getLogo())
+                                   .type(tokenInfo.getType())
+                                   .transferable(tokenInfo.isTransferable())
+                                   .build();
+            } catch (Exception e2) {
+                throw ArkaneException.arkaneException()
+                                     .message(String.format("Unable to get the balance for the specified account (%s) and token (%s)", walletAddress, tokenAddress))
+                                     .errorCode("web3.internal-error")
+                                     .build();
+            }
+        }
     }
 
 
