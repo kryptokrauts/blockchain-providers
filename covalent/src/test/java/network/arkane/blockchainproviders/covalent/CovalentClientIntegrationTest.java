@@ -2,10 +2,12 @@ package network.arkane.blockchainproviders.covalent;
 
 import network.arkane.blockchainproviders.covalent.dto.CovalentTokenBalanceResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 class CovalentClientIntegrationTest {
 
     private CovalentClient client;
