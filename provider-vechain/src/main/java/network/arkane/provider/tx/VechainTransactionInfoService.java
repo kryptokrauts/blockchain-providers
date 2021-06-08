@@ -8,28 +8,21 @@ import network.arkane.provider.core.model.blockchain.Receipt;
 import network.arkane.provider.core.model.blockchain.Transaction;
 import network.arkane.provider.core.model.blockchain.Transfer;
 import network.arkane.provider.gateway.VechainGateway;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
-public class VechainTransactionInfoService implements TransactionInfoService, DisposableBean {
+public class VechainTransactionInfoService implements TransactionInfoService {
 
-    private final ExecutorService executorService;
     private final VechainGateway vechainGateway;
 
     public VechainTransactionInfoService(VechainGateway vechainGateway) {
         this.vechainGateway = vechainGateway;
-        executorService = Executors.newFixedThreadPool(3);
     }
 
     public SecretType type() {
@@ -39,18 +32,16 @@ public class VechainTransactionInfoService implements TransactionInfoService, Di
     @Override
     @SneakyThrows
     public TxInfo getTransaction(String hash) {
-        CompletableFuture<Transaction> transactionFuture = CompletableFuture.supplyAsync(() -> vechainGateway.getTransaction(hash), executorService);
-        CompletableFuture<Receipt> receiptFuture = CompletableFuture.supplyAsync(() -> vechainGateway.getTransactionReceipt(hash), executorService);
-        CompletableFuture<Block> blockFuture = CompletableFuture.supplyAsync(() -> vechainGateway.getBlock(), executorService);
-        Transaction transaction = transactionFuture.get();
+        Transaction transaction = vechainGateway.getTransaction(hash);
         if (transaction == null) {
             return mapToUnfound(hash);
         } else {
-            Receipt receipt = receiptFuture.get();
+            Receipt receipt = vechainGateway.getTransactionReceipt(hash);
             if (receipt == null) {
                 return mapToUnfound(hash);
             } else {
-                return mapToMined(transaction, receipt, blockFuture.get());
+                Block block = vechainGateway.getBlock();
+                return mapToMined(transaction, receipt, block);
             }
         }
     }
@@ -123,17 +114,6 @@ public class VechainTransactionInfoService implements TransactionInfoService, Di
                      .confirmations(BigInteger.ZERO)
                      .status(TxStatus.UNKNOWN)
                      .build();
-    }
-
-    public void destroy() {
-        executorService.shutdown();
-        try {
-            if (!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)) {
-                executorService.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            executorService.shutdownNow();
-        }
     }
 
 }
