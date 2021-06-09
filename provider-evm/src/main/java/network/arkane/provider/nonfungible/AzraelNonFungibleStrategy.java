@@ -1,5 +1,6 @@
 package network.arkane.provider.nonfungible;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.blockchainproviders.azrael.AzraelClient;
@@ -38,7 +39,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
 
     private final AzraelClient azraelClient;
     private final MetaDataParser metadataParser;
-    private final ExecutorService executorService;
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(25, new ThreadFactoryBuilder().setNameFormat("azrael-nft-strategy-%d").build());
 
 
     public AzraelNonFungibleStrategy(AzraelClient azraelClient,
@@ -46,7 +47,6 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                      Optional<CacheManager> cacheManager) {
         this.azraelClient = azraelClient;
         this.metadataParser = new MetaDataParser(contractService, cacheManager);
-        this.executorService = Executors.newFixedThreadPool(25);
     }
 
     @Override
