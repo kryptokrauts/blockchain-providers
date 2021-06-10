@@ -1,5 +1,6 @@
 package network.arkane.provider.tx;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.SneakyThrows;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.core.model.blockchain.Block;
@@ -24,12 +25,12 @@ import java.util.stream.Collectors;
 @Component
 public class VechainTransactionInfoService implements TransactionInfoService, DisposableBean {
 
-    private final ExecutorService executorService;
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(3, new ThreadFactoryBuilder().setNameFormat("vechain-tx-info-%d").build());
+    ;
     private final VechainGateway vechainGateway;
 
     public VechainTransactionInfoService(VechainGateway vechainGateway) {
         this.vechainGateway = vechainGateway;
-        executorService = Executors.newFixedThreadPool(3);
     }
 
     public SecretType type() {
