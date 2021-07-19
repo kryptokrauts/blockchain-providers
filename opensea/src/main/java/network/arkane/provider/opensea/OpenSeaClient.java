@@ -14,7 +14,7 @@ import java.util.List;
 @FeignClient(name = "opensea-client", url = "${opensea.api-base-url}", decode404 = true, configuration = {OpenSeaClientConfiguration.class})
 public interface OpenSeaClient {
 
-    @RequestMapping(method = RequestMethod.GET, value = "/assets?limit=300")
+    @RequestMapping(method = RequestMethod.GET, value = "/assets?limit=50")
     Assets listAssets(@RequestParam("owner") final String owner, @RequestParam(value = "asset_contract_addresses") final List<String> contractAddresses);
 
     @RequestMapping(method = RequestMethod.GET, value = "/asset/{asset_contract_address}/{token_id}")
