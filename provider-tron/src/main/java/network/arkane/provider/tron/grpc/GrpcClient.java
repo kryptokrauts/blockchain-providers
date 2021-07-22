@@ -36,17 +36,20 @@ import org.tron.api.WalletSolidityGrpc;
 import org.tron.common.utils.Base58;
 import org.tron.common.utils.ByteArray;
 import org.tron.common.utils.Sha256Hash;
-import org.tron.protos.Contract;
 import org.tron.protos.Protocol.Account;
 import org.tron.protos.Protocol.Block;
-import org.tron.protos.Protocol.SmartContract;
 import org.tron.protos.Protocol.Transaction;
 import org.tron.protos.Protocol.TransactionInfo;
+import org.tron.protos.contract.AccountContract;
+import org.tron.protos.contract.AssetIssueContractOuterClass;
+import org.tron.protos.contract.BalanceContract;
+import org.tron.protos.contract.SmartContractOuterClass;
+import org.tron.protos.contract.StorageContract;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static org.tron.core.Wallet.addressValid;
+import static org.tron.common.utils.DecodeUtil.addressValid;
 
 
 @Slf4j
@@ -125,79 +128,79 @@ public class GrpcClient {
         }
     }
 
-    public Transaction createTransaction(Contract.AccountUpdateContract contract) {
+    public Transaction createTransaction(AccountContract.AccountUpdateContract contract) {
         return blockingStubFull.updateAccount(contract);
     }
 
-    public TransactionExtention createTransaction2(Contract.AccountUpdateContract contract) {
+    public TransactionExtention createTransaction2(AccountContract.AccountUpdateContract contract) {
         return blockingStubFull.updateAccount2(contract);
     }
 
-    public Transaction createTransaction(Contract.SetAccountIdContract contract) {
+    public Transaction createTransaction(AccountContract.SetAccountIdContract contract) {
         return blockingStubFull.setAccountId(contract);
     }
 
-    public Transaction createTransaction(Contract.UpdateAssetContract contract) {
+    public Transaction createTransaction(AssetIssueContractOuterClass.UpdateAssetContract contract) {
         return blockingStubFull.updateAsset(contract);
     }
 
-    public TransactionExtention createTransaction2(Contract.UpdateAssetContract contract) {
+    public TransactionExtention createTransaction2(AssetIssueContractOuterClass.UpdateAssetContract contract) {
         return blockingStubFull.updateAsset2(contract);
     }
 
-    public Transaction createTransaction(Contract.TransferContract contract) {
+    public Transaction createTransaction(BalanceContract.TransferContract contract) {
         return blockingStubFull.createTransaction(contract);
     }
 
-    public TransactionExtention createTransaction2(Contract.TransferContract contract) {
+    public TransactionExtention createTransaction2(BalanceContract.TransferContract contract) {
         return blockingStubFull.createTransaction2(contract);
     }
 
-    public Transaction createTransaction(Contract.FreezeBalanceContract contract) {
+    public Transaction createTransaction(BalanceContract.FreezeBalanceContract contract) {
         return blockingStubFull.freezeBalance(contract);
     }
 
-    public TransactionExtention createTransaction(Contract.BuyStorageContract contract) {
+    public TransactionExtention createTransaction(StorageContract.BuyStorageContract contract) {
         return blockingStubFull.buyStorage(contract);
     }
 
-    public TransactionExtention createTransaction(Contract.BuyStorageBytesContract contract) {
+    public TransactionExtention createTransaction(StorageContract.BuyStorageBytesContract contract) {
         return blockingStubFull.buyStorageBytes(contract);
     }
 
-    public TransactionExtention createTransaction(Contract.SellStorageContract contract) {
+    public TransactionExtention createTransaction(StorageContract.SellStorageContract contract) {
         return blockingStubFull.sellStorage(contract);
     }
 
-    public TransactionExtention createTransaction2(Contract.FreezeBalanceContract contract) {
+    public TransactionExtention createTransaction2(BalanceContract.FreezeBalanceContract contract) {
         return blockingStubFull.freezeBalance2(contract);
     }
 
-    public Transaction createTransaction(Contract.WithdrawBalanceContract contract) {
+    public Transaction createTransaction(BalanceContract.WithdrawBalanceContract contract) {
         return blockingStubFull.withdrawBalance(contract);
     }
 
-    public TransactionExtention createTransaction2(Contract.WithdrawBalanceContract contract) {
+    public TransactionExtention createTransaction2(BalanceContract.WithdrawBalanceContract contract) {
         return blockingStubFull.withdrawBalance2(contract);
     }
 
-    public Transaction createTransaction(Contract.UnfreezeBalanceContract contract) {
+    public Transaction createTransaction(BalanceContract.UnfreezeBalanceContract contract) {
         return blockingStubFull.unfreezeBalance(contract);
     }
 
-    public TransactionExtention createTransaction2(Contract.UnfreezeBalanceContract contract) {
+    public TransactionExtention createTransaction2(BalanceContract.UnfreezeBalanceContract contract) {
         return blockingStubFull.unfreezeBalance2(contract);
     }
 
-    public Transaction createTransaction(Contract.UnfreezeAssetContract contract) {
+    public Transaction createTransaction(AssetIssueContractOuterClass.UnfreezeAssetContract contract) {
         return blockingStubFull.unfreezeAsset(contract);
     }
 
-    public TransactionExtention createTransaction2(Contract.UnfreezeAssetContract contract) {
+    public TransactionExtention createTransaction2(AssetIssueContractOuterClass.UnfreezeAssetContract contract) {
         return blockingStubFull.unfreezeAsset2(contract);
     }
 
-    public Transaction createTransferAssetTransaction(Contract.TransferAssetContract contract) {
+    public Transaction createTransferAssetTransaction(AssetIssueContractOuterClass.TransferAssetContract contract) {
         return blockingStubFull.transferAsset(contract);
     }
 
@@ -355,7 +358,7 @@ public class GrpcClient {
         return blockingStubFull.getAccountResource(request);
     }
 
-    public Contract.AssetIssueContract getAssetIssueByName(String assetName) {
+    public AssetIssueContractOuterClass.AssetIssueContract getAssetIssueByName(String assetName) {
         ByteString assetNameBs = ByteString.copyFrom(assetName.getBytes());
         BytesMessage request = BytesMessage.newBuilder().setValue(assetNameBs).build();
         if (blockingStubSolidity != null) {
@@ -377,7 +380,7 @@ public class GrpcClient {
         }
     }
 
-    public Contract.AssetIssueContract getAssetIssueById(String assetId) {
+    public AssetIssueContractOuterClass.AssetIssueContract getAssetIssueById(String assetId) {
         ByteString assetIdBs = ByteString.copyFrom(assetId.getBytes());
         BytesMessage request = BytesMessage.newBuilder().setValue(assetIdBs).build();
         if (blockingStubSolidity != null) {
@@ -547,27 +550,36 @@ public class GrpcClient {
         return blockingStubFull.getNowBlock2(emptyMessage);
     }
 
-    public TransactionExtention updateSetting(Contract.UpdateSettingContract request) {
+    public TransactionExtention updateSetting(SmartContractOuterClass.UpdateSettingContract request) {
         return blockingStubFull.updateSetting(request);
     }
 
     public TransactionExtention updateEnergyLimit(
-            Contract.UpdateEnergyLimitContract request) {
+            SmartContractOuterClass.UpdateEnergyLimitContract request) {
         return blockingStubFull.updateEnergyLimit(request);
     }
 
-    public TransactionExtention deployContract(Contract.CreateSmartContract request) {
+    public TransactionExtention deployContract(SmartContractOuterClass.CreateSmartContract request) {
         return blockingStubFull.deployContract(request);
     }
 
-    public TransactionExtention triggerContract(Contract.TriggerSmartContract request) {
+    public TransactionExtention triggerContract(SmartContractOuterClass.TriggerSmartContract request) {
         return blockingStubFull.triggerContract(request);
     }
 
-    public SmartContract getContract(byte[] address) {
+    public SmartContractOuterClass.SmartContract getContract(byte[] address) {
         ByteString byteString = ByteString.copyFrom(address);
         BytesMessage bytesMessage = BytesMessage.newBuilder().setValue(byteString).build();
         return blockingStubFull.getContract(bytesMessage);
+    }
+
+    public static String encode58Check(byte[] input) {
+        byte[] hash0 = Sha256Hash.hash(true, input);
+        byte[] hash1 = Sha256Hash.hash(true, hash0);
+        byte[] inputCheck = new byte[input.length + 4];
+        System.arraycopy(input, 0, inputCheck, 0, input.length);
+        System.arraycopy(hash1, 0, inputCheck, input.length, 4);
+        return Base58.encode(inputCheck);
     }
 
     public static byte[] decodeFromBase58Check(String addressBase58) {
@@ -589,8 +601,8 @@ public class GrpcClient {
         }
         byte[] decodeData = new byte[decodeCheck.length - 4];
         System.arraycopy(decodeCheck, 0, decodeData, 0, decodeData.length);
-        byte[] hash0 = Sha256Hash.hash(decodeData);
-        byte[] hash1 = Sha256Hash.hash(hash0);
+        byte[] hash0 = Sha256Hash.hash(true, decodeData);
+        byte[] hash1 = Sha256Hash.hash(true, hash0);
         if (hash1[0] == decodeCheck[decodeData.length] &&
             hash1[1] == decodeCheck[decodeData.length + 1] &&
             hash1[2] == decodeCheck[decodeData.length + 2] &&

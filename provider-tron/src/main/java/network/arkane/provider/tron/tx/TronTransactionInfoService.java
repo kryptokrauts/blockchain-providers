@@ -7,9 +7,9 @@ import network.arkane.provider.tx.TransactionInfoService;
 import network.arkane.provider.tx.TxStatus;
 import org.springframework.stereotype.Component;
 import org.tron.common.utils.ByteArray;
-import org.tron.core.Wallet;
-import org.tron.protos.Contract;
 import org.tron.protos.Protocol;
+import org.tron.protos.contract.AssetIssueContractOuterClass;
+import org.tron.protos.contract.BalanceContract;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -37,7 +37,9 @@ public class TronTransactionInfoService implements TransactionInfoService {
         return grpcClient.getTransactionInfoById(hash).map(transactionInfo -> createInfo(hash, transactionInfo, transaction.orElse(null))).orElse(null);
     }
 
-    private TronTxInfo createInfo(String hash, Protocol.TransactionInfo transactionInfo, Protocol.Transaction transaction) {
+    private TronTxInfo createInfo(String hash,
+                                  Protocol.TransactionInfo transactionInfo,
+                                  Protocol.Transaction transaction) {
         return TronTxInfo.tronTxInfoBuilder()
                          .hash(hash)
                          .status(getStatus(transactionInfo))
@@ -84,19 +86,20 @@ public class TronTransactionInfoService implements TransactionInfoService {
         try {
             switch (contract.getType()) {
                 case TransferContract:
-                    Contract.TransferContract transferContract = Contract.TransferContract.parseFrom(contract.getParameter().getValue());
+                    BalanceContract.TransferContract transferContract = BalanceContract.TransferContract.parseFrom(contract.getParameter().getValue());
                     return Optional.of(TronTransferContract.builder()
                                                            .amount(transferContract.getAmount())
-                                                           .toAddress(Wallet.encode58Check(transferContract.getToAddress().toByteArray()))
-                                                           .fromAddress(Wallet.encode58Check(transferContract.getOwnerAddress().toByteArray()))
+                                                           .toAddress(GrpcClient.encode58Check(transferContract.getToAddress().toByteArray()))
+                                                           .fromAddress(GrpcClient.encode58Check(transferContract.getOwnerAddress().toByteArray()))
                                                            .build());
                 case TransferAssetContract:
-                    Contract.TransferAssetContract transferAssetContract = Contract.TransferAssetContract.parseFrom(contract.getParameter().getValue());
+                    AssetIssueContractOuterClass.TransferAssetContract transferAssetContract = AssetIssueContractOuterClass.TransferAssetContract.parseFrom(contract.getParameter()
+                                                                                                                                                                    .getValue());
                     return Optional.of(TronTransferAssetContract.transferAssetContractBuilder()
                                                                 .amount(transferAssetContract.getAmount())
                                                                 .asset(transferAssetContract.getAssetName().toStringUtf8())
-                                                                .toAddress(Wallet.encode58Check(transferAssetContract.getToAddress().toByteArray()))
-                                                                .fromAddress(Wallet.encode58Check(transferAssetContract.getOwnerAddress().toByteArray()))
+                                                                .toAddress(GrpcClient.encode58Check(transferAssetContract.getToAddress().toByteArray()))
+                                                                .fromAddress(GrpcClient.encode58Check(transferAssetContract.getOwnerAddress().toByteArray()))
                                                                 .build());
                 default:
                     log.debug("mapping {} are not supported yet", contract.getType());

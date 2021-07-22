@@ -8,7 +8,7 @@
     <parent>
         <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.34.0-SNAPSHOT</version>
+        <version>hedera-0.34.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.github.tronprotocol</groupId>
             <artifactId>java-tron</artifactId>
-            <version>Odyssey-v3.2.1.1</version>
+            <version>GreatVoyage-v4.2.2.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
@@ -42,6 +42,10 @@
                 <exclusion>
                     <artifactId>aspectjtools</artifactId>
                     <groupId>org.aspectj</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.tronprotocol</groupId>
+                    <artifactId>zksnark-java-sdk</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

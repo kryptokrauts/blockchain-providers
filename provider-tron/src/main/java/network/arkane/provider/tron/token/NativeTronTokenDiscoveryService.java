@@ -5,7 +5,7 @@ import network.arkane.provider.token.NativeTokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import network.arkane.provider.tron.grpc.GrpcClient;
 import org.springframework.stereotype.Component;
-import org.tron.protos.Contract;
+import org.tron.protos.contract.AssetIssueContractOuterClass;
 
 import java.math.BigInteger;
 import java.util.Optional;
@@ -31,7 +31,7 @@ public class NativeTronTokenDiscoveryService implements NativeTokenDiscoveryServ
                                         .transferable(false)
                                         .build());
         } else {
-            final Contract.AssetIssueContract asset = grpcClient.getAssetIssueById(tokenAddress);
+            final AssetIssueContractOuterClass.AssetIssueContract asset = grpcClient.getAssetIssueById(tokenAddress);
             final String name = asset.getName().toStringUtf8();
             final String symbol = asset.getAbbr().toStringUtf8();
             final BigInteger decimals = BigInteger.valueOf(asset.getPrecision());

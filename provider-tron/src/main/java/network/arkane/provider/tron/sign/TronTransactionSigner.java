@@ -12,8 +12,9 @@ import network.arkane.provider.tron.secret.generation.TronSecretKey;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import org.tron.protos.Contract;
 import org.tron.protos.Protocol;
+import org.tron.protos.contract.BalanceContract;
+import org.tron.protos.contract.SmartContractOuterClass;
 
 @Component
 @Slf4j
@@ -48,7 +49,7 @@ public class TronTransactionSigner extends AbstractTronTransactionSigner<TronTra
         final Protocol.Block newestBlock = blockGateway.getBlock(-1);
 
         Protocol.Transaction.Contract.Builder contractBuilder = Protocol.Transaction.Contract.newBuilder();
-        Contract.TransferContract.Builder transferContractBuilder = Contract.TransferContract
+        BalanceContract.TransferContract.Builder transferContractBuilder = BalanceContract.TransferContract
                 .newBuilder();
         transferContractBuilder.setAmount(amount);
         ByteString bsTo = ByteString.copyFrom(to);
@@ -83,7 +84,7 @@ public class TronTransactionSigner extends AbstractTronTransactionSigner<TronTra
         }
 
         Protocol.Transaction.Contract.Builder contractBuilder = Protocol.Transaction.Contract.newBuilder();
-        Contract.TriggerSmartContract.Builder triggerContractBuilder = Contract.TriggerSmartContract.newBuilder();
+        SmartContractOuterClass.TriggerSmartContract.Builder triggerContractBuilder = SmartContractOuterClass.TriggerSmartContract.newBuilder();
         triggerContractBuilder.setCallValue(amount);
         triggerContractBuilder.setData(ByteString.copyFrom(org.bouncycastle.util.encoders.Hex.decode(data)));
         ByteString bsTo = ByteString.copyFrom(to);

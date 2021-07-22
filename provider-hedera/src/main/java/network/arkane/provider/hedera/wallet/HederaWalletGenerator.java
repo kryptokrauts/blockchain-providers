@@ -28,7 +28,6 @@ public class HederaWalletGenerator implements WalletGenerator<HederaSecretKey> {
                     .setKey(secret.getKey())
                     .setAccountMemo("Account of https://arkane.network")
                     .setTransactionMemo("Account creation by https://arkane.network")
-                    .setAutoRenewPeriod()
                     .execute(client);
             TransactionReceipt receipt = transactionResponse.getReceipt(client);
             return GeneratedHederaWallet.builder()

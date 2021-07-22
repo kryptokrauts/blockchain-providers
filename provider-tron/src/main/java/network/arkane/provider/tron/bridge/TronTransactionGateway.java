@@ -33,7 +33,8 @@ public class TronTransactionGateway implements TransactionGateway {
         try {
             if (broadcast(Hex.decode(transactionSignature.getSignedTransaction()))) {
                 return SubmittedAndSignedTransactionSignature.signAndSubmitTransactionBuilder()
-                                                             .transactionHash(Sha256Hash.of(Protocol.Transaction.parseFrom(Hex.decode(transactionSignature.getSignedTransaction()))
+                                                             .transactionHash(Sha256Hash.of(true,
+                                                                                            Protocol.Transaction.parseFrom(Hex.decode(transactionSignature.getSignedTransaction()))
                                                                                                                 .getRawData()
                                                                                                                 .toByteArray()).toString())
                                                              .signedTransaction(transactionSignature.getSignedTransaction())

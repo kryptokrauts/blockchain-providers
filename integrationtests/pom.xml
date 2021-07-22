@@ -10,7 +10,7 @@
     <parent>
         <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.34.0-SNAPSHOT</version>
+        <version>hedera-0.34.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -37,6 +37,10 @@
         <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-bsc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane.blockchain-providers</groupId>
+            <artifactId>provider-hedera</artifactId>
         </dependency>
         <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>

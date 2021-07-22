@@ -11,8 +11,8 @@ import network.arkane.provider.tron.grpc.GrpcClient;
 import network.arkane.provider.tron.secret.generation.TronSecretKey;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
-import org.tron.protos.Contract;
 import org.tron.protos.Protocol;
+import org.tron.protos.contract.AssetIssueContractOuterClass;
 
 @Component
 @Slf4j
@@ -41,7 +41,7 @@ public class Trc10TransactionSigner extends AbstractTronTransactionSigner<Trc10T
         final Protocol.Block newestBlock = blockGateway.getBlock(-1);
 
         Protocol.Transaction.Contract.Builder contractBuilder = Protocol.Transaction.Contract.newBuilder();
-        Contract.TransferAssetContract.Builder transferContractBuilder = Contract.TransferAssetContract
+        AssetIssueContractOuterClass.TransferAssetContract.Builder transferContractBuilder = AssetIssueContractOuterClass.TransferAssetContract
                 .newBuilder();
         transferContractBuilder.setAmount(amount);
         final ByteString bsTo = ByteString.copyFrom(to);

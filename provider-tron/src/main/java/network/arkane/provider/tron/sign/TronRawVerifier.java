@@ -2,9 +2,9 @@ package network.arkane.provider.tron.sign;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.sign.Verifier;
+import network.arkane.provider.tron.grpc.GrpcClient;
 import org.springframework.stereotype.Component;
 import org.tron.common.crypto.ECKey;
-import org.tron.core.Wallet;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
@@ -44,7 +44,7 @@ public class TronRawVerifier implements Verifier<TronRawVerifiable> {
             byte[] r = Arrays.copyOfRange(signatureBytes, 0, 32);
             byte[] s = Arrays.copyOfRange(signatureBytes, 32, 64);
             ECKey.ECDSASignature ecdsaSignature = ECKey.ECDSASignature.fromComponents((byte[]) r, (byte[]) s, v);
-            String resultAddress = Wallet.encode58Check(ECKey.signatureToAddress(msgHash, ecdsaSignature));
+            String resultAddress = GrpcClient.encode58Check(ECKey.signatureToAddress(msgHash, ecdsaSignature));
             return resultAddress.equalsIgnoreCase(address);
         } catch (SignatureException e) {
             return false;
