@@ -39,6 +39,6 @@ public class HederaKeystoreExporter implements KeyExporter<HederaSecretKey> {
 
     @Override
     public SecretType type() {
-        return SecretType.AETERNITY;
+        return SecretType.HEDERA;
     }
 }

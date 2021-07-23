@@ -11,7 +11,8 @@ public class HederaAutoConfiguration {
 
     @Bean
     public Client hederaClient(HederaProperties properties) {
-        return hederaClient(properties);
+        return buildClient(properties).setOperator(AccountId.fromString("0.0.1543821"),
+                                                   PrivateKey.fromString("302e020100300506032b6570042204202c112db3951f5de38d47196883797d74efe064fa68fa2931dda6c1a0e8c848d1"));
     }
 
     private Client buildClient(HederaProperties properties) {
@@ -23,12 +24,6 @@ public class HederaAutoConfiguration {
             default:
                 return Client.forMainnet();
         }
-    }
-
-    @Bean
-    public Client hederaClientWithOperator(HederaProperties properties) {
-        return buildClient(properties).setOperator(AccountId.fromString("0.0.1543821"),
-                                                   PrivateKey.fromString("302e020100300506032b6570042204202c112db3951f5de38d47196883797d74efe064fa68fa2931dda6c1a0e8c848d1"));
     }
 
 }

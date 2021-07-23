@@ -50,6 +50,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>com.madgag.spongycastle</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-api</artifactId>
             <scope>test</scope>

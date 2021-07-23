@@ -17,6 +17,8 @@ import org.springframework.context.annotation.Configuration;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class HederaProperties {
+    private String operatorAccountId;
+    private String operatorPrivateKey;
     private String network;
 
 
