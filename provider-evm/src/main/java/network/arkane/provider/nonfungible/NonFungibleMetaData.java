@@ -66,9 +66,31 @@ public class NonFungibleMetaData {
                 getProperty("image"),
                 getProperty("image_data"),
                 getProperty("imageUrl"),
-                getProperty("image_url")
-                        ).filter(StringUtils::isNotBlank)
+                getProperty("image_url"))
+                     .filter(StringUtils::isNotBlank)
+                     .map(this::replaceIpfsLink)
                      .findFirst();
+    }
+
+    private String replaceIpfsLink(String imgUrl) {
+        if (StringUtils.isNotBlank(imgUrl) && imgUrl.startsWith("ipfs")) {
+            String cid = imgUrl.replace("ipfs://", "");
+            if (!cid.startsWith("ipfs/")) {
+                cid = "ipfs/" + cid;
+            }
+            return "https://cloudflare-ipfs.com/" + cid;
+        }
+        return imgUrl;
+    }
+
+    private TypeValue replaceIpfsLink(TypeValue typeValue) {
+        if (typeValue != null && StringUtils.isNotBlank(typeValue.getValue()) && typeValue.getValue().startsWith("ipfs")) {
+            return TypeValue.builder()
+                            .type(typeValue.getType())
+                            .value(replaceIpfsLink(typeValue.getValue()))
+                            .build();
+        }
+        return typeValue;
     }
 
     public Optional<String> getBackgroundColor() {
@@ -86,6 +108,7 @@ public class NonFungibleMetaData {
                : Optional.of(animationUrls.stream()
                                           .min(ANIMATION_TYPE_COMPARATOR)
                                           .map(TypeValue::getValue)
+                                          .map(this::replaceIpfsLink)
                                           .orElse(String.valueOf(animationUrls.get(0).getValue())));
     }
 
@@ -97,6 +120,7 @@ public class NonFungibleMetaData {
                                     .map(tv -> tv.getType().equalsIgnoreCase(TYPE_UNKNOWN)
                                                ? animationUrlParser.parse(tv.getValue())
                                                : tv)
+                                    .map(this::replaceIpfsLink)
                                     .collect(toList());
             } catch (IOException e) {
                 log.debug("Error when parsing animationUrls", e);
@@ -106,7 +130,7 @@ public class NonFungibleMetaData {
                              getProperty("animation_url"))
                          .filter(StringUtils::isNotBlank)
                          .findFirst()
-                         .map(aUrl -> singletonList(animationUrlParser.parse(aUrl)))
+                         .map(aUrl -> singletonList(replaceIpfsLink(animationUrlParser.parse(aUrl))))
                          .orElseGet(Collections::emptyList);
         }
         return emptyList();
