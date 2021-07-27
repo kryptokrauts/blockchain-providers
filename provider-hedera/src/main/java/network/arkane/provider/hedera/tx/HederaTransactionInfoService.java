@@ -10,8 +10,6 @@ import network.arkane.provider.tx.TransactionInfoService;
 import network.arkane.provider.tx.TxInfo;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeoutException;
 
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
@@ -34,7 +32,7 @@ public class HederaTransactionInfoService implements TransactionInfoService {
         try {
             TransactionReceipt receipt = new TransactionReceiptQuery()
                     .setTransactionId(TransactionId.fromString(hash))
-                    .execute(hederaClient, Duration.of(5, ChronoUnit.SECONDS));
+                    .execute(hederaClient);
             System.out.println(receipt);
         } catch (TimeoutException | PrecheckStatusException e) {
             throw arkaneException()

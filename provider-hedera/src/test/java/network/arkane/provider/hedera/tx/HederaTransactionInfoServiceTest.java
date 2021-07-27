@@ -3,8 +3,10 @@ package network.arkane.provider.hedera.tx;
 import network.arkane.provider.hedera.HederaTestFixtures;
 import network.arkane.provider.tx.TxInfo;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 class HederaTransactionInfoServiceTest {
 
     private HederaTransactionInfoService infoService;
