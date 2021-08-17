@@ -20,7 +20,7 @@ abstract class AbstractTronTransactionSigner<T extends Signable, KEY extends Sec
         final ECKey ecKey = ECKey.fromPrivate(privateKey);
         final Protocol.Transaction transaction = Protocol.Transaction.parseFrom(transactionBytes);
         final byte[] rawdata = transaction.getRawData().toByteArray();
-        final byte[] hash = Sha256Hash.hash(rawdata);
+        final byte[] hash = Sha256Hash.hash(true, rawdata);
         final byte[] sign = ecKey.sign(hash).toByteArray();
         log.debug("Done signing for tron");
         return transaction.toBuilder().addSignature(ByteString.copyFrom(sign)).build().toByteArray();
@@ -38,7 +38,7 @@ abstract class AbstractTronTransactionSigner<T extends Signable, KEY extends Sec
     }
 
     private static Sha256Hash getBlockHash(Protocol.Block block) {
-        return Sha256Hash.of(block.getBlockHeader().getRawData().toByteArray());
+        return Sha256Hash.of(true, block.getBlockHeader().getRawData().toByteArray());
     }
 
     long getCurrentTime() {
