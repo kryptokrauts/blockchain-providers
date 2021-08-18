@@ -8,9 +8,11 @@ import com.hedera.hashgraph.sdk.TransactionResponse;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
 import network.arkane.provider.wallet.generation.GeneratedWallet;
 import network.arkane.provider.wallet.generation.WalletGenerator;
+import org.springframework.stereotype.Component;
 
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 
+@Component
 public class HederaWalletGenerator implements WalletGenerator<HederaSecretKey> {
 
     private final Client client;
