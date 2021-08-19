@@ -5,7 +5,7 @@
 
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane.blockchain-providers</groupId>
-    <version>0.33.4</version>
+    <version>0.33.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
