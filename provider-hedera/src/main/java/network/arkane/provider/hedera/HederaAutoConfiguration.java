@@ -2,6 +2,7 @@ package network.arkane.provider.hedera;
 
 import com.hedera.hashgraph.sdk.AccountId;
 import com.hedera.hashgraph.sdk.Client;
+import com.hedera.hashgraph.sdk.NetworkAddressBookFix;
 import com.hedera.hashgraph.sdk.PrivateKey;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ public class HederaAutoConfiguration {
     }
 
     private Client buildClient(HederaProperties properties) {
+        NetworkAddressBookFix.initializeEmptyAddressBook();
         switch (properties.getNetwork().toLowerCase()) {
             case "previewnet":
                 return Client.forPreviewnet();

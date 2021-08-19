@@ -2,6 +2,7 @@ package network.arkane.provider.hedera;
 
 import com.hedera.hashgraph.sdk.AccountId;
 import com.hedera.hashgraph.sdk.Client;
+import com.hedera.hashgraph.sdk.NetworkAddressBookFix;
 import com.hedera.hashgraph.sdk.PrivateKey;
 
 public final class HederaTestFixtures {
@@ -17,6 +18,7 @@ public final class HederaTestFixtures {
     }
 
     public static Client testClient() {
+        NetworkAddressBookFix.initializeEmptyAddressBook();
         return Client.forTestnet().setOperator(getAccountId(), getOperatorKey());
     }
 }
