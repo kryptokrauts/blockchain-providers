@@ -6,6 +6,7 @@ import com.hedera.hashgraph.sdk.TransactionId;
 import com.hedera.hashgraph.sdk.TransactionReceipt;
 import com.hedera.hashgraph.sdk.TransactionReceiptQuery;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.tx.TransactionInfoService;
 import network.arkane.provider.tx.TxInfo;
 import org.springframework.stereotype.Component;
@@ -19,8 +20,8 @@ public class HederaTransactionInfoService implements TransactionInfoService {
 
     private final Client hederaClient;
 
-    public HederaTransactionInfoService(Client hederaClient) {
-        this.hederaClient = hederaClient;
+    public HederaTransactionInfoService(HederaClientFactory clientFactory) {
+        this.hederaClient = clientFactory.getClientWithOperator();
     }
 
     public SecretType type() {

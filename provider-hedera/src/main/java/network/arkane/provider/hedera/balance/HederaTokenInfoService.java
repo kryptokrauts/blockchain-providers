@@ -6,6 +6,7 @@ import com.hedera.hashgraph.sdk.TokenId;
 import com.hedera.hashgraph.sdk.TokenInfo;
 import com.hedera.hashgraph.sdk.TokenInfoQuery;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.hedera.HederaClientFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +16,8 @@ import java.util.concurrent.TimeoutException;
 public class HederaTokenInfoService {
     private final Client hederaClient;
 
-    public HederaTokenInfoService(Client hederaClient) {
-        this.hederaClient = hederaClient;
+    public HederaTokenInfoService(HederaClientFactory clientFactory) {
+        this.hederaClient = clientFactory.getClientWithOperator();
     }
 
     @Cacheable("hedera-token-info")

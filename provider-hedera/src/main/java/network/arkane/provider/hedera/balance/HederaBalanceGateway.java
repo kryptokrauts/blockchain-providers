@@ -14,6 +14,7 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.hedera.HederaClientFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +29,9 @@ public class HederaBalanceGateway extends BalanceGateway {
     private final Client hederaClient;
     private final HederaTokenInfoService tokenInfoService;
 
-    public HederaBalanceGateway(Client hederaClient,
+    public HederaBalanceGateway(HederaClientFactory clientFactory,
                                 HederaTokenInfoService tokenInfoService) {
-        this.hederaClient = hederaClient;
+        this.hederaClient = clientFactory.getClientWithOperator();
         this.tokenInfoService = tokenInfoService;
     }
 

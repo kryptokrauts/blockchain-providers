@@ -13,7 +13,7 @@ class HederaTransactionInfoServiceTest {
 
     @BeforeEach
     void setUp() {
-        infoService = new HederaTransactionInfoService(HederaTestFixtures.testClient());
+        infoService = new HederaTransactionInfoService(HederaTestFixtures.clientFactory());
     }
 
     @Test

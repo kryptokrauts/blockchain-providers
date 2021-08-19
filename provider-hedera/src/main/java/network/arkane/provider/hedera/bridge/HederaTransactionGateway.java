@@ -5,6 +5,7 @@ import com.hedera.hashgraph.sdk.Transaction;
 import com.hedera.hashgraph.sdk.TransactionResponse;
 import network.arkane.provider.bridge.TransactionGateway;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.TransactionSignature;
 import org.apache.commons.codec.binary.Base64;
@@ -20,8 +21,8 @@ public class HederaTransactionGateway implements TransactionGateway {
 
     private final Client hederaClient;
 
-    public HederaTransactionGateway(Client hederaClient) {
-        this.hederaClient = hederaClient;
+    public HederaTransactionGateway(HederaClientFactory clientFactory) {
+        this.hederaClient = clientFactory.getClientWithOperator();
     }
 
     @Override

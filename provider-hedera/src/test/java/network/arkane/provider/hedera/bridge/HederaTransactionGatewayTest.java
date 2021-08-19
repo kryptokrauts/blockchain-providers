@@ -1,5 +1,6 @@
 package network.arkane.provider.hedera.bridge;
 
+import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.HederaTestFixtures;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
 import network.arkane.provider.hedera.sign.HbarTransferSignable;
@@ -19,8 +20,9 @@ class HederaTransactionGatewayTest {
 
     @BeforeEach
     void setUp() {
-        signer = new HbarTransferSigner(HederaTestFixtures.testClient());
-        transactionGateway = new HederaTransactionGateway(HederaTestFixtures.testClient());
+        HederaClientFactory clientFactory = HederaTestFixtures.clientFactory();
+        signer = new HbarTransferSigner(clientFactory);
+        transactionGateway = new HederaTransactionGateway(clientFactory);
     }
 
     @Test
