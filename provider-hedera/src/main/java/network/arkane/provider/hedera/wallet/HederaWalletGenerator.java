@@ -5,6 +5,7 @@ import com.hedera.hashgraph.sdk.Client;
 import com.hedera.hashgraph.sdk.HederaKeystore;
 import com.hedera.hashgraph.sdk.TransactionReceipt;
 import com.hedera.hashgraph.sdk.TransactionResponse;
+import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
 import network.arkane.provider.wallet.generation.GeneratedWallet;
 import network.arkane.provider.wallet.generation.WalletGenerator;
@@ -17,8 +18,8 @@ public class HederaWalletGenerator implements WalletGenerator<HederaSecretKey> {
 
     private final Client client;
 
-    public HederaWalletGenerator(Client hederaClientWithOperator) {
-        this.client = hederaClientWithOperator;
+    public HederaWalletGenerator(HederaClientFactory clientFactory) {
+        this.client = clientFactory.getClientWithOperator();
     }
 
     @Override
