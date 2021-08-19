@@ -1,7 +1,6 @@
 package network.arkane.provider.gateway;
 
 import network.arkane.provider.gas.EvmEstimateGasResult;
-import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -50,11 +49,10 @@ class EthereumWeb3JGatewayTest {
 
     @Test
     void estimateGas() {
-        EvmEstimateGasResult result = ethereumWeb3JGateway.estimateGas("0x0011c2119bffee8d0c1a9e99ca9ebd8264812dcb",
-                                                                       "0x4df47b4969b2911c966506e3592c41389493953b",
+        EvmEstimateGasResult result = ethereumWeb3JGateway.estimateGas("0x1fb53eb183b86582176f6aa8f4db72b62caf0d4b",
+                                                                       "0x3845badade8e6dff049820680d1f14bd3903a5d0",
                                                                        BigInteger.ZERO,
-                                                                       "0xa9059cbb00000000000000000000000065edadd2a809e3d7cb0e4c28e5a9e1d0339765860000000000000000000000000000000000000000000003a23ed6ba6c67200000");
-        assertThat(result.getGasLimit()).isCloseTo(new BigInteger("100000"), Percentage.withPercentage(20));
+                                                                       "0xa9059cbb0000000000000000000000000943a1a6a92d25eeb6efe7a47d81a5bc0d2ae1430000000000000000000000000000000000000000000000000de0b6b3a7640000");
         assertThat(result.isReverted()).isFalse();
     }
 
