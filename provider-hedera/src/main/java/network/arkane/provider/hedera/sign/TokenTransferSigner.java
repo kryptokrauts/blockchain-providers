@@ -7,11 +7,12 @@ import com.hedera.hashgraph.sdk.TransferTransaction;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
+import network.arkane.provider.sign.Signer;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class TokenTransferSigner extends HederaSigner<TokenTransferSignable, TransferTransaction> {
+public class TokenTransferSigner extends HederaSigner<TokenTransferSignable, TransferTransaction> implements Signer<TokenTransferSignable, HederaSecretKey> {
 
     private final HederaClientFactory clientFactory;
 

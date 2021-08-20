@@ -7,6 +7,7 @@ import com.hedera.hashgraph.sdk.Transaction;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
+import network.arkane.provider.sign.Signer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class TokenAssociationSigner extends HederaSigner<TokenAssociationSignable, TokenAssociateTransaction> {
+public class TokenAssociationSigner extends HederaSigner<TokenAssociationSignable, TokenAssociateTransaction> implements Signer<TokenAssociationSignable, HederaSecretKey> {
 
     private final HederaClientFactory clientFactory;
 
