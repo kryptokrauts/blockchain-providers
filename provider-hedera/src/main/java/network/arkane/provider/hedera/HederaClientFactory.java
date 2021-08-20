@@ -32,9 +32,8 @@ public class HederaClientFactory {
 
     public Client buildClient(AccountId operatorId,
                               PrivateKey operatorPrivateKey) {
-        return buildClient(this.hederaProperties).setOperator(AccountId.fromString("0.0.1543821"),
-                                                              PrivateKey.fromString(
-                                                                      "302e020100300506032b6570042204202c112db3951f5de38d47196883797d74efe064fa68fa2931dda6c1a0e8c848d1"));
+        return buildClient(this.hederaProperties).setOperator(operatorId,
+                                                              operatorPrivateKey);
     }
 
     private Client buildClient(HederaProperties properties) {
