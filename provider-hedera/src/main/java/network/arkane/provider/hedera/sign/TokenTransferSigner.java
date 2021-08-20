@@ -1,7 +1,7 @@
 package network.arkane.provider.hedera.sign;
 
 import com.hedera.hashgraph.sdk.AccountId;
-import com.hedera.hashgraph.sdk.Hbar;
+import com.hedera.hashgraph.sdk.TokenId;
 import com.hedera.hashgraph.sdk.Transaction;
 import com.hedera.hashgraph.sdk.TransferTransaction;
 import lombok.extern.slf4j.Slf4j;
@@ -11,21 +11,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class HbarTransferSigner extends HederaSigner<HbarTransferSignable, TransferTransaction> {
+public class TokenTransferSigner extends HederaSigner<TokenTransferSignable, TransferTransaction> {
 
     private final HederaClientFactory clientFactory;
 
-    public HbarTransferSigner(HederaClientFactory clientFactory) {
+    public TokenTransferSigner(HederaClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 
     @Override
-    protected Transaction<TransferTransaction> createTransaction(HbarTransferSignable signable,
+    protected Transaction<TransferTransaction> createTransaction(TokenTransferSignable signable,
                                                                  HederaSecretKey key) {
-        Hbar amount = Hbar.from(signable.getAmount());
         return new TransferTransaction()
-                .addHbarTransfer(AccountId.fromString(signable.getFrom()), amount.negated())
-                .addHbarTransfer(AccountId.fromString(signable.getTo()), amount)
+                .addTokenTransfer(TokenId.fromString(signable.getTokenId()), AccountId.fromString(signable.getFrom()), signable.getAmount().negate().longValue())
+                .addTokenTransfer(TokenId.fromString(signable.getTokenId()), AccountId.fromString(signable.getTo()), signable.getAmount().longValue())
                 .freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getFrom()), key.getKey()))
                 .sign(key.getKey());
     }

@@ -84,7 +84,7 @@ public class HederaBalanceGateway extends BalanceGateway {
             Map<TokenId, Long> tokenBalances = new AccountBalanceQuery()
                     .setAccountId(AccountId.fromString(address))
                     .execute(hederaClient)
-                    .token;
+                    .tokens;
             for (Map.Entry<TokenId, Long> entry : tokenBalances.entrySet()) {
                 new TokenInfoQuery().setTokenId(entry.getKey()).execute(hederaClient);
             }
