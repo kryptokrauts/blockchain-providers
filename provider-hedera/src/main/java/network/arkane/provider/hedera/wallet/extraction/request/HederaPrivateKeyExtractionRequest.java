@@ -13,7 +13,7 @@ public class HederaPrivateKeyExtractionRequest extends ExtractionRequest {
     }
 
     public HederaPrivateKeyExtractionRequest(final String privateKey) {
-        super(SecretType.AETERNITY);
+        super(SecretType.HEDERA);
         this.privateKey = privateKey;
     }
 }

@@ -14,10 +14,9 @@ public class HederaKeystoreExtractionRequest extends ExtractionRequest {
     }
 
     public HederaKeystoreExtractionRequest(
-            SecretType secretType,
             final String keystore,
             final String password) {
-        super(secretType);
+        super(SecretType.HEDERA);
         this.keystore = keystore;
         this.password = password;
     }
