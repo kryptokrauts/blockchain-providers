@@ -13,11 +13,13 @@ class HederaTransactionInfoServiceTest {
 
     @BeforeEach
     void setUp() {
-        infoService = new HederaTransactionInfoService(HederaTestFixtures.clientFactory());
+        infoService = new HederaTransactionInfoService(HederaTestFixtures.mirrorNodeClient());
     }
 
     @Test
     void getReceipt() {
-        TxInfo transaction = infoService.getTransaction("0.0.1543821@1627029847.251607050");
+        TxInfo transaction = infoService.getTransaction("0.0.1543821@1629710771.627821506");
+
+        System.out.println(transaction);
     }
 }

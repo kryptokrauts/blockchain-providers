@@ -1,7 +1,9 @@
 package network.arkane.provider.hedera.wallet;
 
 import com.hedera.hashgraph.sdk.PrivateKey;
+import network.arkane.provider.hedera.HederaProperties;
 import network.arkane.provider.hedera.HederaTestFixtures;
+import network.arkane.provider.hedera.mirror.MirrorNodeClient;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
 import network.arkane.provider.wallet.generation.GeneratedWallet;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +17,10 @@ class HederaWalletGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        hederaWalletGenerator = new HederaWalletGenerator(HederaTestFixtures.clientFactory());
+        hederaWalletGenerator = new HederaWalletGenerator(HederaTestFixtures.clientFactory(),
+                                                          new MirrorNodeClient(HederaProperties.builder()
+                                                                                               .mirrorNodeApiEndpoint("https://testnet.mirrornode.hedera.com/api/v1")
+                                                                                               .build()));
     }
 
     @Test

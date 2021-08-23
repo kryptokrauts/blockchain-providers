@@ -1,6 +1,10 @@
 package network.arkane.provider.hedera.bridge;
 
+import com.hedera.hashgraph.sdk.PrecheckStatusException;
 import com.hedera.hashgraph.sdk.PrivateKey;
+import com.hedera.hashgraph.sdk.TokenCreateTransaction;
+import com.hedera.hashgraph.sdk.TokenType;
+import com.hedera.hashgraph.sdk.TransactionResponse;
 import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.HederaTestFixtures;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
@@ -17,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 class HederaTransactionGatewayTest {
 
@@ -77,5 +82,21 @@ class HederaTransactionGatewayTest {
         SubmittedAndSignedTransactionSignature result = transactionGateway.submit(signature, Optional.empty());
 
         System.out.println(result.getTransactionHash());
+    }
+
+    @Test
+    void createToken() throws PrecheckStatusException, TimeoutException {
+        TransactionResponse response = new TokenCreateTransaction()
+                .setTokenName("Banana")
+                .setTokenSymbol("BNA")
+                .setDecimals(8)
+                .setTokenType(TokenType.FUNGIBLE_COMMON)
+                .setInitialSupply(100000000000000000L)
+                .setAutoRenewAccountId(HederaTestFixtures.getAccountId())
+                .setTokenMemo("Banana tokens from Venly")
+                .setTreasuryAccountId(HederaTestFixtures.getAccountId())
+                .execute(HederaTestFixtures.clientFactory().getClientWithOperator());
+
+        System.out.println(response);
     }
 }
