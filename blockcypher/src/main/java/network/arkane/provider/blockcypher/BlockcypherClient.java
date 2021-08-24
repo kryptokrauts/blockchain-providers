@@ -34,4 +34,12 @@ public interface BlockcypherClient {
                                  @PathVariable("chain") final String chain,
                                  @RequestParam("token") final String token,
                                  @RequestBody BlockCypherRawTransactionRequest request);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{coin}/{chain}/addrs/{address}/full?token={token}")
+    String getFullAddress(@RequestHeader("User-Agent") String userAgent,
+                          @PathVariable("coin") final String coin,
+                          @PathVariable("chain") final String chain,
+                          @RequestParam("token") final String token,
+                          @PathVariable("address") final String address);
+
 }

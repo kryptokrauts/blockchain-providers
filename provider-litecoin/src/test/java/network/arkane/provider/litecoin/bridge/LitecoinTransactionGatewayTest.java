@@ -48,7 +48,7 @@ class LitecoinTransactionGatewayTest {
                 "01000000016c4f9fd0290b9e4c50b6f84544002fe6aaeac10fb377544dc274c7c3f4921b9b000000008a473044022039ff93a8af80cdc589a3c6dade2c57563cc14dcbfab1b7e95f71b01539c1032d022014aad0562835aa369c2766115708448b0487f9f0d7236342d3e7de0cc434114d81410496e59446aed552e60fb29b6a9c6c71d7c1b38b8396e67d9940dbb867a70e314c591b20a0e59e36259439e1d0b6ae16975ca7097103d8d1ac987a02d121b5cd16ffffffff0201000000000000001976a91464d12bfa319ec47fe040bf6d2dbb3013d85f552588acc8edd900000000001976a91464d12bfa319ec47fe040bf6d2dbb3013d85f552588ac00000000";
 
         when(blockcypherGateway.sendSignedTransaction(Network.LITECOIN, sig)).thenReturn(
-                new BlockCypherRawTransactionResponse(new TX("txId"))
+                new BlockCypherRawTransactionResponse(TX.builder().hash("txId").build())
         );
 
         Signature result = litecoinTransactionGateway.submit(new TransactionSignature(sig), Optional.empty());

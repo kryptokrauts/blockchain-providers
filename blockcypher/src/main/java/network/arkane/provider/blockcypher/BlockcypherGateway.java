@@ -40,7 +40,8 @@ public class BlockcypherGateway {
 
     @SneakyThrows
     @Cacheable(value = "blockcypherBalance")
-    public BlockcypherAddress getBalance(Network network, String address) {
+    public BlockcypherAddress getBalance(Network network,
+                                         String address) {
         return objectMapper.readValue(
                 executeWithRateLimiter(() -> blockcypherClient.getBalance(USER_AGENT, network.getCoin(), network.getChain(), token, address)),
                 BlockcypherAddress.class);
@@ -48,14 +49,16 @@ public class BlockcypherGateway {
 
     @SneakyThrows
     @Cacheable(value = "blockcypherUnspents")
-    public BlockcypherAddressUnspents getUnspentTransactions(Network network, String address) {
+    public BlockcypherAddressUnspents getUnspentTransactions(Network network,
+                                                             String address) {
         return objectMapper.readValue(
                 executeWithRateLimiter(() -> blockcypherClient.getUnspents(USER_AGENT, network.getCoin(), network.getChain(), token, address)),
                 BlockcypherAddressUnspents.class);
     }
 
     @SneakyThrows
-    public BlockCypherRawTransactionResponse sendSignedTransaction(Network network, String txAsHex) {
+    public BlockCypherRawTransactionResponse sendSignedTransaction(Network network,
+                                                                   String txAsHex) {
         return objectMapper.readValue(
                 executeWithRateLimiter(() -> blockcypherClient.sendSignedTransaction(USER_AGENT,
                                                                                      network.getCoin(),
@@ -63,6 +66,19 @@ public class BlockcypherGateway {
                                                                                      token,
                                                                                      new BlockCypherRawTransactionRequest(txAsHex))),
                 BlockCypherRawTransactionResponse.class);
+    }
+
+    @SneakyThrows
+    public BlockcypherAddress getAddressFull(final Network network,
+                                             final String walletAddress) {
+        BlockcypherAddress address = objectMapper.readValue(executeWithRateLimiter(() -> blockcypherClient.getFullAddress(USER_AGENT,
+                                                                                                                          network.getCoin(),
+                                                                                                                          network.getChain(),
+                                                                                                                          token,
+                                                                                                                          walletAddress)),
+                                                            BlockcypherAddress.class);
+        address.setChain(network.getChain());
+        return address;
     }
 
     private <T> T executeWithRateLimiter(Callable<T> callable) {
