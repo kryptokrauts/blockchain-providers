@@ -18,7 +18,7 @@ class HbarTransferSignerTest {
 
     @BeforeEach
     void setUp() {
-        signer = new HbarTransferSigner(HederaTestFixtures.testClient());
+        signer = new HbarTransferSigner(HederaTestFixtures.clientFactory());
     }
 
     @Test

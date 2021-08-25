@@ -1,27 +1,26 @@
 package network.arkane.provider.hedera.tx;
 
-import com.hedera.hashgraph.sdk.Client;
-import com.hedera.hashgraph.sdk.PrecheckStatusException;
-import com.hedera.hashgraph.sdk.TransactionId;
-import com.hedera.hashgraph.sdk.TransactionReceipt;
-import com.hedera.hashgraph.sdk.TransactionReceiptQuery;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.hedera.mirror.MirrorNodeClient;
+import network.arkane.provider.hedera.mirror.dto.HederaTransaction;
 import network.arkane.provider.tx.TransactionInfoService;
 import network.arkane.provider.tx.TxInfo;
+import network.arkane.provider.tx.TxStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeoutException;
+import java.util.List;
 
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
 
 @Component
 public class HederaTransactionInfoService implements TransactionInfoService {
 
-    private final Client hederaClient;
+    private final MirrorNodeClient mirrorNodeClient;
 
-    public HederaTransactionInfoService(Client hederaClient) {
-        this.hederaClient = hederaClient;
+    public HederaTransactionInfoService(MirrorNodeClient mirrorNodeClient) {
+        this.mirrorNodeClient = mirrorNodeClient;
     }
+
 
     public SecretType type() {
         return SecretType.HEDERA;
@@ -30,11 +29,29 @@ public class HederaTransactionInfoService implements TransactionInfoService {
     @Override
     public TxInfo getTransaction(String hash) {
         try {
-            TransactionReceipt receipt = new TransactionReceiptQuery()
-                    .setTransactionId(TransactionId.fromString(hash))
-                    .execute(hederaClient);
-            System.out.println(receipt);
-        } catch (TimeoutException | PrecheckStatusException e) {
+            List<HederaTransaction> transactions = mirrorNodeClient.getTxStatus(hash).getTransactions();
+            if (transactions.size() > 0) {
+                HederaTransaction hederaTransaction = transactions.get(0);
+                return HederaTxInfo.hederaTxInfoBuilder()
+                                   .hash(hederaTransaction.getTransaction_hash())
+                                   .status(getStatus(hederaTransaction.getResult()))
+                                   .chargedTxFee(hederaTransaction.getCharged_tx_fee())
+                                   .consensusTimestamp(hederaTransaction.getConsensus_timestamp())
+                                   .entityId(hederaTransaction.getEntity_id())
+                                   .maxFee(hederaTransaction.getMax_fee())
+                                   .memoBase64(hederaTransaction.getMemo_base64())
+                                   .name(hederaTransaction.getName())
+                                   .node(hederaTransaction.getNode())
+                                   .scheduled(hederaTransaction.isScheduled())
+                                   .transactionId(hederaTransaction.getTransaction_id())
+                                   .validDurationSeconds(hederaTransaction.getValid_duration_seconds())
+                                   .validStartTimestamp(hederaTransaction.getValid_start_timestamp())
+                                   .transfers(hederaTransaction.getTransfers())
+                                   .tokenTransfers(hederaTransaction.getToken_transfers())
+                                   .build();
+            }
+
+        } catch (Exception e) {
             throw arkaneException()
                     .errorCode("error.hedera.receipt")
                     .message("Error getting hedera transaction receipt")
@@ -43,5 +60,17 @@ public class HederaTransactionInfoService implements TransactionInfoService {
         }
         return TxInfo.builder()
                      .build();
+    }
+
+    private TxStatus getStatus(String result) {
+        switch (result) {
+            case "SUCCESS":
+                return TxStatus.SUCCEEDED;
+            case "ERROR":
+            case "FAILED":
+                return TxStatus.FAILED;
+            default:
+                return TxStatus.UNKNOWN;
+        }
     }
 }

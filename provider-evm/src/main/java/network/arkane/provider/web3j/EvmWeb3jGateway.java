@@ -100,7 +100,8 @@ public abstract class EvmWeb3jGateway {
 
             Transaction transaction = Transaction.createFunctionCallTransaction(
                     from,
-                    BigInteger.ZERO, BigInteger.ONE, blockGasLimit, to, value, data);
+                    BigInteger.ZERO, new BigInteger("500000000000"), blockGasLimit, to, value, data);
+
 
             EthEstimateGas ethEstimateGas = web3().ethEstimateGas(transaction).send();
             if (ethEstimateGas.hasError()) {

@@ -20,6 +20,7 @@ public class HederaProperties {
     private String operatorAccountId;
     private String operatorPrivateKey;
     private String network;
+    private String mirrorNodeApiEndpoint;
 
 
 }

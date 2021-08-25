@@ -11,7 +11,7 @@ public abstract class ExtractionRequest {
     @Getter
     private SecretType secretType;
 
-    ExtractionRequest() {
+    public ExtractionRequest() {
     }
 
     public ExtractionRequest(SecretType secretType) {
