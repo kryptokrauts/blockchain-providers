@@ -38,7 +38,7 @@ public abstract class EvmTransactionGateway implements TransactionGateway {
                     log.warn("Got error from " + getType().name() + " chain: insufficient funds");
                     throw arkaneException()
                             .errorCode("transaction.insufficient-funds")
-                            .message("The account that initiated the transfer does not have enough energy")
+                            .message(send.getError().getMessage())
                             .build();
                 } else {
                     log.error("Got error from " + getType().name() + " chain: {}", send.getError().getMessage());
