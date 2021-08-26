@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 public abstract class EvmWeb3jGateway {
 
-    private static final BigInteger DEFAULT_GAS_LIMIT_FAILED = new BigInteger("200000");
+    private static final BigInteger DEFAULT_GAS_LIMIT_FAILED = new BigInteger("500000");
     private Web3j web3j;
     private DeltaBalances deltaBalances;
 
@@ -96,11 +96,9 @@ public abstract class EvmWeb3jGateway {
                                             BigInteger value,
                                             String data) {
         try {
-            BigInteger blockGasLimit = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock().getGasLimit().subtract(BigInteger.ONE);
-
             Transaction transaction = Transaction.createFunctionCallTransaction(
                     from,
-                    BigInteger.ZERO, new BigInteger("500000000000"), blockGasLimit, to, value, data);
+                    BigInteger.ZERO, null, null, to, value, data);
 
 
             EthEstimateGas ethEstimateGas = web3().ethEstimateGas(transaction).send();
@@ -113,7 +111,7 @@ public abstract class EvmWeb3jGateway {
             BigInteger amountUsed = ethEstimateGas.getAmountUsed();
             return EvmEstimateGasResult.builder()
                                        .gasLimit(amountUsed)
-                                       .reverted(amountUsed.compareTo(blockGasLimit) >= 0)
+                                       .reverted(false)
                                        .build();
         } catch (IOException e) {
             throw ArkaneException.arkaneException()
