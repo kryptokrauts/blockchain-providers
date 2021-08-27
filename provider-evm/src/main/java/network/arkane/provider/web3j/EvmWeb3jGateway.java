@@ -16,7 +16,6 @@ import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -45,6 +44,7 @@ public abstract class EvmWeb3jGateway {
         } catch (final Exception ex) {
             log.error("Problem trying to get balance from the network");
             throw ArkaneException.arkaneException()
+                                 .cause(ex)
                                  .errorCode("web3j.internal-error")
                                  .message(String.format("Unable to get the balance for the specified account (%s) ()", account))
                                  .build();
@@ -58,8 +58,9 @@ public abstract class EvmWeb3jGateway {
         } catch (final Exception ex) {
             log.error(String.format("Problem trying to get the token balances of %s", owner), ex);
             throw ArkaneException.arkaneException()
+                                 .cause(ex)
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the token balances of %s ()", owner))
+                                 .message(String.format("Problem trying to get the token balances of %s () %s", owner, ex.getMessage()))
                                  .build();
         }
     }
@@ -71,8 +72,9 @@ public abstract class EvmWeb3jGateway {
         } catch (final Exception ex) {
             log.error(String.format("Problem trying to get the token balance of %s for token %s", owner, tokenAddress), ex);
             throw ArkaneException.arkaneException()
+                                 .cause(ex)
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the token balance of %s for token %s ()", owner, tokenAddress))
+                                 .message(String.format("Problem trying to get the token balance of %s for token %s () %s", owner, tokenAddress, ex.getMessage()))
                                  .build();
         }
     }
@@ -85,8 +87,9 @@ public abstract class EvmWeb3jGateway {
         } catch (final Exception ex) {
             log.error(String.format("Problem trying to get the token balance of %s for token %s", owner, tokenAddress), ex);
             throw ArkaneException.arkaneException()
+                                 .cause(ex)
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the token balance of %s for token %s ()", owner, tokenAddress))
+                                 .message(String.format("Problem trying to get the token balance of %s for token %s () %s", owner, tokenAddress, ex.getMessage()))
                                  .build();
         }
     }
@@ -113,10 +116,11 @@ public abstract class EvmWeb3jGateway {
                                        .gasLimit(amountUsed)
                                        .reverted(false)
                                        .build();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw ArkaneException.arkaneException()
+                                 .cause(e)
                                  .errorCode("web3j.estimate.gas.internal-error")
-                                 .message("A problem occurred trying to estimate the gas.")
+                                 .message("A problem occurred trying to estimate the gas: " + e.getMessage())
                                  .cause(e)
                                  .build();
         }
@@ -126,10 +130,10 @@ public abstract class EvmWeb3jGateway {
         try {
             EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send();
             return ethGetTransactionCount.getTransactionCount();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.nonce.internal-error")
-                                 .message("A problem occurred trying to get the next nonce")
+                                 .message("A problem occurred trying to get the next nonce: " + e.getMessage())
                                  .cause(e)
                                  .build();
         }
@@ -144,7 +148,7 @@ public abstract class EvmWeb3jGateway {
             log.error("Problem trying to submit transaction to the network: {}", ex.getMessage());
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.transaction.submit.internal-error")
-                                 .message("A problem occurred trying to submit the transaction to the network")
+                                 .message("A problem occurred trying to submit the transaction to the network: " + ex.getMessage())
                                  .cause(ex)
                                  .build();
         }
@@ -159,7 +163,7 @@ public abstract class EvmWeb3jGateway {
             log.error("Problem trying get eth gas price: {}", ex.getMessage());
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.eth.gasprice.internal-error")
-                                 .message("Problem trying get eth gas price")
+                                 .message("Problem trying get eth gas price: " + ex.getMessage())
                                  .cause(ex)
                                  .build();
         }
@@ -171,8 +175,9 @@ public abstract class EvmWeb3jGateway {
         } catch (Exception ex) {
             log.error(String.format("Problem trying to get the name for token %s ()", tokenAddress), ex);
             throw ArkaneException.arkaneException()
+                                 .cause(ex)
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the name for token %s ()", tokenAddress))
+                                 .message(String.format("Problem trying to get the name for token %s (): ", tokenAddress, ex.getMessage()))
                                  .build();
         }
     }
@@ -184,7 +189,8 @@ public abstract class EvmWeb3jGateway {
             log.error(String.format("Problem trying to get the symbol for token %s ()", tokenAddress), ex);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the symbol for token %s ()", tokenAddress))
+                                 .cause(ex)
+                                 .message(String.format("Problem trying to get the symbol for token %s (): %s", tokenAddress, ex.getMessage()))
                                  .build();
         }
     }
@@ -196,7 +202,8 @@ public abstract class EvmWeb3jGateway {
             log.error(String.format("Problem trying to get the decimals for token %s ()", tokenAddress), ex);
             throw ArkaneException.arkaneException()
                                  .errorCode("web3j.internal-error")
-                                 .message(String.format("Problem trying to get the decimals for token %s ()", tokenAddress))
+                                 .cause(ex)
+                                 .message(String.format("Problem trying to get the decimals for token %s (): %s", tokenAddress, ex.getMessage()))
                                  .build();
         }
     }
