@@ -16,6 +16,7 @@ import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignature;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -23,6 +24,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
+@Disabled
 class HederaTransactionGatewayTest {
 
     private HbarTransferSigner signer;
@@ -56,7 +58,7 @@ class HederaTransactionGatewayTest {
         TransactionSignature signature = signer.createSignature(HbarTransferSignable.builder()
                                                                                     .from("0.0.2256926")
                                                                                     .to("0.0.2151494")
-                                                                                    .amount(new BigInteger("0.01"))
+                                                                                    .amount(new BigInteger("1"))
                                                                                     .build(),
                                                                 HederaSecretKey.builder()
                                                                                .key(PrivateKey.fromString(
