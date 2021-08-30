@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.Data;
 import network.arkane.provider.sign.domain.Signable;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 
 @Data
 @Builder
 public class TokenTransferSignable implements Signable {
     private String from;
     private String to;
-    private BigDecimal amount;
+    private BigInteger amount;
     private String tokenId;
 }
 

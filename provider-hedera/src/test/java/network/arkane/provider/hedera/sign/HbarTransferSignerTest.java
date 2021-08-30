@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +26,7 @@ class HbarTransferSignerTest {
         Signature signature = signer.createSignature(HbarTransferSignable.builder()
                                                                          .from(HederaTestFixtures.getAccountId().toString())
                                                                          .to("0.0.2151494")
-                                                                         .amount(new BigDecimal("0.01"))
+                                                                         .amount(new BigInteger("1"))
                                                                          .build(),
                                                      HederaSecretKey.builder().key(HederaTestFixtures.getOperatorKey()).build());
 
