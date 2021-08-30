@@ -434,7 +434,7 @@
             <dependency>
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-core</artifactId>
-                <version>1.14.0</version>
+                <version>${grpc.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.grpc</groupId>
@@ -459,7 +459,7 @@
             <dependency>
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-netty</artifactId>
-                <version>1.14.0</version>
+                <version>${grpc.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.grpc</groupId>
