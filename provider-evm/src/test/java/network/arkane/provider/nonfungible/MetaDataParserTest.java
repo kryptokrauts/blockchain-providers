@@ -167,6 +167,28 @@ class MetaDataParserTest {
     }
 
     @Test
+    void replacesPinataGateway() throws IOException {
+        String metaData = "\n"
+                          + "{\"name\":\"Gingerbread Man\",\"description\":\"Gingerbread man is one of the most popular Christmas treat. They are soft in the centers, crisp on "
+                          + "the edges, perfectly spiced, molasses and brown sugar-sweetened holiday goodness. Whenever we think of Christmas cookies, gingerbread man come to "
+                          + "mind first. Their spice, their molasses flavor, their SMILES, and their charm are obviously irresistible. Gingerbread man, you have our hearts. Need"
+                          + " some help when you begin baking? Here is our favorite recipe: https://arkane.network/blog \","
+                          + "\"image\":\"https://gateway.pinata.cloud/ipfs/QmdKQ6tJkvq5sa1qkQVCf5RJo74vJQucfZEVPdADoT6VMk\",\"properties\":{\"Flour\":\"3 cups\",\"Baking "
+                          + "powder\":\"3 "
+                          + "teaspoons\",\"Gingerbread spices\":\"2 tablespoons\",\"Unsalted butter\":\"6 tablespoons\",\"Eggs\":\"1\",\"Molasses\":\"1 cup\","
+                          + "\"tokenTypeId\":3598},\"attributes\":{\"Flour\":\"3 cups\",\"Baking powder\":\"3 teaspoons\",\"Gingerbread spices\":\"2 tablespoons\",\"Unsalted "
+                          + "butter\":\"6 tablespoons\",\"Eggs\":\"1\",\"Molasses\":\"1 cup\",\"tokenTypeId\":3598},\"imagePreview\":\"https://raw.githubusercontent"
+                          + ".com/ArkaneNetwork/content-management/master/marketing/xmas-2020/Gingerbread.jpg\",\"url\":\"https://arkane.network/blog\","
+                          + "\"imageThumbnail\":\"https://raw.githubusercontent.com/ArkaneNetwork/content-management/master/marketing/xmas-2020/Gingerbread.jpg\","
+                          + "\"backgroundColor\":\"#d9d9d9\",\"externalUrl\":\"https://arkane.network/blog\",\"tokenTypeId\":3598,\"background_color\":\"#d9d9d9\","
+                          + "\"external_url\":\"https://arkane.network/blog\"}";
+
+        NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metaData, JsonNode.class));
+
+        assertThat(result.getImage().get()).isEqualTo("https://cloudflare-ipfs.com/ipfs/QmdKQ6tJkvq5sa1qkQVCf5RJo74vJQucfZEVPdADoT6VMk");
+    }
+
+    @Test
     void parsesIpfsAnimationUrls() throws IOException {
         String metaData = "{\"name\":\"Agumon\",\"description\":\"A Reptile Digimon with an appearance resembling a small dinosaur, it has grown and become able to walk on two "
                           + "legs. Its strength is weak as it is still in the process of growing, but it has a fearless and rather ferocious personality. Hard, sharp claws grow "
