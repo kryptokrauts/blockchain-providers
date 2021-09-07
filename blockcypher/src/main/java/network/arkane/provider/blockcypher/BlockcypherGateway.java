@@ -76,7 +76,7 @@ public class BlockcypherGateway {
         BlockcypherAddress address = objectMapper.readValue(executeWithRateLimiter(() -> blockcypherClient.getFullAddress(USER_AGENT,
                                                                                                                           network.getCoin(),
                                                                                                                           network.getChain(),
-                                                                                                                          token,
+                                                                                                                          tokens.next(),
                                                                                                                           walletAddress)),
                                                             BlockcypherAddress.class);
         address.setChain(network.getChain());
