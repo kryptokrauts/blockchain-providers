@@ -63,22 +63,26 @@ public class NonFungibleMetaData {
 
     public Optional<String> getImage() {
         return Stream.of(
-                getProperty("image"),
-                getProperty("image_data"),
-                getProperty("imageUrl"),
-                getProperty("image_url"))
+                             getProperty("image"),
+                             getProperty("image_data"),
+                             getProperty("imageUrl"),
+                             getProperty("image_url"))
                      .filter(StringUtils::isNotBlank)
                      .map(this::replaceIpfsLink)
                      .findFirst();
     }
 
     private String replaceIpfsLink(String imgUrl) {
-        if (StringUtils.isNotBlank(imgUrl) && imgUrl.startsWith("ipfs")) {
-            String cid = imgUrl.replace("ipfs://", "");
-            if (!cid.startsWith("ipfs/")) {
-                cid = "ipfs/" + cid;
+        if (StringUtils.isNotBlank(imgUrl)) {
+            if (imgUrl.startsWith("ipfs")) {
+                String cid = imgUrl.replace("ipfs://", "");
+                if (!cid.startsWith("ipfs/")) {
+                    cid = "ipfs/" + cid;
+                }
+                return "https://cloudflare-ipfs.com/" + cid;
+            } else if (imgUrl.startsWith("https://gateway.pinata.cloud")) {
+                return imgUrl.replaceFirst("https://gateway.pinata.cloud", "https://cloudflare-ipfs.com");
             }
-            return "https://cloudflare-ipfs.com/" + cid;
         }
         return imgUrl;
     }
@@ -95,8 +99,8 @@ public class NonFungibleMetaData {
 
     public Optional<String> getBackgroundColor() {
         return Stream.of(
-                getProperty("backgroundColor"),
-                getProperty("background_color")
+                             getProperty("backgroundColor"),
+                             getProperty("background_color")
                         ).filter(StringUtils::isNotBlank)
                      .findFirst();
     }
@@ -138,17 +142,17 @@ public class NonFungibleMetaData {
 
     public Optional<String> getExternalUrl() {
         return Stream.of(
-                getProperty("externalUrl"),
-                getProperty("external_url"),
-                getProperty("url")
+                             getProperty("externalUrl"),
+                             getProperty("external_url"),
+                             getProperty("url")
                         ).filter(StringUtils::isNotBlank)
                      .findFirst();
     }
 
     public Optional<String> getMaxSupply() {
         return Stream.of(
-                getProperty("maxSupply"),
-                getProperty("max_supply")
+                             getProperty("maxSupply"),
+                             getProperty("max_supply")
                         ).filter(StringUtils::isNotBlank)
                      .findFirst();
     }
@@ -163,8 +167,8 @@ public class NonFungibleMetaData {
 
     public List<Attribute> getAttributes() {
         return Stream.of(
-                parseAttributes("attributes"),
-                parseAttributes("properties")
+                             parseAttributes("attributes"),
+                             parseAttributes("properties")
                         )
                      .filter(Optional::isPresent)
                      .map(Optional::get)
@@ -175,8 +179,8 @@ public class NonFungibleMetaData {
 
     public Optional<NonFungibleContract> getContract() {
         return Stream.of(
-                parseContract("contract"),
-                parseContract("asset_contract"))
+                             parseContract("contract"),
+                             parseContract("asset_contract"))
                      .filter(Optional::isPresent)
                      .map(Optional::get)
                      .findFirst();

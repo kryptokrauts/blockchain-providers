@@ -111,7 +111,7 @@ public class HederaBalanceGateway extends BalanceGateway {
     private List<TokenBalance> getTokenBalances(String address,
                                                 String tokenAddress) {
         try {
-            Map<TokenId, Long> tokenBalances = getTokenBalancesFromChain(address);
+            Map<TokenId, Long> tokenBalances = getTokenBalancesFromMirrorNode(address).orElseGet(() -> getTokenBalancesFromChain(address));
             for (Map.Entry<TokenId, Long> entry : tokenBalances.entrySet()) {
                 new TokenInfoQuery().setTokenId(entry.getKey()).execute(hederaClient);
             }
@@ -137,11 +137,19 @@ public class HederaBalanceGateway extends BalanceGateway {
         }
     }
 
-    private Map<TokenId, Long> getTokenBalancesFromChain(String address) throws TimeoutException, PrecheckStatusException {
-        return new AccountBalanceQuery()
-                .setAccountId(AccountId.fromString(address))
-                .execute(hederaClient)
-                .tokens;
+    private Map<TokenId, Long> getTokenBalancesFromChain(String address) {
+        try {
+            return new AccountBalanceQuery()
+                    .setAccountId(AccountId.fromString(address))
+                    .execute(hederaClient)
+                    .tokens;
+        } catch (TimeoutException | PrecheckStatusException e) {
+            throw ArkaneException.arkaneException()
+                                 .cause(e)
+                                 .message(e.getMessage())
+                                 .errorCode("hedera.balance.error")
+                                 .build();
+        }
     }
 
     private Optional<Map<TokenId, Long>> getTokenBalancesFromMirrorNode(String address) throws TimeoutException, PrecheckStatusException {

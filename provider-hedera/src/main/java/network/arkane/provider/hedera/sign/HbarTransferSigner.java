@@ -23,7 +23,7 @@ public class HbarTransferSigner extends HederaSigner<HbarTransferSignable, Trans
     @Override
     protected Transaction<TransferTransaction> createTransaction(HbarTransferSignable signable,
                                                                  HederaSecretKey key) {
-        Hbar amount = Hbar.from(signable.getAmount());
+        Hbar amount = Hbar.fromTinybars(signable.getAmount().longValueExact());
         return new TransferTransaction()
                 .addHbarTransfer(AccountId.fromString(signable.getFrom()), amount.negated())
                 .addHbarTransfer(AccountId.fromString(signable.getTo()), amount)

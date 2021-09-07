@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -24,16 +26,16 @@ public class BlockcypherGateway {
     private final ObjectMapper objectMapper;
 
     private BlockcypherClient blockcypherClient;
-    private String token;
+    private Iterator<String> tokens;
     private RateLimiter rateLimiter;
 
 
     @Autowired
     public BlockcypherGateway(BlockcypherClient blockcypherClient,
-                              @Value("${blockcypher.token}") String token,
+                              @Value("${blockcypher.tokens}") List<String> tokens,
                               @Value("${blockcypher.maxrequestspersecond:3}") Long maxRequestsPerSecond) {
         this.blockcypherClient = blockcypherClient;
-        this.token = token;
+        this.tokens = new RoundRobin<>(tokens).iterator();
         this.objectMapper = new ObjectMapper();
         this.rateLimiter = RateLimiter.create(maxRequestsPerSecond);
     }
@@ -43,7 +45,7 @@ public class BlockcypherGateway {
     public BlockcypherAddress getBalance(Network network,
                                          String address) {
         return objectMapper.readValue(
-                executeWithRateLimiter(() -> blockcypherClient.getBalance(USER_AGENT, network.getCoin(), network.getChain(), token, address)),
+                executeWithRateLimiter(() -> blockcypherClient.getBalance(USER_AGENT, network.getCoin(), network.getChain(), tokens.next(), address)),
                 BlockcypherAddress.class);
     }
 
@@ -52,7 +54,7 @@ public class BlockcypherGateway {
     public BlockcypherAddressUnspents getUnspentTransactions(Network network,
                                                              String address) {
         return objectMapper.readValue(
-                executeWithRateLimiter(() -> blockcypherClient.getUnspents(USER_AGENT, network.getCoin(), network.getChain(), token, address)),
+                executeWithRateLimiter(() -> blockcypherClient.getUnspents(USER_AGENT, network.getCoin(), network.getChain(), tokens.next(), address)),
                 BlockcypherAddressUnspents.class);
     }
 
@@ -63,7 +65,7 @@ public class BlockcypherGateway {
                 executeWithRateLimiter(() -> blockcypherClient.sendSignedTransaction(USER_AGENT,
                                                                                      network.getCoin(),
                                                                                      network.getChain(),
-                                                                                     token,
+                                                                                     tokens.next(),
                                                                                      new BlockCypherRawTransactionRequest(txAsHex))),
                 BlockCypherRawTransactionResponse.class);
     }
@@ -94,4 +96,5 @@ public class BlockcypherGateway {
             throw new RuntimeException("Bitcoin endpoint too busy");
         }
     }
+
 }
