@@ -70,6 +70,19 @@ public class BlockcypherGateway {
                 BlockCypherRawTransactionResponse.class);
     }
 
+    @SneakyThrows
+    public BlockcypherAddress getAddressFull(final Network network,
+                                             final String walletAddress) {
+        BlockcypherAddress address = objectMapper.readValue(executeWithRateLimiter(() -> blockcypherClient.getFullAddress(USER_AGENT,
+                                                                                                                          network.getCoin(),
+                                                                                                                          network.getChain(),
+                                                                                                                          tokens.next(),
+                                                                                                                          walletAddress)),
+                                                            BlockcypherAddress.class);
+        address.setChain(network.getChain());
+        return address;
+    }
+
     private <T> T executeWithRateLimiter(Callable<T> callable) {
         if (rateLimiter.tryAcquire(30, TimeUnit.SECONDS)) {
             try {
