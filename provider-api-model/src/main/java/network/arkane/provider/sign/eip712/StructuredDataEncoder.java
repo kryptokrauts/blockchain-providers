@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.web3j.abi.TypeEncoder;
 import org.web3j.abi.datatypes.AbiTypes;
 import org.web3j.abi.datatypes.Type;
+import org.web3j.crypto.Hash;
 import org.web3j.crypto.Pair;
 import org.web3j.utils.Numeric;
 
@@ -35,9 +36,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static org.web3j.crypto.Hash.sha3;
-import static org.web3j.crypto.Hash.sha3String;
 
 public class StructuredDataEncoder {
     public final StructuredData.EIP712Message jsonMessageObject;
@@ -135,7 +133,7 @@ public class StructuredDataEncoder {
     }
 
     public byte[] typeHash(String primaryType) {
-        return Numeric.hexStringToByteArray(sha3String(encodeType(primaryType)));
+        return Numeric.hexStringToByteArray(Hash.sha3String(encodeType(primaryType)));
     }
 
     public List<Integer> getArrayDimensionsFromDeclaration(String declaration) {
@@ -243,15 +241,15 @@ public class StructuredDataEncoder {
 
             if (field.getType().equals("string")) {
                 encTypes.add("bytes32");
-                byte[] hashedValue = Numeric.hexStringToByteArray(sha3String((String) value));
+                byte[] hashedValue = Numeric.hexStringToByteArray(Hash.sha3String((String) value));
                 encValues.add(hashedValue);
             } else if (field.getType().equals("bytes")) {
                 encTypes.add(("bytes32"));
-                encValues.add(sha3(Numeric.hexStringToByteArray((String) value)));
+                encValues.add(Hash.sha3(Numeric.hexStringToByteArray((String) value)));
             } else if (types.containsKey(field.getType())) {
                 // User Defined Type
                 byte[] hashedValue =
-                        sha3(encodeData(field.getType(), (HashMap<String, Object>) value));
+                        Hash.sha3(encodeData(field.getType(), (HashMap<String, Object>) value));
                 encTypes.add("bytes32");
                 encValues.add(hashedValue);
             } else if (bytesTypePattern.matcher(field.getType()).find()) {
@@ -295,7 +293,7 @@ public class StructuredDataEncoder {
                             arrayItemEncoding, 0, arrayItemEncoding.length);
                 }
                 byte[] concatenatedArrayEncodings = concatenatedArrayEncodingBuffer.toByteArray();
-                byte[] hashedValue = sha3(concatenatedArrayEncodings);
+                byte[] hashedValue = Hash.sha3(concatenatedArrayEncodings);
                 encTypes.add("bytes32");
                 encValues.add(hashedValue);
             } else if (field.getType().startsWith("uint") || field.getType().startsWith("int")) {
@@ -361,7 +359,7 @@ public class StructuredDataEncoder {
     public byte[] hashMessage(String primaryType,
                               HashMap<String, Object> data)
             throws RuntimeException {
-        return sha3(encodeData(primaryType, data));
+        return Hash.sha3(encodeData(primaryType, data));
     }
 
     @SuppressWarnings("unchecked")
@@ -383,7 +381,7 @@ public class StructuredDataEncoder {
         if (data.get("salt") == null) {
             data.remove("salt");
         }
-        return sha3(encodeData("EIP712Domain", data));
+        return Hash.sha3(encodeData("EIP712Domain", data));
     }
 
     public void validateStructuredData(StructuredData.EIP712Message jsonMessageObject)
@@ -421,7 +419,7 @@ public class StructuredDataEncoder {
     @SuppressWarnings("unchecked")
     public byte[] hashStructuredData() throws RuntimeException {
 
-        return sha3(getStructuredData());
+        return Hash.sha3(getStructuredData());
     }
 
     @SuppressWarnings("unchecked")
