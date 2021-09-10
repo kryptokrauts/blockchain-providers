@@ -38,6 +38,7 @@ public class TokenBalanceMother {
                            .transferable(tokenInfo.isTransferable())
                            .type(tokenInfo.getType())
                            .symbol(tokenInfo.getSymbol())
+                           .name(tokenInfo.getName())
                            .build();
     }
 

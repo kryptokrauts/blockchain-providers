@@ -16,6 +16,7 @@ public class TokenBalance {
     private String type;
     @Builder.Default
     private boolean transferable = true;
+    private String name;
 
     @Builder
     public TokenBalance(String tokenAddress,
@@ -25,7 +26,8 @@ public class TokenBalance {
                         final String symbol,
                         final String logo,
                         final String type,
-                        final boolean transferable) {
+                        final boolean transferable,
+                        final String name) {
         this.tokenAddress = tokenAddress;
         this.rawBalance = rawBalance;
         this.balance = balance;
@@ -34,5 +36,6 @@ public class TokenBalance {
         this.logo = logo;
         this.type = type;
         this.transferable = transferable;
+        this.name = name;
     }
 }
