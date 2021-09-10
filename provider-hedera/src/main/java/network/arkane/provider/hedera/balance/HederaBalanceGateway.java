@@ -124,7 +124,7 @@ public class HederaBalanceGateway extends BalanceGateway {
                                                        .rawBalance(e.getValue().toString())
                                                        .balance(PrecisionUtil.toDecimal(e.getValue(), tokenInfo.getDecimals()))
                                                        .symbol(tokenInfo.getSymbol().contains("://")
-                                                               ? tokenInfo.getName()
+                                                               ? null
                                                                : tokenInfo.getSymbol())
                                                        .logo(tokenInfo.getSymbol().startsWith("http") ? tokenInfo.getSymbol() : null)
                                                        .name(tokenInfo.getName())
