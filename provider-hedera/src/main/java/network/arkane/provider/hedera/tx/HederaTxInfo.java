@@ -20,6 +20,7 @@ public class HederaTxInfo extends TxInfo {
     private String transactionId;
     private String validDurationSeconds;
     private String validStartTimestamp;
+    private String result;
     private List<HederaTransfer> transfers;
     private List<HederaTokenTransfer> tokenTransfers;
 
@@ -37,6 +38,7 @@ public class HederaTxInfo extends TxInfo {
                         String transactionId,
                         String validDurationSeconds,
                         String validStartTimestamp,
+                        String result,
                         List<HederaTransfer> transfers,
                         List<HederaTokenTransfer> tokenTransfers) {
         super(hash, status, null, null, null);
@@ -51,6 +53,7 @@ public class HederaTxInfo extends TxInfo {
         this.transactionId = transactionId;
         this.validDurationSeconds = validDurationSeconds;
         this.validStartTimestamp = validStartTimestamp;
+        this.result = result;
         this.transfers = transfers;
         this.tokenTransfers = tokenTransfers;
     }
