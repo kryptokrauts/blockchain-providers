@@ -36,7 +36,7 @@ public class HederaTokenInfoService {
             TokenInfo tokenInfo = new TokenInfoQuery()
                     .setTokenId(TokenId.fromString(tokenId))
                     .execute(hederaClient);
-            return HederaTokenInfo.builder().symbol(tokenInfo.symbol).decimals(tokenInfo.decimals).build();
+            return HederaTokenInfo.builder().name(tokenInfo.name).symbol(tokenInfo.symbol).decimals(tokenInfo.decimals).build();
         } catch (TimeoutException | PrecheckStatusException e) {
             throw ArkaneException.arkaneException()
                                  .cause(e)

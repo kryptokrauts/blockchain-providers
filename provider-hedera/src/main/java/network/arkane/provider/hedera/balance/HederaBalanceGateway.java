@@ -123,7 +123,12 @@ public class HederaBalanceGateway extends BalanceGateway {
                                                        .tokenAddress(e.getKey().toString())
                                                        .rawBalance(e.getValue().toString())
                                                        .balance(PrecisionUtil.toDecimal(e.getValue(), tokenInfo.getDecimals()))
-                                                       .symbol(tokenInfo.getSymbol())
+                                                       .symbol(tokenInfo.getSymbol().contains("://")
+                                                               ? null
+                                                               : tokenInfo.getSymbol())
+                                                       .logo(tokenInfo.getSymbol().startsWith("http") ? tokenInfo.getSymbol() : null)
+                                                       .name(tokenInfo.getName())
+                                                       .decimals(tokenInfo.getDecimals())
                                                        .build();
                                 })
                                 .collect(Collectors.toList());

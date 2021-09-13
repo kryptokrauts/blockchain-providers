@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 public class HederaTokenInfo {
     private String symbol;
+    private String name;
     private int decimals;
 }
