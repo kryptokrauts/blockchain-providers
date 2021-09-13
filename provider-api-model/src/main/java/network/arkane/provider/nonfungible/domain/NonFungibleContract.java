@@ -29,6 +29,7 @@ public class NonFungibleContract {
     private String type;
     private boolean verified;
     private boolean premium;
+    private boolean scam;
     private List<String> categories;
 
 }
