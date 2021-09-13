@@ -17,6 +17,7 @@ import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.balance.dto.HederaTokenInfo;
 import network.arkane.provider.hedera.mirror.MirrorNodeClient;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -123,10 +124,8 @@ public class HederaBalanceGateway extends BalanceGateway {
                                                        .tokenAddress(e.getKey().toString())
                                                        .rawBalance(e.getValue().toString())
                                                        .balance(PrecisionUtil.toDecimal(e.getValue(), tokenInfo.getDecimals()))
-                                                       .symbol(tokenInfo.getSymbol().contains("://")
-                                                               ? null
-                                                               : tokenInfo.getSymbol())
-                                                       .logo(tokenInfo.getSymbol().startsWith("http") ? tokenInfo.getSymbol() : null)
+                                                       .symbol(tokenInfo.getSymbol())
+                                                       .logo(getLogo(tokenInfo))
                                                        .name(tokenInfo.getName())
                                                        .decimals(tokenInfo.getDecimals())
                                                        .build();
@@ -140,6 +139,16 @@ public class HederaBalanceGateway extends BalanceGateway {
                                  .errorCode("hedera.balance.error")
                                  .build();
         }
+    }
+
+    @Nullable
+    private String getLogo(HederaTokenInfo tokenInfo) {
+        if (tokenInfo.getMemo().contains("://")) {
+            return tokenInfo.getMemo();
+        } else if (tokenInfo.getSymbol().contains("://")) {
+            return tokenInfo.getSymbol();
+        }
+        return null;
     }
 
     private Map<TokenId, Long> getTokenBalancesFromChain(String address) {
