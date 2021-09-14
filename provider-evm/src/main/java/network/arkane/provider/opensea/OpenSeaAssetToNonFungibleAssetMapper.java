@@ -32,6 +32,7 @@ public class OpenSeaAssetToNonFungibleAssetMapper {
                                .imageUrl(openSeaAsset.getImageUrl())
                                .imagePreviewUrl(openSeaAsset.getImagePreviewUrl())
                                .imageThumbnailUrl(openSeaAsset.getImageThumbnailUrl())
+                               .animationUrl(openSeaAsset.getAnimationUrl())
                                .url(openSeaAsset.getExternalLink())
                                .contract(contractMapper.map(openSeaAsset.getAssetContract()))
                                .fungible(false)
