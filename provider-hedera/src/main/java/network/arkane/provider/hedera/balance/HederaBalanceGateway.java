@@ -16,7 +16,9 @@ import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.balance.dto.HederaTokenInfo;
 import network.arkane.provider.hedera.mirror.MirrorNodeClient;
+import network.arkane.provider.ipfs.IpfsUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -124,6 +126,9 @@ public class HederaBalanceGateway extends BalanceGateway {
                                                        .rawBalance(e.getValue().toString())
                                                        .balance(PrecisionUtil.toDecimal(e.getValue(), tokenInfo.getDecimals()))
                                                        .symbol(tokenInfo.getSymbol())
+                                                       .logo(getLogo(tokenInfo))
+                                                       .name(tokenInfo.getName())
+                                                       .decimals(tokenInfo.getDecimals())
                                                        .build();
                                 })
                                 .collect(Collectors.toList());
@@ -135,6 +140,17 @@ public class HederaBalanceGateway extends BalanceGateway {
                                  .errorCode("hedera.balance.error")
                                  .build();
         }
+    }
+
+    @Nullable
+    private String getLogo(HederaTokenInfo tokenInfo) {
+        String result = null;
+        if (StringUtils.contains(tokenInfo.getMemo(), "://")) {
+            result = tokenInfo.getMemo();
+        } else if (StringUtils.contains(tokenInfo.getSymbol(), "://")) {
+            result = tokenInfo.getSymbol();
+        }
+        return IpfsUtil.replaceIpfsLink(result);
     }
 
     private Map<TokenId, Long> getTokenBalancesFromChain(String address) {

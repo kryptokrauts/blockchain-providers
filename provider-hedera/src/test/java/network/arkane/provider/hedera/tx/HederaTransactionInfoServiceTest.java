@@ -18,7 +18,7 @@ class HederaTransactionInfoServiceTest {
 
     @Test
     void getReceipt() {
-        TxInfo transaction = infoService.getTransaction("0.0.1543821@1629710771.627821506");
+        TxInfo transaction = infoService.getTransaction("0.0.2258392@1631300957.886928518");
 
         System.out.println(transaction);
     }

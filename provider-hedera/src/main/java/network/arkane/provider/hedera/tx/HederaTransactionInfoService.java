@@ -6,6 +6,7 @@ import network.arkane.provider.hedera.mirror.dto.HederaTransaction;
 import network.arkane.provider.tx.TransactionInfoService;
 import network.arkane.provider.tx.TxInfo;
 import network.arkane.provider.tx.TxStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class HederaTransactionInfoService implements TransactionInfoService {
                                    .validStartTimestamp(hederaTransaction.getValid_start_timestamp())
                                    .transfers(hederaTransaction.getTransfers())
                                    .tokenTransfers(hederaTransaction.getToken_transfers())
+                                   .result(hederaTransaction.getResult())
                                    .build();
             }
 
@@ -63,14 +65,11 @@ public class HederaTransactionInfoService implements TransactionInfoService {
     }
 
     private TxStatus getStatus(String result) {
-        switch (result) {
-            case "SUCCESS":
-                return TxStatus.SUCCEEDED;
-            case "ERROR":
-            case "FAILED":
-                return TxStatus.FAILED;
-            default:
-                return TxStatus.UNKNOWN;
+        if (StringUtils.isBlank(result)) {
+            return TxStatus.UNKNOWN;
+        } else if ("SUCCESS".equals(result)) {
+            return TxStatus.SUCCEEDED;
         }
+        return TxStatus.FAILED;
     }
 }
