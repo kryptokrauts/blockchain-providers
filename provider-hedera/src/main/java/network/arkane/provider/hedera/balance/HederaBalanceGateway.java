@@ -145,9 +145,9 @@ public class HederaBalanceGateway extends BalanceGateway {
     @Nullable
     private String getLogo(HederaTokenInfo tokenInfo) {
         String result = null;
-        if (tokenInfo.getMemo().contains("://")) {
+        if (StringUtils.contains(tokenInfo.getMemo(), "://")) {
             result = tokenInfo.getMemo();
-        } else if (tokenInfo.getSymbol().contains("://")) {
+        } else if (StringUtils.contains(tokenInfo.getSymbol(), "://")) {
             result = tokenInfo.getSymbol();
         }
         return IpfsUtil.replaceIpfsLink(result);
