@@ -24,7 +24,7 @@ class MirrorNodeClientIntegrationTest {
 
     @Test
     void getTokenInfo() {
-        HederaTokenInfo tokenInfo = mirrorNodeClient.getTokenInfo("0.0.2268875");
+        HederaTokenInfo tokenInfo = mirrorNodeClient.getTokenInfo("0.0.2517364");
 
         System.out.println(tokenInfo);
     }

@@ -28,7 +28,7 @@ public class HederaTokenInfoService {
 
     @Cacheable("hedera-token-info")
     public HederaTokenInfo getTokenInfo(String tokenId) {
-        return getTokenInfoFromMirrorNode(tokenId).orElseGet(() -> getTokenInfoFromChain(tokenId));
+        return getTokenInfoFromChain(tokenId);
     }
 
     private HederaTokenInfo getTokenInfoFromChain(String tokenId) {
@@ -36,7 +36,12 @@ public class HederaTokenInfoService {
             TokenInfo tokenInfo = new TokenInfoQuery()
                     .setTokenId(TokenId.fromString(tokenId))
                     .execute(hederaClient);
-            return HederaTokenInfo.builder().name(tokenInfo.name).symbol(tokenInfo.symbol).decimals(tokenInfo.decimals).memo(tokenInfo.tokenMemo).build();
+            return HederaTokenInfo.builder()
+                                  .name(tokenInfo.name)
+                                  .symbol(tokenInfo.symbol)
+                                  .decimals(tokenInfo.decimals)
+                                  .tokenMemo(tokenInfo.tokenMemo)
+                                  .build();
         } catch (TimeoutException | PrecheckStatusException e) {
             throw ArkaneException.arkaneException()
                                  .cause(e)
