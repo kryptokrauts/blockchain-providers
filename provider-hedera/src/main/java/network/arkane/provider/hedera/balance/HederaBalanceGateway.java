@@ -145,8 +145,8 @@ public class HederaBalanceGateway extends BalanceGateway {
     @Nullable
     private String getLogo(HederaTokenInfo tokenInfo) {
         String result = null;
-        if (StringUtils.contains(tokenInfo.getMemo(), "://")) {
-            result = tokenInfo.getMemo();
+        if (StringUtils.contains(tokenInfo.getTokenMemo(), "://")) {
+            result = tokenInfo.getTokenMemo();
         } else if (StringUtils.contains(tokenInfo.getSymbol(), "://")) {
             result = tokenInfo.getSymbol();
         }
