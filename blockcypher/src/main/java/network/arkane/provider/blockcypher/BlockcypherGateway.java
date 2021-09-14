@@ -8,6 +8,7 @@ import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionReque
 import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionResponse;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddress;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddressUnspents;
+import network.arkane.provider.blockcypher.domain.TX;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -81,6 +82,17 @@ public class BlockcypherGateway {
                                                             BlockcypherAddress.class);
         address.setChain(network.getChain());
         return address;
+    }
+
+    @SneakyThrows
+    public TX getTransactionByHash(final Network network,
+                                   final String txHash) {
+        return objectMapper.readValue(executeWithRateLimiter(() -> blockcypherClient.getTxByHash(USER_AGENT,
+                                                                                                 network.getCoin(),
+                                                                                                 network.getChain(),
+                                                                                                 tokens.next(),
+                                                                                                 txHash)),
+                                      TX.class);
     }
 
     private <T> T executeWithRateLimiter(Callable<T> callable) {
