@@ -5,6 +5,7 @@ import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionReque
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +27,7 @@ public interface BlockcypherClient {
                       @RequestParam("token") final String token,
                       @PathVariable("address") final String address);
 
-    @GetMapping("/{coin}/{chain}/txs/push?token={token}")
+    @PostMapping("/{coin}/{chain}/txs/push?token={token}")
     @Headers("Content-Type: application/json")
     String sendSignedTransaction(@RequestHeader("User-Agent") String userAgent,
                                  @PathVariable("coin") final String coin,
