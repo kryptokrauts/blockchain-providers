@@ -48,4 +48,10 @@ public interface BlockcypherClient {
                        @PathVariable("chain") final String chain,
                        @RequestParam("token") final String token,
                        @PathVariable("hash") final String hash);
+
+    @GetMapping("/{coin}/{chain}")
+    String getBlockchainInfo(@RequestHeader("User-Agent") String userAgent,
+                             @PathVariable("coin") final String coin,
+                             @PathVariable("chain") final String chain,
+                             @RequestParam("token") final String token);
 }

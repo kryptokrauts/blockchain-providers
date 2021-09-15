@@ -8,6 +8,7 @@ import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionReque
 import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionResponse;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddress;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddressUnspents;
+import network.arkane.provider.blockcypher.domain.BlockcypherBlockchain;
 import network.arkane.provider.blockcypher.domain.TX;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,6 +94,15 @@ public class BlockcypherGateway {
                                                                                                  tokens.next(),
                                                                                                  txHash)),
                                       TX.class);
+    }
+
+    @SneakyThrows
+    public BlockcypherBlockchain getBlockchain(final Network network) {
+        return objectMapper.readValue(executeWithRateLimiter(() -> blockcypherClient.getBlockchainInfo(USER_AGENT,
+                                                                                                       network.getCoin(),
+                                                                                                       network.getChain(),
+                                                                                                       tokens.next())),
+                                      BlockcypherBlockchain.class);
     }
 
     private <T> T executeWithRateLimiter(Callable<T> callable) {
