@@ -1,5 +1,6 @@
 package network.arkane.provider.contract;
 
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.gateway.GochainWeb3JGateway;
 import org.springframework.stereotype.Component;
 
@@ -12,4 +13,8 @@ public class GochainContractService extends EvmContractService implements Contra
         super(web3JGateway);
     }
 
+    @Override
+    public SecretType type() {
+        return SecretType.GOCHAIN;
+    }
 }
