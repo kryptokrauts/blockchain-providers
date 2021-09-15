@@ -14,5 +14,5 @@ public class HederaTokenInfo {
     private String symbol;
     private String name;
     private int decimals;
-    private String memo;
+    private String tokenMemo;
 }
