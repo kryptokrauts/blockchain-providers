@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class MetaDataParser {
@@ -62,7 +63,9 @@ public class MetaDataParser {
                                         ? createErc721UriCall(contractAddress, tokenId)
                                         : createErc1155UriCall(contractAddress, tokenId);
 
-            List<String> metaDataCallResult = contractService.callFunction(metadataCall);
+            List<String> metaDataCallResult = contractService.callFunction(metadataCall).stream()
+                                                             .map(Object::toString)
+                                                             .collect(Collectors.toList());
             if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
                 if (isHttp(metaDataCallResult)) {
                     try {

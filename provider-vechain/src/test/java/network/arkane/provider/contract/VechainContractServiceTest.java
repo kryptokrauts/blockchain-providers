@@ -31,7 +31,7 @@ class VechainContractServiceTest {
 
     @Test
     void vthoBalanceCall() {
-        List<String> result = vechainContractService.callFunction(ContractCall.builder()
+        List<Object> result = vechainContractService.callFunction(ContractCall.builder()
                                                                               .contractAddress("0x0000000000000000000000000000456E65726779")
                                                                               .functionName("balanceOf")
                                                                               .inputs(Collections.singletonList(ContractCallParam.builder()
@@ -42,7 +42,7 @@ class VechainContractServiceTest {
                                                                               .build());
 
         assertThat(result.get(0)).isNotNull();
-        log.debug(result.get(0));
+        log.debug(String.valueOf(result.get(0)));
     }
 
 }

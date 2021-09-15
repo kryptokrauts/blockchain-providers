@@ -8,11 +8,8 @@ public interface ContractService {
 
     SecretType type();
 
-    default List<String> callFunction(ContractCall contractCall) {
+    default List<Object> callFunction(ContractCall contractCall) {
         throw new RuntimeException("Not implemented");
     }
 
-    default List<Object> read(ContractCall contractCall) {
-        throw new RuntimeException("Not implemented");
-    }
 }

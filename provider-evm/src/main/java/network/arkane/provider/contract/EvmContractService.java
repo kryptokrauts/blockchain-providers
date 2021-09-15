@@ -13,7 +13,6 @@ import org.web3j.protocol.core.methods.request.Transaction;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class EvmContractService implements ContractService {
@@ -24,19 +23,8 @@ public abstract class EvmContractService implements ContractService {
         this.evmWeb3jGateway = evmWeb3jGateway;
     }
 
-    public List<String> callFunction(ContractCall contractCall) {
-        try {
-            return read(contractCall)
-                    .stream()
-                    .map(Object::toString)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
-    public List<Object> read(ContractCall contractCall) {
+    public List<Object> callFunction(ContractCall contractCall) {
         return this.call(contractCall).stream()
                    .map(type -> AbiTypes.getType(type.getTypeAsString()).cast(type)
                                         .getValue())
