@@ -3,7 +3,6 @@ package network.arkane.provider.contract;
 import network.arkane.provider.web3j.EvmWeb3jGateway;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.FunctionReturnDecoder;
-import org.web3j.abi.datatypes.AbiTypes;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -24,14 +23,7 @@ public abstract class EvmContractService implements ContractService {
     }
 
     @Override
-    public List<Object> callFunction(ContractCall contractCall) {
-        return this.call(contractCall).stream()
-                   .map(type -> AbiTypes.getType(type.getTypeAsString()).cast(type)
-                                        .getValue())
-                   .collect(Collectors.toList());
-    }
-
-    private List<Type> call(ContractCall contractCall) {
+    public List<ContractCallResultType> callFunction(ContractCall contractCall) {
         Function f = createFunction(contractCall);
         try {
             return executeContractCall(contractCall, f);
@@ -40,18 +32,19 @@ public abstract class EvmContractService implements ContractService {
         }
     }
 
-    private List<Type> executeContractCall(ContractCall contractCall,
-                                           Function f) throws Exception {
 
-
+    private List<ContractCallResultType> executeContractCall(ContractCall contractCall,
+                                                             Function f) throws Exception {
         if (contractCall.getOutputs().size() <= 1) {
             Type result = executeRemoteCallSingleValueReturn(f, contractCall).send();
-            return result == null ? Collections.emptyList() : Collections.singletonList(result);
+            return result == null ? Collections.emptyList() : Collections.singletonList(ContractCallResultTypeFactory.getType(result));
         } else {
             List<Type> result = executeRemoteCallMultipleValueReturn(f, contractCall).send();
             return result == null
                    ? Collections.emptyList()
-                   : result.stream().collect(Collectors.toList());
+                   : result.stream()
+                           .map(ContractCallResultTypeFactory::getType)
+                           .collect(Collectors.toList());
         }
     }
 

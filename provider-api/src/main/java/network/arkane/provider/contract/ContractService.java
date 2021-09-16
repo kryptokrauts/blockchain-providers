@@ -8,7 +8,7 @@ public interface ContractService {
 
     SecretType type();
 
-    default List<Object> callFunction(ContractCall contractCall) {
+    default List<ContractCallResultType> callFunction(ContractCall contractCall) {
         throw new RuntimeException("Not implemented");
     }
 

@@ -30,7 +30,7 @@ class MaticContractServiceIntegrationTest {
                                         .outputs(Collections.singletonList(ContractCallResultParam.builder().type("string").build()))
                                         .build();
 
-        List<Object> result = maticContractService.callFunction(call);
+        List<ContractCallResultType> result = maticContractService.callFunction(call);
 
         System.out.println(result);
     }

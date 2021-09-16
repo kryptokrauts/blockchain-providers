@@ -31,7 +31,7 @@ class VechainContractServiceTest {
 
     @Test
     void vthoBalanceCall() {
-        List<Object> result = vechainContractService.callFunction(ContractCall.builder()
+        List<ContractCallResultType> result = vechainContractService.callFunction(ContractCall.builder()
                                                                               .contractAddress("0x0000000000000000000000000000456E65726779")
                                                                               .functionName("balanceOf")
                                                                               .inputs(Collections.singletonList(ContractCallParam.builder()
