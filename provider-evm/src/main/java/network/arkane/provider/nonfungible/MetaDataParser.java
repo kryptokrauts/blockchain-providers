@@ -64,7 +64,8 @@ public class MetaDataParser {
                                         : createErc1155UriCall(contractAddress, tokenId);
 
             List<String> metaDataCallResult = contractService.callFunction(metadataCall).stream()
-                                                             .map(Object::toString)
+                                                             .map(type -> type.asStringType()
+                                                                              .getValue())
                                                              .collect(Collectors.toList());
             if (metaDataCallResult.size() > 0 && StringUtils.isNotBlank(metaDataCallResult.get(0))) {
                 if (isHttp(metaDataCallResult)) {

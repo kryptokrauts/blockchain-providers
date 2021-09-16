@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Optional;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,32 +13,31 @@ public abstract class ContractCallResultType<T> {
 
     private T value;
 
-
-    public Optional<ContractCallStringResult> asStringType() {
+    public ContractCallStringResult asStringType() {
         if (this instanceof ContractCallStringResult) {
-            return Optional.of((ContractCallStringResult) this);
+            return (ContractCallStringResult) this;
         }
-        return Optional.empty();
+        throw new ClassCastException();
     }
 
-    public Optional<ContractCallNumericResult> asNumericType() {
+    public ContractCallNumericResult asNumericType() {
         if (this instanceof ContractCallNumericResult) {
-            return Optional.of((ContractCallNumericResult) this);
+            return (ContractCallNumericResult) this;
         }
-        return Optional.empty();
+        throw new ClassCastException();
     }
 
-    public Optional<ContractCallBooleanResult> asBooleanType() {
+    public ContractCallBooleanResult asBooleanType() {
         if (this instanceof ContractCallBooleanResult) {
-            return Optional.of((ContractCallBooleanResult) this);
+            return (ContractCallBooleanResult) this;
         }
-        return Optional.empty();
+        throw new ClassCastException();
     }
 
-    public Optional<ContractCallHexResult> asHexType() {
+    public ContractCallHexResult asHexType() {
         if (this instanceof ContractCallHexResult) {
-            return Optional.of((ContractCallHexResult) this);
+            return (ContractCallHexResult) this;
         }
-        return Optional.empty();
+        throw new ClassCastException();
     }
 }
