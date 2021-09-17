@@ -118,7 +118,8 @@ public final class AbiTypesFactory {
     private AbiTypesFactory() {
     }
 
-    public static Type getType(String type, String value) {
+    public static Type getType(String type,
+                               String value) {
         if (isArray(type, value)) {
             List<Type> types = Arrays.stream(value.substring(0, value.length() - 1)
                                                   .substring(1)
@@ -128,6 +129,299 @@ public final class AbiTypesFactory {
                                      .collect(Collectors.toList());
             return new DynamicArray(types);
         }
+        byte var2 = getTypeIndex(type);
+
+        switch (var2) {
+            case 0:
+                return new Address(value);
+            case 1:
+                return new Bool(Boolean.valueOf(value));
+            case 2:
+                return new Utf8String(value);
+            case 3:
+                return new DynamicBytes(BytesUtils.toByteArray(value));
+            case 4:
+                return new Uint8(new BigInteger(value));
+            case 5:
+                return new Int8(new BigInteger(value));
+            case 6:
+                return new Uint16(new BigInteger(value));
+            case 7:
+                return new Int16(new BigInteger(value));
+            case 8:
+                return new Uint24(new BigInteger(value));
+            case 9:
+                return new Int24(new BigInteger(value));
+            case 10:
+                return new Uint32(new BigInteger(value));
+            case 11:
+                return new Int32(new BigInteger(value));
+            case 12:
+                return new Uint40(new BigInteger(value));
+            case 13:
+                return new Int40(new BigInteger(value));
+            case 14:
+                return new Uint48(new BigInteger(value));
+            case 15:
+                return new Int48(new BigInteger(value));
+            case 16:
+                return new Uint56(new BigInteger(value));
+            case 17:
+                return new Int56(new BigInteger(value));
+
+            case 18:
+                return new Uint64(new BigInteger(value));
+
+            case 19:
+                return new Int64(new BigInteger(value));
+
+            case 20:
+                return new Uint72(new BigInteger(value));
+
+            case 21:
+                return new Int72(new BigInteger(value));
+
+            case 22:
+                return new Uint80(new BigInteger(value));
+
+            case 23:
+                return new Int80(new BigInteger(value));
+
+            case 24:
+                return new Uint88(new BigInteger(value));
+
+            case 25:
+                return new Int88(new BigInteger(value));
+
+            case 26:
+                return new Uint96(new BigInteger(value));
+
+            case 27:
+                return new Int96(new BigInteger(value));
+
+            case 28:
+                return new Uint104(new BigInteger(value));
+
+            case 29:
+                return new Int104(new BigInteger(value));
+
+            case 30:
+                return new Uint112(new BigInteger(value));
+
+            case 31:
+                return new Int112(new BigInteger(value));
+
+            case 32:
+                return new Uint120(new BigInteger(value));
+
+            case 33:
+                return new Int120(new BigInteger(value));
+
+            case 34:
+                return new Uint128(new BigInteger(value));
+
+            case 35:
+                return new Int128(new BigInteger(value));
+
+            case 36:
+                return new Uint136(new BigInteger(value));
+
+            case 37:
+                return new Int136(new BigInteger(value));
+
+            case 38:
+                return new Uint144(new BigInteger(value));
+
+            case 39:
+                return new Int144(new BigInteger(value));
+
+            case 40:
+                return new Uint152(new BigInteger(value));
+
+            case 41:
+                return new Int152(new BigInteger(value));
+
+            case 42:
+                return new Uint160(new BigInteger(value));
+
+            case 43:
+                return new Int160(new BigInteger(value));
+
+            case 44:
+                return new Uint168(new BigInteger(value));
+
+            case 45:
+                return new Int168(new BigInteger(value));
+
+            case 46:
+                return new Uint176(new BigInteger(value));
+
+            case 47:
+                return new Int176(new BigInteger(value));
+
+            case 48:
+                return new Uint184(new BigInteger(value));
+
+            case 49:
+                return new Int184(new BigInteger(value));
+
+            case 50:
+                return new Uint192(new BigInteger(value));
+
+            case 51:
+                return new Int192(new BigInteger(value));
+
+            case 52:
+                return new Uint200(new BigInteger(value));
+
+            case 53:
+                return new Int200(new BigInteger(value));
+
+            case 54:
+                return new Uint208(new BigInteger(value));
+
+            case 55:
+                return new Int208(new BigInteger(value));
+
+            case 56:
+                return new Uint216(new BigInteger(value));
+
+            case 57:
+                return new Int216(new BigInteger(value));
+
+            case 58:
+                return new Uint224(new BigInteger(value));
+
+            case 59:
+                return new Int224(new BigInteger(value));
+
+            case 60:
+                return new Uint232(new BigInteger(value));
+
+            case 61:
+                return new Int232(new BigInteger(value));
+
+            case 62:
+                return new Uint240(new BigInteger(value));
+
+            case 63:
+                return new Int240(new BigInteger(value));
+
+            case 64:
+                return new Uint248(new BigInteger(value));
+
+            case 65:
+                return new Int248(new BigInteger(value));
+
+            case 66:
+                return new Uint256(new BigInteger(value));
+
+            case 67:
+                return new Int256(new BigInteger(value));
+
+            case 68:
+                return new Bytes1(BytesUtils.toByteArray(value));
+
+            case 69:
+                return new Bytes2(BytesUtils.toByteArray(value));
+
+            case 70:
+                return new Bytes3(BytesUtils.toByteArray(value));
+
+            case 71:
+                return new Bytes4(BytesUtils.toByteArray(value));
+
+            case 72:
+                return new Bytes5(BytesUtils.toByteArray(value));
+
+            case 73:
+                return new Bytes6(BytesUtils.toByteArray(value));
+
+            case 74:
+                return new Bytes7(BytesUtils.toByteArray(value));
+
+            case 75:
+                return new Bytes8(BytesUtils.toByteArray(value));
+
+            case 76:
+                return new Bytes9(BytesUtils.toByteArray(value));
+
+            case 77:
+                return new Bytes10(BytesUtils.toByteArray(value));
+
+            case 78:
+                return new Bytes11(BytesUtils.toByteArray(value));
+
+            case 79:
+                return new Bytes12(BytesUtils.toByteArray(value));
+
+            case 80:
+                return new Bytes13(BytesUtils.toByteArray(value));
+
+            case 81:
+                return new Bytes14(BytesUtils.toByteArray(value));
+
+            case 82:
+                return new Bytes15(BytesUtils.toByteArray(value));
+
+            case 83:
+                return new Bytes16(BytesUtils.toByteArray(value));
+
+            case 84:
+                return new Bytes17(BytesUtils.toByteArray(value));
+
+            case 85:
+                return new Bytes18(BytesUtils.toByteArray(value));
+
+            case 86:
+                return new Bytes19(BytesUtils.toByteArray(value));
+
+            case 87:
+                return new Bytes20(BytesUtils.toByteArray(value));
+
+            case 88:
+                return new Bytes21(BytesUtils.toByteArray(value));
+
+            case 89:
+                return new Bytes22(BytesUtils.toByteArray(value));
+
+            case 90:
+                return new Bytes23(BytesUtils.toByteArray(value));
+
+            case 91:
+                return new Bytes24(BytesUtils.toByteArray(value));
+
+            case 92:
+                return new Bytes25(BytesUtils.toByteArray(value));
+
+            case 93:
+                return new Bytes26(BytesUtils.toByteArray(value));
+
+            case 94:
+                return new Bytes27(BytesUtils.toByteArray(value));
+
+            case 95:
+                return new Bytes28(BytesUtils.toByteArray(value));
+
+            case 96:
+                return new Bytes29(BytesUtils.toByteArray(value));
+
+            case 97:
+                return new Bytes30(BytesUtils.toByteArray(value));
+
+            case 98:
+                return new Bytes31(BytesUtils.toByteArray(value));
+
+            case 99:
+                return new Bytes32(BytesUtils.toByteArray(value));
+
+            default:
+                throw new UnsupportedOperationException("Unsupported type encountered: " + type);
+        }
+    }
+
+
+    public static byte getTypeIndex(final String type) {
         byte var2 = -1;
         switch (type.hashCode()) {
             case -1374008026:
@@ -630,297 +924,11 @@ public final class AbiTypesFactory {
                     var2 = 99;
                 }
         }
-
-        switch (var2) {
-            case 0:
-                return new Address(value);
-            case 1:
-                return new Bool(Boolean.valueOf(value));
-            case 2:
-                return new Utf8String(value);
-            case 3:
-                return new DynamicBytes(BytesUtils.toByteArray(value));
-            case 4:
-                return new Uint8(new BigInteger(value));
-            case 5:
-                return new Int8(new BigInteger(value));
-            case 6:
-                return new Uint16(new BigInteger(value));
-            case 7:
-                return new Int16(new BigInteger(value));
-            case 8:
-                return new Uint24(new BigInteger(value));
-            case 9:
-                return new Int24(new BigInteger(value));
-            case 10:
-                return new Uint32(new BigInteger(value));
-            case 11:
-                return new Int32(new BigInteger(value));
-            case 12:
-                return new Uint40(new BigInteger(value));
-            case 13:
-                return new Int40(new BigInteger(value));
-            case 14:
-                return new Uint48(new BigInteger(value));
-            case 15:
-                return new Int48(new BigInteger(value));
-            case 16:
-                return new Uint56(new BigInteger(value));
-            case 17:
-                return new Int56(new BigInteger(value));
-
-            case 18:
-                return new Uint64(new BigInteger(value));
-
-            case 19:
-                return new Int64(new BigInteger(value));
-
-            case 20:
-                return new Uint72(new BigInteger(value));
-
-            case 21:
-                return new Int72(new BigInteger(value));
-
-            case 22:
-                return new Uint80(new BigInteger(value));
-
-            case 23:
-                return new Int80(new BigInteger(value));
-
-            case 24:
-                return new Uint88(new BigInteger(value));
-
-            case 25:
-                return new Int88(new BigInteger(value));
-
-            case 26:
-                return new Uint96(new BigInteger(value));
-
-            case 27:
-                return new Int96(new BigInteger(value));
-
-            case 28:
-                return new Uint104(new BigInteger(value));
-
-            case 29:
-                return new Int104(new BigInteger(value));
-
-            case 30:
-                return new Uint112(new BigInteger(value));
-
-            case 31:
-                return new Int112(new BigInteger(value));
-
-            case 32:
-                return new Uint120(new BigInteger(value));
-
-            case 33:
-                return new Int120(new BigInteger(value));
-
-            case 34:
-                return new Uint128(new BigInteger(value));
-
-            case 35:
-                return new Int128(new BigInteger(value));
-
-            case 36:
-                return new Uint136(new BigInteger(value));
-
-            case 37:
-                return new Int136(new BigInteger(value));
-
-            case 38:
-                return new Uint144(new BigInteger(value));
-
-            case 39:
-                return new Int144(new BigInteger(value));
-
-            case 40:
-                return new Uint152(new BigInteger(value));
-
-            case 41:
-                return new Int152(new BigInteger(value));
-
-            case 42:
-                return new Uint160(new BigInteger(value));
-
-            case 43:
-                return new Int160(new BigInteger(value));
-
-            case 44:
-                return new Uint168(new BigInteger(value));
-
-            case 45:
-                return new Int168(new BigInteger(value));
-
-            case 46:
-                return new Uint176(new BigInteger(value));
-
-            case 47:
-                return new Int176(new BigInteger(value));
-
-            case 48:
-                return new Uint184(new BigInteger(value));
-
-            case 49:
-                return new Int184(new BigInteger(value));
-
-            case 50:
-                return new Uint192(new BigInteger(value));
-
-            case 51:
-                return new Int192(new BigInteger(value));
-
-            case 52:
-                return new Uint200(new BigInteger(value));
-
-            case 53:
-                return new Int200(new BigInteger(value));
-
-            case 54:
-                return new Uint208(new BigInteger(value));
-
-            case 55:
-                return new Int208(new BigInteger(value));
-
-            case 56:
-                return new Uint216(new BigInteger(value));
-
-            case 57:
-                return new Int216(new BigInteger(value));
-
-            case 58:
-                return new Uint224(new BigInteger(value));
-
-            case 59:
-                return new Int224(new BigInteger(value));
-
-            case 60:
-                return new Uint232(new BigInteger(value));
-
-            case 61:
-                return new Int232(new BigInteger(value));
-
-            case 62:
-                return new Uint240(new BigInteger(value));
-
-            case 63:
-                return new Int240(new BigInteger(value));
-
-            case 64:
-                return new Uint248(new BigInteger(value));
-
-            case 65:
-                return new Int248(new BigInteger(value));
-
-            case 66:
-                return new Uint256(new BigInteger(value));
-
-            case 67:
-                return new Int256(new BigInteger(value));
-
-            case 68:
-                return new Bytes1(BytesUtils.toByteArray(value));
-
-            case 69:
-                return new Bytes2(BytesUtils.toByteArray(value));
-
-            case 70:
-                return new Bytes3(BytesUtils.toByteArray(value));
-
-            case 71:
-                return new Bytes4(BytesUtils.toByteArray(value));
-
-            case 72:
-                return new Bytes5(BytesUtils.toByteArray(value));
-
-            case 73:
-                return new Bytes6(BytesUtils.toByteArray(value));
-
-            case 74:
-                return new Bytes7(BytesUtils.toByteArray(value));
-
-            case 75:
-                return new Bytes8(BytesUtils.toByteArray(value));
-
-            case 76:
-                return new Bytes9(BytesUtils.toByteArray(value));
-
-            case 77:
-                return new Bytes10(BytesUtils.toByteArray(value));
-
-            case 78:
-                return new Bytes11(BytesUtils.toByteArray(value));
-
-            case 79:
-                return new Bytes12(BytesUtils.toByteArray(value));
-
-            case 80:
-                return new Bytes13(BytesUtils.toByteArray(value));
-
-            case 81:
-                return new Bytes14(BytesUtils.toByteArray(value));
-
-            case 82:
-                return new Bytes15(BytesUtils.toByteArray(value));
-
-            case 83:
-                return new Bytes16(BytesUtils.toByteArray(value));
-
-            case 84:
-                return new Bytes17(BytesUtils.toByteArray(value));
-
-            case 85:
-                return new Bytes18(BytesUtils.toByteArray(value));
-
-            case 86:
-                return new Bytes19(BytesUtils.toByteArray(value));
-
-            case 87:
-                return new Bytes20(BytesUtils.toByteArray(value));
-
-            case 88:
-                return new Bytes21(BytesUtils.toByteArray(value));
-
-            case 89:
-                return new Bytes22(BytesUtils.toByteArray(value));
-
-            case 90:
-                return new Bytes23(BytesUtils.toByteArray(value));
-
-            case 91:
-                return new Bytes24(BytesUtils.toByteArray(value));
-
-            case 92:
-                return new Bytes25(BytesUtils.toByteArray(value));
-
-            case 93:
-                return new Bytes26(BytesUtils.toByteArray(value));
-
-            case 94:
-                return new Bytes27(BytesUtils.toByteArray(value));
-
-            case 95:
-                return new Bytes28(BytesUtils.toByteArray(value));
-
-            case 96:
-                return new Bytes29(BytesUtils.toByteArray(value));
-
-            case 97:
-                return new Bytes30(BytesUtils.toByteArray(value));
-
-            case 98:
-                return new Bytes31(BytesUtils.toByteArray(value));
-
-            case 99:
-                return new Bytes32(BytesUtils.toByteArray(value));
-
-            default:
-                throw new UnsupportedOperationException("Unsupported type encountered: " + type);
-        }
+        return var2;
     }
 
-    private static boolean isArray(String type, String value) {
+    private static boolean isArray(String type,
+                                   String value) {
         return type.endsWith("[]") && value.startsWith("[") && value.endsWith("]");
     }
 }

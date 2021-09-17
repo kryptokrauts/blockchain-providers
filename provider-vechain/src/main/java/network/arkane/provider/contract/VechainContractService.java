@@ -1,5 +1,6 @@
 package network.arkane.provider.contract;
 
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.core.model.blockchain.ContractCallResult;
 import network.arkane.provider.core.model.clients.Address;
 import network.arkane.provider.core.model.clients.Revision;
@@ -45,4 +46,8 @@ public class VechainContractService extends EvmContractService implements Contra
     }
 
 
+    @Override
+    public SecretType type() {
+        return SecretType.VECHAIN;
+    }
 }

@@ -1,5 +1,6 @@
 package network.arkane.provider.contract;
 
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import org.springframework.stereotype.Component;
 
@@ -11,4 +12,8 @@ public class EthereumContractService extends EvmContractService implements Contr
     }
 
 
+    @Override
+    public SecretType type() {
+        return SecretType.ETHEREUM;
+    }
 }
