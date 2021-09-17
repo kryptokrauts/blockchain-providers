@@ -23,6 +23,7 @@ public enum SecretType {
     BSC(Values.BSC, "BNB", "BNB"),
     ETHEREUM(Values.ETHEREUM, "ETH", "ETH"),
     GOCHAIN(Values.GOCHAIN, "GO", "GO"),
+    HEDERA(Values.HEDERA, "HBAR", "HBAR"),
     LITECOIN(Values.LITECOIN, "LTC", "LTC"),
     TRON(Values.TRON, "TRX", "TRX"),
     VECHAIN(Values.VECHAIN, "VET", "VTHO"),
@@ -53,6 +54,7 @@ public enum SecretType {
         public static final String BSC = "BSC";
         public static final String ETHEREUM = "ETHEREUM";
         public static final String GOCHAIN = "GOCHAIN";
+        public static final String HEDERA = "HEDERA";
         public static final String LITECOIN = "LITECOIN";
         public static final String TRON = "TRON";
         public static final String VECHAIN = "VECHAIN";

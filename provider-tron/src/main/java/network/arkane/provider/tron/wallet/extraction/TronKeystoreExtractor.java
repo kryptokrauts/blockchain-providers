@@ -17,7 +17,7 @@ public class TronKeystoreExtractor implements SecretExtractor<TronKeystoreExtrac
     public SecretKey extract(final TronKeystoreExtractionRequest importWalletRequest) {
         try {
             final WalletFile walletFile = JSONUtil.fromJson(importWalletRequest.getKeystore(), WalletFile.class);
-            final ECKey keypair = Wallet.decrypt(importWalletRequest.getPassword(), walletFile);
+            final ECKey keypair = (ECKey) Wallet.decrypt(importWalletRequest.getPassword(), walletFile);
             return TronSecretKey
                     .builder()
                     .keyPair(keypair)

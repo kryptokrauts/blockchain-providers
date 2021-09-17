@@ -33,11 +33,13 @@ public class ArkaneException extends RuntimeException {
     @JsonIgnore
     private String getAlternativeTraceId() {
         try {
-            return CurrentTraceContext.Default.inheritable().get().traceIdString();
+            if (CurrentTraceContext.Default.inheritable().get() != null) {
+                return CurrentTraceContext.Default.inheritable().get().traceIdString();
+            }
         } catch (final Exception ex) {
             ex.printStackTrace();
-            return UUID.randomUUID().toString();
         }
+        return UUID.randomUUID().toString();
     }
 
     public String getTraceCode() {

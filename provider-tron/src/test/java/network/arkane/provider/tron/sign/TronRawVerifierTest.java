@@ -1,6 +1,7 @@
 package network.arkane.provider.tron.sign;
 
 import network.arkane.provider.sign.domain.HexSignature;
+import network.arkane.provider.tron.grpc.GrpcClient;
 import network.arkane.provider.tron.secret.generation.TronSecretKey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class TronRawVerifierTest {
 
         ECKey ecKey = ECKey.fromPrivate(new BigInteger("4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318", 16));
 
-        String address = org.tron.core.Wallet.encode58Check(ecKey.getAddress());
+        String address = GrpcClient.encode58Check(ecKey.getAddress());
 
         String message = "Some data";
 
@@ -43,7 +44,7 @@ class TronRawVerifierTest {
     void notValidSignature_wrongSignature() throws UnsupportedEncodingException {
         ECKey ecKey = ECKey.fromPrivate(new BigInteger("4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318", 16));
 
-        String address = org.tron.core.Wallet.encode58Check(ecKey.getAddress());
+        String address = GrpcClient.encode58Check(ecKey.getAddress());
 
         String message = "Some data";
 
@@ -58,7 +59,7 @@ class TronRawVerifierTest {
     void notValidSignature_wrongAddress() throws UnsupportedEncodingException {
         ECKey ecKey = ECKey.fromPrivate(new BigInteger("4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318", 16));
 
-        String address = org.tron.core.Wallet.encode58Check(ecKey.getAddress());
+        String address = GrpcClient.encode58Check(ecKey.getAddress());
 
         String message = "Some data";
 

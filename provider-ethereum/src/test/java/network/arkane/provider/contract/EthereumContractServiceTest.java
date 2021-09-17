@@ -25,15 +25,17 @@ class EthereumContractServiceTest {
 
     @Test
     void cryptokittiesCall() {
-        List<String> result = ethereumContractService.callFunction(ContractCall.builder()
-                                                                               .contractAddress("0x06012c8cf97bead5deae237070f9587f8e7a266d")
-                                                                               .functionName("isPregnant")
-                                                                               .inputs(Collections.singletonList(ContractCallParam.builder()
-                                                                                                                                  .type("uint256")
-                                                                                                                                  .value("1698495")
-                                                                                                                                  .build()))
-                                                                               .outputs(Collections.singletonList(ContractCallResultParam.builder().type("bool").build()))
-                                                                               .build());
+        List<ContractCallResultType> result = ethereumContractService.callFunction(ContractCall.builder()
+                                                                                               .contractAddress("0x06012c8cf97bead5deae237070f9587f8e7a266d")
+                                                                                               .functionName("isPregnant")
+                                                                                               .inputs(Collections.singletonList(ContractCallParam.builder()
+                                                                                                                                                  .type("uint256")
+                                                                                                                                                  .value("1698495")
+                                                                                                                                                  .build()))
+                                                                                               .outputs(Collections.singletonList(ContractCallResultParam.builder()
+                                                                                                                                                         .type("bool")
+                                                                                                                                                         .build()))
+                                                                                               .build());
 
         assertThat(result.get(0)).isEqualTo("false");
     }

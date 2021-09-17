@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import network.arkane.provider.ipfs.IpfsUtil;
 import network.arkane.provider.nonfungible.animationtype.AnimationTypeComparator;
 import network.arkane.provider.nonfungible.animationtype.AnimationUrlParser;
 import network.arkane.provider.nonfungible.domain.Attribute;
@@ -73,18 +74,7 @@ public class NonFungibleMetaData {
     }
 
     private String replaceIpfsLink(String imgUrl) {
-        if (StringUtils.isNotBlank(imgUrl)) {
-            if (imgUrl.startsWith("ipfs")) {
-                String cid = imgUrl.replace("ipfs://", "");
-                if (!cid.startsWith("ipfs/")) {
-                    cid = "ipfs/" + cid;
-                }
-                return "https://cloudflare-ipfs.com/" + cid;
-            } else if (imgUrl.startsWith("https://gateway.pinata.cloud")) {
-                return imgUrl.replaceFirst("https://gateway.pinata.cloud", "https://cloudflare-ipfs.com");
-            }
-        }
-        return imgUrl;
+        return IpfsUtil.replaceIpfsLink(imgUrl);
     }
 
     private TypeValue replaceIpfsLink(TypeValue typeValue) {

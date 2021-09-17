@@ -12,7 +12,7 @@ public class TronWalletDecryptor implements WalletDecryptor<GeneratedTronWallet,
     @Override
     public TronSecretKey generateKey(GeneratedTronWallet generatedWallet, String password) {
         try {
-            final ECKey keyPair = Wallet.decrypt(password, generatedWallet.getWalletFile());
+            final ECKey keyPair = (ECKey) Wallet.decrypt(password, generatedWallet.getWalletFile());
             return TronSecretKey.builder().keyPair(keyPair).build();
         } catch (final Exception ex) {
             throw new IllegalArgumentException("Unable to fetch wallet");

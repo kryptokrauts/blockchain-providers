@@ -16,19 +16,19 @@ public class NonFungibleAssetMother {
                                .imageThumbnailUrl("https://images.godsunchained.com/cards/250/143.png")
                                .attributes(Collections.emptyList())
                                .contract(NonFungibleContract.builder()
-                                                       .name("Gods Unchained")
-                                                       .description("Gods Unchained is a free-to-play, turn-based competitive trading"
-                                                                    + "card game. The goal of the game is to reduce your "
-                                                                    + "opponent\'s life to zero. Players use their collection to "
-                                                                    + "build decks of cards, and select a God to play with at the "
-                                                                    + "start of each match. Decks contain exactly 30 cards.")
-                                                       .address("0x6ebeaf8e8e946f0716e6533a6f2cefc83f60e8ab")
-                                                       .symbol("GODS")
-                                                       .url("https://godsunchained.com/")
-                                                       .imageUrl("https://storage.opensea.io/"
-                                                                 + "0x6ebeaf8e8e946f0716e6533a6f2cefc83f60e8ab-featured-1556588688"
-                                                                 + ".png")
-                                                       .build());
+                                                            .name("Gods Unchained")
+                                                            .description("Gods Unchained is a free-to-play, turn-based competitive trading"
+                                                                         + "card game. The goal of the game is to reduce your "
+                                                                         + "opponent\'s life to zero. Players use their collection to "
+                                                                         + "build decks of cards, and select a God to play with at the "
+                                                                         + "start of each match. Decks contain exactly 30 cards.")
+                                                            .address("0x6ebeaf8e8e946f0716e6533a6f2cefc83f60e8ab")
+                                                            .symbol("GODS")
+                                                            .url("https://godsunchained.com/")
+                                                            .imageUrl("https://storage.opensea.io/"
+                                                                      + "0x6ebeaf8e8e946f0716e6533a6f2cefc83f60e8ab-featured-1556588688"
+                                                                      + ".png")
+                                                            .build());
     }
 
 
@@ -46,12 +46,14 @@ public class NonFungibleAssetMother {
                                .imageUrl("https://cryptoassault.io/units/unit_21.png")
                                .imagePreviewUrl("https://cryptoassault.io/units/unit_21.png")
                                .imageThumbnailUrl("https://cryptoassault.io/units/unit_21.png")
+                               .animationUrl("https://cryptoassault.io/units/unit_21.mp4")
                                .url("https://cryptoassault.io/unit/?id=4420")
                                .attributes(Collections.emptyList())
                                .contract(NonFungibleContract.builder()
                                                             .address("0x31af195db332bc9203d758c74df5a5c5e597cdb7")
                                                             .description(
-                                                                    "Dominate you enemies in this War MMO! Command your armies in a HUGE 3D world in real-time where strategy earns you "
+                                                                    "Dominate you enemies in this War MMO! Command your armies in a HUGE 3D world in real-time where strategy "
+                                                                    + "earns you "
                                                                     + "daily ETHEREUM REWARDS. Capture territory, mine resources, form alliances and battle others NOW!")
                                                             .imageUrl("https://storage.opensea.io/0x31af195db332bc9203d758c74df5a5c5e597cdb7-featured-1556588685.jpg")
                                                             .name("CryptoAssault")

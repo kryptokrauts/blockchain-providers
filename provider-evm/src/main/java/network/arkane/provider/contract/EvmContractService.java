@@ -22,26 +22,29 @@ public abstract class EvmContractService implements ContractService {
         this.evmWeb3jGateway = evmWeb3jGateway;
     }
 
-    public List<String> callFunction(ContractCall contractCall) {
+    @Override
+    public List<ContractCallResultType> callFunction(ContractCall contractCall) {
         Function f = createFunction(contractCall);
         try {
             return executeContractCall(contractCall, f);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
-    private List<String> executeContractCall(ContractCall contractCall, Function f) throws Exception {
 
 
+    private List<ContractCallResultType> executeContractCall(ContractCall contractCall,
+                                                             Function f) throws Exception {
         if (contractCall.getOutputs().size() <= 1) {
             Type result = executeRemoteCallSingleValueReturn(f, contractCall).send();
-            return result == null ? Collections.emptyList() : Collections.singletonList(result.getValue().toString());
+            return result == null ? Collections.emptyList() : Collections.singletonList(ContractCallResultTypeFactory.getType(result));
         } else {
             List<Type> result = executeRemoteCallMultipleValueReturn(f, contractCall).send();
             return result == null
                    ? Collections.emptyList()
-                   : result.stream().map(Type::getValue).map(Object::toString).collect(Collectors.toList());
+                   : result.stream()
+                           .map(ContractCallResultTypeFactory::getType)
+                           .collect(Collectors.toList());
         }
     }
 
@@ -93,11 +96,13 @@ public abstract class EvmContractService implements ContractService {
     }
 
 
-    protected List<Type> executeCallMultipleValueReturn(Function function, ContractCall contractCall) throws IOException {
+    protected List<Type> executeCallMultipleValueReturn(Function function,
+                                                        ContractCall contractCall) throws IOException {
         return executeContractCall(getCaller(contractCall), contractCall.getContractAddress(), function);
     }
 
-    protected RemoteCall<List<Type>> executeRemoteCallMultipleValueReturn(Function function, ContractCall contractCall) {
+    protected RemoteCall<List<Type>> executeRemoteCallMultipleValueReturn(Function function,
+                                                                          ContractCall contractCall) {
         return new RemoteCall<>(() -> executeCallMultipleValueReturn(function, contractCall));
     }
 }

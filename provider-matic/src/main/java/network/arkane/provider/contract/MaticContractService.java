@@ -1,5 +1,6 @@
 package network.arkane.provider.contract;
 
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.gateway.MaticWeb3JGateway;
 import org.springframework.stereotype.Component;
 
@@ -10,4 +11,8 @@ public class MaticContractService extends EvmContractService implements Contract
         super(maticWeb3jGateway);
     }
 
+    @Override
+    public SecretType type() {
+        return SecretType.MATIC;
+    }
 }

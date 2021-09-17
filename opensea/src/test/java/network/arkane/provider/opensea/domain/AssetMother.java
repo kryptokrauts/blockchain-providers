@@ -11,6 +11,7 @@ public class AssetMother {
                     .imageUrl("https://cryptoassault.io/units/unit_21.png")
                     .imagePreviewUrl("https://cryptoassault.io/units/unit_21.png")
                     .imageThumbnailUrl("https://cryptoassault.io/units/unit_21.png")
+                    .animationUrl("https://cryptoassault.io/units/unit_21.mp4")
                     .externalLink("https://cryptoassault.io/unit/?id=4420")
                     .owner(Account.builder().address("0x0239769a1adf4def9f07da824b80b9c4fcb59593").build())
                     .assetContract(AssetContract.builder()

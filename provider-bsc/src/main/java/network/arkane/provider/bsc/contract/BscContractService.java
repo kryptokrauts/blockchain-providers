@@ -1,6 +1,7 @@
 package network.arkane.provider.bsc.contract;
 
 import network.arkane.provider.bsc.gateway.BscWeb3JGateway;
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.contract.ContractService;
 import network.arkane.provider.contract.EvmContractService;
 import org.springframework.stereotype.Component;
@@ -12,4 +13,8 @@ public class BscContractService extends EvmContractService implements ContractSe
         super(web3JGateway);
     }
 
+    @Override
+    public SecretType type() {
+        return SecretType.BSC;
+    }
 }
