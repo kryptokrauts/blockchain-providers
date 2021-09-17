@@ -6,6 +6,7 @@
 package network.arkane.provider.contract;
 
 import network.arkane.provider.BytesUtils;
+import network.arkane.provider.HexUtils;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.DynamicArray;
@@ -141,183 +142,183 @@ public final class AbiTypesFactory {
             case 3:
                 return new DynamicBytes(BytesUtils.toByteArray(value));
             case 4:
-                return new Uint8(new BigInteger(value));
+                return new Uint8(parseBigInteger(value));
             case 5:
-                return new Int8(new BigInteger(value));
+                return new Int8(parseBigInteger(value));
             case 6:
-                return new Uint16(new BigInteger(value));
+                return new Uint16(parseBigInteger(value));
             case 7:
-                return new Int16(new BigInteger(value));
+                return new Int16(parseBigInteger(value));
             case 8:
-                return new Uint24(new BigInteger(value));
+                return new Uint24(parseBigInteger(value));
             case 9:
-                return new Int24(new BigInteger(value));
+                return new Int24(parseBigInteger(value));
             case 10:
-                return new Uint32(new BigInteger(value));
+                return new Uint32(parseBigInteger(value));
             case 11:
-                return new Int32(new BigInteger(value));
+                return new Int32(parseBigInteger(value));
             case 12:
-                return new Uint40(new BigInteger(value));
+                return new Uint40(parseBigInteger(value));
             case 13:
-                return new Int40(new BigInteger(value));
+                return new Int40(parseBigInteger(value));
             case 14:
-                return new Uint48(new BigInteger(value));
+                return new Uint48(parseBigInteger(value));
             case 15:
-                return new Int48(new BigInteger(value));
+                return new Int48(parseBigInteger(value));
             case 16:
-                return new Uint56(new BigInteger(value));
+                return new Uint56(parseBigInteger(value));
             case 17:
-                return new Int56(new BigInteger(value));
+                return new Int56(parseBigInteger(value));
 
             case 18:
-                return new Uint64(new BigInteger(value));
+                return new Uint64(parseBigInteger(value));
 
             case 19:
-                return new Int64(new BigInteger(value));
+                return new Int64(parseBigInteger(value));
 
             case 20:
-                return new Uint72(new BigInteger(value));
+                return new Uint72(parseBigInteger(value));
 
             case 21:
-                return new Int72(new BigInteger(value));
+                return new Int72(parseBigInteger(value));
 
             case 22:
-                return new Uint80(new BigInteger(value));
+                return new Uint80(parseBigInteger(value));
 
             case 23:
-                return new Int80(new BigInteger(value));
+                return new Int80(parseBigInteger(value));
 
             case 24:
-                return new Uint88(new BigInteger(value));
+                return new Uint88(parseBigInteger(value));
 
             case 25:
-                return new Int88(new BigInteger(value));
+                return new Int88(parseBigInteger(value));
 
             case 26:
-                return new Uint96(new BigInteger(value));
+                return new Uint96(parseBigInteger(value));
 
             case 27:
-                return new Int96(new BigInteger(value));
+                return new Int96(parseBigInteger(value));
 
             case 28:
-                return new Uint104(new BigInteger(value));
+                return new Uint104(parseBigInteger(value));
 
             case 29:
-                return new Int104(new BigInteger(value));
+                return new Int104(parseBigInteger(value));
 
             case 30:
-                return new Uint112(new BigInteger(value));
+                return new Uint112(parseBigInteger(value));
 
             case 31:
-                return new Int112(new BigInteger(value));
+                return new Int112(parseBigInteger(value));
 
             case 32:
-                return new Uint120(new BigInteger(value));
+                return new Uint120(parseBigInteger(value));
 
             case 33:
-                return new Int120(new BigInteger(value));
+                return new Int120(parseBigInteger(value));
 
             case 34:
-                return new Uint128(new BigInteger(value));
+                return new Uint128(parseBigInteger(value));
 
             case 35:
-                return new Int128(new BigInteger(value));
+                return new Int128(parseBigInteger(value));
 
             case 36:
-                return new Uint136(new BigInteger(value));
+                return new Uint136(parseBigInteger(value));
 
             case 37:
-                return new Int136(new BigInteger(value));
+                return new Int136(parseBigInteger(value));
 
             case 38:
-                return new Uint144(new BigInteger(value));
+                return new Uint144(parseBigInteger(value));
 
             case 39:
-                return new Int144(new BigInteger(value));
+                return new Int144(parseBigInteger(value));
 
             case 40:
-                return new Uint152(new BigInteger(value));
+                return new Uint152(parseBigInteger(value));
 
             case 41:
-                return new Int152(new BigInteger(value));
+                return new Int152(parseBigInteger(value));
 
             case 42:
-                return new Uint160(new BigInteger(value));
+                return new Uint160(parseBigInteger(value));
 
             case 43:
-                return new Int160(new BigInteger(value));
+                return new Int160(parseBigInteger(value));
 
             case 44:
-                return new Uint168(new BigInteger(value));
+                return new Uint168(parseBigInteger(value));
 
             case 45:
-                return new Int168(new BigInteger(value));
+                return new Int168(parseBigInteger(value));
 
             case 46:
-                return new Uint176(new BigInteger(value));
+                return new Uint176(parseBigInteger(value));
 
             case 47:
-                return new Int176(new BigInteger(value));
+                return new Int176(parseBigInteger(value));
 
             case 48:
-                return new Uint184(new BigInteger(value));
+                return new Uint184(parseBigInteger(value));
 
             case 49:
-                return new Int184(new BigInteger(value));
+                return new Int184(parseBigInteger(value));
 
             case 50:
-                return new Uint192(new BigInteger(value));
+                return new Uint192(parseBigInteger(value));
 
             case 51:
-                return new Int192(new BigInteger(value));
+                return new Int192(parseBigInteger(value));
 
             case 52:
-                return new Uint200(new BigInteger(value));
+                return new Uint200(parseBigInteger(value));
 
             case 53:
-                return new Int200(new BigInteger(value));
+                return new Int200(parseBigInteger(value));
 
             case 54:
-                return new Uint208(new BigInteger(value));
+                return new Uint208(parseBigInteger(value));
 
             case 55:
-                return new Int208(new BigInteger(value));
+                return new Int208(parseBigInteger(value));
 
             case 56:
-                return new Uint216(new BigInteger(value));
+                return new Uint216(parseBigInteger(value));
 
             case 57:
-                return new Int216(new BigInteger(value));
+                return new Int216(parseBigInteger(value));
 
             case 58:
-                return new Uint224(new BigInteger(value));
+                return new Uint224(parseBigInteger(value));
 
             case 59:
-                return new Int224(new BigInteger(value));
+                return new Int224(parseBigInteger(value));
 
             case 60:
-                return new Uint232(new BigInteger(value));
+                return new Uint232(parseBigInteger(value));
 
             case 61:
-                return new Int232(new BigInteger(value));
+                return new Int232(parseBigInteger(value));
 
             case 62:
-                return new Uint240(new BigInteger(value));
+                return new Uint240(parseBigInteger(value));
 
             case 63:
-                return new Int240(new BigInteger(value));
+                return new Int240(parseBigInteger(value));
 
             case 64:
-                return new Uint248(new BigInteger(value));
+                return new Uint248(parseBigInteger(value));
 
             case 65:
-                return new Int248(new BigInteger(value));
+                return new Int248(parseBigInteger(value));
 
             case 66:
-                return new Uint256(new BigInteger(value));
+                return new Uint256(parseBigInteger(value));
 
             case 67:
-                return new Int256(new BigInteger(value));
+                return new Int256(parseBigInteger(value));
 
             case 68:
                 return new Bytes1(BytesUtils.toByteArray(value));
@@ -418,6 +419,12 @@ public final class AbiTypesFactory {
             default:
                 throw new UnsupportedOperationException("Unsupported type encountered: " + type);
         }
+    }
+
+    private static BigInteger parseBigInteger(String value) {
+        return HexUtils.isHex(value)
+               ? new BigInteger(value.replaceFirst("0x", ""), 16)
+               : new BigInteger(value);
     }
 
 
