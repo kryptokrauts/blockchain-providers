@@ -12,6 +12,8 @@ import network.arkane.provider.hedera.sign.HbarTransferSignable;
 import network.arkane.provider.hedera.sign.HbarTransferSigner;
 import network.arkane.provider.hedera.sign.TokenAssociationSignable;
 import network.arkane.provider.hedera.sign.TokenAssociationSigner;
+import network.arkane.provider.hedera.sign.TokenTransferSignable;
+import network.arkane.provider.hedera.sign.TokenTransferSigner;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignature;
@@ -30,6 +32,7 @@ class HederaTransactionGatewayTest {
     private HbarTransferSigner signer;
     private HederaTransactionGateway transactionGateway;
     private TokenAssociationSigner tokenAssociationSigner;
+    private TokenTransferSigner tokenTransferSigner;
 
     @BeforeEach
     void setUp() {
@@ -37,6 +40,7 @@ class HederaTransactionGatewayTest {
         signer = new HbarTransferSigner(clientFactory);
         tokenAssociationSigner = new TokenAssociationSigner(clientFactory);
         transactionGateway = new HederaTransactionGateway(clientFactory);
+        tokenTransferSigner = new TokenTransferSigner(clientFactory);
     }
 
     @Test
@@ -64,6 +68,24 @@ class HederaTransactionGatewayTest {
                                                                                .key(PrivateKey.fromString(
                                                                                        "302e020100300506032b6570042204205b9ef9ca280c49f0080e7264ded9741d2689c2e8eab45d52105aa81f53426502"))
                                                                                .build());
+
+        SubmittedAndSignedTransactionSignature result = transactionGateway.submit(signature, Optional.empty());
+
+        System.out.println(result.getTransactionHash());
+    }
+
+    @Test
+    void userTokenTransaction() {
+        TransactionSignature signature = tokenTransferSigner.createSignature(TokenTransferSignable.builder()
+                                                                                                  .from("0.0.1543821")
+                                                                                                  .to("0.0.2562819")
+                                                                                                  .tokenId("0.0.2517364")
+                                                                                                  .amount(new BigInteger("100000000000"))
+                                                                                                  .build(),
+                                                                             HederaSecretKey.builder()
+                                                                                            .key(PrivateKey.fromString(
+                                                                                                    "302e020100300506032b6570042204205b9ef9ca280c49f0080e7264ded9741d2689c2e8eab45d52105aa81f53426502"))
+                                                                                            .build());
 
         SubmittedAndSignedTransactionSignature result = transactionGateway.submit(signature, Optional.empty());
 

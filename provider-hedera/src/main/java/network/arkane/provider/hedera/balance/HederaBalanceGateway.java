@@ -14,11 +14,9 @@ import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.hedera.HederaClientFactory;
-import network.arkane.provider.hedera.balance.dto.HederaTokenInfo;
 import network.arkane.provider.hedera.mirror.MirrorNodeClient;
-import network.arkane.provider.ipfs.IpfsUtil;
+import network.arkane.provider.token.TokenInfo;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,7 +43,7 @@ public class HederaBalanceGateway extends BalanceGateway {
     @Override
     public Balance getBalance(String address) {
         try {
-            Hbar balance = getHbarBalanceFromMirrorNode(address).orElseGet(() -> getHbarBalanceFromChain(address));
+            Hbar balance = getHbarBalanceFromChain(address);
             return Balance.builder()
                           .available(true)
                           .decimals(8)
@@ -120,15 +118,16 @@ public class HederaBalanceGateway extends BalanceGateway {
             return tokenBalances.entrySet().stream()
                                 .filter(e -> e.getKey().toString().equalsIgnoreCase(tokenAddress) || StringUtils.isBlank(tokenAddress))
                                 .map(e -> {
-                                    HederaTokenInfo tokenInfo = tokenInfoService.getTokenInfo(e.getKey().toString());
+                                    Optional<TokenInfo> tokenInfo = tokenInfoService.getTokenInfo(e.getKey().toString());
                                     return TokenBalance.builder()
                                                        .tokenAddress(e.getKey().toString())
                                                        .rawBalance(e.getValue().toString())
-                                                       .balance(PrecisionUtil.toDecimal(e.getValue(), tokenInfo.getDecimals()))
-                                                       .symbol(tokenInfo.getSymbol())
-                                                       .logo(getLogo(tokenInfo))
-                                                       .name(tokenInfo.getName())
-                                                       .decimals(tokenInfo.getDecimals())
+                                                       .balance(tokenInfo.map(info -> PrecisionUtil.toDecimal(e.getValue(), info.getDecimals()))
+                                                                         .orElseGet(() -> e.getValue().doubleValue()))
+                                                       .symbol(tokenInfo.map(TokenInfo::getSymbol).orElse(""))
+                                                       .logo(tokenInfo.map(TokenInfo::getLogo).orElse(""))
+                                                       .name(tokenInfo.map(TokenInfo::getName).orElse(""))
+                                                       .decimals(tokenInfo.map(TokenInfo::getDecimals).orElse(0))
                                                        .build();
                                 })
                                 .collect(Collectors.toList());
@@ -140,17 +139,6 @@ public class HederaBalanceGateway extends BalanceGateway {
                                  .errorCode("hedera.balance.error")
                                  .build();
         }
-    }
-
-    @Nullable
-    private String getLogo(HederaTokenInfo tokenInfo) {
-        String result = null;
-        if (StringUtils.contains(tokenInfo.getTokenMemo(), "://")) {
-            result = tokenInfo.getTokenMemo();
-        } else if (StringUtils.contains(tokenInfo.getSymbol(), "://")) {
-            result = tokenInfo.getSymbol();
-        }
-        return IpfsUtil.replaceIpfsLink(result);
     }
 
     private Map<TokenId, Long> getTokenBalancesFromChain(String address) {
