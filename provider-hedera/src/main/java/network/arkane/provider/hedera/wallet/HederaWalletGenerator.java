@@ -52,8 +52,6 @@ public class HederaWalletGenerator implements WalletGenerator<HederaSecretKey> {
         try {
             TransactionResponse transactionResponse = new AccountCreateTransaction()
                     .setKey(secret.getKey())
-                    .setAccountMemo("Account of https://venly.io")
-                    .setTransactionMemo("Account creation by https://venly.io")
                     .execute(client);
             TransactionReceipt receipt = transactionResponse.getReceipt(client);
             return receipt.accountId.toString();

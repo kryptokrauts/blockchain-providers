@@ -45,7 +45,7 @@ public class HederaBalanceGateway extends BalanceGateway {
     @Override
     public Balance getBalance(String address) {
         try {
-            Hbar balance = getHbarBalanceFromMirrorNode(address).orElseGet(() -> getHbarBalanceFromChain(address));
+            Hbar balance = getHbarBalanceFromChain(address);
             return Balance.builder()
                           .available(true)
                           .decimals(8)
