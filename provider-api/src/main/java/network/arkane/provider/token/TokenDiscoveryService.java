@@ -48,7 +48,7 @@ public class TokenDiscoveryService {
     private Optional<TokenInfo> fetchFromExternalService(SecretType chain,
                                                          String tokenAddress) {
         try {
-            return tokenDiscoveryServices.get(chain).getTokenInfo(tokenAddress);
+            return tokenDiscoveryServices.get(chain).getTokenInfo(tokenAddress).map(Function.identity());
         } catch (Exception e) {
             return Optional.empty();
         }

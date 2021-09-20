@@ -80,7 +80,7 @@ class HederaTransactionGatewayTest {
                                                                                                   .from("0.0.1543821")
                                                                                                   .to("0.0.2562819")
                                                                                                   .tokenId("0.0.2517364")
-                                                                                                  .amount(new BigInteger("1000"))
+                                                                                                  .amount(new BigInteger("100000000000"))
                                                                                                   .build(),
                                                                              HederaSecretKey.builder()
                                                                                             .key(PrivateKey.fromString(
