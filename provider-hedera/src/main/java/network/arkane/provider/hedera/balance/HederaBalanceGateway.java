@@ -111,7 +111,7 @@ public class HederaBalanceGateway extends BalanceGateway {
     private List<TokenBalance> getTokenBalances(String address,
                                                 String tokenAddress) {
         try {
-            Map<TokenId, Long> tokenBalances = getTokenBalancesFromMirrorNode(address).orElseGet(() -> getTokenBalancesFromChain(address));
+            Map<TokenId, Long> tokenBalances = getTokenBalancesFromChain(address);
             for (Map.Entry<TokenId, Long> entry : tokenBalances.entrySet()) {
                 new TokenInfoQuery().setTokenId(entry.getKey()).execute(hederaClient);
             }
@@ -124,9 +124,9 @@ public class HederaBalanceGateway extends BalanceGateway {
                                                        .rawBalance(e.getValue().toString())
                                                        .balance(tokenInfo.map(info -> PrecisionUtil.toDecimal(e.getValue(), info.getDecimals()))
                                                                          .orElseGet(() -> e.getValue().doubleValue()))
-                                                       .symbol(tokenInfo.map(TokenInfo::getSymbol).orElse(""))
+                                                       .symbol(tokenInfo.map(TokenInfo::getSymbol).orElse("UNKNOWN"))
                                                        .logo(tokenInfo.map(TokenInfo::getLogo).orElse(""))
-                                                       .name(tokenInfo.map(TokenInfo::getName).orElse(""))
+                                                       .name(tokenInfo.map(TokenInfo::getName).orElse("Unknown"))
                                                        .decimals(tokenInfo.map(TokenInfo::getDecimals).orElse(0))
                                                        .build();
                                 })
