@@ -31,7 +31,7 @@ public class HederaTokenInfoService implements NativeTokenDiscoveryService {
         this.mirrorNodeClient = mirrorNodeClient;
     }
 
-    @Cacheable("hedera-token-info")
+    @Cacheable(value = "hedera-token-info", unless = "#result == null")
     public Optional<network.arkane.provider.token.TokenInfo> getTokenInfo(String tokenId) {
         return Optional.ofNullable(getTokenInfoFromChain(tokenId))
                        .map(t -> network.arkane.provider.token.TokenInfo.builder()
