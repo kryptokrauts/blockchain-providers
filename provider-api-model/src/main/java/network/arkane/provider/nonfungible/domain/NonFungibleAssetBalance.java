@@ -76,7 +76,6 @@ public class NonFungibleAssetBalance {
                                       .animationUrl(asset.getAnimationUrl())
                                       .animationUrls(asset.getAnimationUrls())
                                       .fungible(asset.getFungible())
-                                      .maxSupply(asset.getMaxSupply())
                                       .contract(asset.getContract())
                                       .attributes(asset.getAttributes())
                                       .balance(balance)
