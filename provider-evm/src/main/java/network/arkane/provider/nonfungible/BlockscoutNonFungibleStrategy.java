@@ -64,7 +64,7 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
                : token.getTokens()
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
-                      .map(x -> NonFungibleAssetBalance.from(getNonFungibleAsset(x.getTokenId().toString(), contract, token), x.getBalance()))
+                      .map(x -> NonFungibleAssetBalance.from(getNonFungibleAsset(x.getTokenId().toString(), contract, token), x.getBalance(), null))
                       .collect(Collectors.toList());
 
     }
@@ -82,10 +82,10 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
                                    NonFungibleAsset asset = businessNonFungibleGateway.getNonFungible(getSecretType(),
                                                                                                       token.getContractAddress(),
                                                                                                       x.getTokenId().toString());
-                                   return NonFungibleAssetBalance.from(asset, x.getBalance());
+                                   return NonFungibleAssetBalance.from(asset, x.getBalance(), null);
                                } else {
                                    NonFungibleAsset asset = getNonFungibleAsset(x.getTokenId().toString(), contract);
-                                   return NonFungibleAssetBalance.from(asset, x.getBalance());
+                                   return NonFungibleAssetBalance.from(asset, x.getBalance(), null);
                                }
                            }
                           )

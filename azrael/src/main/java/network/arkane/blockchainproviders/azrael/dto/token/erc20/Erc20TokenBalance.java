@@ -20,6 +20,7 @@ public class Erc20TokenBalance extends TokenBalance {
     private String symbol;
     private Integer decimals;
     private BigInteger balance;
+    private BigInteger finalBalance;
 
     @Builder
     public Erc20TokenBalance(ContractType type,
@@ -27,11 +28,13 @@ public class Erc20TokenBalance extends TokenBalance {
                              String name,
                              String symbol,
                              Integer decimals,
-                             BigInteger balance) {
+                             BigInteger balance,
+                             BigInteger finalBalance) {
         super(type, address);
         this.name = name;
         this.symbol = symbol;
         this.decimals = decimals;
         this.balance = balance;
+        this.finalBalance = finalBalance;
     }
 }

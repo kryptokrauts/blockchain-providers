@@ -61,11 +61,11 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
                             Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
                             NonFungibleAsset result = mapper.map(asset);
                             if (result != null && StringUtils.isNotBlank(result.getId())) {
-                                return NonFungibleAssetBalance.from(result, BigInteger.ONE);
+                                return NonFungibleAssetBalance.from(result, BigInteger.ONE, null);
                             }
                         }
                         NonFungibleAsset asset = super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
-                        return NonFungibleAssetBalance.from(asset, BigInteger.ONE);
+                        return NonFungibleAssetBalance.from(asset, BigInteger.ONE, null);
                     })
                     .collect(Collectors.toList());
     }
@@ -79,11 +79,11 @@ public class EthereumMixedNonFungibleStrategy extends AzraelNonFungibleStrategy 
                             Asset asset = ethereumOpenSeaGateway.getAsset(token.getAddress(), t.getTokenId().toString());
                             NonFungibleAsset result = mapper.map(asset);
                             if (result != null && StringUtils.isNotBlank(result.getId())) {
-                                return NonFungibleAssetBalance.from(result, BigInteger.ONE);
+                                return NonFungibleAssetBalance.from(result, BigInteger.ONE, null);
                             }
                         }
                         NonFungibleAsset asset = super.getNonFungibleAsset(t.getTokenId().toString(), createContract(token), t.getMetadata());
-                        return NonFungibleAssetBalance.from(asset, BigInteger.ONE);
+                        return NonFungibleAssetBalance.from(asset, BigInteger.ONE, null);
                     })
                     .collect(Collectors.toList());
     }

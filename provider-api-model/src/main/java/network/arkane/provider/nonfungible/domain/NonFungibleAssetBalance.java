@@ -28,6 +28,7 @@ public class NonFungibleAssetBalance {
     private NonFungibleContract contract;
     private List<Attribute> attributes;
     private BigInteger balance;
+    private BigInteger finalBalance;
 
     @Builder(toBuilder = true)
     public NonFungibleAssetBalance(final String id,
@@ -44,7 +45,8 @@ public class NonFungibleAssetBalance {
                                    final BigInteger maxSupply,
                                    final NonFungibleContract contract,
                                    final List<Attribute> attributes,
-                                   final BigInteger balance) {
+                                   final BigInteger balance,
+                                   final BigInteger finalBalance) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -60,10 +62,12 @@ public class NonFungibleAssetBalance {
         this.attributes = attributes;
         this.fungible = fungible != null && fungible;
         this.balance = balance == null ? BigInteger.ZERO : balance;
+        this.finalBalance = finalBalance;
     }
 
     public static NonFungibleAssetBalance from(NonFungibleAsset asset,
-                                               BigInteger balance) {
+                                               BigInteger balance,
+                                               BigInteger finalBalance) {
         return NonFungibleAssetBalance.builder()
                                       .id(asset.getId())
                                       .name(asset.getName())
@@ -80,6 +84,7 @@ public class NonFungibleAssetBalance {
                                       .contract(asset.getContract())
                                       .attributes(asset.getAttributes())
                                       .balance(balance)
+                                      .finalBalance(finalBalance)
                                       .build();
     }
 
