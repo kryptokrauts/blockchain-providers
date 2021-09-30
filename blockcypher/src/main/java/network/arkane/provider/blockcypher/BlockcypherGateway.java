@@ -1,5 +1,6 @@
 package network.arkane.provider.blockcypher;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.SneakyThrows;
@@ -38,8 +39,9 @@ public class BlockcypherGateway {
                               @Value("${blockcypher.maxrequestspersecond:3}") Long maxRequestsPerSecond) {
         this.blockcypherClient = blockcypherClient;
         this.tokens = new RoundRobin<>(tokens).iterator();
-        this.objectMapper = new ObjectMapper();
         this.rateLimiter = RateLimiter.create(maxRequestsPerSecond);
+        this.objectMapper = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @SneakyThrows
