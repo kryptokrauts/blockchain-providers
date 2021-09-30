@@ -146,7 +146,6 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .contract(parseContract(contract, metaData))
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
-                                   .maxSupply(metaData.getMaxSupply().map(BigInteger::new).orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
                                    .animationUrls(metaData.getAnimationUrls())
                                    .attributes(enrichAttributes(metaData))
