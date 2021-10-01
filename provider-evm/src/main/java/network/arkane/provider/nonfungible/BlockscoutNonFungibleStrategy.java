@@ -74,31 +74,12 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
                       .map(x -> {
-                          // to be deleted
-                               if (isBusinessToken(token.getContractAddress())) {
-//                                   NonFungibleAsset asset = businessNonFungibleGateway.getNonFungible(getSecretType(),
-//                                                                                                      token.getContractAddress(),
-//                                                                                                      x.getTokenId().toString());
-//                                   return NonFungibleAssetBalance.from(asset, x.getBalance(), null);
-                                   return null;
-                               } else {
-                                   NonFungibleAsset asset = getNonFungibleAsset(x.getTokenId().toString(), contract);
-                                   return NonFungibleAssetBalance.from(asset, x.getBalance(), null);
-                               }
+                               NonFungibleAsset asset = getNonFungibleAsset(x.getTokenId().toString(), contract);
+                               return NonFungibleAssetBalance.from(asset, x.getBalance(), null);
                            }
                           )
                       .collect(Collectors.toList());
 
-    }
-
-    private boolean isBusinessToken(String contractAddress) {
-//        try {
-//            return businessNonFungibleGateway.getNonFungibleContract(getSecretType(), contractAddress) != null;
-//        } catch (Exception e) {
-//            log.error("Error getting business contract", e);
-//            return false;
-//        }
-        return false;
     }
 
     private NonFungibleContract createContract(ERC721BlockscoutToken token) {
@@ -126,14 +107,14 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
                                            final String tokenId) {
 
         NonFungibleContract contract = getNonFungibleContract(contractAddress);
-//        if (contract != null) {
-//            if (isBusinessToken(contract.getAddress())) {
-//                return businessNonFungibleGateway.getNonFungible(getSecretType(),
-//                                                                 contract.getAddress(),
-//                                                                 tokenId);
-//            }
-//            return getNonFungibleAsset(tokenId, contract);
-//        }
+        //        if (contract != null) {
+        //            if (isBusinessToken(contract.getAddress())) {
+        //                return businessNonFungibleGateway.getNonFungible(getSecretType(),
+        //                                                                 contract.getAddress(),
+        //                                                                 tokenId);
+        //            }
+        //            return getNonFungibleAsset(tokenId, contract);
+        //        }
         return null;
 
     }
