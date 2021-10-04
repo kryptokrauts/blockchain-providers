@@ -105,16 +105,10 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
     @SneakyThrows
     public NonFungibleAsset getNonFungible(final String contractAddress,
                                            final String tokenId) {
-
         NonFungibleContract contract = getNonFungibleContract(contractAddress);
-        //        if (contract != null) {
-        //            if (isBusinessToken(contract.getAddress())) {
-        //                return businessNonFungibleGateway.getNonFungible(getSecretType(),
-        //                                                                 contract.getAddress(),
-        //                                                                 tokenId);
-        //            }
-        //            return getNonFungibleAsset(tokenId, contract);
-        //        }
+        if (contract != null) {
+            return getNonFungibleAsset(tokenId, contract);
+        }
         return null;
 
     }
