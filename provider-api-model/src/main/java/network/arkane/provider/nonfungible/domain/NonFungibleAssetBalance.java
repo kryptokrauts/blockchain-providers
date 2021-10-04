@@ -24,7 +24,6 @@ public class NonFungibleAssetBalance {
     private String animationUrl;
     private List<TypeValue> animationUrls;
     private Boolean fungible;
-    private BigInteger maxSupply;
     private NonFungibleContract contract;
     private List<Attribute> attributes;
     private BigInteger balance;
@@ -42,7 +41,6 @@ public class NonFungibleAssetBalance {
                                    final String animationUrl,
                                    final List<TypeValue> animationUrls,
                                    final Boolean fungible,
-                                   final BigInteger maxSupply,
                                    final NonFungibleContract contract,
                                    final List<Attribute> attributes,
                                    final BigInteger balance,
@@ -58,7 +56,6 @@ public class NonFungibleAssetBalance {
         this.animationUrl = animationUrl;
         this.animationUrls = animationUrls;
         this.contract = contract;
-        this.maxSupply = maxSupply;
         this.attributes = attributes;
         this.fungible = fungible != null && fungible;
         this.balance = balance == null ? BigInteger.ZERO : balance;
@@ -80,7 +77,6 @@ public class NonFungibleAssetBalance {
                                       .animationUrl(asset.getAnimationUrl())
                                       .animationUrls(asset.getAnimationUrls())
                                       .fungible(asset.getFungible())
-                                      .maxSupply(asset.getMaxSupply())
                                       .contract(asset.getContract())
                                       .attributes(asset.getAttributes())
                                       .balance(balance)

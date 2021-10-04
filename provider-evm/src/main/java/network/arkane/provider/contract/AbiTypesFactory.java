@@ -7,9 +7,9 @@ package network.arkane.provider.contract;
 
 import network.arkane.provider.BytesUtils;
 import network.arkane.provider.HexUtils;
+import network.arkane.provider.contract.type.EmptyFixDynamicArray;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
-import org.web3j.abi.datatypes.DynamicArray;
 import org.web3j.abi.datatypes.DynamicBytes;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
@@ -128,7 +128,7 @@ public final class AbiTypesFactory {
                                                   .split(","))
                                      .map(x -> getType(type.substring(0, type.length() - 2), x))
                                      .collect(Collectors.toList());
-            return new DynamicArray(types);
+            return new EmptyFixDynamicArray(types);
         }
         byte var2 = getTypeIndex(type);
 
