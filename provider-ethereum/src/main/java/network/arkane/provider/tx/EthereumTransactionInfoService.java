@@ -8,8 +8,9 @@ import org.web3j.protocol.Web3j;
 @Component
 public class EthereumTransactionInfoService extends EvmTransactionInfoService {
 
-    public EthereumTransactionInfoService(@Qualifier("ethereumWeb3j") Web3j web3j) {
-        super(web3j);
+    public EthereumTransactionInfoService(@Qualifier("ethereumWeb3j") final Web3j web3j,
+                                          final HasReachedFinalityService hasReachedFinalityService) {
+        super(web3j, hasReachedFinalityService);
     }
 
     public SecretType type() {
