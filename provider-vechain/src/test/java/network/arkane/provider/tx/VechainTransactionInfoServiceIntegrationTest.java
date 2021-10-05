@@ -1,5 +1,6 @@
 package network.arkane.provider.tx;
 
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.clients.DeltaBalancesContractClient;
 import network.arkane.provider.core.model.blockchain.NodeProvider;
 import network.arkane.provider.gateway.VechainGateway;
@@ -7,12 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class VechainTransactionInfoServiceIntegrationTest {
 
     private VechainTransactionInfoService service;
+    private BigInteger hasFinalityConfirmations;
 
     @BeforeEach
     void setUp() {
@@ -21,7 +24,11 @@ class VechainTransactionInfoServiceIntegrationTest {
         nodeProvider.setTimeout(10000);
         DeltaBalancesContractClient deltaBalancesContractClient = new DeltaBalancesContractClient("0xd8a100bccb8cb27ad7ef64d24e30949497e486aa");
         VechainGateway vechainGateway = new VechainGateway(deltaBalancesContractClient);
-        service = new VechainTransactionInfoService(vechainGateway);
+        hasFinalityConfirmations = new BigInteger("20");
+        final HashMap<SecretType, BigInteger> chainSpecificConfirmationNumbers = new HashMap<>();
+        chainSpecificConfirmationNumbers.put(SecretType.ETHEREUM, hasFinalityConfirmations);
+        HasReachedFinalityService hasReachedFinalityService = new HasReachedFinalityService(new TransactionConfigurationProperties(chainSpecificConfirmationNumbers));
+        service = new VechainTransactionInfoService(vechainGateway, hasReachedFinalityService);
     }
 
     @Test
@@ -33,6 +40,7 @@ class VechainTransactionInfoServiceIntegrationTest {
         assertThat(transaction.getBlockHash()).isEqualTo("0x004bbc6d2e1daebb3f3c71b8ecc9bb1fbf324194d076c672143b7c5583b9bcfb");
         assertThat(transaction.getBlockNumber()).isEqualTo(new BigInteger("4963437"));
         assertThat(transaction.getConfirmations()).isGreaterThan(BigInteger.ONE);
+        assertThat(transaction.getHasReachedFinality()).isEqualTo(hasFinalityConfirmations.compareTo(transaction.getConfirmations()) >= 0);
     }
 
     @Test
