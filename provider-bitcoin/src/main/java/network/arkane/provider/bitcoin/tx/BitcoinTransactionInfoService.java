@@ -49,6 +49,6 @@ public class BitcoinTransactionInfoService implements TransactionInfoService {
     }
 
     private TxStatus getStatus(TX tx) {
-        return (tx.getBlockHeight() == null || tx.getBlockHeight().equals(BigInteger.ONE)) ? SUCCEEDED : PENDING;
+        return (tx.getBlockHeight() != null && tx.getBlockHeight().compareTo(BigInteger.ONE) > 0) ? SUCCEEDED : PENDING;
     }
 }
