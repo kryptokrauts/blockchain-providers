@@ -52,7 +52,6 @@ public class HederaTransactionInfoService implements TransactionInfoService {
                                    .result(hederaTransaction.getResult())
                                    .build();
             }
-
         } catch (Exception e) {
             throw arkaneException()
                     .errorCode("error.hedera.receipt")
