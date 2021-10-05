@@ -34,8 +34,9 @@ public class EvmTxInfo extends TxInfo {
                      BigInteger gas,
                      BigInteger gasUsed,
                      BigInteger gasPrice,
-                     List<EvmTxLog> logs) {
-        super(hash, status, confirmations, blockHash, blockNumber);
+                     List<EvmTxLog> logs,
+                     Boolean hasReachedFinality) {
+        super(hash, status, confirmations, blockHash, blockNumber, hasReachedFinality);
         this.nonce = nonce;
         this.gas = gas;
         this.gasUsed = gasUsed;

@@ -21,10 +21,13 @@ import java.util.stream.Collectors;
 
 public abstract class EvmTransactionInfoService implements TransactionInfoService {
 
-    private Web3j defaultWeb3j;
+    private final Web3j defaultWeb3j;
+    private final HasReachedFinalityService hasReachedFinalityService;
 
-    public EvmTransactionInfoService(Web3j web3j) {
+    public EvmTransactionInfoService(final Web3j web3j,
+                                     final HasReachedFinalityService hasReachedFinalityService) {
         this.defaultWeb3j = web3j;
+        this.hasReachedFinalityService = hasReachedFinalityService;
     }
 
     public abstract SecretType type();
@@ -89,12 +92,14 @@ public abstract class EvmTransactionInfoService implements TransactionInfoServic
                         .gas(tx.getGas())
                         .gasPrice(tx.getGasPrice())
                         .nonce(tx.getNonce())
+                        .hasReachedFinality(false)
                         .build();
     }
 
     private EvmTxInfo mapToMinedTxInfo(Transaction tx,
                                        TransactionReceipt receipt,
                                        EthBlockNumber blockNumber) {
+        final BigInteger confirmations = blockNumber.getBlockNumber().subtract(receipt.getBlockNumber()).add(BigInteger.ONE);
         return EvmTxInfo.evmTxInfoBuilder()
                         .blockHash(receipt.getBlockHash())
                         .blockNumber(receipt.getBlockNumber())
@@ -102,7 +107,8 @@ public abstract class EvmTransactionInfoService implements TransactionInfoServic
                         .from(receipt.getFrom())
                         .to(receipt.getTo())
                         .status(getStatus(receipt))
-                        .confirmations(blockNumber.getBlockNumber().subtract(receipt.getBlockNumber()).add(BigInteger.ONE))
+                        .confirmations(confirmations)
+                        .hasReachedFinality(hasReachedFinalityService.hasReachedFinality(type(), confirmations))
                         .gasUsed(receipt.getGasUsed())
                         .gas(tx.getGas())
                         .gasPrice(tx.getGasPrice())
