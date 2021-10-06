@@ -37,7 +37,6 @@
         <module>blockcypher</module>
         <module>covalent</module>
         <module>opensea</module>
-        <module>arkane-business</module>
         <module>integrationtests</module>
         <module>provider-api-model</module>
     </modules>
