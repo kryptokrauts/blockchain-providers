@@ -30,8 +30,9 @@ public class VechainTxInfo extends TxInfo {
                          BigInteger gas,
                          BigInteger gasUsed,
                          BigInteger gasPriceCoef,
-                         List<VechainReceiptOutput> outputs) {
-        super(hash, status, confirmations, blockHash, blockNumber);
+                         List<VechainReceiptOutput> outputs,
+                         Boolean hasReachedFinality) {
+        super(hash, status, confirmations, blockHash, blockNumber, hasReachedFinality);
         this.nonce = nonce;
         this.gas = gas;
         this.gasUsed = gasUsed;

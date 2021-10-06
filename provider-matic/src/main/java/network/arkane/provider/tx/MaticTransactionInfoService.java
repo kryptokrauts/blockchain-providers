@@ -7,8 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class MaticTransactionInfoService extends EvmTransactionInfoService {
 
-    public MaticTransactionInfoService(MaticWeb3JGateway maticWeb3jGateway) {
-        super(maticWeb3jGateway.web3());
+    public MaticTransactionInfoService(final MaticWeb3JGateway maticWeb3jGateway,
+                                       final HasReachedFinalityService hasReachedFinalityService) {
+        super(maticWeb3jGateway.web3(), hasReachedFinalityService);
     }
 
     public SecretType type() {

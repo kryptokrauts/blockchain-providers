@@ -28,9 +28,11 @@ public class VechainTransactionInfoService implements TransactionInfoService, Di
     private static final ExecutorService executorService = Executors.newFixedThreadPool(3, new ThreadFactoryBuilder().setNameFormat("vechain-tx-info-%d").build());
     ;
     private final VechainGateway vechainGateway;
+    private final HasReachedFinalityService hasReachedFinalityService;
 
-    public VechainTransactionInfoService(VechainGateway vechainGateway) {
+    public VechainTransactionInfoService(final VechainGateway vechainGateway, final HasReachedFinalityService hasReachedFinalityService) {
         this.vechainGateway = vechainGateway;
+        this.hasReachedFinalityService = hasReachedFinalityService;
     }
 
     public SecretType type() {
@@ -61,11 +63,13 @@ public class VechainTransactionInfoService implements TransactionInfoService, Di
                               Block currentBlock) {
 
 
+        final BigInteger confirmations = new BigInteger(currentBlock.getNumber()).subtract(BigInteger.valueOf(transaction.getMeta().getBlockNumber())).add(BigInteger.ONE);
         return VechainTxInfo.vechainTxInfoBuilder()
                             .hash(transaction.getId())
                             .blockHash(transaction.getMeta().getBlockID())
                             .blockNumber(BigInteger.valueOf(transaction.getMeta().getBlockNumber()))
-                            .confirmations(new BigInteger(currentBlock.getNumber()).subtract(BigInteger.valueOf(transaction.getMeta().getBlockNumber())).add(BigInteger.ONE))
+                            .confirmations(confirmations)
+                            .hasReachedFinality(hasReachedFinalityService.hasReachedFinality(SecretType.VECHAIN, confirmations))
                             .status(receipt.isReverted() ? TxStatus.FAILED : TxStatus.SUCCEEDED)
                             .nonce(transaction.getNonce())
                             .gas(BigInteger.valueOf(transaction.getGas()))

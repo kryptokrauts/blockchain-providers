@@ -9,8 +9,9 @@ import org.web3j.protocol.Web3j;
 public class GochainTransactionInfoService extends EvmTransactionInfoService {
 
 
-    public GochainTransactionInfoService(@Qualifier("gochainWeb3j") Web3j gochainWeb3j) {
-        super(gochainWeb3j);
+    public GochainTransactionInfoService(@Qualifier("gochainWeb3j") final Web3j gochainWeb3j,
+                                         final HasReachedFinalityService hasReachedFinalityService) {
+        super(gochainWeb3j, hasReachedFinalityService);
     }
 
     public SecretType type() {

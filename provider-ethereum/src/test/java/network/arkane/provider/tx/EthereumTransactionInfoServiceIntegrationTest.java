@@ -1,5 +1,6 @@
 package network.arkane.provider.tx;
 
+import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.gateway.EthereumWeb3JGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -9,6 +10,7 @@ import org.web3j.protocol.http.HttpService;
 
 import java.math.BigInteger;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -19,13 +21,18 @@ class EthereumTransactionInfoServiceIntegrationTest {
     private EthereumWeb3JGateway ethereumWeb3JGateway;
     private Web3j web3j;
     private EthereumTransactionInfoService ethereumTransactionInfoService;
+    private BigInteger hasFinalityConfirmations;
 
     @BeforeEach
     void setUp() throws InterruptedException {
         web3j = Web3j.build(new HttpService("https://ethereum-node.arkane.network"));
         ethereumWeb3JGateway = new EthereumWeb3JGateway(web3j, "0x40a38911e470fC088bEEb1a9480c2d69C847BCeC");
         Thread.sleep(100);
-        ethereumTransactionInfoService = new EthereumTransactionInfoService(ethereumWeb3JGateway.web3());
+        hasFinalityConfirmations = new BigInteger("20");
+        final HashMap<SecretType, BigInteger> chainSpecificConfirmationNumbers = new HashMap<>();
+        chainSpecificConfirmationNumbers.put(SecretType.ETHEREUM, hasFinalityConfirmations);
+        HasReachedFinalityService hasReachedFinalityService = new HasReachedFinalityService(new TransactionConfigurationProperties(chainSpecificConfirmationNumbers));
+        ethereumTransactionInfoService = new EthereumTransactionInfoService(ethereumWeb3JGateway.web3(), hasReachedFinalityService);
     }
 
     @Test
@@ -51,6 +58,7 @@ class EthereumTransactionInfoServiceIntegrationTest {
         assertThat(transaction.getHash()).isEqualTo("0xffb9f36e41023537595cf62f5ca1846c25f893c3c2d3d7c2806d75c43ff1483e");
         assertThat(transaction.getStatus()).isEqualTo(TxStatus.SUCCEEDED);
         assertThat(transaction.getConfirmations()).isNotZero();
+        assertThat(transaction.getHasReachedFinality()).isEqualTo(hasFinalityConfirmations.compareTo(transaction.getConfirmations()) >= 0);
         assertThat(transaction.getBlockHash()).isEqualTo("0x25049b9f5db6cc40c2dbd7a4ecda0f5b539caa726af02e923ec1a9c4ee8ebc51");
         assertThat(transaction.getBlockNumber()).isEqualTo(new BigInteger("8064684"));
 

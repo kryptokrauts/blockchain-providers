@@ -17,6 +17,7 @@ public class TxInfo {
     private BigInteger confirmations;
     private String blockHash;
     private BigInteger blockNumber;
+    private Boolean hasReachedFinality;
 
     protected TxInfo() {
     }

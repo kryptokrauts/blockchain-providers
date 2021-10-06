@@ -56,8 +56,9 @@ public class TronTxInfo extends TxInfo {
                       Long exchangeInjectAnotherAmount,
                       Long exchangeWithdrawAnotherAmount,
                       Long exchangeId,
-                      List<? extends TronContract> contracts) {
-        super(hash, status, confirmations, blockHash, blockNumber);
+                      List<? extends TronContract> contracts,
+                      Boolean hasReachedFinality) {
+        super(hash, status, confirmations, blockHash, blockNumber, hasReachedFinality);
         this.id = id;
         this.fee = fee;
         this.contractResult = contractResult;

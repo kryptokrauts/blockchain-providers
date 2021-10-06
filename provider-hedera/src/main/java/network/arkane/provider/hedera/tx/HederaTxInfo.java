@@ -5,6 +5,7 @@ import network.arkane.provider.hedera.mirror.dto.HederaTokenTransfer;
 import network.arkane.provider.hedera.mirror.dto.HederaTransfer;
 import network.arkane.provider.tx.TxInfo;
 import network.arkane.provider.tx.TxStatus;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class HederaTxInfo extends TxInfo {
                         String result,
                         List<HederaTransfer> transfers,
                         List<HederaTokenTransfer> tokenTransfers) {
-        super(hash, status, null, null, null);
+        super(hash, status, null, null, null, StringUtils.isNotBlank(consensusTimestamp));
         this.chargedTxFee = chargedTxFee;
         this.consensusTimestamp = consensusTimestamp;
         this.entityId = entityId;
