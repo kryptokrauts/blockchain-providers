@@ -52,6 +52,7 @@ public class HederaWalletGenerator implements WalletGenerator<HederaSecretKey> {
         try {
             TransactionResponse transactionResponse = new AccountCreateTransaction()
                     .setKey(secret.getKey())
+                    .setMaxAutomaticTokenAssociations(25)
                     .execute(client);
             TransactionReceipt receipt = transactionResponse.getReceipt(client);
             return receipt.accountId.toString();

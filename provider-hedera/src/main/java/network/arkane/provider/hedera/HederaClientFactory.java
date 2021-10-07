@@ -2,16 +2,11 @@ package network.arkane.provider.hedera;
 
 import com.hedera.hashgraph.sdk.AccountId;
 import com.hedera.hashgraph.sdk.Client;
-import com.hedera.hashgraph.sdk.NetworkAddressBookFix;
 import com.hedera.hashgraph.sdk.PrivateKey;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HederaClientFactory {
-
-    static {
-        NetworkAddressBookFix.initializeEmptyAddressBook();
-    }
 
     private final HederaProperties hederaProperties;
     private final Client clientWithOperator;
