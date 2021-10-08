@@ -48,21 +48,21 @@ public class Attribute {
     }
 
     @JsonSetter("display_type")
-    public void setDisplay_type(final String displayType) {
+    private void setDisplay_type(final String displayType) {
         if (this.displayType == null) {
             this.displayType = displayType;
         }
     }
 
     @JsonSetter("trait_count")
-    public void setTrait_count(final BigInteger traitCount) {
+    private void setTrait_count(final BigInteger traitCount) {
         if (this.traitCount == null) {
             this.traitCount = traitCount;
         }
     }
 
     @JsonSetter("max_value")
-    public void setMax_value(final BigInteger maxValue) {
+    private void setMax_value(final BigInteger maxValue) {
         if (this.maxValue == null) {
             this.maxValue = maxValue;
         }
