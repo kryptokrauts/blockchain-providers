@@ -74,7 +74,6 @@
         <bitcoinj.version>0.14.7</bitcoinj.version>
         <spring-cloud-dependencies.version>Greenwich.SR3</spring-cloud-dependencies.version>
         <guava.version>29.0-jre</guava.version>
-        <arkane-common.version>0.0.1-SNAPSHOT</arkane-common.version>
         <spring-cloud-sleuth.version>2.1.6.RELEASE</spring-cloud-sleuth.version>
         <okhttp3.version>4.9.0</okhttp3.version>
         <kotlin.version>1.3.71</kotlin.version>
@@ -398,11 +397,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.fundrequest.arkane</groupId>
-                <artifactId>common</artifactId>
-                <version>${arkane-common.version}</version>
             </dependency>
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
