@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import network.arkane.blockchainproviders.blockscout.BlockscoutClient;
 import network.arkane.blockchainproviders.blockscout.dto.ERC1155BlockscoutToken;
 import network.arkane.blockchainproviders.blockscout.dto.ERC721BlockscoutToken;
-import network.arkane.provider.business.token.BusinessNonFungibleGateway;
 import network.arkane.provider.contract.EvmContractService;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
@@ -27,16 +26,13 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
 
     private BlockscoutClient blockscoutClient;
     private MetaDataParser metadataParser;
-    private BusinessNonFungibleGateway businessNonFungibleGateway;
 
 
     public BlockscoutNonFungibleStrategy(BlockscoutClient blockscoutClient,
                                          EvmContractService contractService,
-                                         BusinessNonFungibleGateway businessNonFungibleGateway,
                                          Optional<CacheManager> cacheManager) {
         this.blockscoutClient = blockscoutClient;
         this.metadataParser = new MetaDataParser(contractService, cacheManager);
-        this.businessNonFungibleGateway = businessNonFungibleGateway;
     }
 
     @Override
@@ -64,7 +60,7 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
                : token.getTokens()
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
-                      .map(x -> NonFungibleAssetBalance.from(getNonFungibleAsset(x.getTokenId().toString(), contract, token), x.getBalance()))
+                      .map(x -> NonFungibleAssetBalance.from(getNonFungibleAsset(x.getTokenId().toString(), contract, token), x.getBalance(), null))
                       .collect(Collectors.toList());
 
     }
@@ -78,28 +74,12 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
                       .stream()
                       .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
                       .map(x -> {
-                               if (isBusinessToken(token.getContractAddress())) {
-                                   NonFungibleAsset asset = businessNonFungibleGateway.getNonFungible(getSecretType(),
-                                                                                                      token.getContractAddress(),
-                                                                                                      x.getTokenId().toString());
-                                   return NonFungibleAssetBalance.from(asset, x.getBalance());
-                               } else {
-                                   NonFungibleAsset asset = getNonFungibleAsset(x.getTokenId().toString(), contract);
-                                   return NonFungibleAssetBalance.from(asset, x.getBalance());
-                               }
+                               NonFungibleAsset asset = getNonFungibleAsset(x.getTokenId().toString(), contract);
+                               return NonFungibleAssetBalance.from(asset, x.getBalance(), null);
                            }
                           )
                       .collect(Collectors.toList());
 
-    }
-
-    private boolean isBusinessToken(String contractAddress) {
-        try {
-            return businessNonFungibleGateway.getNonFungibleContract(getSecretType(), contractAddress) != null;
-        } catch (Exception e) {
-            log.error("Error getting business contract", e);
-            return false;
-        }
     }
 
     private NonFungibleContract createContract(ERC721BlockscoutToken token) {
@@ -125,14 +105,8 @@ public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGatewa
     @SneakyThrows
     public NonFungibleAsset getNonFungible(final String contractAddress,
                                            final String tokenId) {
-
         NonFungibleContract contract = getNonFungibleContract(contractAddress);
         if (contract != null) {
-            if (isBusinessToken(contract.getAddress())) {
-                return businessNonFungibleGateway.getNonFungible(getSecretType(),
-                                                                 contract.getAddress(),
-                                                                 tokenId);
-            }
             return getNonFungibleAsset(tokenId, contract);
         }
         return null;

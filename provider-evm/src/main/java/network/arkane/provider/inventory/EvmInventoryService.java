@@ -1,7 +1,5 @@
 package network.arkane.provider.inventory;
 
-import network.arkane.blockchainproviders.blockscout.dto.BlockscoutTokenBalance;
-import network.arkane.provider.business.token.model.TokenDto;
 import network.arkane.provider.nonfungible.EvmNonFungibleGateway;
 import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import org.jetbrains.annotations.NotNull;
@@ -56,13 +54,6 @@ public abstract class EvmInventoryService implements InventoryService {
                     }
                 });
         return tokenTypesByContract;
-    }
-
-    private Long getRealBalance(BlockscoutTokenBalance token,
-                                TokenDto tokenDto) {
-        return tokenDto.getTokenType().isNf()
-               ? token.getBalanceAsLong()
-               : token.getBalance().multiply(BigInteger.TEN.pow(tokenDto.getTokenType().getDecimals())).longValue();
     }
 
     private Inventory createInventory(Map<String, Map<String, TokenTypeInventory>> tokenTypesByContract) {

@@ -39,9 +39,6 @@ public class NonFungibleContract {
     private boolean verified;
 
     private boolean premium;
-
-    private boolean scam;
-
     private List<String> categories;
 
     @JsonSetter("externalUrl")

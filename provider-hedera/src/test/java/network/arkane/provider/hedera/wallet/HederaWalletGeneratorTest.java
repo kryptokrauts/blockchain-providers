@@ -27,6 +27,6 @@ class HederaWalletGeneratorTest {
     void generateWallet() {
         GeneratedWallet generatedWallet = hederaWalletGenerator.generateWallet("password", HederaSecretKey.builder().key(PrivateKey.generate()).build());
 
-        System.out.println(generatedWallet);
+        System.out.println(generatedWallet.getAddress());
     }
 }

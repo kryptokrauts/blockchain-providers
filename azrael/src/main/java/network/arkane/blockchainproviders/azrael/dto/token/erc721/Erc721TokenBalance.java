@@ -15,6 +15,7 @@ import java.math.BigInteger;
 public class Erc721TokenBalance {
     private BigInteger tokenId;
     private BigInteger balance;
+    private BigInteger finalBalance;
     private String tokenURI;
     private String metadata;
 }
