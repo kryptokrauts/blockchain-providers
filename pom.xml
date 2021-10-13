@@ -214,11 +214,6 @@
             </dependency>
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
-                <artifactId>arkane-business</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>covalent</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -235,11 +230,6 @@
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>provider-bitcoin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>network.arkane.blockchain-providers</groupId>
-                <artifactId>arkane-business</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

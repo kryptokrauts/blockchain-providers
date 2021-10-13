@@ -18,10 +18,6 @@
         </dependency>
         <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
-            <artifactId>arkane-business</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-evm</artifactId>
         </dependency>
         <dependency>
