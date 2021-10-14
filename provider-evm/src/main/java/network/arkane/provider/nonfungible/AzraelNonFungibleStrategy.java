@@ -83,7 +83,8 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                ? Collections.emptyList()
                : token.getTokens()
                       .stream()
-                      .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
+                      .filter(x -> (x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0) || (x.getFinalBalance() != null
+                                                                                                                 && x.getFinalBalance().compareTo(BigInteger.ZERO) > 0))
                       .map(tb -> (Callable<NonFungibleAssetBalance>) () ->
                               NonFungibleAssetBalance.from(getNonFungibleAsset(tb.getTokenId().toString(), contract, tb.getMetadata()), tb.getBalance(), tb.getFinalBalance())
                           )
@@ -97,7 +98,8 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                ? Collections.emptyList()
                : token.getTokens()
                       .stream()
-                      .filter(x -> x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
+                      .filter(x -> (x.getBalance() != null && x.getBalance().compareTo(BigInteger.ZERO) > 0)
+                                   || x.getFinalBalance() != null && x.getFinalBalance().compareTo(BigInteger.ZERO) > 0)
                       .map(tb -> (Callable<NonFungibleAssetBalance>) () ->
                               NonFungibleAssetBalance.from(getNonFungibleAsset(tb.getTokenId().toString(), contract, tb.getMetadata()), tb.getBalance(), tb.getFinalBalance()))
                       .collect(Collectors.toList());
