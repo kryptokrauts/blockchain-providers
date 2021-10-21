@@ -20,7 +20,8 @@ class AnimationTypeByExtensionMapperTest {
     private static final String AUDIO_TYPE = "audio";
     private static final String THREE_D_TYPE = "3d";
     private static final List<String> URL_TEMPLATES = Arrays.asList("https://png.pngtree.com/element_our/20200610/ourmid/pngtree-wrong-number-image_2248568.%s",
-                                                                    "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-wrong-number-image_2248568.%s?sfhgdjgfhg=tryjuy");
+                                                                    "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-wrong-number-image_2248568.%s?sfhgdjgfhg=tryjuy",
+                                                                    "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-wrong-number-image_2248568.%s?sfhgdjgfhg=tryjuy.test");
     private static final List<String> IMAGE_EXTENSIONS = Arrays.asList("gif", "png", "jpg", "jpeg", "bmp", "webp", "svg");
     private static final List<String> VIDEO_EXTENSIONS = Arrays.asList("mp4", "webm", "m4v", "ogv", "ogm", "ogg");
     private static final List<String> AUDIO_EXTENSIONS = Arrays.asList("mp3", "mav", "oga");
@@ -70,6 +71,15 @@ class AnimationTypeByExtensionMapperTest {
     @Test
     void mapNoExtension() {
         final String url = "https://png.pngtree.com/element_our/20200610/ourmid";
+
+        final Optional<String> result = mapper.map(url);
+
+        assertThat(result).isNotPresent();
+    }
+
+    @Test
+    void mapNoExtension_endsWithDot() {
+        final String url = "https://png.pngtree.com/element_our/20200610/ourmid.";
 
         final Optional<String> result = mapper.map(url);
 

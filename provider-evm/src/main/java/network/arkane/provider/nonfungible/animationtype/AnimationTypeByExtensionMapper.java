@@ -6,6 +6,7 @@ import com.google.common.collect.ListMultimap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringTokenizer;
 
 public class AnimationTypeByExtensionMapper {
 
@@ -37,15 +38,11 @@ public class AnimationTypeByExtensionMapper {
     }
 
     private String extractExtension(final String url) {
-        final int lastIndexOfPeriod = url.lastIndexOf('.');
-        final int lastIndexOfQuestionMark = url.lastIndexOf('?');
-
-        if (lastIndexOfPeriod > 0) {
-            if (lastIndexOfQuestionMark <= 0) {
-                return url.substring(lastIndexOfPeriod + 1);
-            } else {
-                return url.substring(lastIndexOfPeriod + 1, lastIndexOfQuestionMark);
-            }
+        final String normalizedUrl = new StringTokenizer(url, "?")
+                .nextToken();
+        final int lastIndexOfPeriod = normalizedUrl.lastIndexOf('.');
+        if (lastIndexOfPeriod > 0 && lastIndexOfPeriod < normalizedUrl.length() - 1) {
+            return normalizedUrl.substring(lastIndexOfPeriod + 1);
         }
         return "";
     }
