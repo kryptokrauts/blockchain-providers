@@ -19,7 +19,7 @@ class HederaNonfungibleGatewayIntegrationTest {
     void setUp() {
         MirrorNodeClient mirrorNodeClient = HederaTestFixtures.mirrorNodeClient();
         HederaTokenInfoService tokenInfoService = new HederaTokenInfoService(HederaTestFixtures.clientFactory(), mirrorNodeClient);
-        hederaNonfungibleGateway = new HederaNonfungibleGateway(HederaTestFixtures.clientFactory().getClientWithOperator(),
+        hederaNonfungibleGateway = new HederaNonfungibleGateway(HederaTestFixtures.clientFactory(),
                                                                 tokenInfoService,
                                                                 mirrorNodeClient,
                                                                 Optional.of(new ConcurrentMapCacheManager()),

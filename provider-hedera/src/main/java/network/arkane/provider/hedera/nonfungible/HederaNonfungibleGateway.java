@@ -7,6 +7,7 @@ import com.hedera.hashgraph.sdk.PrecheckStatusException;
 import com.hedera.hashgraph.sdk.TokenId;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.balance.HederaTokenInfoService;
 import network.arkane.provider.hedera.mirror.MirrorNodeClient;
 import network.arkane.provider.hedera.mirror.dto.MirrorNodeNft;
@@ -41,12 +42,12 @@ public class HederaNonfungibleGateway implements NonFungibleGateway {
     private final HederaMetaDataParser metaDataParser;
     private final HederaNftContractInfoService hederaNftContractInfoService;
 
-    public HederaNonfungibleGateway(final Client hederaClient,
+    public HederaNonfungibleGateway(final HederaClientFactory clientFactory,
                                     final HederaTokenInfoService tokenInfoService,
                                     final MirrorNodeClient mirrorNodeClient,
                                     final Optional<CacheManager> cacheManager,
                                     final HederaNftContractInfoService hederaNftContractInfoService) {
-        this.hederaClient = hederaClient;
+        this.hederaClient = clientFactory.getClientWithOperator();
         this.tokenInfoService = tokenInfoService;
         this.mirrorNodeClient = mirrorNodeClient;
         metaDataParser = new HederaMetaDataParser(cacheManager);
