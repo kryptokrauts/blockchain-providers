@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
@@ -207,5 +209,55 @@ public class NonFungibleMetaData {
 
     public void setImage(String image) {
         setProperty("image", image);
+    }
+
+    public List<Attribute> getEnrichedAttributes() {
+        return getAttributes()
+                .stream()
+                .filter(Objects::nonNull)
+                .map(attribute -> {
+                    if (StringUtils.isNotBlank(attribute.getDisplayType())) {
+                        if ("number".equalsIgnoreCase(attribute.getDisplayType())) {
+                            attribute.setType("stat");
+                        } else if ("boost_number".equalsIgnoreCase(attribute.getDisplayType())) {
+                            attribute.setType("boost");
+                        } else if ("boost_percentage".equalsIgnoreCase(attribute.getDisplayType())) {
+                            attribute.setType("boost");
+                        }
+                    }
+                    if (StringUtils.isBlank(attribute.getType())) {
+                        attribute.setType("property");
+                    }
+                    return attribute;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public NonFungibleContract enrichContract(NonFungibleContract contract) {
+        NonFungibleContract result = contract.toBuilder().build();
+        getContract().ifPresent(c -> {
+            if (StringUtils.isNotBlank(c.getDescription())) {
+                result.setDescription(c.getDescription());
+            }
+            if (StringUtils.isNotBlank(c.getSymbol())) {
+                result.setSymbol(c.getSymbol());
+            }
+            if (StringUtils.isNotBlank(c.getName())) {
+                result.setName(c.getName());
+            }
+            if (StringUtils.isNotBlank(c.getType())) {
+                result.setType(c.getType());
+            }
+            if (c.getMedia() != null) {
+                result.setMedia(c.getMedia());
+            }
+            if (StringUtils.isNotBlank(c.getImageUrl())) {
+                result.setImageUrl(c.getImageUrl());
+            }
+            if (StringUtils.isNotBlank(c.getUrl())) {
+                result.setUrl(c.getUrl());
+            }
+        });
+        return result;
     }
 }

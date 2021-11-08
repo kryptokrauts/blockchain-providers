@@ -10,10 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class HederaTokenInfo {
-    private String symbol;
-    private String name;
-    private String type;
-    private int decimals;
-    private String tokenMemo;
+public class HederaNftInfo {
+    private String metadata;
 }

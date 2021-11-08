@@ -1,4 +1,4 @@
-package network.arkane.provider.hedera.balance.dto;
+package network.arkane.provider.hedera.mirror.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -6,14 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class HederaTokenInfo {
-    private String symbol;
-    private String name;
-    private String type;
-    private int decimals;
-    private String tokenMemo;
+public class MirrorNodeNftsResponse {
+    private List<MirrorNodeNft> nfts;
 }

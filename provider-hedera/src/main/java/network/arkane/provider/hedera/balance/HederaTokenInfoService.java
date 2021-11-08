@@ -33,14 +33,14 @@ public class HederaTokenInfoService implements NativeTokenDiscoveryService {
 
     @Cacheable(value = "hedera-token-info", unless = "#result == null")
     public Optional<network.arkane.provider.token.TokenInfo> getTokenInfo(String tokenId) {
-        return Optional.ofNullable(getTokenInfoFromChain(tokenId))
+        return Optional.ofNullable(getTokenInfoFromMirrorNode(tokenId).orElseGet(() -> getTokenInfoFromChain(tokenId)))
                        .map(t -> network.arkane.provider.token.TokenInfo.builder()
                                                                         .name(t.getName())
                                                                         .symbol(t.getSymbol())
                                                                         .decimals(t.getDecimals())
                                                                         .transferable(true)
                                                                         .address(tokenId)
-                                                                        .type("TOKEN")
+                                                                        .type(t.getType())
                                                                         .logo(getLogo(t))
                                                                         .build());
     }
@@ -71,6 +71,7 @@ public class HederaTokenInfoService implements NativeTokenDiscoveryService {
                                   .symbol(tokenInfo.symbol)
                                   .decimals(tokenInfo.decimals)
                                   .tokenMemo(tokenInfo.tokenMemo)
+                                  .type(tokenInfo.tokenType.toString())
                                   .build();
         } catch (TimeoutException | PrecheckStatusException e) {
             throw ArkaneException.arkaneException()
@@ -79,6 +80,28 @@ public class HederaTokenInfoService implements NativeTokenDiscoveryService {
                                  .errorCode("hedera.tokeninfo.error")
                                  .build();
         }
+    }
+
+    private HederaTokenInfo getNftInfoFromChain(String address,
+                                                String id) {
+        //        try {
+        //            List<TokenNftInfo> tokenInfo = new TokenNftInfoQuery()
+        //                    .setNftId(new NftId(TokenId.fromString(address), Long.parseLong(id)))
+        //                    .execute(hederaClient);
+        //            return HederaTokenInfo.builder()
+        //                                  .name(tokenInfo.name)
+        //                                  .symbol(tokenInfo.symbol)
+        //                                  .decimals(tokenInfo.decimals)
+        //                                  .tokenMemo(tokenInfo.tokenMemo)
+        //                                  .build();
+        //        } catch (TimeoutException | PrecheckStatusException e) {
+        //            throw ArkaneException.arkaneException()
+        //                                 .cause(e)
+        //                                 .message(e.getMessage())
+        //                                 .errorCode("hedera.tokeninfo.error")
+        //                                 .build();
+        //        }
+        return null;
     }
 
     private Optional<HederaTokenInfo> getTokenInfoFromMirrorNode(String tokenId) {

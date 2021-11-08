@@ -25,14 +25,14 @@ import java.util.stream.Collectors;
 public abstract class BlockscoutNonFungibleStrategy implements NonFungibleGateway {
 
     private BlockscoutClient blockscoutClient;
-    private MetaDataParser metadataParser;
+    private EvmMetaDataParser metadataParser;
 
 
     public BlockscoutNonFungibleStrategy(BlockscoutClient blockscoutClient,
                                          EvmContractService contractService,
                                          Optional<CacheManager> cacheManager) {
         this.blockscoutClient = blockscoutClient;
-        this.metadataParser = new MetaDataParser(contractService, cacheManager);
+        this.metadataParser = new EvmMetaDataParser(contractService, cacheManager);
     }
 
     @Override
