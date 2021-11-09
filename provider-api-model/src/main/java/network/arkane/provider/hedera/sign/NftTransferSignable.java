@@ -9,7 +9,8 @@ import network.arkane.provider.sign.domain.Signable;
 public class NftTransferSignable implements Signable {
     private String from;
     private String to;
-    private String nftId;
+    private String tokenId;
+    private Long serialNumber;
 }
 
 

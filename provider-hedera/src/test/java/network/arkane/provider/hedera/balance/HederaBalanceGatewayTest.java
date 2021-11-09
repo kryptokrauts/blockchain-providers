@@ -2,12 +2,15 @@ package network.arkane.provider.hedera.balance;
 
 import com.hedera.hashgraph.sdk.AccountBalance;
 import com.hedera.hashgraph.sdk.AccountBalanceQuery;
+import com.hedera.hashgraph.sdk.AccountId;
+import com.hedera.hashgraph.sdk.NftId;
 import com.hedera.hashgraph.sdk.PrecheckStatusException;
 import com.hedera.hashgraph.sdk.TokenCreateTransaction;
 import com.hedera.hashgraph.sdk.TokenId;
 import com.hedera.hashgraph.sdk.TokenMintTransaction;
 import com.hedera.hashgraph.sdk.TokenType;
 import com.hedera.hashgraph.sdk.TransactionResponse;
+import com.hedera.hashgraph.sdk.TransferTransaction;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.hedera.HederaClientFactory;
@@ -88,10 +91,20 @@ class HederaBalanceGatewayTest {
     }
 
     @Test
+    void nftTransfer() throws PrecheckStatusException, TimeoutException {
+        //nft token id: 	0.0.2849838
+        TransactionResponse response = new TransferTransaction()
+                .addNftTransfer(NftId.fromString("0.0.2850147/1"), HederaTestFixtures.getAccountId(), AccountId.fromString("0.0.2812305"))
+                .execute(HederaTestFixtures.clientFactory().getClientWithOperator());
+
+        System.out.println(response);
+    }
+
+    @Test
     void nftBalances() throws PrecheckStatusException, TimeoutException {
         //nft token id: 	0.0.2849838
         AccountBalance response = new AccountBalanceQuery()
-                .setAccountId(HederaTestFixtures.getAccountId())
+                .setAccountId(AccountId.fromString("0.0.2812305"))
                 .execute(HederaTestFixtures.clientFactory().getClientWithOperator());
         System.out.println(response);
     }
