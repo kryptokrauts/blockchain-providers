@@ -11,9 +11,9 @@ public final class IpfsUtil {
                 if (!cid.startsWith("ipfs/")) {
                     cid = "ipfs/" + cid;
                 }
-                return "https://cloudflare-ipfs.com/" + cid;
+                return "https://ipfs.io/" + cid;
             } else if (link.startsWith("https://gateway.pinata.cloud")) {
-                return link.replaceFirst("https://gateway.pinata.cloud", "https://cloudflare-ipfs.com");
+                return link.replaceFirst("https://gateway.pinata.cloud", "https://ipfs.io");
             }
         }
         return link;
