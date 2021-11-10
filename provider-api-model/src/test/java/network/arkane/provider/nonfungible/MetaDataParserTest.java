@@ -161,7 +161,7 @@ class MetaDataParserTest {
 
         NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metaData, JsonNode.class));
 
-        assertThat(result.getImage().get()).isEqualTo("https://cloudflare-ipfs.com/ipfs/QmNWtcUL4r5XnWZgmxL3xHYCEFhHYzwMdBXnx2mAdQf8hM");
+        assertThat(result.getImage().get()).isEqualTo("https://ipfs.io/ipfs/QmNWtcUL4r5XnWZgmxL3xHYCEFhHYzwMdBXnx2mAdQf8hM");
     }
 
     @Test
@@ -183,7 +183,7 @@ class MetaDataParserTest {
 
         NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metaData, JsonNode.class));
 
-        assertThat(result.getImage().get()).isEqualTo("https://cloudflare-ipfs.com/ipfs/QmdKQ6tJkvq5sa1qkQVCf5RJo74vJQucfZEVPdADoT6VMk");
+        assertThat(result.getImage().get()).isEqualTo("https://ipfs.io/ipfs/QmdKQ6tJkvq5sa1qkQVCf5RJo74vJQucfZEVPdADoT6VMk");
     }
 
     @Test
@@ -227,7 +227,7 @@ class MetaDataParserTest {
 
         NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metaData, JsonNode.class));
 
-        assertThat(result.getAnimationUrls().get(0).getValue()).isEqualTo("https://cloudflare-ipfs.com/ipfs/QmNWtcUL4r5XnWZgmxL3xHYCEFhHYzwMdBXnx2mAdQf8hM");
-        assertThat(result.getAnimationUrl().get()).isEqualTo("https://cloudflare-ipfs.com/ipfs/QmNWtcUL4r5XnWZgmxL3xHYCEFhHYzwMdBXnx2mAdQf8hM");
+        assertThat(result.getAnimationUrls().get(0).getValue()).isEqualTo("https://ipfs.io/ipfs/QmNWtcUL4r5XnWZgmxL3xHYCEFhHYzwMdBXnx2mAdQf8hM");
+        assertThat(result.getAnimationUrl().get()).isEqualTo("https://ipfs.io/ipfs/QmNWtcUL4r5XnWZgmxL3xHYCEFhHYzwMdBXnx2mAdQf8hM");
     }
 }
