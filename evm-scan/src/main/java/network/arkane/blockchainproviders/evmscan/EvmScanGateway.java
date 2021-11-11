@@ -19,6 +19,7 @@ public abstract class EvmScanGateway {
                          .transactions(evmScanClient.getTransactionList(address, page, offset)
                                                     .getResult())
                          .address(address)
+                         .chain(secretType())
                          .build();
     }
 

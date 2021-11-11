@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import network.arkane.provider.chain.SecretType;
 
 import java.util.List;
 
@@ -13,5 +14,6 @@ import java.util.List;
 @Builder
 public class EvmAccount {
     private String address;
+    private SecretType chain;
     private List<EvmTransaction> transactions;
 }

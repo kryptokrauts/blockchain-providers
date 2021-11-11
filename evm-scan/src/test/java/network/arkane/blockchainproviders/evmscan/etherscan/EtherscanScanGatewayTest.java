@@ -4,6 +4,7 @@ package network.arkane.blockchainproviders.evmscan.etherscan;
 import network.arkane.blockchainproviders.evmscan.dto.EvmAccount;
 import network.arkane.blockchainproviders.evmscan.dto.EvmScanApiResponse;
 import network.arkane.blockchainproviders.evmscan.dto.EvmTransaction;
+import network.arkane.provider.chain.SecretType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,7 @@ class EtherscanScanGatewayTest {
     void getTransactions() {
         final List<EvmTransaction> transactions = Collections.singletonList(EvmTransaction.builder().hash("hash").build());
         final EvmAccount evmAccount = EvmAccount.builder()
+                                                .chain(SecretType.ETHEREUM)
                                                 .address("walletAddress")
                                                 .transactions(transactions)
                                                 .build();
