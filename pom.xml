@@ -39,6 +39,7 @@
         <module>opensea</module>
         <module>integrationtests</module>
         <module>provider-api-model</module>
+        <module>evm-scan</module>
     </modules>
 
     <distributionManagement>
@@ -214,6 +215,11 @@
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>covalent</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane.blockchain-providers</groupId>
+                <artifactId>evm-scan</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
