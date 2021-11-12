@@ -2,44 +2,38 @@ package network.arkane.blockchainproviders.evmscan.etherscan;
 
 
 import network.arkane.blockchainproviders.evmscan.dto.EvmAccount;
-import network.arkane.blockchainproviders.evmscan.dto.EvmScanApiResponse;
-import network.arkane.blockchainproviders.evmscan.dto.EvmTransaction;
 import network.arkane.provider.chain.SecretType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
+@Disabled
 class EtherscanScanGatewayTest {
 
-    private EtherscanClient etherscanClient;
     private EtherscanGateway etherscanGateway;
 
     @BeforeEach
     void setUp() {
-        this.etherscanClient = mock(EtherscanClient.class);
-        this.etherscanGateway = new EtherscanGateway(etherscanClient);
+        this.etherscanGateway = new EtherscanGateway("https://api-ropsten.etherscan.io/api/", "YourApiKeyToken");
     }
 
     @Test
     void getTransactions() {
-        final List<EvmTransaction> transactions = Collections.singletonList(EvmTransaction.builder().hash("hash").build());
-        final EvmAccount evmAccount = EvmAccount.builder()
-                                                .chain(SecretType.ETHEREUM)
-                                                .address("walletAddress")
-                                                .transactions(transactions)
-                                                .build();
-
-        when(etherscanClient.getTransactionList("walletAddress", 0L, 0L)).thenReturn(EvmScanApiResponse.<EvmTransaction>builder().result(transactions).build());
-
-        final EvmAccount response = etherscanGateway.getTransactionList("walletAddress");
-
-        assertThat(response).isEqualTo(evmAccount);
+        final EvmAccount response = etherscanGateway.getTransactionList("0xddbd2b932c763ba5b1b7ae3b362eac3e8d40121a");
+        assertThat(response).isNotNull();
+        assertThat(response.getChain()).isEqualTo(SecretType.ETHEREUM);
+        assertThat(response.getAddress()).isEqualTo("0xddbd2b932c763ba5b1b7ae3b362eac3e8d40121a");
+        assertThat(response.getTransactions()).isNotEmpty();
+        assertThat(response.getTransactions().get(0).getBlockHash()).isNotNull();
+        assertThat(response.getTransactions().get(0).getBlockNumber()).isNotNull();
+        assertThat(response.getTransactions().get(0).getFrom()).isNotNull();
+        assertThat(response.getTransactions().get(0).getHash()).isNotNull();
+        assertThat(response.getTransactions().get(0).getIsError()).isNotNull();
+        assertThat(response.getTransactions().get(0).getTimestamp()).isNotNull();
+        assertThat(response.getTransactions().get(0).getTo()).isNotNull();
+        assertThat(response.getTransactions().get(0).getValue()).isNotNull();
     }
 
 }

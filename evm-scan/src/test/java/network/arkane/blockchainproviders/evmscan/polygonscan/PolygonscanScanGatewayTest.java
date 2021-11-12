@@ -2,44 +2,39 @@ package network.arkane.blockchainproviders.evmscan.polygonscan;
 
 
 import network.arkane.blockchainproviders.evmscan.dto.EvmAccount;
-import network.arkane.blockchainproviders.evmscan.dto.EvmScanApiResponse;
-import network.arkane.blockchainproviders.evmscan.dto.EvmTransaction;
 import network.arkane.provider.chain.SecretType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
+@Disabled
 class PolygonscanScanGatewayTest {
 
-    private PolygonscanClient polygonscanClient;
     private PolygonscanGateway polygonscanGateway;
 
     @BeforeEach
     void setUp() {
-        this.polygonscanClient = mock(PolygonscanClient.class);
-        this.polygonscanGateway = new PolygonscanGateway(polygonscanClient);
+        this.polygonscanGateway = new PolygonscanGateway("https://api-mumbai.polygonscan.com/api/", "YourApiKeyToken");
     }
 
     @Test
     void getTransactions() {
-        final List<EvmTransaction> transactions = Collections.singletonList(EvmTransaction.builder().hash("hash").build());
-        final EvmAccount evmAccount = EvmAccount.builder()
-                                                .chain(SecretType.MATIC)
-                                                .address("walletAddress")
-                                                .transactions(transactions)
-                                                .build();
+        final EvmAccount response = polygonscanGateway.getTransactionList("0x0000000000000000000000000000000000001010");
 
-        when(polygonscanClient.getTransactionList("walletAddress", 0L, 0L)).thenReturn(EvmScanApiResponse.<EvmTransaction>builder().result(transactions).build());
-
-        final EvmAccount response = polygonscanGateway.getTransactionList("walletAddress");
-
-        assertThat(response).isEqualTo(evmAccount);
+        assertThat(response).isNotNull();
+        assertThat(response.getChain()).isEqualTo(SecretType.MATIC);
+        assertThat(response.getAddress()).isEqualTo("0x0000000000000000000000000000000000001010");
+        assertThat(response.getTransactions()).isNotEmpty();
+        assertThat(response.getTransactions().get(0).getBlockHash()).isNotNull();
+        assertThat(response.getTransactions().get(0).getBlockNumber()).isNotNull();
+        assertThat(response.getTransactions().get(0).getFrom()).isNotNull();
+        assertThat(response.getTransactions().get(0).getHash()).isNotNull();
+        assertThat(response.getTransactions().get(0).getIsError()).isNotNull();
+        assertThat(response.getTransactions().get(0).getTimestamp()).isNotNull();
+        assertThat(response.getTransactions().get(0).getTo()).isNotNull();
+        assertThat(response.getTransactions().get(0).getValue()).isNotNull();
     }
 
 }
