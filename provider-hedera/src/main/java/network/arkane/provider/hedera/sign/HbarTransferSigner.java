@@ -25,6 +25,7 @@ public class HbarTransferSigner extends HederaSigner<HbarTransferSignable, Trans
                                                                  HederaSecretKey key) {
         Hbar amount = Hbar.fromTinybars(signable.getAmount().longValueExact());
         return new TransferTransaction()
+                .setTransactionMemo(signable.getMemo())
                 .addHbarTransfer(AccountId.fromString(signable.getFrom()), amount.negated())
                 .addHbarTransfer(AccountId.fromString(signable.getTo()), amount)
                 .freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getFrom()), key.getKey()))
