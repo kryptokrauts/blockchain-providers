@@ -5,12 +5,14 @@ import network.arkane.provider.hedera.balance.HederaTokenInfoService;
 import network.arkane.provider.hedera.mirror.MirrorNodeClient;
 import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 
 import java.util.List;
 import java.util.Optional;
 
+@Disabled
 class HederaNonfungibleGatewayIntegrationTest {
 
     private HederaNonfungibleGateway hederaNonfungibleGateway;

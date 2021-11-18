@@ -13,6 +13,7 @@ public class TokenTransferSignable implements Signable {
     private String to;
     private BigInteger amount;
     private String tokenId;
+    private String memo;
 }
 
 
