@@ -24,12 +24,14 @@ public class HbarTransferSigner extends HederaSigner<HbarTransferSignable, Trans
     protected Transaction<TransferTransaction> createTransaction(HbarTransferSignable signable,
                                                                  HederaSecretKey key) {
         Hbar amount = Hbar.fromTinybars(signable.getAmount().longValueExact());
-        return new TransferTransaction()
-                .setTransactionMemo(signable.getMemo())
+        final TransferTransaction transferTransaction = new TransferTransaction()
                 .addHbarTransfer(AccountId.fromString(signable.getFrom()), amount.negated())
-                .addHbarTransfer(AccountId.fromString(signable.getTo()), amount)
-                .freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getFrom()), key.getKey()))
-                .sign(key.getKey());
+                .addHbarTransfer(AccountId.fromString(signable.getTo()), amount);
+        if (signable.getMemo() != null) {
+            transferTransaction.setTransactionMemo(signable.getMemo());
+        }
+        return transferTransaction.freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getFrom()), key.getKey()))
+                                  .sign(key.getKey());
     }
 
 }
