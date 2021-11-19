@@ -26,11 +26,14 @@ public class TokenAssociationSigner extends HederaSigner<TokenAssociationSignabl
     @Override
     protected Transaction<TokenAssociateTransaction> createTransaction(TokenAssociationSignable signable,
                                                                        HederaSecretKey key) {
-        return new TokenAssociateTransaction()
+        final TokenAssociateTransaction tokenAssociateTransaction = new TokenAssociateTransaction()
                 .setAccountId(AccountId.fromString(signable.getAccountId()))
-                .setTokenIds(CollectionUtils.emptyIfNull(signable.getTokenIds()).stream().map(TokenId::fromString).collect(Collectors.toList()))
-                .freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getAccountId()), key.getKey()))
-                .sign(key.getKey());
+                .setTokenIds(CollectionUtils.emptyIfNull(signable.getTokenIds()).stream().map(TokenId::fromString).collect(Collectors.toList()));
+        if (signable.getTransactionMemo() != null) {
+            tokenAssociateTransaction.setTransactionMemo(signable.getTransactionMemo());
+        }
+        return tokenAssociateTransaction.freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getAccountId()), key.getKey()))
+                                        .sign(key.getKey());
     }
 
 }
