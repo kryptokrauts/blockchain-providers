@@ -33,6 +33,12 @@ public class NftCreationSigner extends HederaSigner<NftCreationSignable, TokenCr
                 .setTokenName(signable.getName())
                 .setTokenMemo(signable.getMemo())
                 .setTokenSymbol(signable.getSymbol())
+                .setSupplyKey(key.getKey())
+                .setFreezeKey(key.getKey())
+                .setWipeKey(key.getKey())
+                .setFeeScheduleKey(key.getKey())
+                .setKycKey(key.getKey())
+                .setAdminKey(key.getKey())
                 .freezeWith(clientFactory.buildClient(from, key.getKey()))
                 .sign(key.getKey());
     }
