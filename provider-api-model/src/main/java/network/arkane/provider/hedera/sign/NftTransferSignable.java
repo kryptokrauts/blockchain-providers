@@ -11,6 +11,7 @@ public class NftTransferSignable implements Signable {
     private String to;
     private String tokenId;
     private Long serialNumber;
+    private String transactionMemo;
 }
 
 

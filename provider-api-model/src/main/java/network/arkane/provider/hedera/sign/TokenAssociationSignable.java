@@ -11,6 +11,7 @@ import java.util.List;
 public class TokenAssociationSignable implements Signable {
     private String accountId;
     private List<String> tokenIds;
+    private String transactionMemo;
 }
 
 
