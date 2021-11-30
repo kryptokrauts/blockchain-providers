@@ -19,10 +19,13 @@ import network.arkane.provider.core.model.clients.Amount;
 import network.arkane.provider.core.model.clients.ERC20Token;
 import network.arkane.provider.core.model.clients.Revision;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.exceptions.InsufficientFundsException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.List;
+
+import static network.arkane.provider.exceptions.InsufficientFundsException.insufficientFundsException;
 
 @Component
 @Slf4j
@@ -153,11 +156,11 @@ public class VechainGateway {
         } catch (final Exception ex) {
             log.error("Problem trying to submit transaction to the Vechain network: {}", ex.getMessage());
             if (ex.getMessage() != null && ex.getMessage().contains("insufficient energy")) {
-                throw ArkaneException.arkaneException()
-                                     .errorCode("transaction.insufficient-funds")
-                                     .message("The account that initiated the transfer does not have enough energy")
-                                     .cause(ex)
-                                     .build();
+                throw insufficientFundsException()
+                        .errorCode("transaction.insufficient-funds")
+                        .message("The account that initiated the transfer does not have enough energy")
+                        .cause(ex)
+                        .build();
             } else {
                 throw ArkaneException.arkaneException()
                                      .errorCode("thorify.transaction.submit.internal-error")
