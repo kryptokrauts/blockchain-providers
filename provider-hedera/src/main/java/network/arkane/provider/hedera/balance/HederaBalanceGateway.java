@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class HederaBalanceGateway extends BalanceGateway {
 
+    private static final String FUNGIBLE_COMMON = "FUNGIBLE_COMMON";
     private final Client hederaClient;
     private final HederaTokenInfoService tokenInfoService;
     private final MirrorNodeClient mirrorNodeClient;
@@ -119,6 +121,7 @@ public class HederaBalanceGateway extends BalanceGateway {
                                 .filter(e -> e.getKey().toString().equalsIgnoreCase(tokenAddress) || StringUtils.isBlank(tokenAddress))
                                 .map(e -> {
                                     Optional<TokenInfo> tokenInfo = tokenInfoService.getTokenInfo(e.getKey().toString());
+                                    if (tokenInfo.isPresent() && !FUNGIBLE_COMMON.equalsIgnoreCase(tokenInfo.get().getType())) return null;
                                     return TokenBalance.builder()
                                                        .tokenAddress(e.getKey().toString())
                                                        .rawBalance(e.getValue().toString())
@@ -130,6 +133,7 @@ public class HederaBalanceGateway extends BalanceGateway {
                                                        .decimals(tokenInfo.map(TokenInfo::getDecimals).orElse(0))
                                                        .build();
                                 })
+                                .filter(Objects::nonNull)
                                 .collect(Collectors.toList());
 
         } catch (TimeoutException | PrecheckStatusException e) {
