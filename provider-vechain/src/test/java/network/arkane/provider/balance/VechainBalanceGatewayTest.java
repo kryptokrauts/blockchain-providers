@@ -62,13 +62,14 @@ public class VechainBalanceGatewayTest {
     }
 
     @Test
-    void checkTokenBalance() {
+    void checkTokenBalancesForTokenIds() {
         final String walletAddress = "address";
         final TokenBalance expectedResult = TokenBalanceMother.vthoResult();
         final TokenInfo tokenInfo = TokenInfoMother.vtho().build();
         setUpToken(walletAddress, tokenInfo, expectedResult);
 
         when(tokenDiscoveryService.getTokenInfo(VECHAIN, tokenInfo.getAddress())).thenReturn(Optional.of(tokenInfo));
+        when(vechainGateway.getTokenBalances(walletAddress, Arrays.asList(tokenInfo.getAddress()))).thenReturn(Arrays.asList(new BigInteger(expectedResult.getRawBalance())));
 
         final List<TokenBalance> result = balanceGateway.getTokenBalances(walletAddress, Arrays.asList(tokenInfo.getAddress()));
 
