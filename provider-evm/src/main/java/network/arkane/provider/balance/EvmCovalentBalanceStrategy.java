@@ -43,6 +43,7 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
         try {
             return getNativeBalanceFromNode(account);
         } catch (final Exception ex) {
+            log.warn(String.format("Fetching native balance from node failed for account: %s. Trying Covalent as fallback", account), ex);
             try {
                 return getNativeBalanceFromCovalent(account);
             } catch (Exception ex2) {
