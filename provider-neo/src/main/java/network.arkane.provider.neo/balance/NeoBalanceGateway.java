@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static network.arkane.provider.chain.SecretType.NEO;
+
 
 @Slf4j
 @Component
@@ -31,14 +33,15 @@ public class NeoBalanceGateway extends BalanceGateway {
     private NeoW3JGateway neoGate;
     private final TokenDiscoveryService service;
 
-    public NeoBalanceGateway(final NeoW3JGateway neoGate, final TokenDiscoveryService service) {
+    public NeoBalanceGateway(final NeoW3JGateway neoGate,
+                             final TokenDiscoveryService service) {
         this.neoGate = neoGate;
         this.service = service;
     }
 
     @Override
     public SecretType type() {
-        return SecretType.NEO;
+        return NEO;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class NeoBalanceGateway extends BalanceGateway {
                           .available(true)
                           .rawBalance(neoBalance.toString())
                           .rawGasBalance(gasBalance.toString())
-                          .secretType(SecretType.NEO)
+                          .secretType(NEO)
                           .balance(PrecisionUtil.toDecimal(neoBalance, 0))
                           .gasBalance(PrecisionUtil.toDecimal(gasBalance, 8))
                           .symbol(NEOAsset.NAME)
@@ -78,34 +81,22 @@ public class NeoBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public TokenBalance getTokenBalance(final String walletAddress,
-                                        final String tokenAddress) {
-        final TokenInfo tokenInfo = service.getTokenInfo(SecretType.NEO, tokenAddress).orElseThrow(IllegalArgumentException::new);
-        return getTokenBalance(walletAddress, tokenInfo);
-    }
-
-    private TokenBalance getTokenBalance(final String walletAddress, final TokenInfo tokenInfo) {
-        final BigInteger tokenBalance = neoGate.getTokenBalance(walletAddress, tokenInfo.getAddress());
-
-        return TokenBalance.builder()
-                           .tokenAddress(tokenInfo.getAddress())
-                           .rawBalance(tokenBalance.toString())
-                           .balance(calculateBalance(tokenBalance, tokenInfo))
-                           .decimals(tokenInfo.getDecimals())
-                           .symbol(tokenInfo.getSymbol())
-                           .name(tokenInfo.getName())
-                           .logo(tokenInfo.getLogo())
-                           .type(tokenInfo.getType())
-                           .transferable(tokenInfo.isTransferable())
-                           .build();
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        final List<TokenInfo> tokenInfos = tokenAddresses.stream()
+                                                         .map(tokenAddress -> service.getTokenInfo(NEO, tokenAddress)
+                                                                                     .orElseThrow(IllegalArgumentException::new))
+                                                         .collect(Collectors.toList());
+        return getTokenBalancesForTokenInfos(walletAddress, tokenInfos);
     }
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return getTokenBalances(walletAddress, service.getTokens(SecretType.NEO));
+        return getTokenBalancesForTokenInfos(walletAddress, service.getTokens(NEO));
     }
 
-    private List<TokenBalance> getTokenBalances(final String walletAddress, final List<TokenInfo> tokenInfo) {
+    private List<TokenBalance> getTokenBalancesForTokenInfos(final String walletAddress,
+                                                             final List<TokenInfo> tokenInfo) {
         final List<BigInteger> balances = neoGate.getTokenBalances(walletAddress, tokenInfo.stream().map(TokenInfo::getAddress).collect(Collectors.toList()));
         final List<TokenBalance> results = new ArrayList<>();
         for (int i = 0; i < balances.size(); i++) {
@@ -125,7 +116,8 @@ public class NeoBalanceGateway extends BalanceGateway {
         return results;
     }
 
-    private double calculateBalance(final BigInteger tokenBalance, final TokenInfo tokenInfo) {
+    private double calculateBalance(final BigInteger tokenBalance,
+                                    final TokenInfo tokenInfo) {
         final BigDecimal rawBalance = new BigDecimal(tokenBalance);
         final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
         return rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN).doubleValue();

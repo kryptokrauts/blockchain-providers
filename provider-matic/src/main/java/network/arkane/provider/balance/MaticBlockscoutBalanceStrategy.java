@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -49,26 +50,31 @@ public class MaticBlockscoutBalanceStrategy implements EvmBalanceStrategy {
     }
 
     @Override
-    public TokenBalance getTokenBalance(String address,
-                                        String tokenAddress) {
-        final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(SecretType.MATIC, tokenAddress).orElseThrow(IllegalArgumentException::new);
-        return getTokenBalance(address, tokenInfo);
-    }
-
-    private TokenBalance getTokenBalance(final String walletAddress,
-                                         final TokenInfo tokenInfo) {
-        final BigInteger tokenBalance = maticBlockscoutClient.getTokenBalance(walletAddress, tokenInfo.getAddress());
-        return TokenBalance.builder()
-                           .tokenAddress(tokenInfo.getAddress())
-                           .rawBalance(tokenBalance.toString())
-                           .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
-                           .decimals(tokenInfo.getDecimals())
-                           .symbol(tokenInfo.getSymbol())
-                           .name(tokenInfo.getName())
-                           .logo(tokenInfo.getLogo())
-                           .type(tokenInfo.getType())
-                           .transferable(tokenInfo.isTransferable())
-                           .build();
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        final List<TokenInfo> tokenInfos = tokenAddresses.stream()
+                                                         .map(tokenAddress -> tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new))
+                                                         .collect(Collectors.toList());
+        final Map<String, TokenInfo> tokenInfoMap = tokenInfos.stream().collect(Collectors.toMap(ti -> ti.getAddress().toLowerCase(), ti -> ti));
+        return maticBlockscoutClient.getTokenBalances(walletAddress, tokenAddresses)
+                                    .entrySet()
+                                    .stream()
+                                    .map(entry -> {
+                                        final TokenInfo tokenInfo = tokenInfoMap.get(entry.getKey());
+                                        final BigInteger balance = entry.getValue();
+                                        return TokenBalance.builder()
+                                                           .tokenAddress(tokenInfo.getAddress())
+                                                           .rawBalance(balance.toString())
+                                                           .balance(calculateBalance(balance, tokenInfo.getDecimals()))
+                                                           .decimals(tokenInfo.getDecimals())
+                                                           .symbol(tokenInfo.getSymbol())
+                                                           .name(tokenInfo.getName())
+                                                           .logo(tokenInfo.getLogo())
+                                                           .type(tokenInfo.getType())
+                                                           .transferable(tokenInfo.isTransferable())
+                                                           .build();
+                                    })
+                                    .collect(Collectors.toList());
     }
 
     @Override

@@ -53,35 +53,21 @@ public abstract class EvmNativeBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public TokenBalance getTokenBalance(final String walletAddress,
-                                        final String tokenAddress) {
-        final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new);
-        return getTokenBalance(walletAddress, tokenInfo);
-    }
-
-    private TokenBalance getTokenBalance(final String walletAddress,
-                                         final TokenInfo tokenInfo) {
-        final BigInteger tokenBalance = web3JGateway.getTokenBalance(walletAddress, tokenInfo.getAddress());
-        return TokenBalance.builder()
-                           .tokenAddress(tokenInfo.getAddress())
-                           .rawBalance(tokenBalance.toString())
-                           .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
-                           .decimals(tokenInfo.getDecimals())
-                           .symbol(tokenInfo.getSymbol())
-                           .name(tokenInfo.getName())
-                           .logo(tokenInfo.getLogo())
-                           .type(tokenInfo.getType())
-                           .transferable(tokenInfo.isTransferable())
-                           .build();
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        final List<TokenInfo> tokenInfos = tokenAddresses.stream()
+                                                         .map(tokenAddress -> tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new))
+                                                         .collect(Collectors.toList());
+        return getTokenBalancesForTokenInfos(walletAddress, tokenInfos);
     }
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(type()));
+        return getTokenBalancesForTokenInfos(walletAddress, tokenDiscoveryService.getTokens(type()));
     }
 
-    private List<TokenBalance> getTokenBalances(final String walletAddress,
-                                                final List<TokenInfo> tokenInfo) {
+    private List<TokenBalance> getTokenBalancesForTokenInfos(final String walletAddress,
+                                                             final List<TokenInfo> tokenInfo) {
         final List<BigInteger> balances = web3JGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(TokenInfo::getAddress).collect(Collectors.toList()));
         final List<TokenBalance> results = new ArrayList<>();
         for (int i = 0; i < balances.size(); i++) {

@@ -13,7 +13,6 @@ import network.arkane.provider.gateway.VechainGateway;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import network.arkane.provider.token.TokenInfoMother;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static network.arkane.provider.chain.SecretType.VECHAIN;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.refEq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -71,9 +70,9 @@ public class VechainBalanceGatewayTest {
 
         when(tokenDiscoveryService.getTokenInfo(VECHAIN, tokenInfo.getAddress())).thenReturn(Optional.of(tokenInfo));
 
-        final TokenBalance result = balanceGateway.getTokenBalance(walletAddress, tokenInfo.getAddress());
+        final List<TokenBalance> result = balanceGateway.getTokenBalances(walletAddress, Arrays.asList(tokenInfo.getAddress()));
 
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(result).containsOnly(expectedResult);
     }
 
     @Test

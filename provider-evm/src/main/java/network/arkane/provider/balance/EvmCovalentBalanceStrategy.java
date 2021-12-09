@@ -51,7 +51,7 @@ public abstract class EvmCovalentBalanceStrategy extends EvmNativeBalanceStrateg
         }
     }
 
-    private Balance getNativeBalanceFromCovalent(String account) {
+    private Balance getNativeBalanceFromCovalent(final String account) {
         CovalentTokenBalanceResponse tokenBalances = covalentClient.getTokenBalances(chainId, account);
         if (tokenBalances != null && tokenBalances.getData() != null && CollectionUtils.isNotEmpty(tokenBalances.getData().getItems())) {
             return tokenBalances
@@ -78,8 +78,7 @@ public abstract class EvmCovalentBalanceStrategy extends EvmNativeBalanceStrateg
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress,
-                                               List<String> tokenAddresses) {
-        tokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toList());
+                                               final List<String> tokenAddresses) {
         try {
             return super.getTokenBalances(walletAddress, tokenAddresses);
         } catch (Exception e) {
@@ -99,10 +98,10 @@ public abstract class EvmCovalentBalanceStrategy extends EvmNativeBalanceStrateg
 
     private List<TokenBalance> getTokenBalancesFromCovalent(final String walletAddress,
                                                             final List<String> tokenAddresses) {
-
+        final List<String> lowerCaseTokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toList());
         return getTokenBalances(walletAddress).stream()
-                                              .filter(tb -> tokenAddresses.contains(tb.getTokenAddress()
-                                                                                      .toLowerCase()))
+                                              .filter(tb -> lowerCaseTokenAddresses.contains(tb.getTokenAddress()
+                                                                                               .toLowerCase()))
                                               .collect(Collectors.toList());
     }
 

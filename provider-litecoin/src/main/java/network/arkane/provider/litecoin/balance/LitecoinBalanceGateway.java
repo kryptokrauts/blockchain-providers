@@ -60,7 +60,7 @@ public class LitecoinBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public TokenBalance getTokenBalance(String address, String tokenAddress) {
+    public List<TokenBalance> getTokenBalances(String address, List<String> tokenAddresses) {
         throw new UnsupportedOperationException();
     }
 

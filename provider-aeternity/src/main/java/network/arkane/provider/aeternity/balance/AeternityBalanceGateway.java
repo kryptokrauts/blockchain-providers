@@ -59,7 +59,7 @@ public class AeternityBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public TokenBalance getTokenBalance(String address, String tokenAddress) {
+    public List<TokenBalance> getTokenBalances(String address, List<String> tokenAddress) {
         throw new UnsupportedOperationException("Not implemented yet for aeternity");
     }
 

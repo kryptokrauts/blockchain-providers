@@ -12,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
@@ -51,8 +53,8 @@ class EthereumBalanceGatewayIntegrationTest {
                                                                                                                     .type("ERC20")
                                                                                                                     .build()));
 
-        TokenBalance result = ethereumBalanceGateway.getTokenBalance("0xd4245b14ea0a885dbea5aa678dd5aba62505e36c", tokenAddress);
-        System.out.println(result);
+        List<TokenBalance> result = ethereumBalanceGateway.getTokenBalances("0xd4245b14ea0a885dbea5aa678dd5aba62505e36c", Arrays.asList(tokenAddress));
+        result.forEach(System.out::println);
     }
 
     @Test
@@ -60,7 +62,7 @@ class EthereumBalanceGatewayIntegrationTest {
         String tokenAddress = "0xaFF4481D10270F50f203E0763e2597776068CBc5";
         when(githubTokenDiscoveryService.getTokens()).thenReturn(new HashMap<>());
 
-        TokenBalance result = ethereumBalanceGateway.getTokenBalance("0xd4245b14ea0a885dbea5aa678dd5aba62505e36c", tokenAddress);
-        System.out.println(result);
+        List<TokenBalance> result = ethereumBalanceGateway.getTokenBalances("0xd4245b14ea0a885dbea5aa678dd5aba62505e36c", Arrays.asList(tokenAddress));
+        result.forEach(System.out::println);
     }
 }
