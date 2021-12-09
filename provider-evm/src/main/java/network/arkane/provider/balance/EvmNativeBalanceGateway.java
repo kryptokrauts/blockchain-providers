@@ -53,6 +53,21 @@ public abstract class EvmNativeBalanceGateway extends BalanceGateway {
     }
 
     @Override
+    public Balance getZeroBalance() {
+        return Balance.builder()
+                      .available(true)
+                      .rawBalance("0")
+                      .rawGasBalance("0")
+                      .secretType(type())
+                      .gasBalance(0.0)
+                      .balance(0.0)
+                      .symbol(type().getSymbol())
+                      .gasSymbol(type().getGasSymbol())
+                      .decimals(18)
+                      .build();
+    }
+
+    @Override
     public TokenBalance getTokenBalance(final String walletAddress,
                                         final String tokenAddress) {
         final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new);

@@ -64,6 +64,21 @@ public class HederaBalanceGateway extends BalanceGateway {
         }
     }
 
+    @Override
+    public Balance getZeroBalance() {
+        return Balance.builder()
+                      .available(true)
+                      .decimals(8)
+                      .gasBalance(0.0)
+                      .balance(0.0)
+                      .rawGasBalance("0")
+                      .rawBalance("0")
+                      .secretType(SecretType.HEDERA)
+                      .gasSymbol(SecretType.HEDERA.getGasSymbol())
+                      .symbol(SecretType.HEDERA.getSymbol())
+                      .build();
+    }
+
     private Hbar getHbarBalanceFromChain(String address) {
 
         try {

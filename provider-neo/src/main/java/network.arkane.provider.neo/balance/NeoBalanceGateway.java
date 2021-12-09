@@ -31,7 +31,8 @@ public class NeoBalanceGateway extends BalanceGateway {
     private NeoW3JGateway neoGate;
     private final TokenDiscoveryService service;
 
-    public NeoBalanceGateway(final NeoW3JGateway neoGate, final TokenDiscoveryService service) {
+    public NeoBalanceGateway(final NeoW3JGateway neoGate,
+                             final TokenDiscoveryService service) {
         this.neoGate = neoGate;
         this.service = service;
     }
@@ -78,13 +79,29 @@ public class NeoBalanceGateway extends BalanceGateway {
     }
 
     @Override
+    public Balance getZeroBalance() {
+        return Balance.builder()
+                      .available(true)
+                      .rawBalance("0")
+                      .rawGasBalance("0")
+                      .secretType(SecretType.NEO)
+                      .balance(0.0)
+                      .gasBalance(0.0)
+                      .symbol(NEOAsset.NAME)
+                      .gasSymbol("GAS")
+                      .decimals(8)
+                      .build();
+    }
+
+    @Override
     public TokenBalance getTokenBalance(final String walletAddress,
                                         final String tokenAddress) {
         final TokenInfo tokenInfo = service.getTokenInfo(SecretType.NEO, tokenAddress).orElseThrow(IllegalArgumentException::new);
         return getTokenBalance(walletAddress, tokenInfo);
     }
 
-    private TokenBalance getTokenBalance(final String walletAddress, final TokenInfo tokenInfo) {
+    private TokenBalance getTokenBalance(final String walletAddress,
+                                         final TokenInfo tokenInfo) {
         final BigInteger tokenBalance = neoGate.getTokenBalance(walletAddress, tokenInfo.getAddress());
 
         return TokenBalance.builder()
@@ -105,7 +122,8 @@ public class NeoBalanceGateway extends BalanceGateway {
         return getTokenBalances(walletAddress, service.getTokens(SecretType.NEO));
     }
 
-    private List<TokenBalance> getTokenBalances(final String walletAddress, final List<TokenInfo> tokenInfo) {
+    private List<TokenBalance> getTokenBalances(final String walletAddress,
+                                                final List<TokenInfo> tokenInfo) {
         final List<BigInteger> balances = neoGate.getTokenBalances(walletAddress, tokenInfo.stream().map(TokenInfo::getAddress).collect(Collectors.toList()));
         final List<TokenBalance> results = new ArrayList<>();
         for (int i = 0; i < balances.size(); i++) {
@@ -125,7 +143,8 @@ public class NeoBalanceGateway extends BalanceGateway {
         return results;
     }
 
-    private double calculateBalance(final BigInteger tokenBalance, final TokenInfo tokenInfo) {
+    private double calculateBalance(final BigInteger tokenBalance,
+                                    final TokenInfo tokenInfo) {
         final BigDecimal rawBalance = new BigDecimal(tokenBalance);
         final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
         return rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN).doubleValue();
