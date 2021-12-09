@@ -60,7 +60,24 @@ public class LitecoinBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public TokenBalance getTokenBalance(String address, String tokenAddress) {
+    public Balance getZeroBalance() {
+        return Balance
+                .builder()
+                .available(true)
+                .balance(0.0)
+                .gasBalance(0.0)
+                .rawBalance("0")
+                .rawGasBalance("0")
+                .decimals(8)
+                .secretType(SecretType.LITECOIN)
+                .symbol("LTC")
+                .gasSymbol("LTC")
+                .build();
+    }
+
+    @Override
+    public TokenBalance getTokenBalance(String address,
+                                        String tokenAddress) {
         throw new UnsupportedOperationException();
     }
 

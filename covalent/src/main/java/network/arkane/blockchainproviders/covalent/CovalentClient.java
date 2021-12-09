@@ -9,6 +9,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
@@ -32,6 +34,9 @@ public class CovalentClient {
                                                 .build();
     }
 
+    @Retryable(value = Exception.class,
+               maxAttempts = 4,
+               backoff = @Backoff(delay = 1000L, multiplier = 2))
     public CovalentTokenBalanceResponse getTokenBalances(String chainId,
                                                          String address) {
         return restTemplate.getForObject("/{chainId}/address/{address}/balances_v2/", CovalentTokenBalanceResponse.class, chainId, address);

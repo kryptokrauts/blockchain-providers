@@ -55,7 +55,23 @@ public class VechainBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public TokenBalance getTokenBalance(final String walletAddress, final String tokenAddress) {
+    public Balance getZeroBalance() {
+        return Balance.builder()
+                      .available(true)
+                      .secretType(SecretType.VECHAIN)
+                      .balance(0.0)
+                      .rawBalance("0")
+                      .gasBalance(0.0)
+                      .rawGasBalance("0")
+                      .symbol("VET")
+                      .gasSymbol("VTHO")
+                      .decimals(18)
+                      .build();
+    }
+
+    @Override
+    public TokenBalance getTokenBalance(final String walletAddress,
+                                        final String tokenAddress) {
         final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(SecretType.VECHAIN, tokenAddress).orElseThrow(IllegalArgumentException::new);
         return getTokenBalance(walletAddress, tokenInfo);
     }
