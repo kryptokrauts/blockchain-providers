@@ -35,6 +35,7 @@ public class CovalentClient {
     }
 
     @Retryable(value = Exception.class,
+               maxAttempts = 4,
                backoff = @Backoff(delay = 1000L, multiplier = 2))
     public CovalentTokenBalanceResponse getTokenBalances(String chainId,
                                                          String address) {
