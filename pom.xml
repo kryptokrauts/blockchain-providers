@@ -5,7 +5,7 @@
 
     <artifactId>blockchain-providers</artifactId>
     <groupId>network.arkane.blockchain-providers</groupId>
-    <version>0.37.4-SNAPSHOT</version>
+    <version>0.38.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
@@ -39,6 +39,7 @@
         <module>opensea</module>
         <module>integrationtests</module>
         <module>provider-api-model</module>
+        <module>evm-scan</module>
     </modules>
 
     <distributionManagement>
@@ -218,6 +219,11 @@
             </dependency>
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
+                <artifactId>evm-scan</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>azrael</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -348,6 +354,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

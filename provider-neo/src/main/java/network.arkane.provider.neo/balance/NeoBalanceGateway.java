@@ -81,6 +81,21 @@ public class NeoBalanceGateway extends BalanceGateway {
     }
 
     @Override
+    public Balance getZeroBalance() {
+        return Balance.builder()
+                      .available(true)
+                      .rawBalance("0")
+                      .rawGasBalance("0")
+                      .secretType(SecretType.NEO)
+                      .balance(0.0)
+                      .gasBalance(0.0)
+                      .symbol(NEOAsset.NAME)
+                      .gasSymbol("GAS")
+                      .decimals(8)
+                      .build();
+    }
+
+    @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress,
                                                final List<String> tokenAddresses) {
         final List<TokenInfo> tokenInfos = tokenAddresses.stream()

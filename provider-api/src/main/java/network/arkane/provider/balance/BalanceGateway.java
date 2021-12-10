@@ -18,6 +18,11 @@ public abstract class BalanceGateway {
      */
     abstract public Balance getBalance(final String address);
 
+    /**
+     * @return a Balance object with balance of 0
+     */
+    abstract public Balance getZeroBalance();
+
     Balance unavailableBalance(final String address) {
         log.debug("Wallet {} could not be searched for type {}", address, type());
         return Balance.builder()

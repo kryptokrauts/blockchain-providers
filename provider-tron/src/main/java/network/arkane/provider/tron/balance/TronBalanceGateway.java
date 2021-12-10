@@ -27,6 +27,11 @@ public class TronBalanceGateway extends BalanceGateway {
     }
 
     @Override
+    public Balance getZeroBalance() {
+        throw new ChainNoLongerSupportedException();
+    }
+
+    @Override
     public List<TokenBalance> getTokenBalances(String address,
                                                List<String> tokenAddresses) {
         throw new ChainNoLongerSupportedException();

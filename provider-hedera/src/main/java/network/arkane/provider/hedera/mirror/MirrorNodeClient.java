@@ -7,12 +7,21 @@ import network.arkane.provider.hedera.balance.dto.HederaTokenInfo;
 import network.arkane.provider.hedera.mirror.dto.Accounts;
 import network.arkane.provider.hedera.mirror.dto.Balances;
 import network.arkane.provider.hedera.mirror.dto.HederaTransactions;
+import network.arkane.provider.hedera.mirror.dto.MirrorNodeNft;
+import network.arkane.provider.hedera.mirror.dto.MirrorNodeNftsResponse;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Collections.emptyList;
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 
 @Component
 public class MirrorNodeClient {
@@ -50,5 +59,29 @@ public class MirrorNodeClient {
         String[] splitted = transactionId.split("@");
         String newTxId = splitted[0] + "-" + splitted[1].replaceAll("\\.", "-");
         return restTemplate.getForObject("/transactions/{txId}", HederaTransactions.class, newTxId);
+    }
+
+    public List<MirrorNodeNft> getNfts(String tokenId,
+                                       String accountId) {
+        ResponseEntity<MirrorNodeNftsResponse> entity = restTemplate.getForEntity("/tokens/{tokenId}/nfts?account.id={accountId}",
+                                                                                  MirrorNodeNftsResponse.class,
+                                                                                  tokenId,
+                                                                                  accountId);
+        if (entity.getStatusCode() == HttpStatus.OK && entity.getBody() != null) {
+            return emptyIfNull(entity.getBody().getNfts());
+        }
+        return emptyList();
+    }
+
+    public Optional<MirrorNodeNft> getNft(String tokenId,
+                                          String serialNumber) {
+        ResponseEntity<MirrorNodeNft> entity = restTemplate.getForEntity("/tokens/{tokenId}/nfts/{serialNumber}",
+                                                                         MirrorNodeNft.class,
+                                                                         tokenId,
+                                                                         serialNumber);
+        if (entity.getStatusCode() == HttpStatus.OK && entity.getBody() != null) {
+            return Optional.ofNullable(entity.getBody());
+        }
+        return Optional.empty();
     }
 }

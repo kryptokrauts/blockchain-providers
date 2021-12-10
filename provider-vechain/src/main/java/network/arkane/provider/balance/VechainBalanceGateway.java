@@ -54,6 +54,21 @@ public class VechainBalanceGateway extends BalanceGateway {
     }
 
     @Override
+    public Balance getZeroBalance() {
+        return Balance.builder()
+                      .available(true)
+                      .secretType(SecretType.VECHAIN)
+                      .balance(0.0)
+                      .rawBalance("0")
+                      .gasBalance(0.0)
+                      .rawGasBalance("0")
+                      .symbol("VET")
+                      .gasSymbol("VTHO")
+                      .decimals(18)
+                      .build();
+    }
+
+    @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress,
                                                final List<String> tokenAddresses) {
         final List<TokenInfo> tokenInfos = tokenAddresses.stream()

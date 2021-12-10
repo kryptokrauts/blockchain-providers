@@ -23,11 +23,14 @@ public class TokenTransferSigner extends HederaSigner<TokenTransferSignable, Tra
     @Override
     protected Transaction<TransferTransaction> createTransaction(TokenTransferSignable signable,
                                                                  HederaSecretKey key) {
-        return new TransferTransaction()
+        final TransferTransaction transferTransaction = new TransferTransaction()
                 .addTokenTransfer(TokenId.fromString(signable.getTokenId()), AccountId.fromString(signable.getFrom()), signable.getAmount().negate().longValueExact())
-                .addTokenTransfer(TokenId.fromString(signable.getTokenId()), AccountId.fromString(signable.getTo()), signable.getAmount().longValueExact())
-                .freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getFrom()), key.getKey()))
-                .sign(key.getKey());
+                .addTokenTransfer(TokenId.fromString(signable.getTokenId()), AccountId.fromString(signable.getTo()), signable.getAmount().longValueExact());
+        if (signable.getTransactionMemo() != null) {
+            transferTransaction.setTransactionMemo(signable.getTransactionMemo());
+        }
+        return transferTransaction.freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getFrom()), key.getKey()))
+                                  .sign(key.getKey());
     }
 
 }

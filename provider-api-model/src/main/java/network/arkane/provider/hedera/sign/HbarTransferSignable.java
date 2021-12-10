@@ -12,6 +12,7 @@ public class HbarTransferSignable implements Signable {
     private String from;
     private String to;
     private BigInteger amount;
+    private String transactionMemo;
 }
 
 

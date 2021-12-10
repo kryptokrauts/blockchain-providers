@@ -32,6 +32,21 @@ public abstract class EvmBalanceGateway extends BalanceGateway {
     }
 
     @Override
+    public Balance getZeroBalance() {
+        return Balance.builder()
+                      .available(true)
+                      .rawBalance("0")
+                      .rawGasBalance("0")
+                      .secretType(type())
+                      .gasBalance(0.0)
+                      .balance(0.0)
+                      .symbol(type().getSymbol())
+                      .gasSymbol(type().getGasSymbol())
+                      .decimals(18)
+                      .build();
+    }
+
+    @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress,
                                                final List<String> tokenAddresses) {
         return evmBalanceStrategy.getTokenBalances(walletAddress, tokenAddresses);

@@ -35,15 +35,15 @@ public class LitecoinBalanceGateway extends BalanceGateway {
         BlockcypherAddress balance = blockcypherGateway.getBalance(
                 litecoinEnv.getNetwork(),
                 litecoinP2SHConverter.convert(address)
-        );
+                                                                  );
 
         double balanceAsDouble = balance.getBalance() == null
-                ? 0
-                : PrecisionUtil.toDecimal(balance.getBalance(), 8);
+                                 ? 0
+                                 : PrecisionUtil.toDecimal(balance.getBalance(), 8);
 
         String rawBalance = balance.getBalance() == null
-                ? "0"
-                : balance.getBalance().toString();
+                            ? "0"
+                            : balance.getBalance().toString();
 
         return Balance
                 .builder()
@@ -60,7 +60,24 @@ public class LitecoinBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(String address, List<String> tokenAddresses) {
+    public Balance getZeroBalance() {
+        return Balance
+                .builder()
+                .available(true)
+                .balance(0.0)
+                .gasBalance(0.0)
+                .rawBalance("0")
+                .rawGasBalance("0")
+                .decimals(8)
+                .secretType(SecretType.LITECOIN)
+                .symbol("LTC")
+                .gasSymbol("LTC")
+                .build();
+    }
+
+    @Override
+    public List<TokenBalance> getTokenBalances(String address,
+                                               List<String> tokenAddresses) {
         throw new UnsupportedOperationException();
     }
 

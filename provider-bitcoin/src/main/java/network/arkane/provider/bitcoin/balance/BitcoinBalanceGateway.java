@@ -20,7 +20,8 @@ public class BitcoinBalanceGateway extends BalanceGateway {
     private BlockcypherGateway blockcypherGateway;
     private BitcoinEnv bitcoinEnv;
 
-    public BitcoinBalanceGateway(BlockcypherGateway blockcypherGateway, BitcoinEnv bitcoinEnv) {
+    public BitcoinBalanceGateway(BlockcypherGateway blockcypherGateway,
+                                 BitcoinEnv bitcoinEnv) {
         this.blockcypherGateway = blockcypherGateway;
         this.bitcoinEnv = bitcoinEnv;
     }
@@ -44,7 +45,23 @@ public class BitcoinBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(String address, List<String> tokenAddresses) {
+    public Balance getZeroBalance() {
+        return Balance.builder()
+                      .available(true)
+                      .decimals(8)
+                      .gasBalance(0.0)
+                      .balance(0.0)
+                      .rawGasBalance("0")
+                      .rawBalance("0")
+                      .secretType(SecretType.BITCOIN)
+                      .gasSymbol("BTC")
+                      .symbol("BTC")
+                      .build();
+    }
+
+    @Override
+    public List<TokenBalance> getTokenBalances(String address,
+                                               List<String> tokenAddresses) {
         throw new UnsupportedOperationException("Not possible for bitcoin");
     }
 

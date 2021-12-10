@@ -33,33 +33,39 @@ public class AeternityBalanceGateway extends BalanceGateway {
             final AccountResult account = aeternityService.accounts.asyncGetAccount(Optional.of(address)).timeout(5, TimeUnit.SECONDS).blockingGet();
             final BigInteger balance = account.getBalance();
             return Balance.builder()
-                    .available(true)
-                    .secretType(SecretType.AETERNITY)
-                    .decimals(18)
-                    .symbol("AE")
-                    .gasSymbol("AE")
-                    .rawBalance(balance.toString())
-                    .rawGasBalance(balance.toString())
-                    .balance(PrecisionUtil.toDecimal(balance, 18))
-                    .gasBalance(PrecisionUtil.toDecimal(balance, 18))
-                    .build();
+                          .available(true)
+                          .secretType(SecretType.AETERNITY)
+                          .decimals(18)
+                          .symbol("AE")
+                          .gasSymbol("AE")
+                          .rawBalance(balance.toString())
+                          .rawGasBalance(balance.toString())
+                          .balance(PrecisionUtil.toDecimal(balance, 18))
+                          .gasBalance(PrecisionUtil.toDecimal(balance, 18))
+                          .build();
         } catch (final Exception e) {
-            return Balance.builder()
-                    .available(true)
-                    .secretType(SecretType.AETERNITY)
-                    .decimals(18)
-                    .symbol("AE")
-                    .gasSymbol("AE")
-                    .rawBalance("0")
-                    .rawGasBalance("0")
-                    .balance(0)
-                    .gasBalance(0)
-                    .build();
+            return getZeroBalance();
         }
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(String address, List<String> tokenAddress) {
+    public Balance getZeroBalance() {
+        return Balance.builder()
+                      .available(true)
+                      .secretType(SecretType.AETERNITY)
+                      .decimals(18)
+                      .symbol("AE")
+                      .gasSymbol("AE")
+                      .rawBalance("0")
+                      .rawGasBalance("0")
+                      .balance(0)
+                      .gasBalance(0)
+                      .build();
+    }
+
+    @Override
+    public List<TokenBalance> getTokenBalances(String address,
+                                        List<String> tokenAddress) {
         throw new UnsupportedOperationException("Not implemented yet for aeternity");
     }
 
