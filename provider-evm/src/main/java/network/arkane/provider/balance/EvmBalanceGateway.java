@@ -47,9 +47,9 @@ public abstract class EvmBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public TokenBalance getTokenBalance(final String walletAddress,
-                                        final String tokenAddress) {
-        return evmBalanceStrategy.getTokenBalance(walletAddress, tokenAddress);
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        return evmBalanceStrategy.getTokenBalances(walletAddress, tokenAddresses);
     }
 
 

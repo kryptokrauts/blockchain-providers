@@ -50,19 +50,17 @@ class GochainBalanceGatewayTest {
     }
 
     @Test
-    void checkTokenBalance() {
+    void checkTokenBalancesForTokenIds() {
         final TokenInfo fndTokenInfo = TokenInfoMother.fnd().build();
         final TokenBalance fndBalance = TokenBalanceMother.fndResult();
 
         when(tokenDiscoveryService.getTokenInfo(SecretType.GOCHAIN, fndTokenInfo.getAddress())).thenReturn(Optional.of(fndTokenInfo));
-        when(web3JGateway.getTokenBalance("address", fndTokenInfo.getAddress())).thenReturn(new BigInteger(fndBalance.getRawBalance()));
+        when(web3JGateway.getTokenBalances("address", Arrays.asList(fndTokenInfo.getAddress()))).thenReturn(Arrays.asList(new BigInteger(fndBalance.getRawBalance())));
 
-        final TokenBalance result = balanceGateway.getTokenBalance("address", fndTokenInfo.getAddress());
+        final List<TokenBalance> result = balanceGateway.getTokenBalances("address", Arrays.asList(fndTokenInfo.getAddress()));
 
-        assertThat(result).isEqualTo(fndBalance);
+        assertThat(result).containsOnly(fndBalance);
     }
-
-
 
     @Test
     void getTokenBalances() {

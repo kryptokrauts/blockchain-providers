@@ -9,7 +9,6 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.token.TokenDiscoveryService;
-import network.arkane.provider.token.TokenInfo;
 import network.arkane.provider.web3j.EvmWeb3jGateway;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -18,22 +17,20 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
+public abstract class EvmCovalentBalanceStrategy extends EvmNativeBalanceStrategy implements EvmBalanceStrategy {
 
-    private final EvmWeb3jGateway web3JGateway;
     private final CovalentClient covalentClient;
     private final String chainId;
-    private final TokenDiscoveryService tokenDiscoveryService;
 
     public EvmCovalentBalanceStrategy(final EvmWeb3jGateway web3JGateway,
                                       final TokenDiscoveryService tokenDiscoveryService,
                                       final CovalentClient covalentClient,
                                       final String chainId) {
-        this.web3JGateway = web3JGateway;
-        this.tokenDiscoveryService = tokenDiscoveryService;
+        super(web3JGateway, tokenDiscoveryService);
         this.covalentClient = covalentClient;
         this.chainId = chainId;
     }
@@ -41,9 +38,9 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
     @Override
     public Balance getBalance(final String account) {
         try {
-            return getNativeBalanceFromNode(account);
+            return super.getBalance(account);
         } catch (final Exception ex) {
-            log.warn(String.format("Fetching native balance from node failed for account: %s. Trying Covalent as fallback", account), ex);
+            log.warn(String.format("Fetching balance using EvmNativeBalanceStrategy.getBalance failed for account: %s. Trying Covalent as fallback", account), ex);
             try {
                 return getNativeBalanceFromCovalent(account);
             } catch (Exception ex2) {
@@ -55,22 +52,7 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
         }
     }
 
-    private Balance getNativeBalanceFromNode(String account) {
-        final BigInteger balance = web3JGateway.getBalance(account).getBalance();
-        return Balance.builder()
-                      .available(true)
-                      .rawBalance(balance.toString())
-                      .rawGasBalance(balance.toString())
-                      .secretType(type())
-                      .gasBalance(PrecisionUtil.toDecimal(balance, 18))
-                      .balance(PrecisionUtil.toDecimal(balance, 18))
-                      .symbol(type().getSymbol())
-                      .gasSymbol(type().getGasSymbol())
-                      .decimals(18)
-                      .build();
-    }
-
-    private Balance getNativeBalanceFromCovalent(String account) {
+    private Balance getNativeBalanceFromCovalent(final String account) {
         CovalentTokenBalanceResponse tokenBalances = covalentClient.getTokenBalances(chainId, account);
         if (tokenBalances != null && tokenBalances.getData() != null && CollectionUtils.isNotEmpty(tokenBalances.getData().getItems())) {
             return tokenBalances
@@ -96,40 +78,6 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
     }
 
     @Override
-    public TokenBalance getTokenBalance(final String walletAddress,
-                                        final String tokenAddress) {
-        try {
-            final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new);
-            final BigInteger tokenBalance = web3JGateway.getTokenBalance(walletAddress, tokenAddress);
-            return TokenBalance.builder()
-                               .tokenAddress(tokenInfo.getAddress())
-                               .rawBalance(tokenBalance.toString())
-                               .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
-                               .decimals(tokenInfo.getDecimals())
-                               .symbol(tokenInfo.getSymbol())
-                               .name(tokenInfo.getName())
-                               .logo(tokenInfo.getLogo())
-                               .type(tokenInfo.getType())
-                               .transferable(tokenInfo.isTransferable())
-                               .build();
-        } catch (Exception e) {
-            log.error("Error getting token balances from covalent", e);
-            try {
-                return getTokenBalances(walletAddress)
-                        .stream()
-                        .filter(tb -> tb.getTokenAddress().equalsIgnoreCase(tokenAddress))
-                        .findFirst().orElse(null);
-            } catch (Exception e2) {
-                throw ArkaneException.arkaneException()
-                                     .message(String.format("Unable to get the balance for the specified account (%s) and token (%s)", walletAddress, tokenAddress))
-                                     .errorCode("web3.internal-error")
-                                     .build();
-            }
-        }
-    }
-
-
-    @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
         CovalentTokenBalanceResponse tokenBalances = covalentClient.getTokenBalances(chainId, walletAddress);
         if (tokenBalances != null && tokenBalances.getData() != null && CollectionUtils.isNotEmpty(tokenBalances.getData().getItems())) {
@@ -153,6 +101,35 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        if (CollectionUtils.isEmpty(tokenAddresses)) return getTokenBalances(walletAddress);
+        try {
+            return super.getTokenBalances(walletAddress, tokenAddresses);
+        } catch (Exception e) {
+            log.warn("Fetching token balance using EvmNativeBalanceStrategy.getTokenBalances. Trying Covalent as fallback", e);
+            try {
+                return getTokenBalancesFromCovalent(walletAddress, tokenAddresses);
+            } catch (Exception e2) {
+                throw ArkaneException.arkaneException()
+                                     .message(String.format("Unable to get the balance for the specified account (%s) and tokens (%s)",
+                                                            walletAddress,
+                                                            String.join(", ", tokenAddresses)))
+                                     .errorCode("web3.internal-error")
+                                     .build();
+            }
+        }
+    }
+
+    private List<TokenBalance> getTokenBalancesFromCovalent(final String walletAddress,
+                                                            final List<String> tokenAddresses) {
+        final Set<String> lowerCaseTokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        return getTokenBalances(walletAddress).stream()
+                                              .filter(tb -> lowerCaseTokenAddresses.contains(tb.getTokenAddress().toLowerCase()))
+                                              .collect(Collectors.toList());
     }
 
     private boolean isNativeToken(CovalentItem item) {

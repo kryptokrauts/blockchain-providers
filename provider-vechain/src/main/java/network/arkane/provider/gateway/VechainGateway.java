@@ -19,7 +19,6 @@ import network.arkane.provider.core.model.clients.Amount;
 import network.arkane.provider.core.model.clients.ERC20Token;
 import network.arkane.provider.core.model.clients.Revision;
 import network.arkane.provider.exceptions.ArkaneException;
-import network.arkane.provider.exceptions.InsufficientFundsException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;

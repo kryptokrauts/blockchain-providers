@@ -5,15 +5,18 @@ import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.threading.Threading;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import network.arkane.provider.web3j.EvmWeb3jGateway;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,35 +56,25 @@ public abstract class EvmNativeBalanceStrategy implements EvmBalanceStrategy {
     }
 
     @Override
-    public TokenBalance getTokenBalance(final String walletAddress,
-                                        final String tokenAddress) {
-        final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new);
-        return getTokenBalance(walletAddress, tokenInfo);
-    }
-
-    private TokenBalance getTokenBalance(final String walletAddress,
-                                         final TokenInfo tokenInfo) {
-        final BigInteger tokenBalance = web3JGateway.getTokenBalance(walletAddress, tokenInfo.getAddress());
-        return TokenBalance.builder()
-                           .tokenAddress(tokenInfo.getAddress())
-                           .rawBalance(tokenBalance.toString())
-                           .balance(calculateBalance(tokenBalance, tokenInfo.getDecimals()))
-                           .decimals(tokenInfo.getDecimals())
-                           .symbol(tokenInfo.getSymbol())
-                           .name(tokenInfo.getName())
-                           .logo(tokenInfo.getLogo())
-                           .type(tokenInfo.getType())
-                           .transferable(tokenInfo.isTransferable())
-                           .build();
+    public List<TokenBalance> getTokenBalances(final String walletAddress) {
+        return getTokenBalancesForTokenInfos(walletAddress, tokenDiscoveryService.getTokens(type()));
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(type()));
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        if (CollectionUtils.isEmpty(tokenAddresses)) getTokenBalances(walletAddress);
+        final List<TokenInfo> tokenInfoList = Threading.runInThreadPool("getTokenInfos",
+                                                                     () -> tokenAddresses.parallelStream()
+                                                                                         .map(tokenAddress -> tokenDiscoveryService.getTokenInfo(type(), tokenAddress)
+                                                                                                                                   .orElse(null))
+                                                                                         .filter(Objects::nonNull)
+                                                                                         .collect(Collectors.toList()));
+        return getTokenBalancesForTokenInfos(walletAddress, tokenInfoList);
     }
 
-    private List<TokenBalance> getTokenBalances(final String walletAddress,
-                                                final List<TokenInfo> tokenInfo) {
+    private List<TokenBalance> getTokenBalancesForTokenInfos(final String walletAddress,
+                                                             final List<TokenInfo> tokenInfo) {
         final List<BigInteger> balances = web3JGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(TokenInfo::getAddress).collect(Collectors.toList()));
         final List<TokenBalance> results = new ArrayList<>();
         for (int i = 0; i < balances.size(); i++) {

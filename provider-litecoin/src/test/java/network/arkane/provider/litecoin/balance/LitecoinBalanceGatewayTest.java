@@ -12,11 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LitecoinBalanceGatewayTest {
 
@@ -93,7 +94,7 @@ class LitecoinBalanceGatewayTest {
     public void getTokenBalanceIsUnsupported() {
         assertThrows(
                 UnsupportedOperationException.class,
-                () -> litecoinBalanceGateway.getTokenBalance("", "")
+                () -> litecoinBalanceGateway.getTokenBalances("", new ArrayList<>())
         );
     }
 
