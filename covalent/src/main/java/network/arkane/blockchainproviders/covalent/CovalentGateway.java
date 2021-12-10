@@ -2,8 +2,11 @@ package network.arkane.blockchainproviders.covalent;
 
 import network.arkane.blockchainproviders.covalent.dto.CovalentApiResponse;
 import network.arkane.blockchainproviders.covalent.dto.CovalentChain;
+import network.arkane.blockchainproviders.covalent.dto.CovalentTokenBalanceResponse;
 import network.arkane.blockchainproviders.covalent.dto.CovalentTxHistoryResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +27,14 @@ public class CovalentGateway {
             throw new CovalentApiException(response.getErrorMessage());
         }
         return response.getData();
+    }
+
+    @Retryable(value = Exception.class,
+               maxAttempts = 4,
+               backoff = @Backoff(delay = 1000L, multiplier = 2))
+    public CovalentTokenBalanceResponse getTokenBalances(String chainId,
+                                                         String address) {
+        return covalentClient.getTokenBalances(chainId, address);
     }
 
 }

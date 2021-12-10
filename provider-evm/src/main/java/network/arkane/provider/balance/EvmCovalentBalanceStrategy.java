@@ -1,7 +1,7 @@
 package network.arkane.provider.balance;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.blockchainproviders.covalent.CovalentClient;
+import network.arkane.blockchainproviders.covalent.CovalentGateway;
 import network.arkane.blockchainproviders.covalent.dto.CovalentItem;
 import network.arkane.blockchainproviders.covalent.dto.CovalentTokenBalanceResponse;
 import network.arkane.provider.PrecisionUtil;
@@ -23,15 +23,15 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class EvmCovalentBalanceStrategy extends EvmNativeBalanceStrategy implements EvmBalanceStrategy {
 
-    private final CovalentClient covalentClient;
+    private final CovalentGateway covalentGateway;
     private final String chainId;
 
     public EvmCovalentBalanceStrategy(final EvmWeb3jGateway web3JGateway,
                                       final TokenDiscoveryService tokenDiscoveryService,
-                                      final CovalentClient covalentClient,
+                                      final CovalentGateway covalentGateway,
                                       final String chainId) {
         super(web3JGateway, tokenDiscoveryService);
-        this.covalentClient = covalentClient;
+        this.covalentGateway = covalentGateway;
         this.chainId = chainId;
     }
 
@@ -53,7 +53,7 @@ public abstract class EvmCovalentBalanceStrategy extends EvmNativeBalanceStrateg
     }
 
     private Balance getNativeBalanceFromCovalent(final String account) {
-        CovalentTokenBalanceResponse tokenBalances = covalentClient.getTokenBalances(chainId, account);
+        CovalentTokenBalanceResponse tokenBalances = covalentGateway.getTokenBalances(chainId, account);
         if (tokenBalances != null && tokenBalances.getData() != null && CollectionUtils.isNotEmpty(tokenBalances.getData().getItems())) {
             return tokenBalances
                     .getData()
@@ -79,7 +79,7 @@ public abstract class EvmCovalentBalanceStrategy extends EvmNativeBalanceStrateg
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        CovalentTokenBalanceResponse tokenBalances = covalentClient.getTokenBalances(chainId, walletAddress);
+        CovalentTokenBalanceResponse tokenBalances = covalentGateway.getTokenBalances(chainId, walletAddress);
         if (tokenBalances != null && tokenBalances.getData() != null && CollectionUtils.isNotEmpty(tokenBalances.getData().getItems())) {
             return tokenBalances
                     .getData()
