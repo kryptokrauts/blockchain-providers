@@ -32,13 +32,13 @@ public abstract class BalanceGateway {
     }
 
     /**
-     * Get the balance of a token for an address
+     * Get the balances for a list of token addresses
      *
      * @param address
-     * @param tokenAddress
+     * @param tokenAddresses
      * @return
      */
-    public abstract TokenBalance getTokenBalance(String address, String tokenAddress);
+    public abstract List<TokenBalance> getTokenBalances(String address, List<String> tokenAddresses);
 
     /**
      * Get the balance of all supported tokens for an address

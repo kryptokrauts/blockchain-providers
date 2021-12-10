@@ -9,7 +9,6 @@ import network.arkane.blockchainproviders.azrael.dto.TokenBalance;
 import network.arkane.blockchainproviders.azrael.dto.token.erc1155.Erc1155TokenBalances;
 import network.arkane.blockchainproviders.azrael.dto.token.erc721.Erc721TokenBalances;
 import network.arkane.provider.contract.EvmContractService;
-import network.arkane.provider.nonfungible.domain.Attribute;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
@@ -24,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -38,7 +36,7 @@ import java.util.stream.Collectors;
 public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrategy, DisposableBean {
 
     private final AzraelClient azraelClient;
-    private final MetaDataParser metadataParser;
+    private final EvmMetaDataParser metadataParser;
     private static final ExecutorService executorService = Executors.newFixedThreadPool(25, new ThreadFactoryBuilder().setNameFormat("azrael-nft-strategy-%d").build());
 
 
@@ -46,7 +44,7 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                      EvmContractService contractService,
                                      Optional<CacheManager> cacheManager) {
         this.azraelClient = azraelClient;
-        this.metadataParser = new MetaDataParser(contractService, cacheManager);
+        this.metadataParser = new EvmMetaDataParser(contractService, cacheManager);
     }
 
     @Override
@@ -145,12 +143,12 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                    .imagePreviewUrl(imageUrl)
                                    .imageThumbnailUrl(imageUrl)
                                    .id(tokenId)
-                                   .contract(parseContract(contract, metaData))
+                                   .contract(metaData.enrichContract(contract))
                                    .description(metaData.getDescription())
                                    .url(metaData.getExternalUrl().orElse(null))
                                    .animationUrl(metaData.getAnimationUrl().orElse(null))
                                    .animationUrls(metaData.getAnimationUrls())
-                                   .attributes(enrichAttributes(metaData))
+                                   .attributes(metaData.getEnrichedAttributes())
                                    .build();
         }
         return NonFungibleAsset.builder()
@@ -160,58 +158,6 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                                .description(contract.getAddress())
                                .build();
     }
-
-    private NonFungibleContract parseContract(NonFungibleContract contract,
-                                              NonFungibleMetaData metaData) {
-        NonFungibleContract result = contract.toBuilder().build();
-        metaData.getContract().ifPresent(c -> {
-            if (StringUtils.isNotBlank(c.getDescription())) {
-                result.setDescription(c.getDescription());
-            }
-            if (StringUtils.isNotBlank(c.getSymbol())) {
-                result.setSymbol(c.getSymbol());
-            }
-            if (StringUtils.isNotBlank(c.getName())) {
-                result.setName(c.getName());
-            }
-            if (StringUtils.isNotBlank(c.getType())) {
-                result.setType(c.getType());
-            }
-            if (c.getMedia() != null) {
-                result.setMedia(c.getMedia());
-            }
-            if (StringUtils.isNotBlank(c.getImageUrl())) {
-                result.setImageUrl(c.getImageUrl());
-            }
-            if (StringUtils.isNotBlank(c.getUrl())) {
-                result.setUrl(c.getUrl());
-            }
-        });
-        return result;
-    }
-
-    private List<Attribute> enrichAttributes(NonFungibleMetaData metaData) {
-        return metaData.getAttributes()
-                       .stream()
-                       .filter(Objects::nonNull)
-                       .map(attribute -> {
-                           if (StringUtils.isNotBlank(attribute.getDisplayType())) {
-                               if ("number".equalsIgnoreCase(attribute.getDisplayType())) {
-                                   attribute.setType("stat");
-                               } else if ("boost_number".equalsIgnoreCase(attribute.getDisplayType())) {
-                                   attribute.setType("boost");
-                               } else if ("boost_percentage".equalsIgnoreCase(attribute.getDisplayType())) {
-                                   attribute.setType("boost");
-                               }
-                           }
-                           if (StringUtils.isBlank(attribute.getType())) {
-                               attribute.setType("property");
-                           }
-                           return attribute;
-                       })
-                       .collect(Collectors.toList());
-    }
-
 
     @Override
     public NonFungibleContract getNonFungibleContract(final String contractAddress) {

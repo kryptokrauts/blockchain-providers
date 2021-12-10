@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class HederaTokenInfo {
     private String symbol;
     private String name;
+    private String type;
     private int decimals;
     private String tokenMemo;
 }

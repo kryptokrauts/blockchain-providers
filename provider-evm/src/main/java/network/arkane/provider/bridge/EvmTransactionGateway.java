@@ -11,14 +11,15 @@ import org.web3j.protocol.http.HttpService;
 import java.util.Optional;
 
 import static network.arkane.provider.exceptions.ArkaneException.arkaneException;
+import static network.arkane.provider.exceptions.InsufficientFundsException.insufficientFundsException;
 import static network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature.signAndSubmitTransactionBuilder;
 
 @Slf4j
 public abstract class EvmTransactionGateway implements TransactionGateway {
 
-    private Web3j defaultWeb3j;
+    private final Web3j defaultWeb3j;
 
-    public EvmTransactionGateway(Web3j web3j) {
+    public EvmTransactionGateway(final Web3j web3j) {
         this.defaultWeb3j = web3j;
     }
 
@@ -36,7 +37,7 @@ public abstract class EvmTransactionGateway implements TransactionGateway {
             if (send.hasError()) {
                 if (send.getError().getMessage().matches(".*[I,i]nsufficient funds.*")) {
                     log.warn("Got error from " + getType().name() + " chain: insufficient funds");
-                    throw arkaneException()
+                    throw insufficientFundsException()
                             .errorCode("transaction.insufficient-funds")
                             .message(send.getError().getMessage())
                             .build();
