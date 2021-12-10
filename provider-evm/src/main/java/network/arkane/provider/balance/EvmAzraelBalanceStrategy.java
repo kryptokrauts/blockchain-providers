@@ -10,12 +10,14 @@ import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.token.TokenDiscoveryProperties;
 import network.arkane.provider.web3j.EvmWeb3jGateway;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -58,15 +60,6 @@ public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(final String walletAddress,
-                                               final List<String> tokenAddresses) {
-        final List<String> lowerCaseTokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toList());
-        return getTokenBalances(walletAddress).stream()
-                                              .filter(b -> lowerCaseTokenAddresses.contains(b.getTokenAddress().toLowerCase()))
-                                              .collect(Collectors.toList());
-    }
-
-    @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
         return azraelClient.getTokens(walletAddress, Collections.singletonList(ContractType.ERC_20))
                            .stream()
@@ -83,6 +76,16 @@ public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
                                                  .transferable(true)
                                                  .build())
                            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        if (CollectionUtils.isNotEmpty(tokenAddresses)) return getTokenBalances(walletAddress);
+        final Set<String> lowerCaseTokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        return getTokenBalances(walletAddress).stream()
+                                              .filter(tb -> lowerCaseTokenAddresses.contains(tb.getTokenAddress().toLowerCase()))
+                                              .collect(Collectors.toList());
     }
 
     private String getLogo(final String tokenAddress) {

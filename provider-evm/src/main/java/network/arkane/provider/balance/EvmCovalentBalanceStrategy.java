@@ -17,6 +17,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -77,35 +78,6 @@ public abstract class EvmCovalentBalanceStrategy extends EvmNativeBalanceStrateg
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(final String walletAddress,
-                                               final List<String> tokenAddresses) {
-        try {
-            return super.getTokenBalances(walletAddress, tokenAddresses);
-        } catch (Exception e) {
-            log.warn("Fetching token balance using EvmNativeBalanceStrategy.getTokenBalances. Trying Covalent as fallback", e);
-            try {
-                return getTokenBalancesFromCovalent(walletAddress, tokenAddresses);
-            } catch (Exception e2) {
-                throw ArkaneException.arkaneException()
-                                     .message(String.format("Unable to get the balance for the specified account (%s) and tokens (%s)",
-                                                            walletAddress,
-                                                            String.join(", ", tokenAddresses)))
-                                     .errorCode("web3.internal-error")
-                                     .build();
-            }
-        }
-    }
-
-    private List<TokenBalance> getTokenBalancesFromCovalent(final String walletAddress,
-                                                            final List<String> tokenAddresses) {
-        final List<String> lowerCaseTokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toList());
-        return getTokenBalances(walletAddress).stream()
-                                              .filter(tb -> lowerCaseTokenAddresses.contains(tb.getTokenAddress()
-                                                                                               .toLowerCase()))
-                                              .collect(Collectors.toList());
-    }
-
-    @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
         CovalentTokenBalanceResponse tokenBalances = covalentClient.getTokenBalances(chainId, walletAddress);
         if (tokenBalances != null && tokenBalances.getData() != null && CollectionUtils.isNotEmpty(tokenBalances.getData().getItems())) {
@@ -129,6 +101,35 @@ public abstract class EvmCovalentBalanceStrategy extends EvmNativeBalanceStrateg
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        if (CollectionUtils.isEmpty(tokenAddresses)) return getTokenBalances(walletAddress);
+        try {
+            return super.getTokenBalances(walletAddress, tokenAddresses);
+        } catch (Exception e) {
+            log.warn("Fetching token balance using EvmNativeBalanceStrategy.getTokenBalances. Trying Covalent as fallback", e);
+            try {
+                return getTokenBalancesFromCovalent(walletAddress, tokenAddresses);
+            } catch (Exception e2) {
+                throw ArkaneException.arkaneException()
+                                     .message(String.format("Unable to get the balance for the specified account (%s) and tokens (%s)",
+                                                            walletAddress,
+                                                            String.join(", ", tokenAddresses)))
+                                     .errorCode("web3.internal-error")
+                                     .build();
+            }
+        }
+    }
+
+    private List<TokenBalance> getTokenBalancesFromCovalent(final String walletAddress,
+                                                            final List<String> tokenAddresses) {
+        final Set<String> lowerCaseTokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        return getTokenBalances(walletAddress).stream()
+                                              .filter(tb -> lowerCaseTokenAddresses.contains(tb.getTokenAddress().toLowerCase()))
+                                              .collect(Collectors.toList());
     }
 
     private boolean isNativeToken(CovalentItem item) {

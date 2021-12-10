@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -56,7 +57,7 @@ public class BlockscoutClient {
         //        String result = response.get("result").asText("0");
         //        return new BigInteger(StringUtils.isEmpty(result) ? "0" : result);
 
-        final List<String> lowerCaseTokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toList());
+        final Set<String> lowerCaseTokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toSet());
         return getTokenBalances(walletAddress).stream()
                                               .filter(token -> lowerCaseTokenAddresses.contains(token.getContractAddress().toLowerCase()))
                                               .collect(toMap(token -> token.getContractAddress().toLowerCase(), this::getTokenCount));

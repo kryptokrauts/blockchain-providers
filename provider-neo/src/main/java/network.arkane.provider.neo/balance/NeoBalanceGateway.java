@@ -12,8 +12,10 @@ import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.neo.gateway.NeoW3JGateway;
+import network.arkane.provider.threading.Threading;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -21,6 +23,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static network.arkane.provider.chain.SecretType.NEO;
@@ -31,12 +34,12 @@ import static network.arkane.provider.chain.SecretType.NEO;
 public class NeoBalanceGateway extends BalanceGateway {
 
     private NeoW3JGateway neoGate;
-    private final TokenDiscoveryService service;
+    private final TokenDiscoveryService tokenDiscoveryService;
 
     public NeoBalanceGateway(final NeoW3JGateway neoGate,
-                             final TokenDiscoveryService service) {
+                             final TokenDiscoveryService tokenDiscoveryService) {
         this.neoGate = neoGate;
-        this.service = service;
+        this.tokenDiscoveryService = tokenDiscoveryService;
     }
 
     @Override
@@ -96,18 +99,21 @@ public class NeoBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(final String walletAddress,
-                                               final List<String> tokenAddresses) {
-        final List<TokenInfo> tokenInfos = tokenAddresses.stream()
-                                                         .map(tokenAddress -> service.getTokenInfo(NEO, tokenAddress)
-                                                                                     .orElseThrow(IllegalArgumentException::new))
-                                                         .collect(Collectors.toList());
-        return getTokenBalancesForTokenInfos(walletAddress, tokenInfos);
+    public List<TokenBalance> getTokenBalances(final String walletAddress) {
+        return getTokenBalancesForTokenInfos(walletAddress, tokenDiscoveryService.getTokens(type()));
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return getTokenBalancesForTokenInfos(walletAddress, service.getTokens(NEO));
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        if (CollectionUtils.isEmpty(tokenAddresses)) getTokenBalances(walletAddress);
+        final List<TokenInfo> tokenInfos = Threading.runInThreadPool("getTokenInfos",
+                                                                     () -> tokenAddresses.parallelStream()
+                                                                                         .map(tokenAddress -> tokenDiscoveryService.getTokenInfo(type(), tokenAddress)
+                                                                                                                                   .orElse(null))
+                                                                                         .filter(Objects::nonNull)
+                                                                                         .collect(Collectors.toList()));
+        return getTokenBalancesForTokenInfos(walletAddress, tokenInfos);
     }
 
     private List<TokenBalance> getTokenBalancesForTokenInfos(final String walletAddress,

@@ -15,13 +15,13 @@ import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.mirror.MirrorNodeClient;
 import network.arkane.provider.token.TokenInfo;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
@@ -117,9 +117,9 @@ public class HederaBalanceGateway extends BalanceGateway {
     public List<TokenBalance> getTokenBalances(final String address,
                                                final List<String> tokenAddresses) {
         final Map<TokenId, Long> tokenBalances = getTokenBalancesFromChain(address);
-        final List<String> lowerCaseTokenAddresses = CollectionUtils.isEmpty(tokenAddresses)
-                                                     ? null
-                                                     : tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toList());
+        final Set<String> lowerCaseTokenAddresses = tokenAddresses == null
+                                                    ? null
+                                                    : tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toSet());
         return tokenBalances.entrySet()
                             .stream()
                             .filter(e -> lowerCaseTokenAddresses == null || lowerCaseTokenAddresses.contains(e.getKey().toString().toLowerCase()))

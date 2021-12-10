@@ -5,15 +5,18 @@ import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.threading.Threading;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
 import network.arkane.provider.web3j.EvmWeb3jGateway;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -68,17 +71,21 @@ public abstract class EvmNativeBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(final String walletAddress,
-                                               final List<String> tokenAddresses) {
-        final List<TokenInfo> tokenInfos = tokenAddresses.stream()
-                                                         .map(tokenAddress -> tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new))
-                                                         .collect(Collectors.toList());
-        return getTokenBalancesForTokenInfos(walletAddress, tokenInfos);
+    public List<TokenBalance> getTokenBalances(final String walletAddress) {
+        return getTokenBalancesForTokenInfos(walletAddress, tokenDiscoveryService.getTokens(type()));
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return getTokenBalancesForTokenInfos(walletAddress, tokenDiscoveryService.getTokens(type()));
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        if (CollectionUtils.isEmpty(tokenAddresses)) return getTokenBalances(walletAddress);
+        final List<TokenInfo> tokenInfoList = Threading.runInThreadPool("getTokenInfos",
+                                                                     () -> tokenAddresses.parallelStream()
+                                                                                         .map(tokenAddress -> tokenDiscoveryService.getTokenInfo(type(), tokenAddress)
+                                                                                                                                   .orElse(null))
+                                                                                         .filter(Objects::nonNull)
+                                                                                         .collect(Collectors.toList()));
+        return getTokenBalancesForTokenInfos(walletAddress, tokenInfoList);
     }
 
     private List<TokenBalance> getTokenBalancesForTokenInfos(final String walletAddress,

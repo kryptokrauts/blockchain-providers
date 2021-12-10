@@ -7,8 +7,10 @@ import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
+import network.arkane.provider.threading.Threading;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,11 +53,36 @@ public class MaticBlockscoutBalanceStrategy implements EvmBalanceStrategy {
     }
 
     @Override
+    public List<TokenBalance> getTokenBalances(final String walletAddress) {
+        return maticBlockscoutClient.getTokenBalances(walletAddress)
+                                    .stream()
+                                    .filter(x -> "erc-20".equalsIgnoreCase(x.getType()))
+                                    .map(x -> (ERC20BlockscoutToken) x)
+                                    .map(x -> TokenBalance.builder()
+                                                          .tokenAddress(x.getContractAddress())
+                                                          .rawBalance(x.getBalance() == null ? "0" : x.getBalance().toString())
+                                                          .balance(calculateBalance(x.getBalance(), x.getDecimals()))
+                                                          .decimals(x.getDecimals())
+                                                          .symbol(x.getSymbol())
+                                                          .name(x.getName())
+                                                          .type(x.getType())
+                                                          .transferable(true)
+                                                          .logo(tokenDiscoveryService.getTokenLogo(SecretType.MATIC, x.getContractAddress())
+                                                                                     .orElse(null))
+                                                          .build())
+                                    .collect(Collectors.toList());
+    }
+
+    @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress,
                                                final List<String> tokenAddresses) {
-        final List<TokenInfo> tokenInfos = tokenAddresses.stream()
-                                                         .map(tokenAddress -> tokenDiscoveryService.getTokenInfo(type(), tokenAddress).orElseThrow(IllegalArgumentException::new))
-                                                         .collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(tokenAddresses)) return getTokenBalances(walletAddress);
+        final List<TokenInfo> tokenInfos = Threading.runInThreadPool("getTokenInfos",
+                                                                     () -> tokenAddresses.parallelStream()
+                                                                                         .map(tokenAddress -> tokenDiscoveryService.getTokenInfo(type(), tokenAddress)
+                                                                                                                                   .orElse(null))
+                                                                                         .filter(Objects::nonNull)
+                                                                                         .collect(Collectors.toList()));
         final Map<String, TokenInfo> tokenInfoMap = tokenInfos.stream().collect(Collectors.toMap(ti -> ti.getAddress().toLowerCase(), ti -> ti));
         return maticBlockscoutClient.getTokenBalances(walletAddress, tokenAddresses)
                                     .entrySet()
@@ -74,27 +102,6 @@ public class MaticBlockscoutBalanceStrategy implements EvmBalanceStrategy {
                                                            .transferable(tokenInfo.isTransferable())
                                                            .build();
                                     })
-                                    .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return maticBlockscoutClient.getTokenBalances(walletAddress)
-                                    .stream()
-                                    .filter(x -> "erc-20".equalsIgnoreCase(x.getType()))
-                                    .map(x -> (ERC20BlockscoutToken) x)
-                                    .map(x -> TokenBalance.builder()
-                                                          .tokenAddress(x.getContractAddress())
-                                                          .rawBalance(x.getBalance() == null ? "0" : x.getBalance().toString())
-                                                          .balance(calculateBalance(x.getBalance(), x.getDecimals()))
-                                                          .decimals(x.getDecimals())
-                                                          .symbol(x.getSymbol())
-                                                          .name(x.getName())
-                                                          .type(x.getType())
-                                                          .transferable(true)
-                                                          .logo(tokenDiscoveryService.getTokenLogo(SecretType.MATIC, x.getContractAddress())
-                                                                                     .orElse(null))
-                                                          .build())
                                     .collect(Collectors.toList());
     }
 
