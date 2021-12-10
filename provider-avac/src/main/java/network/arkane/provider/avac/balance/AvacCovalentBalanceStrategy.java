@@ -1,7 +1,7 @@
 package network.arkane.provider.avac.balance;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.blockchainproviders.covalent.CovalentClient;
+import network.arkane.blockchainproviders.covalent.CovalentGateway;
 import network.arkane.provider.avac.gateway.AvacWeb3JGateway;
 import network.arkane.provider.balance.EvmCovalentBalanceStrategy;
 import network.arkane.provider.chain.SecretType;
@@ -18,10 +18,9 @@ public class AvacCovalentBalanceStrategy extends EvmCovalentBalanceStrategy {
 
     public AvacCovalentBalanceStrategy(AvacWeb3JGateway web3JGateway,
                                        TokenDiscoveryService tokenDiscoveryService,
-                                       @Value("${covalent.endpoint}") String endpoint,
-                                       @Value("${covalent.api-key}") String apiKey,
+                                       CovalentGateway covalentGateway,
                                        @Value("${covalent.chain-id.AVAC}") String chainId) {
-        super(web3JGateway, tokenDiscoveryService, new CovalentClient(endpoint, apiKey), chainId);
+        super(web3JGateway, tokenDiscoveryService, covalentGateway, chainId);
     }
 
     @Override
