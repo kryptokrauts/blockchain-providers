@@ -158,15 +158,15 @@ public abstract class EvmCovalentBalanceStrategy implements EvmBalanceStrategy {
     private boolean isNativeToken(CovalentItem item) {
         switch (chainId) {
             case "1":
-                return item.getTokenAddress().equalsIgnoreCase("0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                return "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee".equalsIgnoreCase(item.getTokenAddress());
             case "56":
-                return item.getSymbol().equalsIgnoreCase("BNB");
+                return "BNB".equalsIgnoreCase(item.getSymbol());
             case "80001":
             case "137":
-                return item.getTokenAddress().equalsIgnoreCase("0x0000000000000000000000000000000000001010");
+                return "0x0000000000000000000000000000000000001010".equalsIgnoreCase(item.getTokenAddress());
             case "43113":
             case "43114":
-                return item.getTokenAddress().equalsIgnoreCase("0x9debca6ea3af87bf422cea9ac955618ceb56efb4");
+                return "0x9debca6ea3af87bf422cea9ac955618ceb56efb4".equalsIgnoreCase(item.getTokenAddress());
             default:
                 return false;
         }
