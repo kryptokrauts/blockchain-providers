@@ -16,9 +16,9 @@ public class BscAzraelBalanceStrategy extends EvmAzraelBalanceStrategy {
 
 
     public BscAzraelBalanceStrategy(BscWeb3JGateway web3JGateway,
-                                    AzraelClient bscAzraelClient,
+                                    AzraelClient erc20BscAzraelClient,
                                     TokenDiscoveryProperties tokenDiscoveryProperties) {
-        super(web3JGateway, bscAzraelClient, tokenDiscoveryProperties);
+        super(web3JGateway, erc20BscAzraelClient, tokenDiscoveryProperties);
     }
 
     @Override

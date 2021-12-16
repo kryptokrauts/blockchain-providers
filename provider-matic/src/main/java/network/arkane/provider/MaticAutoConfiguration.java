@@ -25,4 +25,9 @@ public class MaticAutoConfiguration {
     public AzraelClient maticAzraelClient(@Value("${azrael.matic.url:}") String baseUrl) {
         return new AzraelClient(baseUrl);
     }
+
+    @Bean(name = "erc20MaticAzraelClient")
+    public AzraelClient erc20MaticAzraelClient(@Value("${azrael.matic.erc20.url:}") String baseUrl) {
+        return new AzraelClient(baseUrl);
+    }
 }
