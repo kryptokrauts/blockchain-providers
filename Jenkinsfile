@@ -5,6 +5,9 @@ pipeline {
         MAVEN_OPTS="-Djava.security.egd=file:/dev/./urandom"
         CODECOV_TOKEN = credentials('ARKANE_CODECOV_TOKEN');
     }
+    tools {
+        jdk "jdk-17.0.1"
+    }
     options {
         disableConcurrentBuilds()
         timeout(time: 15, unit: 'MINUTES')
