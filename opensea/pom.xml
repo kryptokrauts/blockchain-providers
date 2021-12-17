@@ -7,7 +7,7 @@
     <parent>
         <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.38.0-SNAPSHOT</version>
+        <version>0.38.0-SP-SNAPSHOT</version>
     </parent>
 
     <artifactId>opensea</artifactId>
@@ -29,6 +29,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
