@@ -6,7 +6,7 @@ pipeline {
         CODECOV_TOKEN = credentials('ARKANE_CODECOV_TOKEN');
     }
     tools {
-        jdk "jdk-17.0.1"
+        jdk "JDK 17"
     }
     options {
         disableConcurrentBuilds()
