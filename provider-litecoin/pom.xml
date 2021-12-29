@@ -6,7 +6,7 @@
     <parent>
         <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.39.0</version>
+        <version>0.40.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>provider-litecoin</artifactId>
