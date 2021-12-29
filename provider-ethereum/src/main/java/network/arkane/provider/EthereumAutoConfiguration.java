@@ -23,7 +23,12 @@ public class EthereumAutoConfiguration {
 
 
     @Bean(name = "ethereumAzraelClient")
-    public AzraelClient ethereumAzraelClient(@Value("${azrael.ethereum.url}") String baseUrl) {
+    public AzraelClient ethereumAzraelClient(@Value("${azrael.ethereum.url:}") String baseUrl) {
+        return new AzraelClient(baseUrl);
+    }
+
+    @Bean(name = "erc20EthereumAzraelClient")
+    public AzraelClient erc20EthereumAzraelClient(@Value("${azrael.ethereum.erc20.url:}") String baseUrl) {
         return new AzraelClient(baseUrl);
     }
 }

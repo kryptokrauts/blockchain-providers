@@ -53,7 +53,12 @@ public class AvacWeb3AutoConfiguration {
     }
 
     @Bean(name = "avacAzraelClient")
-    public AzraelClient avacAzraelClient(@Value("${azrael.avac.url}") String baseUrl) {
+    public AzraelClient avacAzraelClient(@Value("${azrael.avac.url:}") String baseUrl) {
+        return new AzraelClient(baseUrl);
+    }
+
+    @Bean(name = "erc20AvacAzraelClient")
+    public AzraelClient erc20AvacAzraelClient(@Value("${azrael.avac.erc20.url:}") String baseUrl) {
         return new AzraelClient(baseUrl);
     }
 
