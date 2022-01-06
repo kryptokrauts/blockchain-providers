@@ -9,7 +9,7 @@ pipeline {
         jdk "JDK 17"
         maven 'apache-maven-3.8.4'
     }
-    options {q
+    options {
         disableConcurrentBuilds()
         timeout(time: 15, unit: 'MINUTES')
     }
