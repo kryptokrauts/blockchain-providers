@@ -17,7 +17,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'mvn -v'
-                sh 'mvn -B -U clean deploy'
+                sh 'mvn -B -U -Djavax.net.ssl.trustStore=\'/usr/lib/jvm/jdk-17.0.1/lib/security/cacerts\' clean deploy'
             }
             post {
                 always {
