@@ -17,7 +17,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'mvn -v'
-                sh 'mvn -B -U -DjvmArgs="-Djdk.tls.client.protocols=\"TLSv1,TLSv1.1,TLSv1.2\"" clean deploy'
+                sh 'mvn -B -U clean deploy'
             }
             post {
                 always {
