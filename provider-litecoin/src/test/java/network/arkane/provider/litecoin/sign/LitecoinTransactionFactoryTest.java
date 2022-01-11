@@ -9,6 +9,7 @@ import network.arkane.provider.litecoin.unspent.Unspent;
 import network.arkane.provider.litecoin.unspent.UnspentLitecoinService;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
@@ -32,6 +33,9 @@ import static org.mockito.Mockito.when;
 
 class LitecoinTransactionFactoryTest {
 
+    public static final RecursiveComparisonConfiguration RECURSIVE_COMPARISON_CONFIGURATION = RecursiveComparisonConfiguration.builder()
+                                                                                                                              .withIgnoreAllOverriddenEquals(true)
+                                                                                                                              .build();
     UnspentLitecoinService unspentLitecoinService;
     LitecoinTransactionFactory litecoinTransactionFactory;
     LitecoinTransactionSignable signable;
@@ -100,13 +104,11 @@ class LitecoinTransactionFactoryTest {
         assertThat(result.getParams()).isEqualTo(new LitecoinParams());
         assertThat(result.getPurpose()).isEqualTo(Transaction.Purpose.USER_PAYMENT);
 
-        assertThat(result.getOutputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionOutput(result, 12300000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx")
-                                                                                                  );
+        assertThat(result.getOutputs()).usingRecursiveFieldByFieldElementComparator(RECURSIVE_COMPARISON_CONFIGURATION)
+                                       .containsOnly(createExpectedTransactionOutput(result, 12300000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx"));
 
-        assertThat(result.getInputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 12300000)
-                                                                                                 );
+        assertThat(result.getInputs()).usingRecursiveFieldByFieldElementComparator(RECURSIVE_COMPARISON_CONFIGURATION)
+                                      .containsOnly(createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 12300000));
     }
 
     @Test
@@ -120,15 +122,13 @@ class LitecoinTransactionFactoryTest {
         Transaction result = litecoinTransactionFactory.createLitecoinTransaction(signable, "from address");
 
 
-        assertThat(result.getOutputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionOutput(result, 12300000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx"),
-                createExpectedTransactionOutput(result, 2600000, "LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk")
-                                                                                                  );
+        assertThat(result.getOutputs()).usingRecursiveFieldByFieldElementComparator(RECURSIVE_COMPARISON_CONFIGURATION)
+                                       .containsOnly(createExpectedTransactionOutput(result, 12300000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx"),
+                                                     createExpectedTransactionOutput(result, 2600000, "LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk"));
 
-        assertThat(result.getInputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 10000000),
-                createExpectedTransactionInput(result, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c", 5000000)
-                                                                                                 );
+        assertThat(result.getInputs()).usingRecursiveFieldByFieldElementComparator(RECURSIVE_COMPARISON_CONFIGURATION)
+                                      .containsOnly(createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 10000000),
+                                                    createExpectedTransactionInput(result, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c", 5000000));
 
     }
 
@@ -143,15 +143,13 @@ class LitecoinTransactionFactoryTest {
         Transaction result = litecoinTransactionFactory.createLitecoinTransaction(signable, "from address");
 
 
-        assertThat(result.getOutputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionOutput(result, 12300000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx"),
-                createExpectedTransactionOutput(result, 21600000, "LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk")
-                                                                                                  );
+        assertThat(result.getOutputs()).usingRecursiveFieldByFieldElementComparator(RECURSIVE_COMPARISON_CONFIGURATION)
+                                       .containsOnly(createExpectedTransactionOutput(result, 12300000, "LMsEHVPsjWbWdEy6cBN9CTBUrccKjev7Tx"),
+                                                     createExpectedTransactionOutput(result, 21600000, "LPvoR2VhDVCM7ii3yAAcnKSH13Db5HssMk"));
 
-        assertThat(result.getInputs()).usingRecursiveFieldByFieldElementComparator().containsOnly(
-                createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 10000000),
-                createExpectedTransactionInput(result, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c", 24000000)
-                                                                                                 );
+        assertThat(result.getInputs()).usingRecursiveFieldByFieldElementComparator(RECURSIVE_COMPARISON_CONFIGURATION)
+                                      .containsOnly(createExpectedTransactionInput(result, "8ecf3c16971a0fb16ac09d9fbdab77464ac7f5a5e752a00eb275eb839f7d652b", 10000000),
+                                                    createExpectedTransactionInput(result, "64e034634b7add36a53a16702d60f93f1f9dc39eca6707f1d144019ad7f2f59c", 24000000));
 
     }
 
