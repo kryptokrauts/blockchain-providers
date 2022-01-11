@@ -7,7 +7,7 @@ pipeline {
     }
     tools {
         jdk "JDK 17"
-        maven 'apache-maven-3.8.4'
+        maven 'apache-maven'
     }
     options {
         disableConcurrentBuilds()
