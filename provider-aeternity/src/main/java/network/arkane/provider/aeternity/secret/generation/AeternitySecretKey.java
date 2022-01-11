@@ -1,6 +1,6 @@
 package network.arkane.provider.aeternity.secret.generation;
 
-import com.kryptokrauts.aeternity.sdk.domain.secret.impl.RawKeyPair;
+import com.kryptokrauts.aeternity.sdk.domain.secret.KeyPair;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import network.arkane.provider.wallet.domain.SecretKey;
 @NoArgsConstructor
 public class AeternitySecretKey implements SecretKey {
 
-    private RawKeyPair keyPair;
+    private KeyPair keyPair;
 
     @Override
     public SecretType type() {
@@ -19,7 +19,7 @@ public class AeternitySecretKey implements SecretKey {
     }
 
     @Builder
-    public AeternitySecretKey(RawKeyPair keyPair) {
+    public AeternitySecretKey(KeyPair keyPair) {
         this.keyPair = keyPair;
     }
 }

@@ -1,10 +1,8 @@
 package network.arkane.provider.aeternity.wallet.generation;
 
-import com.kryptokrauts.aeternity.sdk.constants.ApiIdentifiers;
 import com.kryptokrauts.aeternity.sdk.exception.AException;
-import com.kryptokrauts.aeternity.sdk.service.wallet.WalletService;
-import com.kryptokrauts.aeternity.sdk.service.wallet.WalletServiceFactory;
-import com.kryptokrauts.aeternity.sdk.util.EncodingUtils;
+import com.kryptokrauts.aeternity.sdk.service.keystore.KeystoreService;
+import com.kryptokrauts.aeternity.sdk.service.keystore.KeystoreServiceFactory;
 import network.arkane.provider.aeternity.secret.generation.AeternitySecretKey;
 import network.arkane.provider.wallet.generation.GeneratedWallet;
 import network.arkane.provider.wallet.generation.WalletGenerator;
@@ -14,7 +12,7 @@ import org.springframework.util.StringUtils;
 @Component
 public class AeternityWalletGenerator implements WalletGenerator<AeternitySecretKey> {
 
-    private final WalletService walletService = new WalletServiceFactory().getService();
+    private final KeystoreService keystoreService = new KeystoreServiceFactory().getService();
 
     @Override
     public GeneratedWallet generateWallet(final String password, final AeternitySecretKey secret) {
@@ -22,7 +20,7 @@ public class AeternityWalletGenerator implements WalletGenerator<AeternitySecret
             throw new IllegalArgumentException("Password should not be empty");
         }
         try {
-            final String keystoreJson = walletService.generateKeystore(secret.getKeyPair(), password, null);
+            final String keystoreJson = keystoreService.createKeystore(secret.getKeyPair(), password, null);
             return GeneratedAeternityWallet
                     .builder()
                     .keystoreJson(keystoreJson)
@@ -39,6 +37,6 @@ public class AeternityWalletGenerator implements WalletGenerator<AeternitySecret
     }
 
     private String getAddress(final AeternitySecretKey aeternitySecretKey) {
-        return EncodingUtils.encodeCheck(aeternitySecretKey.getKeyPair().getPublicKey(), ApiIdentifiers.ACCOUNT_PUBKEY);
+        return aeternitySecretKey.getKeyPair().getAddress();
     }
 }

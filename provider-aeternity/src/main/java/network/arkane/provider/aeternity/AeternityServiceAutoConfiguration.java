@@ -1,7 +1,6 @@
 package network.arkane.provider.aeternity;
 
 import com.kryptokrauts.aeternity.sdk.constants.Network;
-import com.kryptokrauts.aeternity.sdk.constants.VirtualMachine;
 import com.kryptokrauts.aeternity.sdk.service.aeternity.AeternityServiceConfiguration;
 import com.kryptokrauts.aeternity.sdk.service.aeternity.AeternityServiceFactory;
 import com.kryptokrauts.aeternity.sdk.service.aeternity.impl.AeternityService;
@@ -16,21 +15,18 @@ public class AeternityServiceAutoConfiguration {
   String baseUrl;
   @Value("${network.arkane.aeternity.compiler.api.baseUrl:https://compiler.aepps.com}")
   String compilerBaseUrl;
-  @Value("${network.arkane.aeternity.aeternal.api.baseUrl:https://testnet.aeternal.io}")
-  String aeternalBaseUrl;
+  @Value("${network.arkane.aeternity.mdw.api.baseUrl:https://testnet.aeternity.io/mdw}")
+  String mdwBaseUrl;
   @Value("${network.arkane.aeternity.network:TESTNET}")
   Network network;
-  @Value("${network.arkane.aeternity.vm:FATE}")
-  VirtualMachine targetVM;
 
   @Bean(name = "aeternity-configuration")
   public AeternityServiceConfiguration aeternityConfiguration() {
     return AeternityServiceConfiguration.configure()
         .baseUrl(baseUrl)
         .compilerBaseUrl(compilerBaseUrl)
-        .aeternalBaseUrl(aeternalBaseUrl)
+        .mdwBaseUrl(mdwBaseUrl)
         .network(network)
-        .targetVM(targetVM)
         .compile();
   }
 

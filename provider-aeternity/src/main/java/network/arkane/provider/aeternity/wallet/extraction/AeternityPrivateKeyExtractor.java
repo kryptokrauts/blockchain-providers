@@ -16,13 +16,13 @@ public class AeternityPrivateKeyExtractor implements SecretExtractor<AeternityPr
     private final KeyPairService keyPairService = new KeyPairServiceFactory().getService();
 
     @Override
-    public SecretKey extract(final AeternityPrivateKeyExtractionRequest importWalletRequest) {
+    public SecretKey extract(final AeternityPrivateKeyExtractionRequest importPrivateKeyRequest) {
         try {
             return AeternitySecretKey.builder()
-                    .keyPair(keyPairService.generateRawKeyPairFromSecret(importWalletRequest.getPrivateKey())).build();
+                    .keyPair(keyPairService.recoverKeyPair(importPrivateKeyRequest.getPrivateKey())).build();
         } catch (final Exception ex) {
-            log.error("Unable to decode aeternity private key {}", importWalletRequest.getPrivateKey());
-            throw new IllegalArgumentException("Unable to decode aeternity private key " + importWalletRequest.getPrivateKey());
+            log.error("Unable to decode aeternity private key {}", importPrivateKeyRequest.getPrivateKey());
+            throw new IllegalArgumentException("Unable to decode aeternity private key " + importPrivateKeyRequest.getPrivateKey());
         }
     }
 

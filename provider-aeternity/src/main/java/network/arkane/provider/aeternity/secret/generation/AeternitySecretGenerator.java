@@ -1,6 +1,6 @@
 package network.arkane.provider.aeternity.secret.generation;
 
-import com.kryptokrauts.aeternity.sdk.domain.secret.impl.RawKeyPair;
+import com.kryptokrauts.aeternity.sdk.domain.secret.KeyPair;
 import com.kryptokrauts.aeternity.sdk.service.keypair.KeyPairService;
 import com.kryptokrauts.aeternity.sdk.service.keypair.KeyPairServiceFactory;
 import network.arkane.provider.chain.SecretType;
@@ -14,9 +14,9 @@ public class AeternitySecretGenerator implements SecretGenerator<AeternitySecret
 
     @Override
     public AeternitySecretKey generate() {
-        final RawKeyPair rawKeyPair = keyPairService.generateRawKeyPair();
+        final KeyPair keyPair = keyPairService.generateKeyPair();
         return AeternitySecretKey.builder()
-                .keyPair(rawKeyPair)
+                .keyPair(keyPair)
                 .build();
     }
 

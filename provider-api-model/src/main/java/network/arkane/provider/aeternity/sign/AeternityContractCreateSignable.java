@@ -1,50 +1,24 @@
 package network.arkane.provider.aeternity.sign;
 
+import com.kryptokrauts.aeternity.sdk.constants.BaseConstants;
+import java.math.BigInteger;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Builder.Default;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import network.arkane.provider.sign.domain.Signable;
 
-import java.math.BigInteger;
-
-@Data
+@Builder
+@Getter
 @NoArgsConstructor
 public class AeternityContractCreateSignable implements Signable {
 
-    private BigInteger amount;
-    private String callData;
     private String contractByteCode;
-    private BigInteger deposit;
-    private BigInteger gas;
-    private BigInteger gasPrice;
-    private BigInteger nonce;
+    private String callData;
     private String ownerId;
-    private BigInteger ttl;
-    private BigInteger fee;
-    private AeternityVirtualMachine targetVM;
-
-    @Builder
-    public AeternityContractCreateSignable(BigInteger amount,
-                                           String callData,
-                                           String contractByteCode,
-                                           BigInteger deposit,
-                                           BigInteger gas,
-                                           BigInteger gasPrice,
-                                           BigInteger nonce,
-                                           String ownerId,
-                                           BigInteger ttl,
-                                           BigInteger fee,
-                                           AeternityVirtualMachine targetVM) {
-        this.amount = amount;
-        this.callData = callData;
-        this.contractByteCode = contractByteCode;
-        this.deposit = deposit;
-        this.gas = gas;
-        this.gasPrice = gasPrice;
-        this.nonce = nonce;
-        this.ownerId = ownerId;
-        this.ttl = ttl;
-        this.fee = fee;
-        this.targetVM = targetVM;
-    }
+    private BigInteger nonce;
+    @Default private BigInteger amount = BigInteger.ZERO;
+    @Default private BigInteger gasLimit = BaseConstants.CONTRACT_DEFAULT_GAS_LIMIT;
+    @Default private BigInteger gasPrice = BaseConstants.MINIMAL_GAS_PRICE;
+    @Default private BigInteger ttl = BigInteger.ZERO;
 }

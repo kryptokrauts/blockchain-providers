@@ -1,12 +1,10 @@
 package network.arkane.provider.aeternity.sign;
 
-import com.kryptokrauts.aeternity.sdk.constants.VirtualMachine;
 import com.kryptokrauts.aeternity.sdk.domain.StringResultWrapper;
-import com.kryptokrauts.aeternity.sdk.domain.secret.impl.BaseKeyPair;
+import com.kryptokrauts.aeternity.sdk.domain.secret.KeyPair;
 import com.kryptokrauts.aeternity.sdk.exception.TransactionCreateException;
 import com.kryptokrauts.aeternity.sdk.service.aeternity.impl.AeternityService;
 import com.kryptokrauts.aeternity.sdk.service.transaction.type.model.ContractCreateTransactionModel;
-import com.kryptokrauts.aeternity.sdk.util.EncodingUtils;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.aeternity.secret.generation.AeternitySecretKey;
 import network.arkane.provider.exceptions.ArkaneException;
@@ -36,22 +34,18 @@ public class AeternityContractCreateTransactionSigner implements
                 .amount(signable.getAmount())
                 .callData(signable.getCallData())
                 .contractByteCode(signable.getContractByteCode())
-                .deposit(signable.getDeposit())
-                .gas(signable.getGas())
+                .gasLimit(signable.getGasLimit())
                 .gasPrice(signable.getGasPrice())
-                // the fee is optional because the SDK can calculate it automatically
-                .fee(signable.getFee())
                 .nonce(signable.getNonce())
                 .ownerId(signable.getOwnerId())
                 .ttl(signable.getTtl())
-                .virtualMachine(VirtualMachine.valueOf(signable.getTargetVM().name()))
                 .build();
         StringResultWrapper unsignedTx = aeternityService.transactions
                 .blockingCreateUnsignedTransaction(contractCreateTransactionModel);
-        BaseKeyPair baseKeyPair = EncodingUtils.createBaseKeyPair(key.getKeyPair());
+        KeyPair keyPair = key.getKeyPair();
         try {
             String signedTx = aeternityService.transactions
-                    .signTransaction(unsignedTx.getResult(), baseKeyPair.getPrivateKey());
+                    .signTransaction(unsignedTx.getResult(), keyPair.getEncodedPrivateKey());
             return TransactionSignature.signTransactionBuilder().signedTransaction(signedTx).build();
         } catch (TransactionCreateException e) {
             log.error("Unable to sign transaction: {}", e.getMessage());

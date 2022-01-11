@@ -1,7 +1,7 @@
 package network.arkane.provider.aeternity.wallet.exporting;
 
-import com.kryptokrauts.aeternity.sdk.service.wallet.WalletService;
-import com.kryptokrauts.aeternity.sdk.service.wallet.WalletServiceFactory;
+import com.kryptokrauts.aeternity.sdk.service.keystore.KeystoreService;
+import com.kryptokrauts.aeternity.sdk.service.keystore.KeystoreServiceFactory;
 import network.arkane.provider.aeternity.secret.generation.AeternitySecretKey;
 import network.arkane.provider.aeternity.wallet.decryption.AeternityWalletDecryptor;
 import network.arkane.provider.aeternity.wallet.generation.GeneratedAeternityWallet;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AeternityKeystoreExporter implements KeyExporter<AeternitySecretKey> {
 
-    private final WalletService walletService = new WalletServiceFactory().getService();
+    private final KeystoreService keystoreService = new KeystoreServiceFactory().getService();
     private final AeternityWalletDecryptor aeternityWalletDecryptor;
 
     public AeternityKeystoreExporter(AeternityWalletDecryptor aeternityWalletDecryptor) {
@@ -23,7 +23,7 @@ public class AeternityKeystoreExporter implements KeyExporter<AeternitySecretKey
     @Override
     public String export(AeternitySecretKey key, final String password) {
         try {
-            return walletService.generateKeystore(key.getKeyPair(), password, null);
+            return keystoreService.createKeystore(key.getKeyPair(), password, null);
         } catch (final Exception ex) {
             throw ArkaneException.arkaneException()
                     .errorCode("export.aeternity")

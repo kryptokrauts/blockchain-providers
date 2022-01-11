@@ -1,47 +1,24 @@
 package network.arkane.provider.aeternity.sign;
 
+import com.kryptokrauts.aeternity.sdk.constants.BaseConstants;
+import java.math.BigInteger;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Builder.Default;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import network.arkane.provider.sign.domain.Signable;
 
-import java.math.BigInteger;
-
-@Data
+@Builder
+@Getter
 @NoArgsConstructor
 public class AeternityContractCallSignable implements Signable {
 
-    private String callData;
     private String contractId;
-    private BigInteger gas;
-    private BigInteger gasPrice;
-    private BigInteger nonce;
+    private String callData;
     private String callerId;
-    private BigInteger ttl;
-    private BigInteger amount;
-    private BigInteger fee;
-    private AeternityVirtualMachine targetVM;
-
-    @Builder
-    public AeternityContractCallSignable(String callData,
-                                         String contractId,
-                                         BigInteger gas,
-                                         BigInteger gasPrice,
-                                         BigInteger nonce,
-                                         String callerId,
-                                         BigInteger ttl,
-                                         BigInteger amount,
-                                         BigInteger fee,
-                                         AeternityVirtualMachine targetVM) {
-        this.callData = callData;
-        this.contractId = contractId;
-        this.gas = gas;
-        this.gasPrice = gasPrice;
-        this.nonce = nonce;
-        this.callerId = callerId;
-        this.ttl = ttl;
-        this.amount = amount;
-        this.fee = fee;
-        this.targetVM = targetVM;
-    }
+    private BigInteger nonce;
+    @Default private BigInteger amount = BigInteger.ZERO;
+    @Default private BigInteger gasLimit = BaseConstants.CONTRACT_DEFAULT_GAS_LIMIT;
+    @Default private BigInteger gasPrice = BaseConstants.MINIMAL_GAS_PRICE;
+    @Default private BigInteger ttl = BigInteger.ZERO;
 }

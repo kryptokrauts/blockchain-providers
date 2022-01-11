@@ -23,14 +23,13 @@ public class AeternityBalanceGateway extends BalanceGateway {
     private AeternityService aeternityService;
 
     public AeternityBalanceGateway(final @Qualifier("aeternity-service") AeternityService aeternityService) {
-        Json.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.aeternityService = aeternityService;
     }
 
     @Override
     public Balance getBalance(String address) {
         try {
-            final AccountResult account = aeternityService.accounts.asyncGetAccount(Optional.of(address)).timeout(5, TimeUnit.SECONDS).blockingGet();
+            final AccountResult account = aeternityService.accounts.asyncGetAccount().timeout(5, TimeUnit.SECONDS).blockingGet();
             final BigInteger balance = account.getBalance();
             return Balance.builder()
                           .available(true)

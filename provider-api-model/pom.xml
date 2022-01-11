@@ -44,5 +44,11 @@
             <groupId>org.web3j</groupId>
             <artifactId>core</artifactId>
         </dependency>
+      <dependency>
+        <groupId>com.kryptokrauts</groupId>
+        <artifactId>aepp-sdk-java</artifactId>
+        <version>3.0.1</version>
+        <scope>compile</scope>
+      </dependency>
     </dependencies>
 </project>

@@ -1,12 +1,12 @@
 package network.arkane.provider.aeternity.wallet.extraction;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
 import network.arkane.provider.aeternity.secret.generation.AeternitySecretKey;
 import network.arkane.provider.aeternity.wallet.extraction.request.AeternityKeystoreExtractionRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class AeternityKeystoreExtractorTest {
 
@@ -23,8 +23,8 @@ class AeternityKeystoreExtractorTest {
     public void extract() {
         final AeternitySecretKey password = (AeternitySecretKey) extractor.extract(new AeternityKeystoreExtractionRequest(KEYSTORE, "aeternity"));
         assertThat(password).isNotNull();
-        assertThat(password.getKeyPair().getPrivateKey()).isNotNull();
-        assertThat(password.getKeyPair().getPublicKey()).isNotNull();
+        assertThat(password.getKeyPair().getEncodedPrivateKey()).isNotNull();
+        assertThat(password.getKeyPair().getAddress()).isNotNull();
 
     }
 
