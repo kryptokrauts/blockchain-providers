@@ -33,8 +33,8 @@ import static org.mockito.Mockito.when;
 
 class LitecoinTransactionFactoryTest {
 
-    public static final RecursiveComparisonConfiguration RECURSIVE_COMPARISON_CONFIGURATION = RecursiveComparisonConfiguration.builder()
-                                                                                                                              .withIgnoreAllOverriddenEquals(true)
+    private static final RecursiveComparisonConfiguration RECURSIVE_COMPARISON_CONFIGURATION = RecursiveComparisonConfiguration.builder()
+                                                                                                                              .withIgnoreAllOverriddenEquals(false)
                                                                                                                               .build();
     UnspentLitecoinService unspentLitecoinService;
     LitecoinTransactionFactory litecoinTransactionFactory;
