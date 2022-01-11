@@ -2,6 +2,7 @@ package network.arkane.provider.aeternity.sign;
 
 import com.kryptokrauts.aeternity.sdk.constants.BaseConstants;
 import java.math.BigInteger;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import network.arkane.provider.sign.domain.Signable;
 @Builder
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class AeternityContractCreateSignable implements Signable {
 
     private String contractByteCode;
