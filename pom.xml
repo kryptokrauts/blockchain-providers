@@ -71,7 +71,6 @@
         <spring-boot-starter.version>2.6.1</spring-boot-starter.version>
         <spring-cloud-dependencies.version>2020.0.4</spring-cloud-dependencies.version>
         <spring-cloud-netfix-hystrix.version>2.2.10.RELEASE</spring-cloud-netfix-hystrix.version>
-        <spring-cloud-netflix-ribbon.version>2.2.10.RELEASE</spring-cloud-netflix-ribbon.version>
         <spring-cloud-sleuth.version>3.0.4</spring-cloud-sleuth.version>
         <typetools.version>0.6.3</typetools.version>
         <unirest-java.version>1.4.9</unirest-java.version>
