@@ -71,7 +71,6 @@
         <spring-boot-starter.version>2.6.1</spring-boot-starter.version>
         <spring-cloud-dependencies.version>2020.0.4</spring-cloud-dependencies.version>
         <spring-cloud-netfix-hystrix.version>2.2.10.RELEASE</spring-cloud-netfix-hystrix.version>
-        <spring-cloud-sleuth.version>3.0.4</spring-cloud-sleuth.version>
         <typetools.version>0.6.3</typetools.version>
         <unirest-java.version>1.4.9</unirest-java.version>
         <web3j.version>4.8.7</web3j.version>
@@ -126,13 +125,6 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib</artifactId>
                 <version>${kotlin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-sleuth</artifactId>
-                <version>${spring-cloud-sleuth.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
