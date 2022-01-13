@@ -1,7 +1,7 @@
 package network.arkane.provider.balance;
 
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.blockchainproviders.covalent.CovalentClient;
+import network.arkane.blockchainproviders.covalent.CovalentGateway;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.gateway.MaticWeb3JGateway;
 import network.arkane.provider.token.TokenDiscoveryService;
@@ -17,10 +17,9 @@ public class MaticCovalentBalanceStrategy extends EvmCovalentBalanceStrategy {
 
     public MaticCovalentBalanceStrategy(MaticWeb3JGateway web3JGateway,
                                         TokenDiscoveryService tokenDiscoveryService,
-                                        @Value("${covalent.endpoint}") String endpoint,
-                                        @Value("${covalent.api-key}") String apiKey,
+                                        CovalentGateway covalentGateway,
                                         @Value("${covalent.chain-id.MATIC}") String chainId) {
-        super(web3JGateway, tokenDiscoveryService, new CovalentClient(endpoint, apiKey), chainId);
+        super(web3JGateway, tokenDiscoveryService, covalentGateway, chainId);
     }
 
     @Override

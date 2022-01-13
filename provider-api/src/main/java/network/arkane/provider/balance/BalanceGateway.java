@@ -18,6 +18,11 @@ public abstract class BalanceGateway {
      */
     abstract public Balance getBalance(final String address);
 
+    /**
+     * @return a Balance object with balance of 0
+     */
+    abstract public Balance getZeroBalance();
+
     Balance unavailableBalance(final String address) {
         log.debug("Wallet {} could not be searched for type {}", address, type());
         return Balance.builder()
@@ -27,13 +32,13 @@ public abstract class BalanceGateway {
     }
 
     /**
-     * Get the balance of a token for an address
+     * Get the balances for a list of token addresses
      *
      * @param address
-     * @param tokenAddress
+     * @param tokenAddresses
      * @return
      */
-    public abstract TokenBalance getTokenBalance(String address, String tokenAddress);
+    public abstract List<TokenBalance> getTokenBalances(String address, List<String> tokenAddresses);
 
     /**
      * Get the balance of all supported tokens for an address

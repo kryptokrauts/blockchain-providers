@@ -49,7 +49,7 @@ public class BscWeb3AutoConfiguration {
     }
 
     @Bean(name = "bscBlockscoutClient")
-    public BlockscoutClient bscBlockscoutClient(@Value("${blockscout.bsc.url}") String baseUrl) {
+    public BlockscoutClient bscBlockscoutClient(@Value("${blockscout.bsc.url:}") String baseUrl) {
         return new BlockscoutClient(baseUrl);
     }
 
@@ -59,8 +59,12 @@ public class BscWeb3AutoConfiguration {
     }
 
     @Bean(name = "bscAzraelClient")
-    public AzraelClient bscAzraelClient(@Value("${azrael.bsc.url}") String baseUrl) {
+    public AzraelClient bscAzraelClient(@Value("${azrael.bsc.url:}") String baseUrl) {
         return new AzraelClient(baseUrl);
     }
 
+    @Bean(name = "erc20BscAzraelClient")
+    public AzraelClient erc20BscAzraelClient(@Value("${azrael.bsc.erc20.url:}") String baseUrl) {
+        return new AzraelClient(baseUrl);
+    }
 }
