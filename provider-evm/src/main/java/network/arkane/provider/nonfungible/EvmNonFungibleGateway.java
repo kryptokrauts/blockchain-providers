@@ -32,4 +32,9 @@ public abstract class EvmNonFungibleGateway implements NonFungibleGateway {
     public NonFungibleContract getNonFungibleContract(String contractAddress) {
         return strategy.getNonFungibleContract(contractAddress);
     }
+
+    @Override
+    public NonFungibleContract getNonFungibleContract(String contractAddress, boolean forceUpdate) {
+        return strategy.getNonFungibleContract(contractAddress, forceUpdate);
+    }
 }
