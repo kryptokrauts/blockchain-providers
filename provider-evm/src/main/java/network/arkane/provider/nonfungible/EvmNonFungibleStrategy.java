@@ -19,6 +19,6 @@ public interface EvmNonFungibleStrategy {
     NonFungibleContract getNonFungibleContract(String contractAddress);
 
     default NonFungibleContract getNonFungibleContract(String contractAddress, boolean forceUpdate) {
-        return null;
+        return getNonFungibleContract(contractAddress);
     }
 }
