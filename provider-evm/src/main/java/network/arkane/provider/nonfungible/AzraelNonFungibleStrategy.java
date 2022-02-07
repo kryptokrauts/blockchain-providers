@@ -166,6 +166,13 @@ public abstract class AzraelNonFungibleStrategy implements EvmNonFungibleStrateg
                            .orElse(null);
     }
 
+    @Override
+    public NonFungibleContract getNonFungibleContract(final String contractAddress, boolean forceUpdate) {
+        return azraelClient.getContract(contractAddress, forceUpdate)
+                           .map(token -> mapToContract(contractAddress, token))
+                           .orElse(null);
+    }
+
     private NonFungibleContract mapToContract(String contractAddress,
                                               network.arkane.blockchainproviders.azrael.dto.contract.ContractDto token) {
         return NonFungibleContract.builder()

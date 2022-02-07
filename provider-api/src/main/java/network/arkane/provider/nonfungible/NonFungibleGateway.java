@@ -17,4 +17,8 @@ public interface NonFungibleGateway {
     NonFungibleAsset getNonFungible(String contractAddress, String tokenId);
 
     NonFungibleContract getNonFungibleContract(String contractAddress);
+
+    default NonFungibleContract getNonFungibleContract(String contractAddress, boolean forceUpdate) {
+        return null;
+    }
 }
