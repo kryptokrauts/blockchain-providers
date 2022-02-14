@@ -50,6 +50,7 @@ public class TokenCreationSigner extends HederaSigner<HederaTokenCreationSignabl
                 .setDecimals(signable.getDecimals())
                 .setInitialSupply(signable.getInitialSupply())
                 .setFreezeDefault(signable.isFreezeDefault())
+                .setTreasuryAccountId(accountId)
                 .setMaxSupply(signable.getMaxSupply())
                 .setSupplyKey(key.getKey())
                 .setFreezeKey(key.getKey())
