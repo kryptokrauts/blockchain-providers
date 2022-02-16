@@ -14,20 +14,21 @@ import java.util.Collections;
 
 @Component
 @Slf4j
-public class NftMintSigner extends HederaSigner<NftMintSignable, TokenMintTransaction> implements Signer<NftMintSignable, HederaSecretKey> {
+public class TokenMintSigner extends HederaSigner<HederaTokenMintSignable, TokenMintTransaction> implements Signer<HederaTokenMintSignable, HederaSecretKey> {
 
     private final HederaClientFactory clientFactory;
 
-    public NftMintSigner(HederaClientFactory clientFactory) {
+    public TokenMintSigner(HederaClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 
     @Override
-    protected Transaction<TokenMintTransaction> createTransaction(NftMintSignable signable,
+    protected Transaction<TokenMintTransaction> createTransaction(HederaTokenMintSignable signable,
                                                                   HederaSecretKey key) {
         return new TokenMintTransaction()
                 .setTokenId(TokenId.fromString(signable.getTokenId()))
                 .setMetadata(Collections.singletonList(signable.getMetadata().getBytes()))
+                .setAmount(signable.getAmount())
                 .freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getAccountId()), key.getKey()))
                 .sign(key.getKey());
     }
