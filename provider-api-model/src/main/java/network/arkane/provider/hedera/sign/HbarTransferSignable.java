@@ -8,7 +8,7 @@ import java.math.BigInteger;
 
 @Data
 @Builder
-public class HbarTransferSignable implements Signable {
+public class HbarTransferSignable implements HederaTransferSignable {
     private String from;
     private String to;
     private BigInteger amount;
