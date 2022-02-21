@@ -10,7 +10,9 @@ import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
 import network.arkane.provider.sign.Signer;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -27,9 +29,13 @@ public class TokenMintSigner extends HederaSigner<HederaTokenMintSignable, Token
                                                                   HederaSecretKey key) {
         return new TokenMintTransaction()
                 .setTokenId(TokenId.fromString(signable.getTokenId()))
-                .setMetadata(Collections.singletonList(signable.getMetadata().getBytes()))
+                .setMetadata(this.mapMetadata(signable))
                 .setAmount(signable.getAmount())
                 .freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getAccountId()), key.getKey()))
                 .sign(key.getKey());
+    }
+
+    private List<byte[]> mapMetadata(HederaTokenMintSignable signable) {
+        return signable.getMetadata() != null ? Collections.singletonList(signable.getMetadata().getBytes(StandardCharsets.UTF_8)) : Collections.emptyList();
     }
 }
