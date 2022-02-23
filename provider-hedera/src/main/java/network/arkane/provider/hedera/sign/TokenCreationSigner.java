@@ -10,6 +10,7 @@ import com.hedera.hashgraph.sdk.Hbar;
 import com.hedera.hashgraph.sdk.TokenCreateTransaction;
 import com.hedera.hashgraph.sdk.TokenId;
 import com.hedera.hashgraph.sdk.TokenSupplyType;
+import com.hedera.hashgraph.sdk.TokenType;
 import com.hedera.hashgraph.sdk.Transaction;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.hedera.HederaClientFactory;
@@ -20,6 +21,7 @@ import network.arkane.provider.hedera.token.HederaFixedFee;
 import network.arkane.provider.hedera.token.HederaFractionalFee;
 import network.arkane.provider.hedera.token.HederaRoyaltyFee;
 import network.arkane.provider.hedera.token.HederaTokenSupplyType;
+import network.arkane.provider.hedera.token.HederaTokenType;
 import network.arkane.provider.sign.Signer;
 import org.springframework.stereotype.Component;
 
@@ -58,6 +60,7 @@ public class TokenCreationSigner extends HederaSigner<HederaTokenCreationSignabl
                 .setFeeScheduleKey(key.getKey())
                 .setKycKey(key.getKey())
                 .setAdminKey(key.getKey());
+        this.setIfNotNull(signable::getTokenType, this::mapTokenType, tokenCreateTransaction::setTokenType);
         this.setIfNotNull(signable::getTreasuryAccountId, AccountId::fromString, tokenCreateTransaction::setTreasuryAccountId);
         this.setIfNotNull(signable::getTokenName, tokenCreateTransaction::setTokenName);
         this.setIfNotNull(signable::getTokenSymbol, tokenCreateTransaction::setTokenSymbol);
@@ -131,6 +134,16 @@ public class TokenCreationSigner extends HederaSigner<HederaTokenCreationSignabl
             return TokenSupplyType.INFINITE;
         }
         throw new IllegalArgumentException("HederaTokenSupplyType not supported: " + supplyType);
+    }
+
+    private TokenType mapTokenType(final HederaTokenType tokenType) {
+        if (tokenType == HederaTokenType.FUNGIBLE_COMMON) {
+            return TokenType.FUNGIBLE_COMMON;
+        }
+        if (tokenType == HederaTokenType.NON_FUNGIBLE_UNIQUE) {
+            return TokenType.NON_FUNGIBLE_UNIQUE;
+        }
+        throw new IllegalArgumentException("Transaction not supported for tokenType: " + tokenType);
     }
 
     private <T> void setIfNotNull(final Supplier<T> value,
