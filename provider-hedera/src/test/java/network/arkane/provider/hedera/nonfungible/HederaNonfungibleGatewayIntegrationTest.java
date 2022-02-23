@@ -35,4 +35,5 @@ class HederaNonfungibleGatewayIntegrationTest {
 
         System.out.println(nonFungibleAssetBalances);
     }
+
 }
