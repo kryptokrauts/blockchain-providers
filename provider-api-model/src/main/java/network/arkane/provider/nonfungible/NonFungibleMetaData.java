@@ -69,7 +69,9 @@ public class NonFungibleMetaData {
                              getProperty("image"),
                              getProperty("image_data"),
                              getProperty("imageUrl"),
-                             getProperty("image_url"))
+                             getProperty("image_url"),
+                             getProperty("CID")
+                        )
                      .filter(StringUtils::isNotBlank)
                      .map(this::replaceIpfsLink)
                      .findFirst();
