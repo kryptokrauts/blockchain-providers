@@ -230,4 +230,16 @@ class MetaDataParserTest {
         assertThat(result.getAnimationUrls().get(0).getValue()).isEqualTo("https://ipfs.io/ipfs/QmNWtcUL4r5XnWZgmxL3xHYCEFhHYzwMdBXnx2mAdQf8hM");
         assertThat(result.getAnimationUrl().get()).isEqualTo("https://ipfs.io/ipfs/QmNWtcUL4r5XnWZgmxL3xHYCEFhHYzwMdBXnx2mAdQf8hM");
     }
+
+    @Test
+    void parsesHashAxisNft() throws IOException {
+        String metaData = "\n"
+                          + "{\"name\":\"TRAPPED INTO METAVERSE\",\"description\":\"GEN1.\\n7th drop of DANY4D #newprofilepic NFT's.\",\"creator\":\"DANY4D\","
+                          + "\"CID\":\"https://bafybeiha2pdudzefy3foaddhxtijhbl7aof3k4jhc6l6iwzsxu2yfg7eb4.ipfs.dweb.link/\"}";
+
+        NonFungibleMetaData result = parser.parseMetaData(objectMapper.readValue(metaData, JsonNode.class));
+        assertThat(result.getName()).isEqualTo("TRAPPED INTO METAVERSE");
+        assertThat(result.getDescription()).isEqualTo("GEN1.\n7th drop of DANY4D #newprofilepic NFT's.");
+        assertThat(result.getImage().get()).isEqualTo("https://bafybeiha2pdudzefy3foaddhxtijhbl7aof3k4jhc6l6iwzsxu2yfg7eb4.ipfs.dweb.link/");
+    }
 }

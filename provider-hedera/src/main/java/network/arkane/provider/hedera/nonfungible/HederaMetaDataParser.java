@@ -59,7 +59,11 @@ public class HederaMetaDataParser {
         } else {
             String decodedBase64 = decodeBase64(metadata).orElse(metadata);
             if (!StringUtils.equals(metadata, decodedBase64)) {
-                return parseMetaData(tokenId, serialNumber, decodedBase64);
+                if (decodedBase64.startsWith("http") || isValidJSON(decodedBase64)) {
+                    return parseMetaData(tokenId, serialNumber, decodedBase64);
+                } else {
+                    return parseMetaData(tokenId, serialNumber, "ipfs://" + decodedBase64);
+                }
             }
         }
         if (StringUtils.isBlank(metadata)) return null;
@@ -73,8 +77,9 @@ public class HederaMetaDataParser {
     private Optional<String> decodeBase64(String tokenUri) {
         final String base64Metadata = tokenUri.substring(tokenUri.indexOf(",") + 1);
         try {
-            String json = new String(Base64.getDecoder().decode(base64Metadata));
-            return Optional.of(json);
+            return org.apache.commons.codec.binary.Base64.isBase64(base64Metadata)
+                   ? Optional.of(new String(Base64.getDecoder().decode(base64Metadata)))
+                   : Optional.empty();
         } catch (RuntimeException e) {
             return Optional.empty();
         }
