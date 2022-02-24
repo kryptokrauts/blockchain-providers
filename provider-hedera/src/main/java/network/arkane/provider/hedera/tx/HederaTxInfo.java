@@ -1,6 +1,8 @@
 package network.arkane.provider.hedera.tx;
 
 import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import network.arkane.provider.hedera.mirror.dto.HederaTokenTransfer;
 import network.arkane.provider.hedera.mirror.dto.HederaTransfer;
 import network.arkane.provider.tx.TxInfo;
@@ -9,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class HederaTxInfo extends TxInfo {
     private String chargedTxFee;
     private String consensusTimestamp;
@@ -26,22 +30,22 @@ public class HederaTxInfo extends TxInfo {
     private List<HederaTokenTransfer> tokenTransfers;
 
     @Builder(builderMethodName = "hederaTxInfoBuilder")
-    public HederaTxInfo(String hash,
-                        TxStatus status,
-                        String chargedTxFee,
-                        String consensusTimestamp,
-                        String entityId,
-                        String maxFee,
-                        String memoBase64,
-                        String name,
-                        String node,
-                        boolean scheduled,
-                        String transactionId,
-                        String validDurationSeconds,
-                        String validStartTimestamp,
-                        String result,
-                        List<HederaTransfer> transfers,
-                        List<HederaTokenTransfer> tokenTransfers) {
+    public HederaTxInfo(final String hash,
+                        final TxStatus status,
+                        final String chargedTxFee,
+                        final String consensusTimestamp,
+                        final String entityId,
+                        final String maxFee,
+                        final String memoBase64,
+                        final String name,
+                        final String node,
+                        final boolean scheduled,
+                        final String transactionId,
+                        final String validDurationSeconds,
+                        final String validStartTimestamp,
+                        final String result,
+                        final List<HederaTransfer> transfers,
+                        final List<HederaTokenTransfer> tokenTransfers) {
         super(hash, status, null, null, null, StringUtils.isNotBlank(consensusTimestamp));
         this.chargedTxFee = chargedTxFee;
         this.consensusTimestamp = consensusTimestamp;
