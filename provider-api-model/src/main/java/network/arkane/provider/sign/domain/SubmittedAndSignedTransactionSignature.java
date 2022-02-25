@@ -10,7 +10,7 @@ public class SubmittedAndSignedTransactionSignature extends TransactionSignature
 
     private String transactionHash;
 
-    private Object additionalInformation;
+    private Object transactionDetails;
 
     public SubmittedAndSignedTransactionSignature(final String transactionHash,
                                                   final String signedTransaction) {
@@ -21,9 +21,9 @@ public class SubmittedAndSignedTransactionSignature extends TransactionSignature
     @Builder(builderMethodName = "signAndSubmitTransactionBuilder")
     public SubmittedAndSignedTransactionSignature(final String transactionHash,
                                                   final String signedTransaction,
-                                                  final Object additionalInformation) {
+                                                  final Object transactionDetails) {
         super(signedTransaction, SignatureType.SUBMITTED_AND_SIGNED_TRANSACTION_SIGNATURE);
         this.transactionHash = transactionHash;
-        this.additionalInformation = additionalInformation;
+        this.transactionDetails = transactionDetails;
     }
 }
