@@ -3,6 +3,7 @@ package network.arkane.provider.hedera.bridge;
 import com.hedera.hashgraph.sdk.Client;
 import com.hedera.hashgraph.sdk.PrecheckStatusException;
 import com.hedera.hashgraph.sdk.ReceiptStatusException;
+import com.hedera.hashgraph.sdk.TokenMintTransaction;
 import com.hedera.hashgraph.sdk.Transaction;
 import com.hedera.hashgraph.sdk.TransactionReceipt;
 import com.hedera.hashgraph.sdk.TransactionResponse;
@@ -43,7 +44,7 @@ public class HederaTransactionGateway implements TransactionGateway {
             return signAndSubmitTransactionBuilder()
                     .transactionHash(transactionResponse.transactionId.toString())
                     .signedTransaction(transactionSignature.getSignedTransaction())
-                    .transactionDetails(this.mapHederaTransactionReceipt(transactionResponse))
+                    .transactionDetails(this.getTransactionDetails(signedTransferTxn, transactionResponse))
                     .build();
         } catch (Exception e) {
             throw arkaneException()
@@ -53,6 +54,15 @@ public class HederaTransactionGateway implements TransactionGateway {
                     .build();
         }
     }
+
+    private Object getTransactionDetails(final Transaction<?> signedTransferTxn,
+                                         final TransactionResponse transactionResponse) {
+        if (signedTransferTxn instanceof TokenMintTransaction) {
+            return this.mapHederaTransactionReceipt(transactionResponse);
+        }
+        return null;
+    }
+
 
     private HederaTransactionReceipt mapHederaTransactionReceipt(final TransactionResponse transactionResponse) {
         try {
