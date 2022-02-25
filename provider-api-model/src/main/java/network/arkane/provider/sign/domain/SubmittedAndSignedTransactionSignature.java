@@ -12,8 +12,8 @@ public class SubmittedAndSignedTransactionSignature extends TransactionSignature
 
     private Object additionalInformation;
 
-    public SubmittedAndSignedTransactionSignature(final String signedTransaction,
-                                                  final String transactionHash) {
+    public SubmittedAndSignedTransactionSignature(final String transactionHash,
+                                                  final String signedTransaction) {
         super(signedTransaction, SignatureType.SUBMITTED_AND_SIGNED_TRANSACTION_SIGNATURE);
         this.transactionHash = transactionHash;
     }
