@@ -58,7 +58,6 @@ public class TokenCreationSigner extends HederaSigner<HederaTokenCreationSignabl
                 .setFreezeKey(key.getKey())
                 .setWipeKey(key.getKey())
                 .setFeeScheduleKey(key.getKey())
-                .setKycKey(key.getKey())
                 .setAdminKey(key.getKey());
         this.setIfNotNull(signable::getTokenType, this::mapTokenType, tokenCreateTransaction::setTokenType);
         this.setIfNotNull(signable::getTreasuryAccountId, AccountId::fromString, tokenCreateTransaction::setTreasuryAccountId);
