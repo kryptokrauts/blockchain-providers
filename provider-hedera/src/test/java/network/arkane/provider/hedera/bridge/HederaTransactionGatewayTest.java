@@ -3,6 +3,8 @@ package network.arkane.provider.hedera.bridge;
 import com.hedera.hashgraph.sdk.PrecheckStatusException;
 import com.hedera.hashgraph.sdk.PrivateKey;
 import com.hedera.hashgraph.sdk.TokenCreateTransaction;
+import com.hedera.hashgraph.sdk.TokenId;
+import com.hedera.hashgraph.sdk.TokenMintTransaction;
 import com.hedera.hashgraph.sdk.TokenType;
 import com.hedera.hashgraph.sdk.TransactionResponse;
 import network.arkane.provider.hedera.HederaClientFactory;
@@ -22,6 +24,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
@@ -121,6 +124,21 @@ class HederaTransactionGatewayTest {
                 .setTreasuryAccountId(HederaTestFixtures.getAccountId())
                 .execute(HederaTestFixtures.clientFactory().getClientWithOperator());
 
+        System.out.println(response);
+    }
+
+    @Test
+    void mintToken() throws PrecheckStatusException, TimeoutException {
+        final String metadata
+                = "{\"name\":\"Banana\",\"description\":\"Banana tokens from Venly\",\"image\":\"https://dev.luthersystemsapp"
+                  + ".com/chloe_assets/SearchingForLightNo_81_20/image_part_005.jpg\",\"localization\":{\"uri\":\"https://dev.luthersystemsapp.com/nft-test-{locale}.json\","
+                  + "\"default\":\"en\",\"locales\":[\"en\",\"es\",\"fr\"]}}";
+
+        TransactionResponse response = new TokenMintTransaction()
+                .setTokenId(TokenId.fromString("0.0.2268875"))
+                .setAmount(1500)
+                .setMetadata(Collections.singletonList(metadata.getBytes(StandardCharsets.UTF_8)))
+                .execute(HederaTestFixtures.clientFactory().getClientWithOperator());
         System.out.println(response);
     }
 }

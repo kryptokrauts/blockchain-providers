@@ -6,7 +6,7 @@ import network.arkane.provider.sign.domain.Signable;
 
 @Data
 @Builder
-public class NftTransferSignable implements Signable {
+public class NftTransferSignable implements HederaTransferSignable {
     private String from;
     private String to;
     private String tokenId;
