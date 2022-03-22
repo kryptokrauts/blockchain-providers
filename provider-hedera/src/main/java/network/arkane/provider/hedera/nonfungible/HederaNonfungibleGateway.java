@@ -13,6 +13,7 @@ import network.arkane.provider.hedera.mirror.MirrorNodeClient;
 import network.arkane.provider.hedera.mirror.dto.MirrorNodeNft;
 import network.arkane.provider.nonfungible.NonFungibleGateway;
 import network.arkane.provider.nonfungible.NonFungibleMetaData;
+import network.arkane.provider.nonfungible.domain.Attribute;
 import network.arkane.provider.nonfungible.domain.NonFungibleAsset;
 import network.arkane.provider.nonfungible.domain.NonFungibleAssetBalance;
 import network.arkane.provider.nonfungible.domain.NonFungibleContract;
@@ -22,6 +23,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -110,6 +112,15 @@ public class HederaNonfungibleGateway implements NonFungibleGateway {
         NonFungibleMetaData nonFungibleMetaData = metaDataParser.parseMetaData(nft.getTokenId(), nft.getSerialNumber(), nft.getMetadata());
         if (nonFungibleMetaData == null) return null;
         String imageUrl = nonFungibleMetaData.getImage().map(i -> i.replaceAll(" ", "%20")).orElse(null);
+        List<Attribute> enrichedAttributes = nonFungibleMetaData.getEnrichedAttributes();
+        if (nonFungibleMetaData.getProperty("creator") != null) {
+            enrichedAttributes = new ArrayList<>(enrichedAttributes);
+            enrichedAttributes.add(Attribute.builder()
+                                            .type("property")
+                                            .name("Creator")
+                                            .value(nonFungibleMetaData.getProperty("creator"))
+                                            .build());
+        }
         return NonFungibleAsset.builder()
                                .name(nonFungibleMetaData.getName())
                                .imageUrl(imageUrl)
@@ -121,7 +132,7 @@ public class HederaNonfungibleGateway implements NonFungibleGateway {
                                .url(nonFungibleMetaData.getExternalUrl().orElse(null))
                                .animationUrl(nonFungibleMetaData.getAnimationUrl().orElse(null))
                                .animationUrls(nonFungibleMetaData.getAnimationUrls())
-                               .attributes(nonFungibleMetaData.getEnrichedAttributes())
+                               .attributes(enrichedAttributes)
                                .build();
     }
 
