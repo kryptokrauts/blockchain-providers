@@ -3,22 +3,21 @@ package network.arkane.provider.balance;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.blockchainproviders.azrael.AzraelClient;
 import network.arkane.blockchainproviders.azrael.dto.ContractType;
-import network.arkane.blockchainproviders.azrael.dto.contract.Erc20ContractDto;
 import network.arkane.blockchainproviders.azrael.dto.token.erc20.Erc20TokenBalance;
 import network.arkane.provider.PrecisionUtil;
 import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
-import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import network.arkane.provider.token.TokenDiscoveryProperties;
 import network.arkane.provider.web3j.EvmWeb3jGateway;
-import org.jetbrains.annotations.NotNull;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,17 +30,15 @@ public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
 
     public EvmAzraelBalanceStrategy(final EvmWeb3jGateway web3JGateway,
                                     final AzraelClient azraelClient,
-                                    TokenDiscoveryProperties tokenDiscoveryProperties) {
+                                    final TokenDiscoveryProperties tokenDiscoveryProperties) {
         this.web3JGateway = web3JGateway;
         this.azraelClient = azraelClient;
         this.logoUrlPrefix = "https://img.arkane.network/" + tokenDiscoveryProperties.getPaths().get(type()) + "/logos/";
     }
 
-    public abstract SecretType type();
-
+    @Override
     public Balance getBalance(final String account) {
         try {
-
             final BigInteger balance = web3JGateway.getBalance(account).getBalance();
             return Balance.builder()
                           .available(true)
@@ -62,34 +59,7 @@ public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
         }
     }
 
-    public TokenBalance getTokenBalance(final String walletAddress,
-                                        final String tokenAddress) {
-        return getTokenBalances(walletAddress)
-                .stream()
-                .filter(b -> b.getTokenAddress().equalsIgnoreCase(tokenAddress))
-                .findFirst()
-                .orElseGet(() -> getEmptyTokenBalance(tokenAddress));
-    }
-
-    private TokenBalance getEmptyTokenBalance(String tokenAddress) {
-        return azraelClient.getContract(tokenAddress)
-                           .filter(c -> c.getContractType() == ContractType.ERC_20)
-                           .map(c -> (Erc20ContractDto) c)
-                           .map(c -> TokenBalance.builder()
-                                                 .tokenAddress(c.getAddress())
-                                                 .rawBalance("0")
-                                                 .balance(0.0)
-                                                 .decimals(c.getDecimals())
-                                                 .symbol(c.getSymbol())
-                                                 .name(c.getName())
-                                                 .type("ERC_20")
-                                                 .logo(getLogo(c.getAddress()))
-                                                 .transferable(true)
-                                                 .build())
-                           .orElse(null);
-    }
-
-
+    @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
         return azraelClient.getTokens(walletAddress, Collections.singletonList(ContractType.ERC_20))
                            .stream()
@@ -108,8 +78,17 @@ public abstract class EvmAzraelBalanceStrategy implements EvmBalanceStrategy {
                            .collect(Collectors.toList());
     }
 
-    @NotNull
-    private String getLogo(String tokenAddress) {
+    @Override
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        if (CollectionUtils.isNotEmpty(tokenAddresses)) return getTokenBalances(walletAddress);
+        final Set<String> lowerCaseTokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        return getTokenBalances(walletAddress).stream()
+                                              .filter(tb -> lowerCaseTokenAddresses.contains(tb.getTokenAddress().toLowerCase()))
+                                              .collect(Collectors.toList());
+    }
+
+    private String getLogo(final String tokenAddress) {
         return (this.logoUrlPrefix.endsWith("/") ? this.logoUrlPrefix + tokenAddress : this.logoUrlPrefix + "/" + tokenAddress) + ".png";
     }
 

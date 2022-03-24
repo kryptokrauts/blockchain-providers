@@ -60,6 +60,18 @@ public class AzraelClient {
         return Optional.ofNullable(restTemplate.getForObject(baseUrl + "/contracts/{address}", ContractDto.class, address));
     }
 
+    public Optional<ContractDto> getContract(String address, boolean forceUpdate) {
+        Map<String, String> uriParam = new HashMap<>();
+        uriParam.put("address", address);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl + "/contracts/{address}");
+        builder.queryParam("force_update", forceUpdate);
+
+        ResponseEntity<ContractDto> result = restTemplate.exchange(builder.build().toUriString(), HttpMethod.GET, new HttpEntity<>(new LinkedMultiValueMap()),
+                                                                   ContractDto.class, uriParam);
+        return Optional.ofNullable(result.getBody());
+    }
+
     public List<TokenBalance> getTokens(String address) {
         return getTokens(address, emptyList());
     }

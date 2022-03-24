@@ -29,7 +29,7 @@ public class EvmEip712Signer implements Signer<EvmEip712Signable, EvmSecretKey> 
                                .v(signatureData.getV())
                                .build();
         } catch (Exception e) {
-            log.error("Unable to sign transaction: {}", e.getMessage());
+            log.error("Unable to sign transaction: {} \n '{}'", e.getMessage(), signable == null || signable.getData() == null ? "" : signable.getData());
             throw arkaneException()
                     .errorCode("transaction.sign.internal-error")
                     .cause(e)

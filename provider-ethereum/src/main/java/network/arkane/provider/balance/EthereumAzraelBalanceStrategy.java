@@ -15,9 +15,9 @@ public class EthereumAzraelBalanceStrategy extends EvmAzraelBalanceStrategy {
 
 
     public EthereumAzraelBalanceStrategy(EthereumWeb3JGateway web3JGateway,
-                                         AzraelClient ethereumAzraelClient,
+                                         AzraelClient erc20EthereumAzraelClient,
                                          TokenDiscoveryProperties tokenDiscoveryProperties) {
-        super(web3JGateway, ethereumAzraelClient, tokenDiscoveryProperties);
+        super(web3JGateway, erc20EthereumAzraelClient, tokenDiscoveryProperties);
     }
 
     @Override

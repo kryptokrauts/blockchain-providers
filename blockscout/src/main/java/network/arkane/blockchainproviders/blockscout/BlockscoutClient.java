@@ -19,7 +19,12 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 public class BlockscoutClient {
 
@@ -41,6 +46,21 @@ public class BlockscoutClient {
     public BigInteger getBalance(String address) {
         JsonNode response = restTemplate.getForObject("?module=account&action=balance&address={address}", JsonNode.class, address);
         return new BigInteger(response.get("result").asText("0"));
+    }
+
+    public Map<String, BigInteger> getTokenBalances(final String walletAddress,
+                                                    final List<String> tokenAddresses) {
+        //        JsonNode response = restTemplate.getForObject("?module=account&action=tokenbalance&contractaddress={contractAddressHash}&address={addressHash}",
+        //                                                      JsonNode.class,
+        //                                                      tokenAddress,
+        //                                                      walletAddress);
+        //        String result = response.get("result").asText("0");
+        //        return new BigInteger(StringUtils.isEmpty(result) ? "0" : result);
+
+        final Set<String> lowerCaseTokenAddresses = tokenAddresses.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        return getTokenBalances(walletAddress).stream()
+                                              .filter(token -> lowerCaseTokenAddresses.contains(token.getContractAddress().toLowerCase()))
+                                              .collect(toMap(token -> token.getContractAddress().toLowerCase(), this::getTokenCount));
     }
 
     public BigInteger getTokenBalance(final String walletAddress,

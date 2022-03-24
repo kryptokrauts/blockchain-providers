@@ -38,6 +38,13 @@ class AzraelClientIntegrationTest {
     }
 
     @Test
+    void getContractWithForceUpdateParameter() {
+        Optional<ContractDto> result = client.getContract("0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa", true);
+
+        assertThat(result).isNotEmpty();
+    }
+
+    @Test
     void getByContractTypes() {
         List<TokenBalance> result = client.getTokens("0x9c978F4cfa1FE13406BCC05baf26a35716F881Dd", singletonList(ContractType.ERC_20));
 

@@ -9,8 +9,8 @@ import java.util.List;
 public interface EvmBalanceStrategy {
     Balance getBalance(String account);
 
-    TokenBalance getTokenBalance(final String owner,
-                                 final String tokenAddress);
+    List<TokenBalance> getTokenBalances(String owner,
+                                        List<String> tokenAddress);
 
 
     List<TokenBalance> getTokenBalances(String walletAddress);

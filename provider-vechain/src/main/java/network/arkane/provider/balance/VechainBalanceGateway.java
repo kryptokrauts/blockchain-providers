@@ -5,12 +5,11 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.core.model.blockchain.Account;
-import network.arkane.provider.core.model.clients.Address;
-import network.arkane.provider.core.model.clients.Amount;
-import network.arkane.provider.core.model.clients.ERC20Token;
 import network.arkane.provider.gateway.VechainGateway;
+import network.arkane.provider.threading.Threading;
 import network.arkane.provider.token.TokenDiscoveryService;
 import network.arkane.provider.token.TokenInfo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -18,7 +17,10 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static network.arkane.provider.chain.SecretType.VECHAIN;
 
 @Component
 public class VechainBalanceGateway extends BalanceGateway {
@@ -34,7 +36,7 @@ public class VechainBalanceGateway extends BalanceGateway {
 
     @Override
     public SecretType type() {
-        return SecretType.VECHAIN;
+        return VECHAIN;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class VechainBalanceGateway extends BalanceGateway {
         final Account account = vechainGateway.getAccount(hexAccount);
         return Balance.builder()
                       .available(true)
-                      .secretType(SecretType.VECHAIN)
+                      .secretType(VECHAIN)
                       .balance(account.VETBalance().getAmount().doubleValue())
                       .rawBalance(account.VETBalance().toBigInteger().toString())
                       .gasBalance(account.energyBalance().getAmount().doubleValue())
@@ -55,18 +57,40 @@ public class VechainBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public TokenBalance getTokenBalance(final String walletAddress, final String tokenAddress) {
-        final TokenInfo tokenInfo = tokenDiscoveryService.getTokenInfo(SecretType.VECHAIN, tokenAddress).orElseThrow(IllegalArgumentException::new);
-        return getTokenBalance(walletAddress, tokenInfo);
+    public Balance getZeroBalance() {
+        return Balance.builder()
+                      .available(true)
+                      .secretType(SecretType.VECHAIN)
+                      .balance(0.0)
+                      .rawBalance("0")
+                      .gasBalance(0.0)
+                      .rawGasBalance("0")
+                      .symbol("VET")
+                      .gasSymbol("VTHO")
+                      .decimals(18)
+                      .build();
     }
-
 
     @Override
     public List<TokenBalance> getTokenBalances(final String walletAddress) {
-        return getTokenBalances(walletAddress, tokenDiscoveryService.getTokens(SecretType.VECHAIN));
+        return getTokenBalancesForTokenInfos(walletAddress, tokenDiscoveryService.getTokens(type()));
     }
 
-    private List<TokenBalance> getTokenBalances(final String walletAddress, final List<TokenInfo> tokenInfo) {
+    @Override
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
+                                               final List<String> tokenAddresses) {
+        if (CollectionUtils.isEmpty(tokenAddresses)) getTokenBalances(walletAddress);
+        final List<TokenInfo> tokenInfos = Threading.runInThreadPool("getTokenInfos",
+                                                                     () -> tokenAddresses.parallelStream()
+                                                                                         .map(tokenAddress -> tokenDiscoveryService.getTokenInfo(type(), tokenAddress)
+                                                                                                                                   .orElse(null))
+                                                                                         .filter(Objects::nonNull)
+                                                                                         .collect(Collectors.toList()));
+        return getTokenBalancesForTokenInfos(walletAddress, tokenInfos);
+    }
+
+    private List<TokenBalance> getTokenBalancesForTokenInfos(final String walletAddress,
+                                                             final List<TokenInfo> tokenInfo) {
         final List<BigInteger> balances = vechainGateway.getTokenBalances(walletAddress, tokenInfo.stream().map(TokenInfo::getAddress).collect(Collectors.toList()));
         final List<TokenBalance> results = new ArrayList<>();
         for (int i = 0; i < balances.size(); i++) {
@@ -86,26 +110,10 @@ public class VechainBalanceGateway extends BalanceGateway {
         return results;
     }
 
-    private double calculateBalance(final BigInteger tokenBalance, final TokenInfo tokenInfo) {
+    private double calculateBalance(final BigInteger tokenBalance,
+                                    final TokenInfo tokenInfo) {
         final BigDecimal rawBalance = new BigDecimal(tokenBalance);
         final BigDecimal divider = BigDecimal.valueOf(10).pow(tokenInfo.getDecimals());
         return rawBalance.divide(divider, 6, RoundingMode.HALF_DOWN).doubleValue();
-    }
-
-    private TokenBalance getTokenBalance(final String walletAddress, final TokenInfo tokenInfo) {
-        final ERC20Token token = ERC20Token.create(tokenInfo.getName(), Address.fromHexString(tokenInfo.getAddress()));
-        token.setPrecision(new BigDecimal(tokenInfo.getDecimals()));
-        Amount tokenBalance = vechainGateway.getTokenBalance(walletAddress, token);
-        return TokenBalance.builder()
-                           .tokenAddress(tokenInfo.getAddress())
-                           .balance(tokenBalance.getAmount() == null ? 0 : tokenBalance.getAmount().doubleValue())
-                           .rawBalance(tokenBalance.getAmount() == null ? "0" : tokenBalance.toBigInteger().toString())
-                           .decimals(tokenInfo.getDecimals())
-                           .symbol(tokenInfo.getSymbol())
-                           .name(tokenInfo.getName())
-                           .type(tokenInfo.getType())
-                           .logo(tokenInfo.getLogo())
-                           .transferable(tokenInfo.isTransferable())
-                           .build();
     }
 }
