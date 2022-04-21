@@ -2,11 +2,9 @@ package network.arkane.provider.balance.domain;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import network.arkane.provider.chain.SecretType;
 
 @Data
-@NoArgsConstructor
 public class Balance {
 
     @Builder.Default

@@ -2,7 +2,6 @@ package network.arkane.provider.blockcypher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionRequest;
-import network.arkane.provider.blockcypher.domain.BlockCypherRawTransactionResponse;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddress;
 import network.arkane.provider.blockcypher.domain.BlockcypherAddressUnspents;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,7 +12,6 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConf
 import org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
-import org.springframework.cloud.openfeign.ribbon.FeignRibbonClientAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -32,7 +30,7 @@ class BlockcypherClientTest {
     @Configuration
     @Component
     @EnableFeignClients(clients = {BlockcypherClient.class})
-    @ImportAutoConfiguration( {RibbonAutoConfiguration.class, FeignRibbonClientAutoConfiguration.class, FeignAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class})
+    @ImportAutoConfiguration( {RibbonAutoConfiguration.class, FeignAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class})
     public static class TestContext {
 
     }
@@ -69,6 +67,6 @@ class BlockcypherClientTest {
         String result = client.sendSignedTransaction(USER_AGENT, "btc", "test3", TOKEN, request);
 
         System.out.println(result);
-//        BlockCypherRawTransactionResponse response = new ObjectMapper().readValue(result, BlockCypherRawTransactionResponse.class);
+        //        BlockCypherRawTransactionResponse response = new ObjectMapper().readValue(result, BlockCypherRawTransactionResponse.class);
     }
 }

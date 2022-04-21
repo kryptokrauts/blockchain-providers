@@ -5,6 +5,10 @@ pipeline {
         MAVEN_OPTS="-Djava.security.egd=file:/dev/./urandom"
         CODECOV_TOKEN = credentials('ARKANE_CODECOV_TOKEN');
     }
+    tools {
+        jdk "JDK 17"
+        maven 'apache-maven'
+    }
     options {
         disableConcurrentBuilds()
         timeout(time: 15, unit: 'MINUTES')
@@ -12,6 +16,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                sh 'mvn -v'
                 sh 'mvn -B -U clean deploy'
             }
             post {
