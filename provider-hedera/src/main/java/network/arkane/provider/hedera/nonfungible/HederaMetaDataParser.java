@@ -2,6 +2,7 @@ package network.arkane.provider.hedera.nonfungible;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.ipfs.IpfsUtil;
 import network.arkane.provider.nonfungible.MetaDataParser;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
@@ -25,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import static network.arkane.provider.hedera.nonfungible.HederaNonfungibleGateway.NON_FUNGIBLE_UNIQUE;
 
+@Slf4j
 public class HederaMetaDataParser {
 
     private final RestTemplate restTemplate;
@@ -53,23 +56,27 @@ public class HederaMetaDataParser {
     public NonFungibleMetaData parseMetaData(String tokenId,
                                              Long serialNumber,
                                              String metadata) {
-        metadata = IpfsUtil.replaceIpfsLink(metadata);
-        if (metadata.startsWith("http")) {
-            metadata = restTemplate.getForObject(metadata, String.class);
-        } else {
-            String decodedBase64 = decodeBase64(metadata).orElse(metadata);
-            if (!StringUtils.equals(metadata, decodedBase64)) {
-                if (decodedBase64.startsWith("http") || isValidJSON(decodedBase64)) {
-                    return parseMetaData(tokenId, serialNumber, decodedBase64);
-                } else {
-                    return parseMetaData(tokenId, serialNumber, "ipfs://" + decodedBase64);
+        try {
+            metadata = IpfsUtil.replaceIpfsLink(metadata);
+            if (metadata.startsWith("http")) {
+                metadata = restTemplate.getForObject(metadata, String.class);
+            } else {
+                String decodedBase64 = decodeBase64(metadata).orElse(metadata);
+                if (!StringUtils.equals(metadata, decodedBase64)) {
+                    if (decodedBase64.startsWith("http") || isValidJSON(decodedBase64)) {
+                        return parseMetaData(tokenId, serialNumber, decodedBase64);
+                    } else {
+                        return parseMetaData(tokenId, serialNumber, "ipfs://" + decodedBase64);
+                    }
                 }
             }
-        }
-        if (StringUtils.isBlank(metadata)) return null;
-        String json = removeBOM(metadata);
-        if (isValidJSON(json)) {
-            return metaDataParser.parseMetaData(SecretType.HEDERA, String.valueOf(serialNumber), NON_FUNGIBLE_UNIQUE, tokenId, json);
+            if (StringUtils.isBlank(metadata)) return null;
+            String json = removeBOM(metadata);
+            if (isValidJSON(json)) {
+                return metaDataParser.parseMetaData(SecretType.HEDERA, String.valueOf(serialNumber), NON_FUNGIBLE_UNIQUE, tokenId, json);
+            }
+        } catch (RestClientException e) {
+            log.debug("Error parsing metadata", e);
         }
         return null;
     }
