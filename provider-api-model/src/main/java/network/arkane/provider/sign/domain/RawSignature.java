@@ -1,16 +1,21 @@
 package network.arkane.provider.sign.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class RawSignature extends Signature {
     private String signature;
+
+    public RawSignature() {
+        super(SignatureType.RAW_SIGNATURE);
+    }
+
+    @Builder
+    public RawSignature(String signature) {
+        super(SignatureType.RAW_SIGNATURE);
+        this.signature = signature;
+    }
 }
