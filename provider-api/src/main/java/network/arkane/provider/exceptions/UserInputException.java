@@ -7,4 +7,9 @@ public class UserInputException extends ArkaneException {
                               Throwable cause) {
         super(errorCode, message, cause);
     }
+
+    public UserInputException(String errorCode,
+                              String message) {
+        super(errorCode, message);
+    }
 }
