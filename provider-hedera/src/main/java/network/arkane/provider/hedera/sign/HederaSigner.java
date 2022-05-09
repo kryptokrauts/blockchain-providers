@@ -43,7 +43,7 @@ public abstract class HederaSigner<S extends Signable, T extends Transaction<T>>
         final int tokenRelationshipCount = Optional.ofNullable(accountInfo.tokenRelationships)
                                                    .map(Map::size)
                                                    .orElse(0);
-        if (accountInfo.maxAutomaticTokenAssociations >= tokenRelationshipCount) {
+        if (accountInfo.maxAutomaticTokenAssociations > tokenRelationshipCount) {
             return;
         }
         if (!checkAccountHasTokenRelationship(accountInfo, tokenId)) {
