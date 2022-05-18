@@ -4,11 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import network.arkane.provider.hedera.HederaProperties;
 import network.arkane.provider.hedera.balance.dto.HederaTokenInfo;
-import network.arkane.provider.hedera.mirror.dto.Accounts;
-import network.arkane.provider.hedera.mirror.dto.Balances;
-import network.arkane.provider.hedera.mirror.dto.HederaTransactions;
-import network.arkane.provider.hedera.mirror.dto.MirrorNodeNft;
-import network.arkane.provider.hedera.mirror.dto.MirrorNodeNftsResponse;
+import network.arkane.provider.hedera.mirror.dto.*;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,5 +79,15 @@ public class MirrorNodeClient {
             return Optional.ofNullable(entity.getBody());
         }
         return Optional.empty();
+    }
+
+    public List<NftWalletDto> getNftWallets(String walletAddress, String spenderAddress) {
+        NftWalletResponse entity = restTemplate.getForObject("/accounts/{walletAddress}/nfts" + (spenderAddress != null ? "?spender.id=" + spenderAddress : ""),
+                NftWalletResponse.class,
+                walletAddress);
+        if (entity != null) {
+            return emptyIfNull(entity.getNfts());
+        }
+        return emptyList();
     }
 }
