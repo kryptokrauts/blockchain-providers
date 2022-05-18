@@ -25,7 +25,7 @@ public class NftTransferSigner extends HederaSigner<NftTransferSignable, Transfe
     protected Transaction<TransferTransaction> createTransaction(NftTransferSignable signable,
                                                                  HederaSecretKey key) {
         final AccountId toAccount = AccountId.fromString(signable.getTo());
-        super.checkTokenAssociationAssociation(toAccount, TokenId.fromString(signable.getTokenId()), clientFactory.getClientWithOperator());
+        super.checkTokenAssociation(toAccount, TokenId.fromString(signable.getTokenId()), clientFactory.getClientWithOperator());
         final TransferTransaction transferTransaction = new TransferTransaction()
                 .addNftTransfer(NftId.fromString(signable.getTokenId() + "/" + signable.getSerialNumber()),
                                 AccountId.fromString(signable.getFrom()),

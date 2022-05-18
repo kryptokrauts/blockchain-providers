@@ -25,7 +25,7 @@ public class TokenTransferSigner extends HederaSigner<TokenTransferSignable, Tra
                                                                  HederaSecretKey key) {
         final AccountId toAccount = AccountId.fromString(signable.getTo());
         final TokenId tokenId = TokenId.fromString(signable.getTokenId());
-        super.checkTokenAssociationAssociation(toAccount, tokenId, clientFactory.getClientWithOperator());
+        super.checkTokenAssociation(toAccount, tokenId, clientFactory.getClientWithOperator());
         final TransferTransaction transferTransaction = new TransferTransaction()
                 .addTokenTransfer(tokenId, AccountId.fromString(signable.getFrom()), signable.getAmount().negate().longValueExact())
                 .addTokenTransfer(tokenId, toAccount, signable.getAmount().longValueExact());
