@@ -9,11 +9,14 @@ import com.hedera.hashgraph.sdk.Transaction;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
+import network.arkane.provider.sign.Signer;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class ApproveAllowanceSigner extends HederaSigner<ApproveAllowanceSignable, AccountAllowanceApproveTransaction> {
+public class ApproveAllowanceSigner
+        extends HederaSigner<ApproveAllowanceSignable, AccountAllowanceApproveTransaction>
+        implements Signer<ApproveAllowanceSignable, HederaSecretKey> {
 
     private final HederaClientFactory clientFactory;
 

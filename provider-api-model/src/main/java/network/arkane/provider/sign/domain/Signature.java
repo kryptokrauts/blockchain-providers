@@ -13,7 +13,8 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.EXISTING_PROPERTY
                        @JsonSubTypes.Type(value = HexSignature.class, name = SignatureType.Values.HEX_SIGNATURE),
                        @JsonSubTypes.Type(value = SubmittedAndSignedTransactionSignature.class, name = SignatureType.Values.SUBMITTED_AND_SIGNED_TRANSACTION_SIGNATURE),
                        @JsonSubTypes.Type(value = TransactionSignature.class, name = SignatureType.Values.TRANSACTION_SIGNATURE),
-               })
+                       @JsonSubTypes.Type(value = RawSignature.class, name = SignatureType.Values.RAW_SIGNATURE),
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

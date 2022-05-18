@@ -12,7 +12,7 @@ public class ApproveAllowanceSignable implements Signable {
     private String accountId;
     private HederaAllowanceType allowanceType;
     private String spenderAccountId;
-    private long amount;
+    private Long amount;
     private String tokenId;
-    private long serial;
+    private Long serial;
 }
