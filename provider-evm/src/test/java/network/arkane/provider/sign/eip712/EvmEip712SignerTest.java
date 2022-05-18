@@ -3,11 +3,13 @@ package network.arkane.provider.sign.eip712;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.secret.generation.EvmSecretKey;
 import network.arkane.provider.sign.EvmEip712Signable;
+import network.arkane.provider.sign.EvmRawVerifier;
 import network.arkane.provider.sign.domain.HexSignature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.ECKeyPair;
 
+import java.io.IOException;
 import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -126,5 +128,27 @@ class EvmEip712SignerTest {
                 "0x38980a398c5e52d2e0dd197cf3a7660e2c57f65c9a51c1ad7d2c6ce5050036a1108e1fe7bab6d20f0cf3f5aad1e42ad941ce232ff57aa8ed35d5a818fb51e0e31b");
     }
 
+    @Test
+    void verifySignature() throws IOException {
 
+        final String address = "0xC31627ebC3973e14201822866D5b698fAe40a482";
+        final String signature = "0x86cc9723cee5a91c01df1f212ba28e3009851956f939a6fb914da2176d843d3913adda8c2759b0eed1e4a76fd520d44d7448161a681bcfe490192ed5ed115aae1b";
+        final String message = "{\"types\": {\"MetaTransaction\": [{\"type\": \"uint256\", \"name\": \"nonce\"}, {\"type\": \"address\","
+                               + " \"name\": \"from\"}, {\"type\": \"bytes\", \"name\": \"functionSignature\"}], \"EIP712Domain\": "
+                               + "[{\"type\": \"string\", \"name\": \"name\"}, {\"type\": \"string\", \"name\": \"version\"}, {\"type\":"
+                               + " \"address\", \"name\": \"verifyingContract\"}, {\"type\": \"bytes32\", \"name\": \"salt\"}]}, "
+                               + "\"domain\": {\"name\": \"Gaimin test\", \"version\": \"1\", \"verifyingContract\": "
+                               + "\"0x77f57f9ac6c52ce5aa9d19a57d0aee82be7e73f9\", \"salt\": "
+                               + "\"0x0000000000000000000000000000000000000000000000000000000000013881\"}, \"primaryType\": "
+                               + "\"MetaTransaction\", \"message\": {\"nonce\": 0, \"from\": "
+                               + "\"0xc31627ebc3973e14201822866d5b698fae40a482\", \"functionSignature\": "
+                               +
+                               "\"0xa22cb465000000000000000000000000e885A1cD1b67bDC352A113AB2e6A5Fc6C924F8880000000000000000000000000000000000000000000000000000000000000001\"}}";
+        final StructuredDataEncoder encoder = new StructuredDataEncoder(message);
+        final EvmRawVerifier verifier = new EvmRawVerifier();
+
+        boolean valid = verifier.verifyMessage(address, encoder.getStructuredData(), signature);
+
+        assertThat(valid).isTrue();
+    }
 }
