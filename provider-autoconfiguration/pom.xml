@@ -8,7 +8,7 @@
     <parent>
         <groupId>network.arkane.blockchain-providers</groupId>
         <artifactId>blockchain-providers</artifactId>
-        <version>0.40.0</version>
+        <version>0.41.0</version>
     </parent>
 
     <dependencies>
@@ -24,6 +24,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

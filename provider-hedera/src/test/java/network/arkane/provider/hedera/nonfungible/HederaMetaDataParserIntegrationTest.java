@@ -2,12 +2,14 @@ package network.arkane.provider.hedera.nonfungible;
 
 import network.arkane.provider.nonfungible.NonFungibleMetaData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 class HederaMetaDataParserIntegrationTest {
 
     private HederaMetaDataParser parser;

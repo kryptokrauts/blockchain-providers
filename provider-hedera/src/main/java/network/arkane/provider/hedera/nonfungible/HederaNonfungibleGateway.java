@@ -11,6 +11,7 @@ import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.balance.HederaTokenInfoService;
 import network.arkane.provider.hedera.mirror.MirrorNodeClient;
 import network.arkane.provider.hedera.mirror.dto.MirrorNodeNft;
+import network.arkane.provider.hedera.mirror.dto.NftWalletDto;
 import network.arkane.provider.nonfungible.NonFungibleGateway;
 import network.arkane.provider.nonfungible.NonFungibleMetaData;
 import network.arkane.provider.nonfungible.domain.Attribute;
@@ -87,6 +88,10 @@ public class HederaNonfungibleGateway implements NonFungibleGateway {
     @Override
     public NonFungibleContract getNonFungibleContract(String contractAddress) {
         return hederaNftContractInfoService.getContractInfo(contractAddress).orElse(null);
+    }
+
+    public List<NftWalletDto> getNftWallets(String walletAddress, String spender) {
+        return mirrorNodeClient.getNftWallets(walletAddress, spender);
     }
 
     private List<NonFungibleAssetBalance> listNftsForAddress(String address) {

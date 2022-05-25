@@ -4,6 +4,7 @@ import network.arkane.provider.hedera.HederaTestFixtures;
 import network.arkane.provider.hedera.balance.dto.HederaTokenInfo;
 import network.arkane.provider.hedera.mirror.dto.Accounts;
 import network.arkane.provider.hedera.mirror.dto.MirrorNodeNft;
+import network.arkane.provider.hedera.mirror.dto.NftWalletDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,5 +52,12 @@ class MirrorNodeClientIntegrationTest {
         List<MirrorNodeNft> nfts = mirrorNodeClient.getNfts("0.0.2850147", "0.0.2258392");
 
         System.out.println(nfts);
+    }
+
+    @Test
+    void getEmptyNftWallets() {
+        List<NftWalletDto> nftWallets = mirrorNodeClient.getNftWallets("0.0.2850147", null);
+
+        System.out.println(nftWallets);
     }
 }

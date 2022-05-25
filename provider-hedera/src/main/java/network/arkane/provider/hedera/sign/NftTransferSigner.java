@@ -2,6 +2,7 @@ package network.arkane.provider.hedera.sign;
 
 import com.hedera.hashgraph.sdk.AccountId;
 import com.hedera.hashgraph.sdk.NftId;
+import com.hedera.hashgraph.sdk.TokenId;
 import com.hedera.hashgraph.sdk.Transaction;
 import com.hedera.hashgraph.sdk.TransferTransaction;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +24,12 @@ public class NftTransferSigner extends HederaSigner<NftTransferSignable, Transfe
     @Override
     protected Transaction<TransferTransaction> createTransaction(NftTransferSignable signable,
                                                                  HederaSecretKey key) {
+        final AccountId toAccount = AccountId.fromString(signable.getTo());
+        super.checkTokenAssociation(toAccount, TokenId.fromString(signable.getTokenId()), clientFactory.getClientWithOperator());
         final TransferTransaction transferTransaction = new TransferTransaction()
                 .addNftTransfer(NftId.fromString(signable.getTokenId() + "/" + signable.getSerialNumber()),
                                 AccountId.fromString(signable.getFrom()),
-                                AccountId.fromString(signable.getTo()));
+                                toAccount);
         if (signable.getTransactionMemo() != null) {
             transferTransaction.setTransactionMemo(signable.getTransactionMemo());
         }

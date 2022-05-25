@@ -2,10 +2,8 @@ package network.arkane.provider.balance.domain;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 public class TokenBalance {
     private String tokenAddress;
     private String rawBalance;
