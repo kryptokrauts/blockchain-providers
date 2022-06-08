@@ -1,0 +1,11 @@
+{
+  "available": true,
+  "secretType": "IMX",
+  "balance": 12.34,
+  "gasBalance": 0.12,
+  "symbol": "IMX",
+  "gasSymbol": "IMX",
+  "rawBalance": "1",
+  "rawGasBalance": "1",
+  "decimals": 14
+}

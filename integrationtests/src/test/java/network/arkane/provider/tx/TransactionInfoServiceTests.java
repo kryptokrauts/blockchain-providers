@@ -33,9 +33,11 @@ public class TransactionInfoServiceTests {
         final Map<SecretType, TransactionInfoService> collect = transactionInfoServices.stream()
                                                                                        .collect(Collectors.toMap(TransactionInfoService::type, Function.identity()));
         final long count = Stream.of(SecretType.values())
+                                 .filter(type -> type != SecretType.IMX)
                                  .filter(type -> collect.get(type) == null)
                                  .peek(type -> log.error("An implementation of TransactionInfoService does not exist yet for SecretType.{}", type))
                                  .count();
+
         if (count > 0) {
             fail(String.format("A total of %d implementation(s) of TransactionInfoService were not implemented", count));
         }

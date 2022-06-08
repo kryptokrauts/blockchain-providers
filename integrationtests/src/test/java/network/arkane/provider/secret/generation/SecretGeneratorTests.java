@@ -32,6 +32,7 @@ public class SecretGeneratorTests {
     void secretGeneratorsShouldBeProvidedForEverySecretType() {
         final Map<SecretType, SecretGenerator> collect = secretGenerators.stream().collect(Collectors.toMap(SecretGenerator::type, Function.identity()));
         final long count = Stream.of(SecretType.values())
+                                 .filter(type -> type != SecretType.IMX)
                                  .filter(type -> collect.get(type) == null)
                                  .peek(type -> log.error("An implementation of TransactionGateway does not exist yet for SecretType.{}", type))
                                  .count();

@@ -32,6 +32,7 @@ public class TransactionGatewayTests {
 
         final Map<SecretType, TransactionGateway> collect = transactionGateways.stream().collect(Collectors.toMap(TransactionGateway::getType, Function.identity()));
         final long count = Stream.of(SecretType.values())
+                                 .filter(type -> type != SecretType.IMX)
                                  .filter(type -> collect.get(type) == null)
                                  .peek(type -> log.error("An implementation of TransactionGateway does not exist yet for SecretType.{}", type))
                                  .count();

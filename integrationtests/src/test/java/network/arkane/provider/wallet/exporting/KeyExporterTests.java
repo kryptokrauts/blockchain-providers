@@ -33,6 +33,7 @@ public class KeyExporterTests {
     void thereAreExportersForEverySecretType() {
         final Map<SecretType, ? extends KeyExporter> collect = keyExporters.stream().collect(Collectors.toMap(KeyExporter::type, Function.identity()));
         final long count = Stream.of(SecretType.values())
+                                 .filter(type -> type != SecretType.IMX)
                                  .filter(type -> collect.get(type) == null)
                                  .peek(type -> log.error("An implementation of KeyExporter does not exist yet for SecretType.{}", type))
                                  .count();
