@@ -15,9 +15,19 @@ pipeline {
     }
     stages {
         stage('Build') {
+            when {
+                not {
+                    anyOf {
+                        branch 'develop'
+                        branch 'master'
+                        branch 'hotfix-*'
+                        branch 'release-*'
+                    }
+                }
+            }
             steps {
                 sh 'mvn -v'
-                sh 'mvn -B -U clean deploy'
+                sh 'mvn -B -U clean verify'
             }
             post {
                 always {
@@ -28,7 +38,30 @@ pipeline {
                           sourcePattern: '**/src/main/java',
                           exclusionPattern: '**/src/test*'
                     )
-
+                }
+            }
+        }
+        stage('Build + Deploy to Nexus') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    branch 'master'
+                    branch 'hotfix-*'
+                    branch 'release-*'
+                }
+            }
+            steps {
+                sh 'mvn -B -U clean deploy'
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                    jacoco(
+                           execPattern: '**/target/*.exec',
+                           classPattern: '**/target/classes',
+                           sourcePattern: '**/src/main/java',
+                           exclusionPattern: '**/src/test*'
+                    )
                 }
             }
         }
