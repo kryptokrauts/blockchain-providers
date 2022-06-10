@@ -20,6 +20,10 @@
         </dependency>
         <dependency>
             <groupId>network.arkane.blockchain-providers</groupId>
+            <artifactId>provider-imx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>network.arkane.blockchain-providers</groupId>
             <artifactId>provider-vechain</artifactId>
         </dependency>
         <dependency>

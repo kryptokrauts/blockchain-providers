@@ -15,6 +15,8 @@ import java.util.stream.Stream;
  * - TRON
  * - VECHAIN
  * - NEO
+ * - HEDERA
+ * - IMX
  */
 public enum SecretType {
     AETERNITY(Values.AETERNITY, "AE", "AE"),
@@ -28,7 +30,8 @@ public enum SecretType {
     TRON(Values.TRON, "TRX", "TRX"),
     VECHAIN(Values.VECHAIN, "VET", "VTHO"),
     MATIC(Values.MATIC, "MATIC", "MATIC"),
-    NEO(Values.NEO, "NEO", "GAS");
+    NEO(Values.NEO, "NEO", "GAS"),
+    IMX(Values.IMX, "IMX", "IMX");
 
     private String symbol;
     private String gasSymbol;
@@ -60,6 +63,7 @@ public enum SecretType {
         public static final String VECHAIN = "VECHAIN";
         public static final String NEO = "NEO";
         public static final String MATIC = "MATIC";
+        public static final String IMX = "IMX";
     }
 
     public String getSymbol() {

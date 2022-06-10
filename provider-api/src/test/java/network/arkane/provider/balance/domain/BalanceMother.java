@@ -13,4 +13,17 @@ public class BalanceMother {
                       .decimals(18)
                       .build();
     }
+
+    public static Balance imxBalance() {
+        return Balance.builder()
+                      .gasSymbol("IMX")
+                      .symbol("IMX")
+                      .balance(12.34)
+                      .gasBalance(0.12)
+                      .secretType(SecretType.IMX)
+                      .rawBalance("1")
+                      .rawGasBalance("1")
+                      .decimals(14)
+                      .build();
+    }
 }

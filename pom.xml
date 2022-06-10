@@ -25,6 +25,7 @@
         <module>provider-ethereum</module>
         <module>provider-gochain</module>
         <module>provider-tron</module>
+        <module>provider-imx</module>
         <module>provider-litecoin</module>
         <module>provider-vechain</module>
         <module>provider-evm</module>
@@ -74,6 +75,7 @@
         <typetools.version>0.6.3</typetools.version>
         <unirest-java.version>1.4.9</unirest-java.version>
         <web3j.version>4.8.7</web3j.version>
+        <wiremock.version>2.32.0</wiremock.version>
     </properties>
 
     <dependencies>
@@ -237,6 +239,11 @@
             <dependency>
                 <groupId>network.arkane.blockchain-providers</groupId>
                 <artifactId>provider-ethereum</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>network.arkane.blockchain-providers</groupId>
+                <artifactId>provider-imx</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -436,6 +443,12 @@
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-netty-shaded</artifactId>
                 <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.tomakehurst</groupId>
+                <artifactId>wiremock</artifactId>
+                <version>${wiremock.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
