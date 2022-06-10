@@ -20,6 +20,6 @@ public class BIP38EncryptionService {
 
     public String encrypt(final BitcoinSecretKey secretKey, final String passphrase) {
         final String privateKeyAsWiF = secretKey.getKey().getPrivateKeyAsWiF(networkParameters);
-        return bip38.encryptNoEC(passphrase, privateKeyAsWiF, false);
+        return bip38.encryptNoEC(passphrase, privateKeyAsWiF, secretKey.getKey().isCompressed());
     }
 }
