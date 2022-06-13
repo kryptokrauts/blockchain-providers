@@ -2,17 +2,20 @@ package io.venly.provider.imx;
 
 import io.venly.provider.imx.balance.ImxBalanceGateway;
 import io.venly.provider.imx.config.ImxProperties;
+import io.venly.provider.imx.sign.ImxRawVerifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import javax.annotation.PostConstruct;
 
 @Slf4j
 @Configuration
+@Import(ImxRawVerifier.class)
 @EnableConfigurationProperties({ImxProperties.class})
 public class ImxAutoConfiguration {
 
