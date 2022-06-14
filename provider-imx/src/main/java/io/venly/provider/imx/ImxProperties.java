@@ -1,9 +1,9 @@
-package io.venly.provider.imx.config;
+package io.venly.provider.imx;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "io.venly.provider.imx-gateway")
-public record ImxProperties(
+record ImxProperties(
         String endpoint,
         String user,
         String password

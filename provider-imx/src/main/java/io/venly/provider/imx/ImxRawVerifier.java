@@ -1,4 +1,4 @@
-package io.venly.provider.imx.sign;
+package io.venly.provider.imx;
 
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.sign.BlockchainProviderRawVerifiable;

@@ -1,10 +1,7 @@
 package io.venly.provider.imx;
 
-import io.venly.provider.imx.balance.ImxBalanceGateway;
-import io.venly.provider.imx.config.ImxProperties;
-import io.venly.provider.imx.sign.ImxRawVerifier;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +13,7 @@ import javax.annotation.PostConstruct;
 @Slf4j
 @Configuration
 @Import(ImxRawVerifier.class)
-@EnableConfigurationProperties({ImxProperties.class})
+@EnableConfigurationProperties(ImxProperties.class)
 public class ImxAutoConfiguration {
 
     @PostConstruct
@@ -24,11 +21,20 @@ public class ImxAutoConfiguration {
         log.info("provider-imx loaded");
     }
 
+    /**
+     * Having {@link ConditionalOnProperty @ConditionalOnProperty} allows this autoconfiguration to
+     * silently disable all beans if the imx-gateway properties are missing.
+     */
     @Bean
     @ConditionalOnProperty(prefix = "io.venly.provider.imx-gateway", name = {"endpoint", "user", "password"})
-    @ConditionalOnMissingBean(ImxBalanceGateway.class)
-    ImxBalanceGateway imxBalanceGateway(ImxProperties imxProperties) {
-        return new ImxBalanceGateway(imxProperties);
+    ImxGatewayClient imxGatewayClient(ImxProperties imxProperties) {
+        return new ImxGatewayClient(imxProperties);
+    }
+
+    @Bean
+    @ConditionalOnBean(ImxGatewayClient.class)
+    ImxBalanceGateway imxBalanceGateway(ImxGatewayClient imxGatewayClient) {
+        return new ImxBalanceGateway(imxGatewayClient);
     }
 
 }
