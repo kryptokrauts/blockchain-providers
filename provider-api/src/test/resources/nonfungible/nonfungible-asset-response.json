@@ -1,0 +1,21 @@
+{
+  "id": "4420",
+  "name": "Common Predator MQ-28 #4420",
+  "backgroundColor": "FBFBFB",
+  "description": "Strong against helis & tanks\\n\\nWeak against mechs & jeeps\\n\\nFlies over water, mountains, and ground units\\n\\nLow mining rate\\n",
+  "imageUrl": "https://cryptoassault.io/units/unit_21.png",
+  "imagePreviewUrl": "https://cryptoassault.io/units/unit_21.png",
+  "imageThumbnailUrl": "https://cryptoassault.io/units/unit_21.png",
+  "animationUrl": "https://cryptoassault.io/units/unit_21.mp4",
+  "url": "https://cryptoassault.io/unit/?id=4420",
+  "attributes": [],
+  "contract": {
+    "address": "0x31af195db332bc9203d758c74df5a5c5e597cdb7",
+    "description": "Dominate you enemies in this War MMO! Command your armies in a HUGE 3D world in real-time where strategy earns you daily ETHEREUM REWARDS. Capture territory, mine resources, form alliances and battle others NOW!",
+    "imageUrl": "https://storage.opensea.io/0x31af195db332bc9203d758c74df5a5c5e597cdb7-featured-1556588685.jpg",
+    "name": "CryptoAssault",
+    "symbol": "CAU",
+    "url": "https://cryptoassault.io/"
+  },
+  "fungible": false
+}
