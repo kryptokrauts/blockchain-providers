@@ -1,4 +1,4 @@
-package network.arkane.provider.balance;
+package network.arkane.provider.client;
 
 public record BasicAuthCredentials(String user, String password) {
 }
