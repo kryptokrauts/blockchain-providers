@@ -46,6 +46,12 @@ public class HederaTransactionGateway implements TransactionGateway {
                     .signedTransaction(transactionSignature.getSignedTransaction())
                     .transactionDetails(this.getTransactionDetails(signedTransferTxn, transactionResponse))
                     .build();
+        } catch (PrecheckStatusException e) {
+            throw arkaneException()
+                    .errorCode("error.hedera.submit")
+                    .message("Insufficient funds to execute this transaction")
+                    .cause(e)
+                    .build();
         } catch (Exception e) {
             throw arkaneException()
                     .errorCode("error.hedera.submit")
