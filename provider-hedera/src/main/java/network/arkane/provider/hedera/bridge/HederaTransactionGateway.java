@@ -49,7 +49,7 @@ public class HederaTransactionGateway implements TransactionGateway {
         } catch (PrecheckStatusException e) {
             throw arkaneException()
                     .errorCode("error.hedera.submit")
-                    .message("Insufficient funds to execute this transaction")
+                    .message(e.getMessage())
                     .cause(e)
                     .build();
         } catch (Exception e) {
