@@ -64,13 +64,13 @@ public class HederaNonfungibleGateway implements NonFungibleGateway {
     }
 
     @Override
-    public List<NonFungibleAssetBalance> listNonFungibles(String walletId,
+    public List<NonFungibleAssetBalance> listNonFungibles(String walletAddress,
                                                           String... contractAddresses) {
         if (contractAddresses == null || contractAddresses.length == 0) {
-            return listNftsForAddress(walletId);
+            return listNftsForAddress(walletAddress);
         } else {
             Set<String> contracts = Arrays.stream(contractAddresses).map(String::toLowerCase).collect(Collectors.toSet());
-            return listNftsForAddress(walletId)
+            return listNftsForAddress(walletAddress)
                     .stream()
                     .filter(nft -> contracts.contains(nft.getContract().getAddress().toLowerCase()))
                     .collect(Collectors.toList());
