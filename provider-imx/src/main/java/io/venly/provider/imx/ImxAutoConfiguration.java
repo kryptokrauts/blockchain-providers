@@ -1,5 +1,6 @@
 package io.venly.provider.imx;
 
+import io.venly.provider.imx.bridge.ImxTransactionGateway;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -35,6 +36,12 @@ public class ImxAutoConfiguration {
     @ConditionalOnBean(ImxGatewayClient.class)
     ImxBalanceGateway imxBalanceGateway(ImxGatewayClient imxGatewayClient) {
         return new ImxBalanceGateway(imxGatewayClient);
+    }
+
+    @Bean
+    @ConditionalOnBean(ImxTransactionGateway.class)
+    ImxTransactionGateway imxTransactionGateway(ImxGatewayClient imxGatewayClient) {
+        return new ImxTransactionGateway(imxGatewayClient);
     }
 
     @Bean

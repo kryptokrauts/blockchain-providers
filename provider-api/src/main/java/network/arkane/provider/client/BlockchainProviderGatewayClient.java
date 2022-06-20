@@ -41,4 +41,7 @@ public class BlockchainProviderGatewayClient {
         return restTemplate.getForObject(url, responseType, parameters);
     }
 
+    public <T> T post(final String url, final Object request, final Class<T> responseType, final Object... parameters) {
+        return restTemplate.postForObject(url, request, responseType, parameters);
+    }
 }
