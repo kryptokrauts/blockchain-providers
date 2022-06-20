@@ -3,7 +3,7 @@ package io.venly.provider.imx;
 import network.arkane.provider.client.BasicAuthCredentials;
 import network.arkane.provider.client.BlockchainProviderGatewayClient;
 
-public class ImxGatewayClient extends BlockchainProviderGatewayClient {
+class ImxGatewayClient extends BlockchainProviderGatewayClient {
 
     ImxGatewayClient(ImxProperties imxProperties) {
         super(imxProperties.endpoint(),

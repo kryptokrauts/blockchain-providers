@@ -7,23 +7,20 @@ import network.arkane.provider.sign.domain.TransactionSignature;
 
 import java.util.Optional;
 
-public abstract class TransactionProviderGateway<Response extends Signature> implements TransactionGateway {
+public abstract class BlockchainProviderTransactionGateway implements TransactionGateway {
 
     private final BlockchainProviderGatewayClient blockchainProviderGatewayClient;
     private final SecretType secretType;
-    private final Class<Response> responseClass;
 
-    protected TransactionProviderGateway(BlockchainProviderGatewayClient blockchainProviderGatewayClient,
-                                         SecretType secretType,
-                                         Class<Response> responseClass) {
+    protected BlockchainProviderTransactionGateway(BlockchainProviderGatewayClient blockchainProviderGatewayClient,
+                                                   SecretType secretType) {
         this.blockchainProviderGatewayClient = blockchainProviderGatewayClient;
         this.secretType = secretType;
-        this.responseClass = responseClass;
     }
 
     @Override
     public Signature submit(TransactionSignature transactionSignature, Optional<String> endpoint) {
-        return blockchainProviderGatewayClient.post("/api/transactions", transactionSignature, responseClass);
+        return blockchainProviderGatewayClient.post("/api/transactions", transactionSignature, Signature.class);
     }
 
     @Override
