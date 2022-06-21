@@ -39,6 +39,12 @@ public class ImxAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(ImxGatewayClient.class)
+    ImxTransactionGateway imxTransactionGateway(ImxGatewayClient imxGatewayClient) {
+        return new ImxTransactionGateway(imxGatewayClient);
+    }
+
+    @Bean
+    @ConditionalOnBean(ImxGatewayClient.class)
     ImxNonFungibleGateway imxNonFungibleGateway(ImxGatewayClient imxGatewayClient) {
         return new ImxNonFungibleGateway(imxGatewayClient);
     }

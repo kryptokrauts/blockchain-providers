@@ -7,6 +7,6 @@ class ImxGatewayClient extends BlockchainProviderGatewayClient {
 
     ImxGatewayClient(ImxProperties imxProperties) {
         super(imxProperties.endpoint(),
-              new BasicAuthCredentials(imxProperties.user(), imxProperties.password()));
+                new BasicAuthCredentials(imxProperties.user(), imxProperties.password()));
     }
 }
