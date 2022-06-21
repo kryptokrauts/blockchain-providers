@@ -26,11 +26,13 @@ public class BlockchainProviderGatewayResponseErrorHandler implements ResponseEr
     public void handleError(ClientHttpResponse response) throws IOException {
         JsonNode jsonNode = objectMapper.readTree(response.getBody());
         final String message = Optional.ofNullable(jsonNode)
-                .map(json -> json.get("description"))
-                .map(JsonNode::asText)
-                .orElse("Unknown error");
+                .map(json -> json.get("errors").get(0).get("errorMessage").asText())
+                .orElse("Unknown error message");
+        final String code = Optional.ofNullable(jsonNode)
+                .map(json -> json.get("errors").get(0).get("errorCode").asText())
+                .orElse("Unknown error code");
         throw ArkaneException.arkaneException()
-                .errorCode("transaction.submit.internal-error")
+                .errorCode(code)
                 .message(message)
                 .build();
     }
