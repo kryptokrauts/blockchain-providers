@@ -1,5 +1,6 @@
 package network.arkane.provider.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -33,6 +34,7 @@ public class BlockchainProviderGatewayClient {
                                                                 .build()
                                                 ))
                                                 .additionalInterceptors(new BasicAuthenticationInterceptor(basicAuth.user(), basicAuth.password()))
+                                                .errorHandler(new BlockchainProviderGatewayResponseErrorHandler(new ObjectMapper()))
                                                 .build();
     }
 
