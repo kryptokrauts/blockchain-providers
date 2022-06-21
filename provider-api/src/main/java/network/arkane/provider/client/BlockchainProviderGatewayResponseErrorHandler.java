@@ -24,16 +24,17 @@ public class BlockchainProviderGatewayResponseErrorHandler implements ResponseEr
 
     @Override
     public void handleError(ClientHttpResponse response) throws IOException {
-        JsonNode jsonNode = objectMapper.readTree(response.getBody());
-        final String message = Optional.ofNullable(jsonNode)
-                .map(json -> json.get("errors").get(0).get("errorMessage").asText())
-                .orElse("Unknown error message");
-        final String code = Optional.ofNullable(jsonNode)
-                .map(json -> json.get("errors").get(0).get("errorCode").asText())
-                .orElse("Unknown error code");
+        final Optional<JsonNode> errorNode = Optional.ofNullable(objectMapper.readTree(response.getBody()))
+                                                     .map(node -> node.get("errors"))
+                                                     .filter(node -> !node.isEmpty())
+                                                     .map(node -> node.get(0));
+        final String code = errorNode.map(json -> json.get("errorCode").asText())
+                                     .orElse("unknown-error");
+        final String message = errorNode.map(json -> json.get("errorMessage").asText())
+                                        .orElse("An unexpected error occurred: " + response.getStatusText());
         throw ArkaneException.arkaneException()
-                .errorCode(code)
-                .message(message)
-                .build();
+                             .errorCode(code)
+                             .message(message)
+                             .build();
     }
 }
