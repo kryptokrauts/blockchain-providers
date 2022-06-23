@@ -1,17 +1,21 @@
 package network.arkane.provider.hedera.sign;
 
 import lombok.Builder;
-import lombok.Data;
-import network.arkane.provider.sign.domain.Signable;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
-@Data
-@Builder
-public class NftTransferSignable implements HederaTransferSignable {
-    private String from;
-    private String to;
-    private String tokenId;
-    private Long serialNumber;
-    private String transactionMemo;
+@Value
+@EqualsAndHashCode(callSuper = true)
+public class NftTransferSignable extends HederaTransferSignable {
+    private final String tokenId;
+    private final Long serialNumber;
+
+    @Builder
+    public NftTransferSignable(final String from, final String to, final String spender, final String tokenId, final Long serialNumber, final String transactionMemo) {
+        super(spender, from, to, transactionMemo);
+        this.tokenId = tokenId;
+        this.serialNumber = serialNumber;
+    }
 }
 
 

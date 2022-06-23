@@ -10,12 +10,14 @@ import com.hedera.hashgraph.sdk.TransactionResponse;
 import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.HederaTestFixtures;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
+import network.arkane.provider.hedera.sign.HbarSingleTransferSigner;
 import network.arkane.provider.hedera.sign.HbarTransferSignable;
-import network.arkane.provider.hedera.sign.HbarTransferSigner;
 import network.arkane.provider.hedera.sign.TokenAssociationSignable;
 import network.arkane.provider.hedera.sign.TokenAssociationSigner;
+import network.arkane.provider.hedera.sign.TokenSingleTransferSigner;
 import network.arkane.provider.hedera.sign.TokenTransferSignable;
-import network.arkane.provider.hedera.sign.TokenTransferSigner;
+import network.arkane.provider.hedera.sign.handler.HbarTransferHandler;
+import network.arkane.provider.hedera.sign.handler.TokenTransferHandler;
 import network.arkane.provider.sign.domain.Signature;
 import network.arkane.provider.sign.domain.SubmittedAndSignedTransactionSignature;
 import network.arkane.provider.sign.domain.TransactionSignature;
@@ -32,18 +34,18 @@ import java.util.concurrent.TimeoutException;
 @Disabled
 class HederaTransactionGatewayTest {
 
-    private HbarTransferSigner signer;
+    private HbarSingleTransferSigner signer;
     private HederaTransactionGateway transactionGateway;
     private TokenAssociationSigner tokenAssociationSigner;
-    private TokenTransferSigner tokenTransferSigner;
+    private TokenSingleTransferSigner tokenTransferSigner;
 
     @BeforeEach
     void setUp() {
         HederaClientFactory clientFactory = HederaTestFixtures.clientFactory();
-        signer = new HbarTransferSigner(clientFactory);
+        signer = new HbarSingleTransferSigner(clientFactory, new HbarTransferHandler());
         tokenAssociationSigner = new TokenAssociationSigner(clientFactory);
         transactionGateway = new HederaTransactionGateway(clientFactory);
-        tokenTransferSigner = new TokenTransferSigner(clientFactory);
+        tokenTransferSigner = new TokenSingleTransferSigner(clientFactory, new TokenTransferHandler());
     }
 
     @Test
