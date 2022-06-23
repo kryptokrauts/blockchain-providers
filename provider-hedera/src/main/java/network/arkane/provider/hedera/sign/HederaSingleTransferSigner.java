@@ -6,6 +6,7 @@ import com.hedera.hashgraph.sdk.TransferTransaction;
 import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
 import network.arkane.provider.hedera.sign.handler.TransferHandler;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class HederaSingleTransferSigner<S extends HederaTransferSignable> extends HederaSigner<S, TransferTransaction> {
     private HederaClientFactory clientFactory;
@@ -18,13 +19,14 @@ public abstract class HederaSingleTransferSigner<S extends HederaTransferSignabl
     }
 
     protected Transaction<TransferTransaction> createTransaction(final S signable,
-                                                                final HederaSecretKey key) {
+                                                                 final HederaSecretKey key) {
         final TransferTransaction transferTransaction = new TransferTransaction();
         transferHandler.addTransfer(transferTransaction, signable);
         if (signable.getTransactionMemo() != null) {
             transferTransaction.setTransactionMemo(signable.getTransactionMemo());
         }
-        return transferTransaction.freezeWith(clientFactory.buildClient(AccountId.fromString(signable.getFrom()), key.getKey()))
+        final String operator = StringUtils.isNotBlank(signable.getSpender()) ? signable.getSpender() : signable.getFrom();
+        return transferTransaction.freezeWith(clientFactory.buildClient(AccountId.fromString(operator), key.getKey()))
                                   .sign(key.getKey());
     }
 }
