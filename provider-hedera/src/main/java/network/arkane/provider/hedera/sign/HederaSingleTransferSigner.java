@@ -5,15 +5,15 @@ import com.hedera.hashgraph.sdk.Transaction;
 import com.hedera.hashgraph.sdk.TransferTransaction;
 import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
-import network.arkane.provider.hedera.sign.handler.TransferHandler;
+import network.arkane.provider.hedera.sign.handler.TransferHandlerTemplate;
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class HederaSingleTransferSigner<S extends HederaTransferSignable> extends HederaSigner<S, TransferTransaction> {
     private HederaClientFactory clientFactory;
-    private TransferHandler<S> transferHandler;
+    private TransferHandlerTemplate<S> transferHandler;
 
     public HederaSingleTransferSigner(final HederaClientFactory clientFactory,
-                                      final TransferHandler<S> transferHandler) {
+                                      final TransferHandlerTemplate<S> transferHandler) {
         this.clientFactory = clientFactory;
         this.transferHandler = transferHandler;
     }

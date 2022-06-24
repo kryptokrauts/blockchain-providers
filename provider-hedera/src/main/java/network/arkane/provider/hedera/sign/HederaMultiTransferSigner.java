@@ -6,25 +6,26 @@ import com.hedera.hashgraph.sdk.TransferTransaction;
 import lombok.extern.slf4j.Slf4j;
 import network.arkane.provider.hedera.HederaClientFactory;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
-import network.arkane.provider.hedera.sign.handler.TransferHandler;
+import network.arkane.provider.hedera.sign.handler.TransferHandlerTemplate;
 import network.arkane.provider.sign.Signer;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class HederaMultiTransferSigner extends HederaSigner<HederaMultiTransferSignable, TransferTransaction> implements Signer<HederaMultiTransferSignable, HederaSecretKey> {
 
     private final HederaClientFactory clientFactory;
-    private Map<Class<? extends HederaTransferSignable>, TransferHandler<? extends HederaTransferSignable>> transferHandlerMap;
+    private Map<Class<? extends HederaTransferSignable>, TransferHandlerTemplate<? extends HederaTransferSignable>> transferHandlerMap;
 
     public HederaMultiTransferSigner(final HederaClientFactory clientFactory,
-                                     @Qualifier("transferHandlerMap")
-                                     final Map<Class<? extends HederaTransferSignable>, TransferHandler<? extends HederaTransferSignable>> transferHandlerMap) {
+                                     final List<TransferHandlerTemplate<? extends HederaTransferSignable>> transferHandlers) {
         this.clientFactory = clientFactory;
-        this.transferHandlerMap = transferHandlerMap;
+        this.transferHandlerMap = transferHandlers.stream().collect(Collectors.toMap(TransferHandlerTemplate::forClass, Function.identity()));
     }
 
     @Override

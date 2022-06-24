@@ -5,7 +5,7 @@ import com.hedera.hashgraph.sdk.TransferTransaction;
 import network.arkane.provider.hedera.sign.HederaTransferSignable;
 import org.apache.commons.lang3.StringUtils;
 
-public abstract class TransferHandler<T extends HederaTransferSignable> {
+public abstract class TransferHandlerTemplate<T extends HederaTransferSignable> {
 
     public void addTransfer(final TransferTransaction transferTransaction,
                             final HederaTransferSignable transferSignable) {
@@ -16,11 +16,13 @@ public abstract class TransferHandler<T extends HederaTransferSignable> {
         }
     }
 
-    abstract void addRegularTransfer(final TransferTransaction transferTransaction,
-                                     final T tokenTransferSignable);
+    public abstract Class<? extends HederaTransferSignable> forClass();
 
-    abstract void addApprovedTransfer(final TransferTransaction transferTransaction,
-                                      final T tokenTransferSignable);
+    protected abstract void addRegularTransfer(final TransferTransaction transferTransaction,
+                                               final T tokenTransferSignable);
+
+    protected abstract void addApprovedTransfer(final TransferTransaction transferTransaction,
+                                                final T tokenTransferSignable);
 
     protected AccountId extractFrom(T signable) {
         return AccountId.fromString(signable.getFrom());
