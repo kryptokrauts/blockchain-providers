@@ -2,6 +2,7 @@ package network.arkane.provider.hedera.sign;
 
 import network.arkane.provider.hedera.HederaTestFixtures;
 import network.arkane.provider.hedera.secret.generation.HederaSecretKey;
+import network.arkane.provider.hedera.sign.handler.HbarTransferHandler;
 import network.arkane.provider.sign.domain.Signature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -14,11 +15,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Disabled
 class HbarTransferSignerTest {
 
-    private HbarTransferSigner signer;
+    private HbarSingleTransferSigner signer;
 
     @BeforeEach
     void setUp() {
-        signer = new HbarTransferSigner(HederaTestFixtures.clientFactory());
+        signer = new HbarSingleTransferSigner(HederaTestFixtures.clientFactory(), new HbarTransferHandler());
     }
 
     @Test
