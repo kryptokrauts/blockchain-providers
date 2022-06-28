@@ -112,9 +112,11 @@ public abstract class EvmTransactionInfoService implements TransactionInfoServic
                                                       .nonce(tx.getNonce())
                                                       .logs(mapLogs(receipt));
         this.getTxBlock(receipt, web3j)
-            .ifPresent(ethBlock -> builder.timestamp(Instant.ofEpochSecond(ethBlock.getBlock().getTimestamp().longValue())
-                                                            .atZone(ZoneOffset.UTC)
-                                                            .toLocalDateTime()));
+            .map(EthBlock::getBlock)
+            .map(EthBlock.Block::getTimestamp)
+            .ifPresent(timestamp -> builder.timestamp(Instant.ofEpochSecond(timestamp.longValue())
+                                                             .atZone(ZoneOffset.UTC)
+                                                             .toLocalDateTime()));
         return builder.build();
     }
 
