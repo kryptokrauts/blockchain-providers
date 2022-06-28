@@ -1,7 +1,7 @@
 package network.arkane.provider.tx;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.exceptions.ArkaneException;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class EvmTransactionInfoService implements TransactionInfoService {
@@ -31,13 +29,11 @@ public abstract class EvmTransactionInfoService implements TransactionInfoServic
     private final Web3j defaultWeb3j;
     private final HasReachedFinalityService hasReachedFinalityService;
 
-    public EvmTransactionInfoService(final Web3j web3j,
-                                     final HasReachedFinalityService hasReachedFinalityService) {
+    protected EvmTransactionInfoService(final Web3j web3j,
+                                        final HasReachedFinalityService hasReachedFinalityService) {
         this.defaultWeb3j = web3j;
         this.hasReachedFinalityService = hasReachedFinalityService;
     }
-
-    public abstract SecretType type();
 
     @Override
     public EvmTxInfo getTransaction(final String hash) {
@@ -51,14 +47,9 @@ public abstract class EvmTransactionInfoService implements TransactionInfoServic
             Web3j web3J = getWeb3J(parameters);
             return web3J.ethGetTransactionByHash(hash)
                         .send()
-                        .getTransaction().map(tx -> {
-                        try {
-                            return mapToTxInfo(tx, web3J);
-                        } catch (IOException e) {
-                            throw ArkaneException.arkaneException().message("Error getting transaction").errorCode("transaction.exception.unknown").build();
-                        }
-                    }).orElseGet(() -> EvmTxInfo.evmTxInfoBuilder().hash(hash).status(TxStatus.UNKNOWN).build());
-
+                        .getTransaction()
+                        .map(tx -> this.mapToTxInfo(tx, web3J))
+                        .orElseGet(() -> EvmTxInfo.evmTxInfoBuilder().hash(hash).status(TxStatus.UNKNOWN).build());
         } catch (IOException e) {
             throw ArkaneException.arkaneException().message("Error getting transaction").errorCode("transaction.exception.unknown").build();
         }
@@ -72,19 +63,15 @@ public abstract class EvmTransactionInfoService implements TransactionInfoServic
         }
     }
 
+    @SneakyThrows
     private EvmTxInfo mapToTxInfo(final Transaction tx,
-                                  final Web3j web3J) throws IOException {
+                                  final Web3j web3J) {
         CompletableFuture<EthGetTransactionReceipt> receiptFuture = web3J.ethGetTransactionReceipt(tx.getHash()).sendAsync();
         CompletableFuture<EthBlockNumber> blockNumberFuture = web3J.ethBlockNumber().sendAsync();
-        try {
-            EthBlockNumber ethBlockNumber = blockNumberFuture.get();
-            return receiptFuture.get().getTransactionReceipt()
-                                .map((r) -> this.mapToMinedTxInfo(tx, r, ethBlockNumber, web3J))
-                                .orElseGet(() -> this.mapToUnminedTxInfo(tx));
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-
+        EthBlockNumber ethBlockNumber = blockNumberFuture.get();
+        return receiptFuture.get().getTransactionReceipt()
+                            .map(r -> this.mapToMinedTxInfo(tx, r, ethBlockNumber, web3J))
+                            .orElseGet(() -> this.mapToUnminedTxInfo(tx));
     }
 
     private EvmTxInfo mapToUnminedTxInfo(final Transaction tx) {
@@ -151,7 +138,7 @@ public abstract class EvmTransactionInfoService implements TransactionInfoServic
                                                                               .topics(l.getTopics())
                                                                               .type(l.getType())
                                                                               .build())
-                                                            .collect(Collectors.toList());
+                                                            .toList();
     }
 
     private TxStatus getStatus(final TransactionReceipt tx) {
