@@ -61,7 +61,7 @@ class BlockchainProviderNonFungibleGatewayTest {
         final String walletAddress = randomString();
         final String contractAddress1 = randomString();
         final String contractAddress2 = randomString();
-        final String url = "/api/assets?walletAddress=%s&contractAddresses=%s&contractAddresses=%s".formatted(walletAddress, contractAddress1, contractAddress2);
+        final String url = "/api/assets?walletAddress=%s&contractAddresses[]=%s&contractAddresses[]=%s".formatted(walletAddress, contractAddress1, contractAddress2);
         stubFor(get(url).willReturn(jsonFromFile("/nonfungible/nonfungible-asset-balances-response.json")));
 
         final List<NonFungibleAssetBalance> result = toTest.listNonFungibles(walletAddress, contractAddress1, contractAddress2);

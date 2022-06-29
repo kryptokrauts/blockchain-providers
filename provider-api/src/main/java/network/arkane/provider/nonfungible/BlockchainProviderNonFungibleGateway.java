@@ -16,7 +16,7 @@ public class BlockchainProviderNonFungibleGateway implements NonFungibleGateway 
     private static final String ASSETS_URL = "/api/assets";
     private static final String CONTRACTS_URL = "/api/contracts/{contractAddress}";
     private static final String PARAM_WALLET_ADDRESS = "walletAddress";
-    private static final String PARAM_CONTRACT_ADDRESSES = "contractAddresses";
+    private static final String PARAM_CONTRACT_ADDRESSES = "contractAddresses[]";
     private static final String TOKEN_URL = "/api/assets/{contractAddress}/{tokenId}";
 
 
@@ -37,13 +37,10 @@ public class BlockchainProviderNonFungibleGateway implements NonFungibleGateway 
     @Override
     public List<NonFungibleAssetBalance> listNonFungibles(final String walletAddress,
                                                           final String... contractAddresses) {
-        final Optional<List<String>> contractAddressesList = Optional.ofNullable(contractAddresses)
-                                                                     .map(Arrays::asList);
-        final String url = UriComponentsBuilder.fromUriString(ASSETS_URL)
-                                               .queryParam(PARAM_WALLET_ADDRESS, walletAddress)
-                                               .queryParamIfPresent(PARAM_CONTRACT_ADDRESSES, contractAddressesList)
-                                               .buildAndExpand()
-                                               .toUriString();
+        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(ASSETS_URL)
+                                                                              .queryParam(PARAM_WALLET_ADDRESS, walletAddress);
+        Optional.ofNullable(contractAddresses).ifPresent(addresses -> uriComponentsBuilder.queryParam(PARAM_CONTRACT_ADDRESSES, (Object[]) addresses));
+        final String url = uriComponentsBuilder.buildAndExpand().toUriString();
         return Optional.ofNullable(client.get(url, NonFungibleAssetBalance[].class))
                        .map(Arrays::asList)
                        .orElse(List.of());

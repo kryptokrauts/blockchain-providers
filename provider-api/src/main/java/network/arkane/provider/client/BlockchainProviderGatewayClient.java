@@ -23,27 +23,40 @@ public class BlockchainProviderGatewayClient {
 
     public BlockchainProviderGatewayClient(final String baseUrl,
                                            final BasicAuthCredentials basicAuth) {
-        restTemplate = new RestTemplateBuilder().uriTemplateHandler(new DefaultUriBuilderFactory(baseUrl))
-                                                .requestFactory(() -> new OkHttp3ClientHttpRequestFactory(
-                                                        new OkHttpClient.Builder()
-                                                                .connectionPool(new ConnectionPool())
-                                                                .connectTimeout(CONNECT_TIMEOUT)
-                                                                .writeTimeout(WRITE_TIMEOUT)
-                                                                .readTimeout(READ_TIMEOUT)
-                                                                .retryOnConnectionFailure(true)
-                                                                .build()
-                                                ))
-                                                .additionalInterceptors(new BasicAuthenticationInterceptor(basicAuth.user(), basicAuth.password()))
-                                                .errorHandler(new BlockchainProviderGatewayResponseErrorHandler(new ObjectMapper()))
-                                                .build();
+        restTemplate = buildRestTemplate(baseUrl, basicAuth);
     }
 
-
-    public <T> T get(final String url, final Class<T> responseType, final Object... parameters) {
+    public <T> T get(final String url,
+                     final Class<T> responseType,
+                     final Object... parameters) {
         return restTemplate.getForObject(url, responseType, parameters);
     }
 
-    public <T> T post(final String url, final Object request, final Class<T> responseType, final Object... parameters) {
+    public <T> T post(final String url,
+                      final Object request,
+                      final Class<T> responseType,
+                      final Object... parameters) {
         return restTemplate.postForObject(url, request, responseType, parameters);
     }
+
+    private RestTemplate buildRestTemplate(String baseUrl,
+                                           BasicAuthCredentials basicAuth) {
+        final DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory(baseUrl);
+        uriBuilderFactory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
+        return new RestTemplateBuilder()
+                .uriTemplateHandler(uriBuilderFactory)
+                .requestFactory(() -> new OkHttp3ClientHttpRequestFactory(
+                        new OkHttpClient.Builder()
+                                .connectionPool(new ConnectionPool())
+                                .connectTimeout(CONNECT_TIMEOUT)
+                                .writeTimeout(WRITE_TIMEOUT)
+                                .readTimeout(READ_TIMEOUT)
+                                .retryOnConnectionFailure(true)
+                                .build()
+                ))
+                .additionalInterceptors(new BasicAuthenticationInterceptor(basicAuth.user(), basicAuth.password()))
+                .errorHandler(new BlockchainProviderGatewayResponseErrorHandler(new ObjectMapper()))
+                .build();
+    }
+
 }
