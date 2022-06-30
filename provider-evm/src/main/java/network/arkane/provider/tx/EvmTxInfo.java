@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -18,6 +19,8 @@ public class EvmTxInfo extends TxInfo {
     private List<EvmTxLog> logs;
     private String from;
     private String to;
+    private BigInteger value;
+    private LocalDateTime timestamp;
 
     protected EvmTxInfo() {
     }
@@ -35,7 +38,9 @@ public class EvmTxInfo extends TxInfo {
                      BigInteger gasUsed,
                      BigInteger gasPrice,
                      List<EvmTxLog> logs,
-                     Boolean hasReachedFinality) {
+                     Boolean hasReachedFinality,
+                     BigInteger value,
+                     LocalDateTime timestamp) {
         super(hash, status, confirmations, blockHash, blockNumber, hasReachedFinality);
         this.nonce = nonce;
         this.gas = gas;
@@ -44,5 +49,7 @@ public class EvmTxInfo extends TxInfo {
         this.logs = logs;
         this.from = from;
         this.to = to;
+        this.value = value;
+        this.timestamp = timestamp;
     }
 }
