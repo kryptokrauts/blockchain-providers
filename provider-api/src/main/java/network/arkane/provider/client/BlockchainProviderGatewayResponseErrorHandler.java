@@ -3,6 +3,8 @@ package network.arkane.provider.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import network.arkane.provider.exceptions.ArkaneException;
+import network.arkane.provider.exceptions.BlockchainProviderResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 
@@ -32,9 +34,11 @@ public class BlockchainProviderGatewayResponseErrorHandler implements ResponseEr
                                      .orElse("unknown-error");
         final String message = errorNode.map(json -> json.get("errorMessage").asText())
                                         .orElse("An unexpected error occurred: " + response.getStatusText());
-        throw ArkaneException.arkaneException()
-                             .errorCode(code)
-                             .message(message)
-                             .build();
+
+        if (response.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+            throw new BlockchainProviderResourceNotFoundException(message, code);
+        }
+
+        throw new ArkaneException(message, code);
     }
 }

@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
@@ -26,6 +28,10 @@ public class BlockchainProviderTestHelper {
 
     public static ResponseDefinitionBuilder jsonFromFile(final String fileName) {
         return okJson(readFile(fileName));
+    }
+
+    public static ResponseDefinitionBuilder jsonFromFile(final String fileName, HttpStatus httpStatus) {
+        return aResponse().withBody(readFile(fileName)).withStatus(httpStatus.value());
     }
 
     public static String createBasicAuthHeaderValue(final String user,

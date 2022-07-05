@@ -5,11 +5,11 @@ public class UserInputException extends ArkaneException {
     public UserInputException(String errorCode,
                               String message,
                               Throwable cause) {
-        super(errorCode, message, cause);
+        super(message, cause, errorCode);
     }
 
     public UserInputException(String errorCode,
                               String message) {
-        super(errorCode, message);
+        super(message, errorCode);
     }
 }

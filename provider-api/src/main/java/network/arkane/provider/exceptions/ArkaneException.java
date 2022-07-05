@@ -10,8 +10,10 @@ import java.util.UUID;
 
 public class ArkaneException extends RuntimeException {
 
+    private static final String UNKNOWN_ERROR_CODE = "unknown-error";
+
     @Getter
-    private String errorCode;
+    private final String errorCode;
 
     @Builder(builderMethodName = "arkaneException")
     public ArkaneException(final String message,
@@ -19,6 +21,18 @@ public class ArkaneException extends RuntimeException {
                            final String errorCode) {
         super(message, cause);
         this.errorCode = errorCode;
+    }
+
+    public ArkaneException(String message,
+                           String errorCode) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
+    public ArkaneException(String message,
+                           Throwable cause) {
+        super(message, cause);
+        this.errorCode = UNKNOWN_ERROR_CODE;
     }
 
     @JsonIgnore
@@ -44,24 +58,6 @@ public class ArkaneException extends RuntimeException {
 
     public String getTraceCode() {
         return getTrace();
-    }
-
-    public ArkaneException(String message,
-                           String errorCode) {
-        super(message);
-        this.errorCode = errorCode;
-    }
-
-    public ArkaneException(String message,
-                           Throwable cause) {
-        super(message, cause);
-    }
-
-    public ArkaneException(final String errorCode,
-                           final String message,
-                           final Throwable cause) {
-        super(message, cause);
-        this.errorCode = errorCode;
     }
 
     public boolean hasErrorCode() {

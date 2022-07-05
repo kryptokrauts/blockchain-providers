@@ -1,0 +1,9 @@
+{
+  "success": false,
+  "errors": [
+    {
+      "errorCode": "get-asset-error",
+      "errorMessage": "Error caught while requesting contract with address 0x30C2B212177eD734e98f96FbDef70c4A472c8cb8"
+    }
+  ]
+}
