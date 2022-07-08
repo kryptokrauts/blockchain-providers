@@ -62,7 +62,7 @@
         <guava.version>29.0-jre</guava.version>
         <jackson.version>${jackson-bom.version}</jackson.version>
         <java.version>17</java.version>
-        <kotlin.version>1.3.71</kotlin.version>
+        <kotlin.version>1.6.0</kotlin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <neow3j.version>2.4.0</neow3j.version>
