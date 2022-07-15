@@ -41,9 +41,7 @@ public class BlockchainProviderNonFungibleGateway implements NonFungibleGateway 
                                                                               .queryParam(PARAM_WALLET_ADDRESS, walletAddress);
         Optional.ofNullable(contractAddresses).ifPresent(addresses -> uriComponentsBuilder.queryParam(PARAM_CONTRACT_ADDRESSES, (Object[]) addresses));
         final String url = uriComponentsBuilder.buildAndExpand().toUriString();
-        return Optional.ofNullable(client.get(url, NonFungibleAssetBalance[].class))
-                       .map(Arrays::asList)
-                       .orElse(List.of());
+        return Arrays.asList(client.get(url, NonFungibleAssetBalance[].class));
     }
 
     @Override

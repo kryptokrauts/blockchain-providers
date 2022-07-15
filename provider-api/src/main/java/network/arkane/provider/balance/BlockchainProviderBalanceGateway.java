@@ -4,12 +4,17 @@ import network.arkane.provider.balance.domain.Balance;
 import network.arkane.provider.balance.domain.TokenBalance;
 import network.arkane.provider.chain.SecretType;
 import network.arkane.provider.client.BlockchainProviderGatewayClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class BlockchainProviderBalanceGateway extends BalanceGateway {
 
     private static final String BALANCE_URL = "/api/wallets/{walletAddress}/balance";
+    private static final String TOKEN_BALANCES_URL = "/api/wallets/{walletAddress}/token-balances";
+    private static final String PARAM_TOKEN_ADDRESSES = "tokenAddresses[]";
 
     private final SecretType secretType;
     private final BlockchainProviderGatewayClient client;
@@ -40,14 +45,19 @@ public class BlockchainProviderBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(final String address,
+    public List<TokenBalance> getTokenBalances(final String walletAddress,
                                                final List<String> tokenAddresses) {
-        return List.of();
+        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(TOKEN_BALANCES_URL);
+        if (tokenAddresses != null && !tokenAddresses.isEmpty()) {
+            uriComponentsBuilder.queryParam(PARAM_TOKEN_ADDRESSES, tokenAddresses);
+        }
+        final String url = uriComponentsBuilder.buildAndExpand(walletAddress).toUriString();
+        return Arrays.asList(client.get(url, TokenBalance[].class));
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(final String address) {
-        return List.of();
+    public List<TokenBalance> getTokenBalances(final String walletAddress) {
+        return getTokenBalances(walletAddress, List.of());
     }
 
     @Override

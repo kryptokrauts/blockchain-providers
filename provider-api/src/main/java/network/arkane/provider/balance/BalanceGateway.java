@@ -34,19 +34,19 @@ public abstract class BalanceGateway {
     /**
      * Get the balances for a list of token addresses
      *
-     * @param address
+     * @param walletAddress
      * @param tokenAddresses
      * @return
      */
-    public abstract List<TokenBalance> getTokenBalances(String address, List<String> tokenAddresses);
+    public abstract List<TokenBalance> getTokenBalances(String walletAddress, List<String> tokenAddresses);
 
     /**
      * Get the balance of all supported tokens for an address
      *
-     * @param address String
+     * @param walletAddress String
      * @return
      */
-    public abstract List<TokenBalance> getTokenBalances(String address);
+    public abstract List<TokenBalance> getTokenBalances(String walletAddress);
 
     /**
      * the type this balance gateway supports

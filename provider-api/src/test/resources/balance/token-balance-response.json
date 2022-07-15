@@ -1,0 +1,11 @@
+[{
+  "tokenAddress": "0xdB36eEf120a34DC1c966506e3592c41389493953b",
+  "rawBalance": "10000000000000000000",
+  "balance": 10,
+  "decimals": 18,
+  "symbol":  "IMX",
+  "logo": "https://res.cloudinary.com/nenvy-llc/image/upload/f_auto,q_25,c_scale,w_194/f_auto,q_25,c_scale,w_194,u_veefriends:specials:book:bubble:empathy-drink-it.jpg/v1/veefriends/specials/book/frames/gold.png",
+  "type": "ERC20",
+  "transferable": true,
+  "name": "ImmutableX"
+}]

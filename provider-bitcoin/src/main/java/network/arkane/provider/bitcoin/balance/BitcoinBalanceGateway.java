@@ -66,7 +66,7 @@ public class BitcoinBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(String address) {
+    public List<TokenBalance> getTokenBalances(String walletAddress) {
         throw new UnsupportedOperationException("Not possible for bitcoin");
     }
 

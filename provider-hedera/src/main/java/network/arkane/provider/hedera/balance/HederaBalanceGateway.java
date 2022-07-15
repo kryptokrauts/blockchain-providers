@@ -109,8 +109,8 @@ public class HederaBalanceGateway extends BalanceGateway {
     }
 
     @Override
-    public List<TokenBalance> getTokenBalances(String address) {
-        return getTokenBalances(address, null);
+    public List<TokenBalance> getTokenBalances(String walletAddress) {
+        return getTokenBalances(walletAddress, null);
     }
 
     @Override
