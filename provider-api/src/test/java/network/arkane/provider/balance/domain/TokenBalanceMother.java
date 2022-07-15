@@ -28,6 +28,20 @@ public class TokenBalanceMother {
         return aViewTokenBalanceResult("606500000000000000000", TokenInfoMother.sha().build());
     }
 
+    public static TokenBalance imxResult() {
+        return TokenBalance.builder()
+                .tokenAddress("0xdB36eEf120a34DC1c966506e3592c41389493953b")
+                .name("ImmutableX")
+                .symbol("IMX")
+                .rawBalance("10000000000000000000")
+                .balance(10D)
+                .decimals(18)
+                .transferable(true)
+                .type("ERC20")
+                .logo("https://res.cloudinary.com/nenvy-llc/image/upload/f_auto,q_25,c_scale,w_194/f_auto,q_25,c_scale,w_194,u_veefriends:specials:book:bubble:empathy-drink-it.jpg/v1/veefriends/specials/book/frames/gold.png")
+                .build();
+    }
+
     public static TokenBalance aViewTokenBalanceResult(final String rawBalanceAsString, final TokenInfo tokenInfo) {
         final BigInteger rawBalance = new BigInteger(rawBalanceAsString);
         return TokenBalance.builder()

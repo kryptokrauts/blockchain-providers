@@ -1,9 +1,14 @@
 package network.arkane.provider.balance.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TokenBalance {
     private String tokenAddress;
     private String rawBalance;
@@ -15,25 +20,4 @@ public class TokenBalance {
     @Builder.Default
     private boolean transferable = true;
     private String name;
-
-    @Builder
-    public TokenBalance(String tokenAddress,
-                        final String rawBalance,
-                        final Double balance,
-                        final Integer decimals,
-                        final String symbol,
-                        final String logo,
-                        final String type,
-                        final boolean transferable,
-                        final String name) {
-        this.tokenAddress = tokenAddress;
-        this.rawBalance = rawBalance;
-        this.balance = balance;
-        this.decimals = decimals;
-        this.symbol = symbol;
-        this.logo = logo;
-        this.type = type;
-        this.transferable = transferable;
-        this.name = name;
-    }
 }
